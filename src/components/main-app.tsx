@@ -30,17 +30,15 @@ export function MainApp() {
 
   return (
     <div className="min-h-screen diffused-bg">
-      {/* Main Content */}
-      <div className="pb-20">
-        {' '}
-        {/* Keep pb-20 to ensure space for bottom nav */}
+      {/* Main Content - 添加 pb-28 确保内容不被底部导航栏遮挡 */}
+      <div className="flex-1 overflow-auto pb-28">
         <ActiveComponent />
+        
+        {/* Recent Notifications at the bottom of the main content area */}
+        {activeTab === 'home' && (
+          <RecentNotifications onViewMore={() => setActiveTab('news')} />
+        )}
       </div>
-
-      {/* Recent Notifications at the bottom of the main content area */}
-      {activeTab === 'home' && (
-        <RecentNotifications onViewMore={() => setActiveTab('news')} />
-      )}
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl">
