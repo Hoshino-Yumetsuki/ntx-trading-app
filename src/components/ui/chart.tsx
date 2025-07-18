@@ -67,21 +67,20 @@ const ChartContainer = React.forwardRef<
 })
 ChartContainer.displayName = 'Chart'
 
-const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+function ChartStyle({ id, config }: { id: string; config: ChartConfig }) {
   const colorConfig = Object.entries(config).filter(
     ([_, config]) => config.theme || config.color
   )
 
-  if (!colorConfig.length) {
-    return null
-  }
+  // Always call hooks at the top level, before any early returns
+  React.useEffect(() => {
+    // Only proceed with style creation if we have color configs
+    if (!colorConfig.length) return
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+    const styleEl = document.createElement('style')
+    const cssContent = Object.entries(THEMES)
+      .map(
+        ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -93,11 +92,16 @@ ${colorConfig
   .join('\n')}
 }
 `
-          )
-          .join('\n')
-      }}
-    />
-  )
+      )
+      .join('\n')
+    styleEl.textContent = cssContent
+    document.head.appendChild(styleEl)
+    return () => {
+      document.head.removeChild(styleEl)
+    }
+  }, [id, colorConfig])
+
+  return null
 }
 
 const ChartTooltip = RechartsPrimitive.Tooltip
