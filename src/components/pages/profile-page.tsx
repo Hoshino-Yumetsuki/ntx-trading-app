@@ -50,7 +50,7 @@ export function ProfilePage() {
 
   return (
     <div className="min-h-screen pb-6">
-      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl">
+      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
         <div className="flex items-center space-x-4">
           <Avatar className="w-20 h-20">
             <AvatarImage src="/placeholder.svg?height=80&width=80" />
@@ -81,7 +81,7 @@ export function ProfilePage() {
         </div>
       </div>
 
-      <div className="px-6 -mt-4 space-y-6">
+      <div className="px-6 mt-6 space-y-6">
         <Card className="glass-card border-white/30">
           <CardHeader>
             <CardTitle className="text-slate-800">我的数据</CardTitle>

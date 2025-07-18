@@ -29,7 +29,7 @@ export function MiningPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl">
+      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold gradient-text">挖矿中心</h1>
@@ -42,7 +42,7 @@ export function MiningPage() {
         </div>
       </div>
 
-      <div className="px-6 -mt-4 space-y-6">
+      <div className="px-6 mt-6 space-y-6">
         <Card className="glass-card border-white/50">
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center">
