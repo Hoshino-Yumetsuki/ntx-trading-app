@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { TrendingUp, Zap } from "lucide-react"
+import { useEffect, useState } from 'react'
+import { TrendingUp, Zap } from 'lucide-react'
 
 export function SplashScreen() {
   const [animate, setAnimate] = useState(false)
@@ -14,7 +14,7 @@ export function SplashScreen() {
     <div className="min-h-screen diffused-bg flex flex-col items-center justify-center relative overflow-hidden">
       {/* Logo and Brand */}
       <div
-        className={`text-center transition-all duration-1000 ${animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+        className={`text-center transition-all duration-1000 ${animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
         <div className="mb-8 relative">
           <div className="w-24 h-24 mx-auto glass-card-strong rounded-2xl flex items-center justify-center mb-4">
@@ -28,8 +28,12 @@ export function SplashScreen() {
         <h1 className="text-4xl font-bold mb-4 gradient-text">NTX</h1>
 
         <div className="space-y-3 mb-8">
-          <p className="text-xl font-semibold text-slate-700">专业投资互动社区</p>
-          <p className="text-lg text-slate-600 max-w-xs mx-auto leading-relaxed">为Web3交易而生</p>
+          <p className="text-xl font-semibold text-slate-700">
+            专业投资互动社区
+          </p>
+          <p className="text-lg text-slate-600 max-w-xs mx-auto leading-relaxed">
+            为Web3交易而生
+          </p>
         </div>
 
         <div className="flex items-center justify-center space-x-2 text-slate-600">

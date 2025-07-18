@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { SplashScreen } from "@/src/components/splash-screen"
-import { MainApp } from "@/src/components/main-app"
+import { useState, useEffect } from 'react'
+import { SplashScreen } from '@/src/components/splash-screen'
+import { MainApp } from '@/src/components/main-app'
 
 export default function HomePage() {
   const [showSplash, setShowSplash] = useState(true)

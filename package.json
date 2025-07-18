@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "lint": "next lint",
+    "dev": "next dev --turbopack",
+    "lint": "biome check && biome lint ",
+    "lint-fix": "biome format --write && biome lint --write",
     "start": "next start"
   },
   "dependencies": {
@@ -60,6 +61,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
     "@types/node": "^22.16.4",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

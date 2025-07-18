@@ -1,9 +1,20 @@
-"use client"
+'use client'
 
-import { Button } from "@/src/components/ui/button"
-import { Card, CardContent } from "@/src/components/ui/card"
-import { TrendingUp, Zap, ArrowRight, Target, Award, Pickaxe, GraduationCap, BookOpen, Brain, Mic } from "lucide-react"
-import { SignalCarousel } from "@/src/components/signal-carousel"
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent } from '@/src/components/ui/card'
+import {
+  TrendingUp,
+  Zap,
+  ArrowRight,
+  Target,
+  Award,
+  Pickaxe,
+  GraduationCap,
+  BookOpen,
+  Brain,
+  Mic
+} from 'lucide-react'
+import { SignalCarousel } from '@/src/components/signal-carousel'
 
 export function HomePage() {
   return (
@@ -31,7 +42,7 @@ export function HomePage() {
         </div>
         {/* CTA Buttons */}
         <div className="space-y-3 mb-4">
-          {" "}
+          {' '}
           {/* Adjusted mb from mb-6 to mb-4 */}
           <Button className="w-full diffused-button text-white py-4 text-lg font-semibold rounded-xl border-0">
             <Pickaxe className="w-5 h-5 mr-2" />
@@ -63,8 +74,12 @@ export function HomePage() {
                 <BookOpen className="w-6 h-6 text-purple-600" />
               </div>
               <div>
-                <h3 className="text-slate-800 font-semibold text-lg">新手教程</h3>
-                <p className="text-slate-600 text-sm">快速入门，掌握平台核心功能</p>
+                <h3 className="text-slate-800 font-semibold text-lg">
+                  新手教程
+                </h3>
+                <p className="text-slate-600 text-sm">
+                  快速入门，掌握平台核心功能
+                </p>
               </div>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed mb-4">
@@ -85,8 +100,12 @@ export function HomePage() {
                 <Brain className="w-6 h-6 text-indigo-600" />
               </div>
               <div>
-                <h3 className="text-slate-800 font-semibold text-lg">机器学习预测</h3>
-                <p className="text-slate-600 text-sm">AI驱动，洞察市场未来趋势</p>
+                <h3 className="text-slate-800 font-semibold text-lg">
+                  机器学习预测
+                </h3>
+                <p className="text-slate-600 text-sm">
+                  AI驱动，洞察市场未来趋势
+                </p>
               </div>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed mb-4">
@@ -106,11 +125,17 @@ export function HomePage() {
                 <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <h3 className="text-slate-800 font-semibold text-lg">交易挖矿</h3>
-                <p className="text-slate-600 text-sm">每笔交易获得反佣和挖矿奖励</p>
+                <h3 className="text-slate-800 font-semibold text-lg">
+                  交易挖矿
+                </h3>
+                <p className="text-slate-600 text-sm">
+                  每笔交易获得反佣和挖矿奖励
+                </p>
               </div>
             </div>
-            <p className="text-slate-700 text-sm leading-relaxed">通过程序化工具捕捉市场信号，实现收益最大化</p>
+            <p className="text-slate-700 text-sm leading-relaxed">
+              通过程序化工具捕捉市场信号，实现收益最大化
+            </p>
           </CardContent>
         </Card>
 
@@ -121,11 +146,15 @@ export function HomePage() {
                 <Target className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-slate-800 font-semibold text-lg">机构策略</h3>
+                <h3 className="text-slate-800 font-semibold text-lg">
+                  机构策略
+                </h3>
                 <p className="text-slate-600 text-sm">掌握机构交易思维</p>
               </div>
             </div>
-            <p className="text-slate-700 text-sm leading-relaxed">学习专业交易策略，提升交易胜率和纪律性</p>
+            <p className="text-slate-700 text-sm leading-relaxed">
+              学习专业交易策略，提升交易胜率和纪律性
+            </p>
           </CardContent>
         </Card>
 
@@ -136,11 +165,15 @@ export function HomePage() {
                 <Award className="w-6 h-6 text-yellow-600" />
               </div>
               <div>
-                <h3 className="text-slate-800 font-semibold text-lg">持续回报</h3>
+                <h3 className="text-slate-800 font-semibold text-lg">
+                  持续回报
+                </h3>
                 <p className="text-slate-600 text-sm">让每一笔交易永远有回报</p>
               </div>
             </div>
-            <p className="text-slate-700 text-sm leading-relaxed">建立长期收益模式，实现财富稳定增长</p>
+            <p className="text-slate-700 text-sm leading-relaxed">
+              建立长期收益模式，实现财富稳定增长
+            </p>
           </CardContent>
         </Card>
       </div>

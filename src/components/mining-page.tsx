@@ -1,16 +1,30 @@
-"use client"
+'use client'
 
-import { Button } from "@/src/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { TrendingUp, Users, ExternalLink, Clock, BarChart3, Coins, DollarSign, Flame } from "lucide-react"
+import { Button } from '@/src/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/src/components/ui/card'
+import {
+  TrendingUp,
+  Users,
+  ExternalLink,
+  Clock,
+  BarChart3,
+  Coins,
+  DollarSign,
+  Flame
+} from 'lucide-react'
 
 export function MiningPage() {
   const exchanges = [
-    { name: "Bitget", rank: 6, efficiency: 36.0, logo: "BG" },
-    { name: "HTX", rank: 9, efficiency: 30.0, logo: "HTX" },
-    { name: "Bybit", rank: 2, efficiency: 26.64, logo: "BB" },
-    { name: "Binance", rank: 1, efficiency: 24.6, logo: "BN" },
-    { name: "XT", rank: 20, efficiency: 42.0, logo: "XT" },
+    { name: 'Bitget', rank: 6, efficiency: 36.0, logo: 'BG' },
+    { name: 'HTX', rank: 9, efficiency: 30.0, logo: 'HTX' },
+    { name: 'Bybit', rank: 2, efficiency: 26.64, logo: 'BB' },
+    { name: 'Binance', rank: 1, efficiency: 24.6, logo: 'BN' },
+    { name: 'XT', rank: 20, efficiency: 42.0, logo: 'XT' }
   ]
 
   return (
@@ -50,7 +64,9 @@ export function MiningPage() {
                 <div className="premium-icon w-10 h-10 rounded-lg mx-auto mb-3">
                   <Coins className="w-5 h-5 text-yellow-600" />
                 </div>
-                <p className="text-2xl font-bold text-yellow-600 mb-1">1,234,567</p>
+                <p className="text-2xl font-bold text-yellow-600 mb-1">
+                  1,234,567
+                </p>
                 <p className="text-slate-600 text-sm">总挖矿量 (NTX)</p>
               </div>
               <div className="text-center data-card p-5 rounded-xl">
@@ -71,7 +87,9 @@ export function MiningPage() {
                 <div className="premium-icon w-10 h-10 rounded-lg mx-auto mb-3">
                   <TrendingUp className="w-5 h-5 text-blue-600" />
                 </div>
-                <p className="text-2xl font-bold text-blue-600 mb-1">2,345,678</p>
+                <p className="text-2xl font-bold text-blue-600 mb-1">
+                  2,345,678
+                </p>
                 <p className="text-slate-600 text-sm">总交易量 (USDT)</p>
               </div>
             </div>
@@ -89,7 +107,9 @@ export function MiningPage() {
                     <Coins className="w-4 h-4 mr-1 text-yellow-600" />
                     矿产量:
                   </span>
-                  <span className="text-yellow-600 font-semibold">+1,234 NTX</span>
+                  <span className="text-yellow-600 font-semibold">
+                    +1,234 NTX
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600 flex items-center">
@@ -103,7 +123,9 @@ export function MiningPage() {
                     <DollarSign className="w-4 h-4 mr-1 text-green-600" />
                     平台佣金:
                   </span>
-                  <span className="text-green-600 font-semibold">+890 USDT</span>
+                  <span className="text-green-600 font-semibold">
+                    +890 USDT
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600 flex items-center">
@@ -172,25 +194,41 @@ export function MiningPage() {
               </div>
               交易所绑定
             </CardTitle>
-            <p className="text-slate-600 text-sm ml-11">选择您的交易所，绑定UID，立即开始挖矿！</p>
+            <p className="text-slate-600 text-sm ml-11">
+              选择您的交易所，绑定UID，立即开始挖矿！
+            </p>
           </CardHeader>
           <CardContent className="space-y-4">
             {exchanges.map((exchange, index) => (
-              <div key={index} className="flex items-center justify-between p-5 data-card rounded-xl">
+              <div
+                key={index}
+                className="flex items-center justify-between p-5 data-card rounded-xl"
+              >
                 <div className="flex items-center space-x-4">
                   <div className="premium-icon w-12 h-12 rounded-xl">
-                    <span className="text-slate-700 text-sm font-bold">{exchange.logo}</span>
+                    <span className="text-slate-700 text-sm font-bold">
+                      {exchange.logo}
+                    </span>
                   </div>
                   <div>
-                    <p className="text-slate-800 font-semibold text-lg">{exchange.name}</p>
-                    <p className="text-slate-600 text-sm">CMC排名 #{exchange.rank}</p>
+                    <p className="text-slate-800 font-semibold text-lg">
+                      {exchange.name}
+                    </p>
+                    <p className="text-slate-600 text-sm">
+                      CMC排名 #{exchange.rank}
+                    </p>
                   </div>
                 </div>
                 <div className="text-right mr-4">
-                  <p className="text-green-600 font-bold text-lg">{exchange.efficiency}%</p>
+                  <p className="text-green-600 font-bold text-lg">
+                    {exchange.efficiency}%
+                  </p>
                   <p className="text-slate-600 text-xs">挖矿效率</p>
                 </div>
-                <Button size="sm" className="diffused-button text-white border-0 px-4 py-2">
+                <Button
+                  size="sm"
+                  className="diffused-button text-white border-0 px-4 py-2"
+                >
                   <ExternalLink className="w-4 h-4 mr-1" />
                   去绑定
                 </Button>
