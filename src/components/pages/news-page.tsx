@@ -9,7 +9,7 @@ import {
 import { Button } from '@/src/components/ui/button'
 import { Newspaper, Share2, Clock } from 'lucide-react'
 import { toast } from '@/src/hooks/use-toast' // Assuming useToast is available for notifications
-import { newsItems, } from '@/src/data/news-data' // 导入统一的新闻数据
+import { newsItems } from '@/src/data/news-data' // 导入统一的新闻数据
 
 export function NewsPage() {
   const handleShare = async (newsItem: (typeof newsItems)[0]) => {

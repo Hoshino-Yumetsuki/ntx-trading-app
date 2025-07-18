@@ -497,7 +497,7 @@ Authorization: Bearer {jwt_token}
 
 ### 2.11 更新用户昵称
 
-- **URL**: `/api/user/update_user_nickname`
+- **URL**: `/api/user/nickname`
 - **Method**: `PUT`
 - **权限**: 需要JWT认证
 

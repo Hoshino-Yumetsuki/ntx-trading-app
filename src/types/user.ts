@@ -22,4 +22,8 @@ export interface TeamMember {
 export interface WithdrawRequest {
   amount: number
   toAddress: string
+  currency?: string
+  status?: string
+  createdAt?: string
+  id?: number
 }

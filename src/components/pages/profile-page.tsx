@@ -11,13 +11,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
 import { Badge } from '@/src/components/ui/badge'
 import {
-  Settings,
   Bell,
   HelpCircle,
   Shield,
   LogOut,
   ChevronRight,
-  Wallet,
   Award,
   TrendingUp,
   Users,
@@ -26,13 +24,17 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { UserService } from '@/src/services/user'
-import { UserInfo } from '@/src/types/user'
+import type { UserInfo } from '@/src/types/user'
 import { toast } from 'sonner'
+import { SecuritySettings } from './security-settings'
 
 export function ProfilePage() {
   const { user, logout } = useAuth()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState<'profile' | 'security'>(
+    'profile'
+  )
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -91,11 +93,24 @@ export function ProfilePage() {
   ]
 
   const menuItems = [
-    { icon: Wallet, label: '钱包管理', description: '查看资产和交易记录' },
-    { icon: Settings, label: '账户设置', description: '个人信息和偏好设置' },
-    { icon: Bell, label: '通知设置', description: '推送和提醒设置' },
-    { icon: Shield, label: '安全中心', description: '密码和安全验证' },
-    { icon: HelpCircle, label: '帮助中心', description: '常见问题和客服' }
+    {
+      icon: Bell,
+      label: '佣金记录',
+      description: '查看我的佣金记录',
+      onClick: () => {}
+    },
+    {
+      icon: Shield,
+      label: '安全中心',
+      description: '密码和安全验证',
+      onClick: () => setCurrentPage('security')
+    },
+    {
+      icon: HelpCircle,
+      label: '帮助中心',
+      description: '常见问题和客服',
+      onClick: () => {}
+    }
   ]
 
   if (loading) {
@@ -107,6 +122,11 @@ export function ProfilePage() {
         </div>
       </div>
     )
+  }
+
+  // 如果当前页面是安全设置，渲染安全设置组件
+  if (currentPage === 'security') {
+    return <SecuritySettings onBack={() => setCurrentPage('profile')} />
   }
 
   return (
@@ -131,7 +151,9 @@ export function ProfilePage() {
                 EXP: {userInfo?.exp || 0}
               </Badge>
             </div>
-            <p className="text-slate-600 text-sm">邮箱：{userInfo?.email || user?.email || 'N/A'}</p>
+            <p className="text-slate-600 text-sm">
+              邮箱：{userInfo?.email || user?.email || 'N/A'}
+            </p>
           </div>
           <Button
             size="sm"
@@ -244,6 +266,7 @@ export function ProfilePage() {
                 <div
                   key={index}
                   className="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/40 transition-all cursor-pointer"
+                  onClick={item.onClick}
                 >
                   <div className="flex items-center space-x-3">
                     <div className="premium-icon w-10 h-10 rounded-lg">

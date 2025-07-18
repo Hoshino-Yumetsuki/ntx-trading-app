@@ -7,14 +7,20 @@ import * as z from 'zod'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
 import { Label } from '@/src/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/src/components/ui/card'
 import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import { Loader2, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '@/src/contexts/AuthContext'
 
 const loginSchema = z.object({
   email: z.string().email('请输入有效的邮箱地址'),
-  password: z.string().min(1, '请输入密码'),
+  password: z.string().min(1, '请输入密码')
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
@@ -27,9 +33,9 @@ export function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting }
   } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema)
   })
 
   const onSubmit = async (data: LoginFormData) => {
@@ -45,7 +51,9 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">登录 NTX</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            登录 NTX
+          </CardTitle>
           <CardDescription className="text-center">
             输入您的邮箱和密码来访问您的账户
           </CardDescription>
@@ -97,7 +105,9 @@ export function LoginPage() {
                 </Button>
               </div>
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 

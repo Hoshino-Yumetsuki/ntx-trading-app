@@ -1,7 +1,8 @@
 'use client'
 
-import React, { createContext, useContext, useReducer, useEffect } from 'react'
-import { AuthState, AuthContextType, User } from '@/src/types/auth'
+import type React from 'react'
+import { createContext, useContext, useReducer, useEffect } from 'react'
+import type { AuthState, AuthContextType, User } from '@/src/types/auth'
 import { AuthService } from '@/src/services/auth'
 
 type AuthAction =
@@ -10,12 +11,13 @@ type AuthAction =
   | { type: 'LOGIN_FAILURE' }
   | { type: 'LOGOUT' }
   | { type: 'RESTORE_SESSION'; payload: { user: User; token: string } }
+  | { type: 'UPDATE_USER'; payload: Partial<User> }
 
 const initialState: AuthState = {
   user: null,
   token: null,
   isAuthenticated: false,
-  isLoading: true,
+  isLoading: true
 }
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
@@ -23,7 +25,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
     case 'LOGIN_START':
       return {
         ...state,
-        isLoading: true,
+        isLoading: true
       }
     case 'LOGIN_SUCCESS':
       return {
@@ -31,7 +33,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
-        isLoading: false,
+        isLoading: false
       }
     case 'LOGIN_FAILURE':
       return {
@@ -39,7 +41,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         user: null,
         token: null,
         isAuthenticated: false,
-        isLoading: false,
+        isLoading: false
       }
     case 'LOGOUT':
       return {
@@ -47,7 +49,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         user: null,
         token: null,
         isAuthenticated: false,
-        isLoading: false,
+        isLoading: false
       }
     case 'RESTORE_SESSION':
       return {
@@ -55,7 +57,12 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
-        isLoading: false,
+        isLoading: false
+      }
+    case 'UPDATE_USER':
+      return {
+        ...state,
+        user: state.user ? { ...state.user, ...action.payload } : null
       }
     default:
       return state
@@ -80,10 +87,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             id: userData.userId,
             email: userData.email || '',
             nickname: userData.nickname,
-            isAdmin: userData.isAdmin,
+            isAdmin: userData.isAdmin
           },
-          token,
-        },
+          token
+        }
       })
     } else {
       dispatch({ type: 'LOGIN_FAILURE' })
@@ -95,12 +102,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const response = await AuthService.login({ email, password })
-      
+
       const user: User = {
         id: response.userId,
         email,
         nickname: response.nickname,
-        isAdmin: response.isAdmin,
+        isAdmin: response.isAdmin
       }
 
       // 保存到本地存储
@@ -109,12 +116,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userId: response.userId,
         email,
         nickname: response.nickname,
-        isAdmin: response.isAdmin,
+        isAdmin: response.isAdmin
       })
 
       dispatch({
         type: 'LOGIN_SUCCESS',
-        payload: { user, token: response.token },
+        payload: { user, token: response.token }
       })
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE' })
@@ -128,10 +135,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'LOGOUT' })
   }
 
+  const updateUser = (userData: Partial<User>) => {
+    dispatch({ type: 'UPDATE_USER', payload: userData })
+    // 同时更新本地存储
+    if (state.user) {
+      const updatedUser = { ...state.user, ...userData }
+      AuthService.setUser({
+        userId: updatedUser.id,
+        email: updatedUser.email,
+        nickname: updatedUser.nickname,
+        isAdmin: updatedUser.isAdmin
+      })
+    }
+  }
+
   const value: AuthContextType = {
     ...state,
     login,
     logout,
+    updateUser
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
