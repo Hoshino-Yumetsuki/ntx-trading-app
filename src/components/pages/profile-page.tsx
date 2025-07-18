@@ -21,8 +21,15 @@ import {
   TrendingUp,
   Users
 } from 'lucide-react'
+import { useAuth } from '@/src/contexts/AuthContext'
 
 export function ProfilePage() {
+  const { user, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+  }
+
   const stats = [
     {
       label: '总挖矿量',
@@ -55,12 +62,12 @@ export function ProfilePage() {
           <Avatar className="w-20 h-20">
             <AvatarImage src="/placeholder.svg?height=80&width=80" />
             <AvatarFallback className="glass-card text-slate-700 text-2xl font-bold">
-              U
+              {user?.nickname?.charAt(0)?.toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
             <h2 className="text-slate-800 text-xl font-bold mb-1">
-              用户123456
+              {user?.nickname || '用户'}
             </h2>
             <div className="flex items-center space-x-2 mb-2">
               <Badge className="bg-yellow-100/80 text-yellow-700 border-yellow-300">
@@ -164,6 +171,7 @@ export function ProfilePage() {
             <Button
               variant="ghost"
               className="w-full text-red-500 hover:text-red-600 hover:bg-red-50/50"
+              onClick={handleLogout}
             >
               <LogOut className="w-5 h-5 mr-2" />
               退出登录
