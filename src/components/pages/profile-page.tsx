@@ -263,9 +263,10 @@ export function ProfilePage() {
             {menuItems.map((item, index) => {
               const Icon = item.icon
               return (
-                <div
+                <button
                   key={index}
-                  className="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/40 transition-all cursor-pointer"
+                  type="button"
+                  className="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/40 transition-all cursor-pointer w-full text-left"
                   onClick={item.onClick}
                 >
                   <div className="flex items-center space-x-3">
@@ -280,7 +281,7 @@ export function ProfilePage() {
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-slate-500" />
-                </div>
+                </button>
               )
             })}
           </CardContent>
