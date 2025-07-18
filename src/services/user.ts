@@ -70,17 +70,14 @@ export class UserService {
     oldPassword: string,
     newPassword: string
   ): Promise<void> {
-    const response = await fetch(
-      `${API_BASE_URL}/auth/edit_password`,
-      {
-        method: 'PUT',
-        headers: UserService.getAuthHeaders(),
-        body: JSON.stringify({
-          oldPassword,
-          newPassword
-        })
-      }
-    )
+    const response = await fetch(`${API_BASE_URL}/auth/edit_password`, {
+      method: 'PUT',
+      headers: UserService.getAuthHeaders(),
+      body: JSON.stringify({
+        oldPassword,
+        newPassword
+      })
+    })
 
     if (!response.ok) {
       const errorData = await response.json()

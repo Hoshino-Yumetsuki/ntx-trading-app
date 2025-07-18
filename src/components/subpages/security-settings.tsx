@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -70,13 +70,14 @@ interface SecuritySettingsProps {
 type EditMode = 'none' | 'password' | 'nickname' | 'bscAddress'
 
 export function SecuritySettings({ onBack }: SecuritySettingsProps) {
-  const { user, updateUser } = useAuth()
+  const { user, updateUser, logout } = useAuth()
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [success, setSuccess] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [editMode, setEditMode] = useState<EditMode>('none')
+  const [logoutCountdown, setLogoutCountdown] = useState<number | null>(null)
 
   // 密码表单
   const passwordForm = useForm<PasswordFormData>({
@@ -95,6 +96,29 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
   const bscAddressForm = useForm<BscAddressFormData>({
     resolver: zodResolver(bscAddressSchema)
   })
+
+  // 倒计时逻辑
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null
+
+    if (logoutCountdown !== null && logoutCountdown > 0) {
+      intervalId = setInterval(() => {
+        setLogoutCountdown((prev) => {
+          if (prev === null || prev <= 1) {
+            logout()
+            return null
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [logoutCountdown, logout])
 
   // 复制到剪贴板
   const handleCopy = async (text: string, label: string) => {
@@ -127,7 +151,10 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
       setSuccess(true)
       passwordForm.reset()
       setEditMode('none') // 提交成功后退出编辑模式
-      toast.success('密码修改成功，请使用新密码重新登录')
+      toast.success('密码修改成功！')
+
+      // 启动倒计时
+      setLogoutCountdown(3)
     } catch (error) {
       console.error('Password update failed:', error)
       toast.error(
@@ -231,6 +258,22 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
           <h1 className="text-xl font-bold text-slate-800">安全设置</h1>
         </div>
       </div>
+
+      {/* 倒计时提示 */}
+      {logoutCountdown !== null && (
+        <div className="px-6 py-2">
+          <Alert className="border-orange-200 bg-orange-50">
+            <AlertCircle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800">
+              密码修改成功！为了您的账户安全，将在{' '}
+              <span className="font-bold text-orange-900">
+                {logoutCountdown}
+              </span>{' '}
+              秒后自动退出登录。
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
 
       <div className="px-6 py-6 space-y-6">
         {/* 安全状态概览 */}
