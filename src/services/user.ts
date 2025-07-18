@@ -71,7 +71,7 @@ export class UserService {
     newPassword: string
   ): Promise<void> {
     const response = await fetch(
-      `${API_BASE_URL}/auth/update_user_password_with_old`,
+      `${API_BASE_URL}/auth/edit_password`,
       {
         method: 'PUT',
         headers: UserService.getAuthHeaders(),

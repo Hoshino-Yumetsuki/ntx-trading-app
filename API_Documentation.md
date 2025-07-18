@@ -179,7 +179,7 @@
 
 ### 1.6 使用旧密码更新密码
 
-- **URL**: `/api/auth/update_user_password_with_old`
+- **URL**: `/api/auth/edit_password`
 - **Method**: `PUT`
 - **权限**: 需要JWT认证
 

@@ -26,7 +26,7 @@ import { useAuth } from '@/src/contexts/AuthContext'
 import { UserService } from '@/src/services/user'
 import type { UserInfo } from '@/src/types/user'
 import { toast } from 'sonner'
-import { SecuritySettings } from './security-settings'
+import { SecuritySettings } from '../subpages/security-settings'
 
 export function ProfilePage() {
   const { user, logout } = useAuth()

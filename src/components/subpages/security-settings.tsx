@@ -24,7 +24,10 @@ import {
   CheckCircle,
   AlertCircle,
   User,
-  Wallet
+  Wallet,
+  Mail,
+  Hash,
+  Copy
 } from 'lucide-react'
 import { UserService } from '@/src/services/user'
 import { useAuth } from '@/src/contexts/AuthContext'
@@ -93,6 +96,17 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
     resolver: zodResolver(bscAddressSchema)
   })
 
+  // 复制到剪贴板
+  const handleCopy = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      toast.success(`${label}已复制到剪贴板`)
+    } catch (error) {
+      console.error('Copy failed:', error)
+      toast.error('复制失败，请手动复制')
+    }
+  }
+
   // 取消编辑
   const handleCancelEdit = () => {
     setEditMode('none')
@@ -160,11 +174,30 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
   const securityItems = [
     {
       icon: User,
-      title: '昵称',
+      title: '用户昵称',
       description: user?.nickname || '未设置',
       status: user?.nickname ? 'completed' : 'pending',
       action: '修改',
-      onClick: () => setEditMode('nickname')
+      onClick: () => setEditMode('nickname'),
+      copyable: false
+    },
+    {
+      icon: Hash,
+      title: '用户UID',
+      description: user?.id?.toString() || '未获取',
+      status: user?.id ? 'completed' : 'pending',
+      action: '',
+      onClick: () => {},
+      copyable: true
+    },
+    {
+      icon: Mail,
+      title: '电子邮箱',
+      description: user?.email || '未设置',
+      status: user?.email ? 'completed' : 'pending',
+      action: '',
+      onClick: () => {},
+      copyable: true
     },
     {
       icon: Key,
@@ -172,7 +205,8 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
       description: '已设置',
       status: 'completed',
       action: '修改',
-      onClick: () => setEditMode('password')
+      onClick: () => setEditMode('password'),
+      copyable: false
     },
     {
       icon: Wallet,
@@ -180,7 +214,8 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
       description: '点击绑定或更新',
       status: 'pending',
       action: '绑定',
-      onClick: () => setEditMode('bscAddress')
+      onClick: () => setEditMode('bscAddress'),
+      copyable: false
     }
   ]
 
@@ -235,9 +270,30 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                     {item.status === 'pending' && (
                       <AlertCircle className="w-5 h-5 text-yellow-500" />
                     )}
-                    <Button size="sm" variant="outline" onClick={item.onClick}>
-                      {item.action}
-                    </Button>
+                    {item.copyable &&
+                      item.description &&
+                      item.description !== '未设置' &&
+                      item.description !== '未获取' && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() =>
+                            handleCopy(item.description, item.title)
+                          }
+                          className="p-2"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      )}
+                    {item.action && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={item.onClick}
+                      >
+                        {item.action}
+                      </Button>
+                    )}
                   </div>
                 </div>
               )
@@ -276,11 +332,12 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                       id="oldPassword"
                       type={showOldPassword ? 'text' : 'password'}
                       placeholder="输入当前密码"
+                      autoComplete="current-password"
                       {...passwordForm.register('oldPassword')}
                       className={
                         passwordForm.formState.errors.oldPassword
-                          ? 'border-red-500 pr-10'
-                          : 'pr-10'
+                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
+                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
                       }
                     />
                     <Button
@@ -311,11 +368,12 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                       id="newPassword"
                       type={showNewPassword ? 'text' : 'password'}
                       placeholder="输入新密码"
+                      autoComplete="new-password"
                       {...passwordForm.register('newPassword')}
                       className={
                         passwordForm.formState.errors.newPassword
-                          ? 'border-red-500 pr-10'
-                          : 'pr-10'
+                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
+                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
                       }
                     />
                     <Button
@@ -346,11 +404,12 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
                       placeholder="再次输入新密码"
+                      autoComplete="new-password"
                       {...passwordForm.register('confirmPassword')}
                       className={
                         passwordForm.formState.errors.confirmPassword
-                          ? 'border-red-500 pr-10'
-                          : 'pr-10'
+                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
+                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
                       }
                     />
                     <Button
