@@ -29,7 +29,6 @@ export function MiningPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      {/* Header */}
       <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -44,7 +43,6 @@ export function MiningPage() {
       </div>
 
       <div className="px-6 -mt-4 space-y-6">
-        {/* Platform Data */}
         <Card className="glass-card border-white/50">
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center">
@@ -139,7 +137,6 @@ export function MiningPage() {
           </CardContent>
         </Card>
 
-        {/* My Data */}
         <Card className="glass-card border-white/50">
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center">
@@ -185,7 +182,6 @@ export function MiningPage() {
           </CardContent>
         </Card>
 
-        {/* Exchange Binding */}
         <Card className="glass-card border-white/50">
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center">

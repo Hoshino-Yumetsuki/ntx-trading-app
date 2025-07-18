@@ -91,8 +91,7 @@ export function NewsPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      {/* Header */}
-      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl">
+      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold gradient-text">新闻中心</h1>
@@ -104,22 +103,18 @@ export function NewsPage() {
         </div>
       </div>
 
-      <div className="px-6 -mt-4 space-y-5">
-        {' '}
-        {/* Changed space-y-8 to space-y-5 for tighter spacing */}
+      <div className="px-6 mt-6 space-y-5">
         {newsItems.map((item, index) => (
           <div key={item.id} className="flex relative">
-            {/* Timeline Dot and Line */}
             <div className="flex flex-col items-center mr-4">
-              <div className="premium-icon w-6 h-6 rounded-full flex-shrink-0 z-10">
+              <div className="premium-icon w-6 h-6 rounded-full flex-shrink-0 z-20 shadow-md border border-blue-200">
                 <Clock className="w-3 h-3 text-blue-600" />
               </div>
               {index < newsItems.length - 1 && (
-                <div className="w-0.5 bg-blue-200 flex-grow mt-2 mb-2"></div>
+                <div className="w-0.5 bg-gradient-to-b from-blue-400 to-blue-200 flex-grow mt-2 mb-2 z-10"></div>
               )}
             </div>
 
-            {/* News Card */}
             <Card className="glass-card border-white/50 flex-1 data-card">
               <CardHeader className="pb-3">
                 <CardTitle className="text-slate-800 text-lg font-semibold">

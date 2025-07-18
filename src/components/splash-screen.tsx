@@ -12,7 +12,6 @@ export function SplashScreen() {
 
   return (
     <div className="min-h-screen diffused-bg flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Logo and Brand */}
       <div
         className={`text-center transition-all duration-1000 ${animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
@@ -42,7 +41,6 @@ export function SplashScreen() {
         </div>
       </div>
 
-      {/* Loading Animation */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
         <div className="flex space-x-2">
           <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>

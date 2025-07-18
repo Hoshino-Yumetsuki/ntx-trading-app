@@ -20,8 +20,8 @@ export function MainApp() {
       label: '黑马学院',
       icon: BookOpen,
       component: AcademyPage
-    }, // Changed icon to BookOpen
-    { id: 'mining', label: '挖矿', icon: Coins, component: MiningPage }, // Changed icon to Coins
+    },
+    { id: 'mining', label: '挖矿', icon: Coins, component: MiningPage },
     { id: 'profile', label: '我的', icon: User, component: ProfilePage }
   ]
 
@@ -30,17 +30,14 @@ export function MainApp() {
 
   return (
     <div className="min-h-screen diffused-bg">
-      {/* Main Content - 添加 pb-28 确保内容不被底部导航栏遮挡 */}
       <div className="flex-1 overflow-auto pb-28">
         <ActiveComponent />
-        
-        {/* Recent Notifications at the bottom of the main content area */}
+
         {activeTab === 'home' && (
           <RecentNotifications onViewMore={() => setActiveTab('news')} />
         )}
       </div>
 
-      {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl">
         <div className="flex items-center justify-around py-3">
           {tabs.map((tab) => {
@@ -57,14 +54,12 @@ export function MainApp() {
                     : 'text-slate-600 hover:text-slate-800 hover:bg-white/20'
                 }`}
               >
-                {/* Apply premium-icon styling to the bottom navigation icons */}
                 <div
                   className={`premium-icon w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
                     isActive ? 'text-blue-600' : 'text-slate-600'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />{' '}
-                  {/* Icon size inside the premium-icon container */}
+                  <Icon className="w-4 h-4" />
                 </div>
                 <span className="text-xs font-medium">{tab.label}</span>
               </button>

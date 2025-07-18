@@ -92,8 +92,7 @@ export function AcademyPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      {/* Header - Applied rounded-t-full for semi-circular effect */}
-      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl rounded-t-[999px] overflow-hidden">
+      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold gradient-text">黑马学院</h1>
@@ -105,14 +104,13 @@ export function AcademyPage() {
         </div>
       </div>
 
-      <div className="px-6 -mt-4 space-y-6">
-        {/* Instructor */}
-        <Card className="glass-card border-white/30">
+      <div className="px-6 mt-6 space-y-6">
+        <Card className="glass-card border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4 mb-4">
-              <Avatar className="w-16 h-16">
+              <Avatar className="w-16 h-16 ring-2 ring-blue-300 ring-offset-2 ring-offset-blue-50">
                 <AvatarImage src="/placeholder.svg?height=64&width=64" />
-                <AvatarFallback className="glass-card-strong text-slate-700 font-bold">
+                <AvatarFallback className="glass-card-strong bg-gradient-to-br from-blue-400 to-blue-600 text-white font-bold">
                   DT
                 </AvatarFallback>
               </Avatar>
@@ -124,38 +122,42 @@ export function AcademyPage() {
                 <div className="flex items-center space-x-2">
                   <Button
                     size="sm"
-                    className="glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50"
+                    className="glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50 hover:bg-blue-100/50 transition-colors"
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     @wuk_Bitcoin
                   </Button>
-                  <div className="flex items-center text-yellow-600">
+                  <div className="flex items-center text-yellow-600 bg-yellow-50 rounded-full px-2 py-0.5">
                     <Star className="w-4 h-4 mr-1 fill-current" />
                     <span className="text-sm font-medium">4.9</span>
                   </div>
                 </div>
               </div>
             </div>
-            <p className="text-slate-700 text-sm leading-relaxed">
+            <p className="text-slate-700 text-sm leading-relaxed border-t border-slate-200 pt-3 mt-2">
               运用机构思维与庄家操盘策略，帮助用户掌握止损止盈、降低交易成本，建立系统化交易决策体系。
             </p>
           </CardContent>
         </Card>
 
-        {/* Core Features */}
-        <Card className="glass-card border-white/50">
-          <CardHeader>
-            <CardTitle className="text-slate-800">核心课程体系</CardTitle>
+        <Card className="glass-card border-white/50 shadow-md">
+          <CardHeader className="border-b border-slate-100">
+            <CardTitle className="text-slate-800 flex items-center">
+              <span className="bg-blue-100 text-blue-600 p-1 rounded-md mr-2">
+                <GraduationCap className="w-5 h-5" />
+              </span>
+              核心课程体系
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="grid gap-4 pt-4">
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (
                 <div
                   key={index}
-                  className="flex items-start space-x-3 p-3 glass-card rounded-lg"
+                  className="flex items-start space-x-3 p-3 glass-card rounded-lg hover:bg-blue-50/30 transition-colors"
                 >
-                  <div className="premium-icon w-10 h-10 rounded-lg flex-shrink-0">
+                  <div className="premium-icon w-10 h-10 rounded-lg flex-shrink-0 bg-gradient-to-br from-blue-100 to-blue-200">
                     <Icon className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
@@ -172,7 +174,6 @@ export function AcademyPage() {
           </CardContent>
         </Card>
 
-        {/* Courses */}
         <div className="space-y-4">
           <h2 className="text-slate-800 text-xl font-bold">学习资源</h2>
           {courses.map((course, index) => (
@@ -221,7 +222,6 @@ export function AcademyPage() {
           ))}
         </div>
 
-        {/* Target Audience */}
         <Card className="glass-card border-white/30">
           <CardHeader>
             <CardTitle className="text-slate-800">适用对象</CardTitle>
@@ -248,7 +248,6 @@ export function AcademyPage() {
           </CardContent>
         </Card>
 
-        {/* Institutional Trading Strategy Signal System */}
         <Card className="glass-card border-white/50">
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center">
@@ -295,7 +294,6 @@ export function AcademyPage() {
           </CardContent>
         </Card>
 
-        {/* CTA */}
         <Card className="glass-card-strong border-white/50">
           <CardContent className="p-6 text-center">
             <h3 className="gradient-text font-bold text-lg mb-2">

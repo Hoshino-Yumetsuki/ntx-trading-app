@@ -19,9 +19,6 @@ import { SignalCarousel } from '@/src/components/signal-carousel'
 export function HomePage() {
   return (
     <div className="min-h-screen">
-      {/* Removed Top Notification from here */}
-
-      {/* Header */}
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -32,7 +29,6 @@ export function HomePage() {
             <Zap className="w-5 h-5 text-blue-600" />
           </div>
         </div>
-        {/* Hero Section */}
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-slate-800 mb-4 leading-tight">
             掌握机构操盘交易体系
@@ -40,10 +36,7 @@ export function HomePage() {
             <span className="gradient-text">提升你的交易能力</span>
           </h2>
         </div>
-        {/* CTA Buttons */}
         <div className="space-y-3 mb-4">
-          {' '}
-          {/* Adjusted mb from mb-6 to mb-4 */}
           <Button className="w-full diffused-button text-white py-4 text-lg font-semibold rounded-xl border-0">
             <Pickaxe className="w-5 h-5 mr-2" />
             立即开始挖矿
@@ -53,7 +46,6 @@ export function HomePage() {
             <GraduationCap className="w-5 h-5 mr-2" />
             进入黑马学院
           </Button>
-          {/* New "Become Professional KOL" button */}
           <Button className="w-full glass-card text-slate-700 hover:text-slate-800 py-4 text-lg font-semibold rounded-xl border-white/50 bg-white/30 hover:bg-white/40">
             <Mic className="w-5 h-5 mr-2" />
             成为专业KOL
@@ -61,12 +53,9 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* Signal Strategies Carousel */}
       <SignalCarousel />
 
-      {/* Features */}
       <div className="px-6 space-y-4">
-        {/* Newbie Tutorial */}
         <Card className="glass-card border-white/50">
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
@@ -92,7 +81,6 @@ export function HomePage() {
           </CardContent>
         </Card>
 
-        {/* Machine Learning Prediction */}
         <Card className="glass-card border-white/50">
           <CardContent className="p-6">
             <div className="flex items-center mb-4">

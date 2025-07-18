@@ -50,7 +50,6 @@ export function ProfilePage() {
 
   return (
     <div className="min-h-screen pb-6">
-      {/* Header */}
       <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl">
         <div className="flex items-center space-x-4">
           <Avatar className="w-20 h-20">
@@ -83,7 +82,6 @@ export function ProfilePage() {
       </div>
 
       <div className="px-6 -mt-4 space-y-6">
-        {/* Stats */}
         <Card className="glass-card border-white/30">
           <CardHeader>
             <CardTitle className="text-slate-800">我的数据</CardTitle>
@@ -111,7 +109,6 @@ export function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
         <Card className="glass-card border-white/30">
           <CardHeader>
             <CardTitle className="text-slate-800">快捷操作</CardTitle>
@@ -142,7 +139,6 @@ export function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Membership */}
         <Card className="glass-card-strong border-yellow-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -163,7 +159,6 @@ export function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Logout */}
         <Card className="glass-card border-white/30">
           <CardContent className="p-4">
             <Button
@@ -176,7 +171,6 @@ export function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Version Info */}
         <div className="text-center text-slate-500 text-sm">
           <p>NTX v1.0.0</p>
           <p>© 2024 NTX Trading Platform</p>
