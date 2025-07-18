@@ -7,7 +7,7 @@ import { MiningPage } from '@/src/components/pages/mining-page'
 import { AcademyPage } from '@/src/components/pages/academy-page'
 import { ProfilePage } from '@/src/components/pages/profile-page'
 import { NewsPage } from '@/src/components/pages/news-page'
-import { RecentNotifications } from '@/src/components/recent-notifications' // Import RecentNotifications
+import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
 
 export function MainApp() {
   const [activeTab, setActiveTab] = useState('home')

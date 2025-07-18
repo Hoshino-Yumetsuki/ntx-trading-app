@@ -14,7 +14,7 @@ import {
   Brain,
   Mic
 } from 'lucide-react'
-import { SignalCarousel } from '@/src/components/signal-carousel'
+import { SignalCarousel } from '@/src/components/ui/signal-carousel'
 
 export function HomePage() {
   return (

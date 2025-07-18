@@ -9,56 +9,9 @@ import {
 import { Button } from '@/src/components/ui/button'
 import { Newspaper, Share2, Clock } from 'lucide-react'
 import { toast } from '@/src/hooks/use-toast' // Assuming useToast is available for notifications
+import { newsItems, } from '@/src/data/news-data' // 导入统一的新闻数据
 
 export function NewsPage() {
-  const newsItems = [
-    {
-      id: '1',
-      date: '2024年7月13日',
-      time: '09:00',
-      title: '【市场行情】比特币突破7万美元，多头情绪高涨',
-      content:
-        '今日比特币价格强势突破7万美元关口，创下近期新高。市场分析师指出，宏观经济数据利好和机构资金持续流入是主要推动力，短期内多头情绪预计将继续主导市场。',
-      link: '#'
-    },
-    {
-      id: '2',
-      date: '2024年7月12日',
-      time: '15:30',
-      title: '【NTX动态】黑马学院新增《量化交易实战》课程',
-      content:
-        '为满足用户对高级交易策略的需求，黑马学院正式上线《量化交易实战》课程，由资深量化专家授课，深入讲解程序化交易模型构建与优化。',
-      link: '#'
-    },
-    {
-      id: '3',
-      date: '2024年7月11日',
-      time: '10:45',
-      title: '【行情分析】以太坊生态TVL再创新高，DeFi热度不减',
-      content:
-        '以太坊（ETH）生态系统总锁仓价值（TVL）持续增长，DeFi（去中心化金融）项目表现强劲。这表明市场对去中心化应用的需求旺盛，ETH有望继续领跑公链赛道。',
-      link: '#'
-    },
-    {
-      id: '4',
-      date: '2024年7月10日',
-      time: '18:00',
-      title: '【行业新闻】Web3游戏融资活跃，GameFi迎来新机遇',
-      content:
-        '近期Web3游戏领域融资活动频繁，多家GameFi项目获得巨额投资。分析认为，随着技术成熟和用户认知度提升，GameFi有望成为下一个加密市场爆发点。',
-      link: '#'
-    },
-    {
-      id: '5',
-      date: '2024年7月09日',
-      time: '11:20',
-      title: '【NTX公告】平台安全升级完成，保障用户资产安全',
-      content:
-        'NTX平台已完成新一轮安全系统升级，引入多重加密技术和实时风控机制，全面提升用户账户和资产的安全性，请用户放心使用。',
-      link: '#'
-    }
-  ]
-
   const handleShare = async (newsItem: (typeof newsItems)[0]) => {
     const shareData = {
       title: newsItem.title,

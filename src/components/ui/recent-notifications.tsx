@@ -3,38 +3,14 @@
 import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { ArrowRight } from 'lucide-react'
+import { getRecentNews } from '@/src/data/news-data'
 
 interface RecentNotificationsProps {
   onViewMore: () => void
 }
 
 export function RecentNotifications({ onViewMore }: RecentNotificationsProps) {
-  // This data should ideally come from a shared source or API with NewsPage
-  // For now, hardcoding to match the new NewsPage content for demonstration
-  const allNewsItems = [
-    {
-      id: '1',
-      title: '【市场行情】比特币突破7万美元，多头情绪高涨'
-    },
-    {
-      id: '2',
-      title: '【NTX动态】黑马学院新增《量化交易实战》课程'
-    },
-    {
-      id: '3',
-      title: '【行情分析】以太坊生态TVL再创新高，DeFi热度不减'
-    },
-    {
-      id: '4',
-      title: '【行业新闻】Web3游戏融资活跃，GameFi迎来新机遇'
-    },
-    {
-      id: '5',
-      title: '【NTX公告】平台安全升级完成，保障用户资产安全'
-    }
-  ]
-
-  const recentNews = allNewsItems.slice(0, 3) // Get only the 3 most recent items
+  const recentNews = getRecentNews(3)
 
   return (
     <div className="px-6 py-4">
