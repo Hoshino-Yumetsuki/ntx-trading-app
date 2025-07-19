@@ -105,7 +105,10 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
       intervalId = setInterval(() => {
         setLogoutCountdown((prev) => {
           if (prev === null || prev <= 1) {
-            logout()
+            // 延迟到下一个事件循环执行logout，避免在渲染过程中更新状态
+            setTimeout(() => {
+              logout()
+            }, 0)
             return null
           }
           return prev - 1

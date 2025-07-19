@@ -1,7 +1,6 @@
 import type { UserInfo, TeamMember, WithdrawRequest } from '@/src/types/user'
 import { AuthService } from './auth'
-
-const API_BASE_URL = 'https://api.ntxdao.org/api'
+import { API_BASE_URL } from './config'
 
 function getAuthHeaders() {
   const token = AuthService.getToken()

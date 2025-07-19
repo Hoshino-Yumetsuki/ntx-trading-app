@@ -1,6 +1,5 @@
 import type { LoginRequest, LoginResponse } from '@/src/types/auth'
-
-const API_BASE_URL = 'https://api.ntxdao.org/api'
+import { API_BASE_URL } from './config'
 
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
