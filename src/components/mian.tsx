@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Home, Coins, User, Newspaper } from 'lucide-react' // Updated imports for BookOpen and Coins
 import { HomePage } from '@/src/components/pages/home-page'
 import { MiningPage } from '@/src/components/pages/mining-page'
@@ -10,6 +10,23 @@ import { RecentNotifications } from '@/src/components/ui/recent-notifications' /
 
 export function MainApp() {
   const [activeTab, setActiveTab] = useState('home')
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  // 从 localStorage 恢复页面状态
+  useEffect(() => {
+    const savedTab = localStorage.getItem('ntx-active-tab')
+    if (savedTab) {
+      setActiveTab(savedTab)
+    }
+    setIsInitialized(true)
+  }, [])
+
+  // 保存页面状态到 localStorage
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem('ntx-active-tab', activeTab)
+    }
+  }, [activeTab, isInitialized])
 
   const tabs = [
     { id: 'home', label: '主页', icon: Home, component: HomePage },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import {
@@ -20,13 +20,26 @@ import { TutorialPage } from '@/src/components/subpages/tutorial-page'
 export function HomePage() {
   const [_isTutorialOpen, setIsTutorialOpen] = useState(false)
   const [showTutorialPage, setShowTutorialPage] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  // 从 localStorage 恢复教程页面状态
+  useEffect(() => {
+    const savedTutorialState = localStorage.getItem('ntx-show-tutorial')
+    if (savedTutorialState === 'true') {
+      setShowTutorialPage(true)
+    }
+    setIsInitialized(true)
+  }, [])
+
+  // 保存教程页面状态到 localStorage
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem('ntx-show-tutorial', showTutorialPage.toString())
+    }
+  }, [showTutorialPage, isInitialized])
 
   const openTutorial = () => {
     setShowTutorialPage(true)
-  }
-
-  const _closeTutorial = () => {
-    setIsTutorialOpen(false)
   }
 
   const backToHome = () => {
