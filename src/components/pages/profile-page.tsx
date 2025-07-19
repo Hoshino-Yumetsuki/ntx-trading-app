@@ -11,7 +11,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
 import { Badge } from '@/src/components/ui/badge'
 import {
-  Bell,
   HelpCircle,
   Shield,
   LogOut,
@@ -26,15 +25,16 @@ import { useAuth } from '@/src/contexts/AuthContext'
 import { UserService } from '@/src/services/user'
 import type { UserInfo } from '@/src/types/user'
 import { toast } from 'sonner'
-import { SecuritySettings } from '../subpages/security-settings'
+import { SecuritySettings } from '@/src/components/subpages/security-settings'
+import { AssetsPage } from '@/src/components/subpages/assets-page'
 
 export function ProfilePage() {
   const { user, logout } = useAuth()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState<'profile' | 'security'>(
-    'profile'
-  )
+  const [currentPage, setCurrentPage] = useState<
+    'profile' | 'security' | 'assets'
+  >('profile')
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -94,10 +94,10 @@ export function ProfilePage() {
 
   const menuItems = [
     {
-      icon: Bell,
-      label: '佣金记录',
-      description: '查看我的佣金记录',
-      onClick: () => {}
+      icon: DollarSign,
+      label: '我的资产',
+      description: '查看我的资产',
+      onClick: () => setCurrentPage('assets')
     },
     {
       icon: Shield,
@@ -127,6 +127,11 @@ export function ProfilePage() {
   // 如果当前页面是安全设置，渲染安全设置组件
   if (currentPage === 'security') {
     return <SecuritySettings onBack={() => setCurrentPage('profile')} />
+  }
+
+  // 如果当前页面是资产页面，渲染资产页面组件
+  if (currentPage === 'assets') {
+    return <AssetsPage onBack={() => setCurrentPage('profile')} />
   }
 
   return (
