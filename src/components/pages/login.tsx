@@ -13,40 +13,42 @@ import {
 } from '@/src/services/auth'
 import { toast } from 'sonner'
 import { TermsModal } from '@/src/components/ui/terms-modal'
+import { useLanguage } from '@/src/contexts/language-context'
 
-const loginSchema = z.object({
-  email: z.string().email('请输入有效的邮箱地址'),
-  password: z.string().min(1, '请输入密码')
-})
+const createLoginSchema = (t: (key: string) => string) =>
+  z.object({
+    email: z.string().email(t('validation.email.invalid')),
+    password: z.string().min(1, t('validation.password.required'))
+  })
 
-const registerSchema = z
-  .object({
-    email: z.string().email('请输入有效的邮箱地址'),
-    nickname: z
-      .string()
-      .min(2, '昵称至少需要2个字符')
-      .max(20, '昵称不能超过20个字符'),
-    verification_code: z.string().min(6, '验证码为6位数字'),
-    password: z
-      .string()
-      .min(8, '密码至少需要8个字符')
-      .max(128, '密码不能超过128个字符')
-      .regex(/^(?=.*[a-z])/, '密码必须包含至少一个小写字母')
-      .regex(/^(?=.*\d)/, '密码必须包含至少一个数字')
-      .regex(/^(?=.*[A-Z])/, '密码必须包含至少一个大写字母'),
-    confirmPassword: z.string(),
-    invite_code: z.string().optional(),
-    agreeToTerms: z.boolean().refine((val) => val === true, {
-      message: '请同意服务条款和隐私政策'
+const createRegisterSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      email: z.string().email(t('validation.email.invalid')),
+      nickname: z
+        .string()
+        .min(2, t('validation.nickname.minLength'))
+        .max(20, t('validation.nickname.maxLength')),
+      verification_code: z
+        .string()
+        .min(6, t('validation.verificationCode.length')),
+      password: z
+        .string()
+        .min(8, t('validation.password.minLength'))
+        .max(128, t('validation.password.maxLength'))
+        .regex(/^(?=.*[a-z])/, t('validation.password.lowercase'))
+        .regex(/^(?=.*\d)/, t('validation.password.number'))
+        .regex(/^(?=.*[A-Z])/, t('validation.password.uppercase')),
+      confirmPassword: z.string(),
+      invite_code: z.string().optional(),
+      agreeToTerms: z.boolean().refine((val) => val === true, {
+        message: t('validation.terms.required')
+      })
     })
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: '两次输入的密码不一致',
-    path: ['confirmPassword']
-  })
-
-type LoginFormData = z.infer<typeof loginSchema>
-type RegisterFormData = z.infer<typeof registerSchema>
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('validation.password.mismatch'),
+      path: ['confirmPassword']
+    })
 
 export function LoginPage() {
   const [isRegisterMode, setIsRegisterMode] = useState(false)
@@ -60,6 +62,13 @@ export function LoginPage() {
     'terms'
   )
   const { login, isLoading } = useAuth()
+  const { t } = useLanguage()
+
+  const loginSchema = createLoginSchema(t)
+  const registerSchema = createRegisterSchema(t)
+
+  type LoginFormData = z.infer<typeof loginSchema>
+  type RegisterFormData = z.infer<typeof registerSchema>
 
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema)
@@ -76,7 +85,9 @@ export function LoginPage() {
       setError(null)
       await login(data.email, data.password)
     } catch (err) {
-      setError(err instanceof Error ? err.message : '登录失败，请重试')
+      setError(
+        err instanceof Error ? err.message : t('login.error.loginFailed')
+      )
     }
   }
 
@@ -90,19 +101,21 @@ export function LoginPage() {
         password: data.password,
         invite_code: data.invite_code
       })
-      toast.success('注册成功！请登录')
+      toast.success(t('login.success.registerSuccess'))
       setIsRegisterMode(false)
       registerForm.reset()
       loginForm.reset()
     } catch (err) {
-      setError(err instanceof Error ? err.message : '注册失败，请重试')
+      setError(
+        err instanceof Error ? err.message : t('login.error.registerFailed')
+      )
     }
   }
 
   const handleSendVerificationCode = async () => {
     const email = registerForm.getValues('email')
     if (!email) {
-      setError('请先输入邮箱地址')
+      setError(t('login.error.emailRequired'))
       return
     }
 
@@ -111,9 +124,11 @@ export function LoginPage() {
       setError(null)
       await sendVerificationCode({ email })
       setVerificationSent(true)
-      toast.success('验证码已发送到您的邮箱')
+      toast.success(t('login.success.codesSent'))
     } catch (err) {
-      setError(err instanceof Error ? err.message : '发送验证码失败')
+      setError(
+        err instanceof Error ? err.message : t('login.error.sendCodeFailed')
+      )
     } finally {
       setIsLoadingVerification(false)
     }
@@ -132,10 +147,12 @@ export function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            {isRegisterMode ? '注册账户' : '登录账户'}
+            {isRegisterMode ? t('login.register.title') : t('login.title')}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            {isRegisterMode ? '创建您的NTX交易账户' : '欢迎回到NTX交易平台'}
+            {isRegisterMode
+              ? t('login.register.subtitle')
+              : t('login.subtitle')}
           </p>
         </div>
 
@@ -152,7 +169,7 @@ export function LoginPage() {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  邮箱地址
+                  {t('login.email.label')}
                 </label>
                 <input
                   {...loginForm.register('email')}
@@ -163,7 +180,7 @@ export function LoginPage() {
                       ? 'border-red-300'
                       : 'border-gray-300'
                   }`}
-                  placeholder="请输入邮箱地址"
+                  placeholder={t('login.email.placeholder')}
                 />
                 {loginForm.formState.errors.email && (
                   <p className="mt-1 text-sm text-red-600">
@@ -178,7 +195,7 @@ export function LoginPage() {
                   htmlFor="password"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  密码
+                  {t('login.password.label')}
                 </label>
                 <div className="mt-1 relative">
                   <input
@@ -190,7 +207,7 @@ export function LoginPage() {
                         ? 'border-red-300'
                         : 'border-gray-300'
                     }`}
-                    placeholder="请输入密码"
+                    placeholder={t('login.password.placeholder')}
                   />
                   <button
                     type="button"
@@ -225,7 +242,7 @@ export function LoginPage() {
                 {(loginForm.formState.isSubmitting || isLoading) && (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 )}
-                登录
+                {t('login.loginButton')}
               </button>
             </div>
           </form>
@@ -242,7 +259,7 @@ export function LoginPage() {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  邮箱地址
+                  {t('login.email.label')}
                 </label>
                 <input
                   {...registerForm.register('email')}
@@ -253,7 +270,7 @@ export function LoginPage() {
                       ? 'border-red-300'
                       : 'border-gray-300'
                   }`}
-                  placeholder="请输入邮箱地址"
+                  placeholder={t('login.email.placeholder')}
                 />
                 {registerForm.formState.errors.email && (
                   <p className="mt-1 text-sm text-red-600">
@@ -268,7 +285,7 @@ export function LoginPage() {
                   htmlFor="nickname"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  昵称
+                  {t('login.nickname.label')}
                 </label>
                 <input
                   {...registerForm.register('nickname')}
@@ -279,7 +296,7 @@ export function LoginPage() {
                       ? 'border-red-300'
                       : 'border-gray-300'
                   }`}
-                  placeholder="请输入昵称"
+                  placeholder={t('login.nickname.placeholder')}
                 />
                 {registerForm.formState.errors.nickname && (
                   <p className="mt-1 text-sm text-red-600">
@@ -294,7 +311,7 @@ export function LoginPage() {
                   htmlFor="verification_code"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  邮箱验证码
+                  {t('login.verificationCode.label')}
                 </label>
                 <div className="mt-1 flex space-x-2">
                   <input
@@ -306,7 +323,7 @@ export function LoginPage() {
                         ? 'border-red-300'
                         : 'border-gray-300'
                     }`}
-                    placeholder="请输入验证码"
+                    placeholder={t('login.verificationCode.placeholder')}
                   />
                   <button
                     type="button"
@@ -317,9 +334,9 @@ export function LoginPage() {
                     {isLoadingVerification ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : verificationSent ? (
-                      '重新发送'
+                      t('login.resendCode')
                     ) : (
-                      '发送验证码'
+                      t('login.sendCode')
                     )}
                   </button>
                 </div>
@@ -336,7 +353,7 @@ export function LoginPage() {
                   htmlFor="invite_code"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  邀请码（可选）
+                  {t('login.inviteCode.label')}
                 </label>
                 <input
                   {...registerForm.register('invite_code')}
@@ -347,7 +364,7 @@ export function LoginPage() {
                       ? 'border-red-300'
                       : 'border-gray-300'
                   }`}
-                  placeholder="请输入邀请码（可选）"
+                  placeholder={t('login.inviteCode.placeholder')}
                 />
                 {registerForm.formState.errors.invite_code && (
                   <p className="mt-1 text-sm text-red-600">
@@ -362,7 +379,7 @@ export function LoginPage() {
                   htmlFor="password"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  密码
+                  {t('login.password.label')}
                 </label>
                 <div className="mt-1 relative">
                   <input
@@ -374,7 +391,7 @@ export function LoginPage() {
                         ? 'border-red-300'
                         : 'border-gray-300'
                     }`}
-                    placeholder="请输入密码（至少8位，包含字母和数字）"
+                    placeholder={t('login.password.register.placeholder')}
                   />
                   <button
                     type="button"
@@ -401,7 +418,7 @@ export function LoginPage() {
                   htmlFor="confirmPassword"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  确认密码
+                  {t('login.confirmPassword.label')}
                 </label>
                 <div className="mt-1 relative">
                   <input
@@ -413,7 +430,7 @@ export function LoginPage() {
                         ? 'border-red-300'
                         : 'border-gray-300'
                     }`}
-                    placeholder="请再次输入密码"
+                    placeholder={t('login.confirmPassword.placeholder')}
                   />
                   <button
                     type="button"
@@ -451,7 +468,7 @@ export function LoginPage() {
               </div>
               <div className="ml-3 text-sm">
                 <label htmlFor="agreeToTerms" className="text-gray-700">
-                  我已阅读并同意
+                  {t('login.agreeTerms')}
                   <button
                     type="button"
                     onClick={() => {
@@ -460,9 +477,9 @@ export function LoginPage() {
                     }}
                     className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
                   >
-                    服务条款
+                    {t('login.termsOfService')}
                   </button>
-                  和
+                  {t('login.and')}
                   <button
                     type="button"
                     onClick={() => {
@@ -471,7 +488,7 @@ export function LoginPage() {
                     }}
                     className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
                   >
-                    隐私政策
+                    {t('login.privacyPolicy')}
                   </button>
                 </label>
                 {registerForm.formState.errors.agreeToTerms && (
@@ -491,7 +508,7 @@ export function LoginPage() {
                 {registerForm.formState.isSubmitting && (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 )}
-                注册
+                {t('login.registerButton')}
               </button>
             </div>
           </form>
@@ -503,7 +520,9 @@ export function LoginPage() {
             onClick={toggleMode}
             className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"
           >
-            {isRegisterMode ? '已有账户？点击登录' : '没有账户？点击注册'}
+            {isRegisterMode
+              ? t('login.switchToLogin')
+              : t('login.switchToRegister')}
           </button>
         </div>
       </div>
