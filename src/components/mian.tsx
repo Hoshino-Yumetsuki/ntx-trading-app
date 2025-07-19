@@ -7,10 +7,13 @@ import { MiningPage } from '@/src/components/pages/mining-page'
 import { ProfilePage } from '@/src/components/pages/profile-page'
 import { NewsPage } from '@/src/components/pages/news-page'
 import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
+import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function MainApp() {
   const [activeTab, setActiveTab] = useState('home')
   const [isInitialized, setIsInitialized] = useState(false)
+  const { t } = useLanguage()
 
   // 从 localStorage 恢复页面状态
   useEffect(() => {
@@ -29,16 +32,26 @@ export function MainApp() {
   }, [activeTab, isInitialized])
 
   const tabs = [
-    { id: 'home', label: '主页', icon: Home, component: HomePage },
-    { id: 'news', label: '新闻', icon: Newspaper, component: NewsPage },
+    { id: 'home', label: t('nav.home'), icon: Home, component: HomePage },
+    { id: 'news', label: t('nav.news'), icon: Newspaper, component: NewsPage },
     //{
     //  id: 'academy',
     //  label: '黑马学院',
     //  icon: BookOpen,
     //  component: AcademyPage
     //},
-    { id: 'mining', label: '挖矿', icon: Coins, component: MiningPage },
-    { id: 'profile', label: '我的', icon: User, component: ProfilePage }
+    {
+      id: 'mining',
+      label: t('nav.mining'),
+      icon: Coins,
+      component: MiningPage
+    },
+    {
+      id: 'profile',
+      label: t('nav.profile'),
+      icon: User,
+      component: ProfilePage
+    }
   ]
 
   const ActiveComponent =
@@ -46,7 +59,12 @@ export function MainApp() {
 
   return (
     <div className="min-h-screen">
-      <div className="flex-1 overflow-auto pb-28">
+      {/* Language Switcher Header */}
+      <div className="fixed top-0 right-0 z-50 p-4">
+        <LanguageSwitcher />
+      </div>
+
+      <div className="flex-1 overflow-auto pb-28 pt-16">
         <ActiveComponent />
 
         {activeTab === 'home' && (

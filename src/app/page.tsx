@@ -5,6 +5,7 @@ import { SplashScreen } from '@/src/components/pages/splash-screen'
 import { MainApp } from '@/src/components/mian'
 import { LoginPage } from '@/src/components/pages/login'
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext'
+import { LanguageProvider } from '@/src/contexts/language-context'
 import { Loader2 } from 'lucide-react'
 
 function AppContent() {
@@ -43,8 +44,10 @@ function AppContent() {
 
 export default function HomePage() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </LanguageProvider>
   )
 }

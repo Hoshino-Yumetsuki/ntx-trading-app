@@ -16,11 +16,13 @@ import {
 import Image from 'next/image'
 import { SignalCarousel } from '@/src/components/ui/signal-carousel'
 import { TutorialPage } from '@/src/components/subpages/tutorial-page'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function HomePage() {
-  const [_isTutorialOpen, setIsTutorialOpen] = useState(false)
+  const [_isTutorialOpen, _setIsTutorialOpen] = useState(false)
   const [showTutorialPage, setShowTutorialPage] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
+  const { t } = useLanguage()
 
   // 从 localStorage 恢复教程页面状态
   useEffect(() => {
@@ -77,19 +79,18 @@ export function HomePage() {
               <div className="mb-4">
                 <GraduationCap className="w-16 h-16 text-white mx-auto mb-4" />
               </div>
-              <h2 className="text-3xl font-bold text-white mb-3 leading-tight">
-                新手交易教程
+              <h2 className="text-3xl font-bold text-white mb-2">
+                {t('home.tutorial.title')}
               </h2>
               <p className="text-white/90 text-lg mb-6 max-w-md">
-                从零开始，掌握专业交易技能
+                {t('home.tutorial.subtitle')}
               </p>
               <Button
                 onClick={openTutorial}
                 className="bg-white text-blue-600 hover:bg-white/90 px-8 py-3 text-lg font-semibold rounded-xl shadow-lg"
               >
-                <BookOpen className="w-5 h-5 mr-2" />
-                开始学习
-                <ArrowRight className="w-5 h-5 ml-2" />
+                {t('home.tutorial.button')}{' '}
+                <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
           </div>
@@ -107,18 +108,18 @@ export function HomePage() {
               </div>
               <div>
                 <h3 className="text-slate-800 font-semibold text-lg">
-                  新手教程
+                  {t('home.card.tutorial.title')}
                 </h3>
                 <p className="text-slate-600 text-sm">
-                  快速入门，掌握平台核心功能
+                  {t('home.card.tutorial.subtitle')}
                 </p>
               </div>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed mb-4">
-              从零开始，一步步学习如何使用NTX平台进行交易挖矿和策略学习。
+              {t('home.card.tutorial.desc')}
             </p>
             <Button size="sm" className="diffused-button text-white border-0">
-              查看详情
+              {t('home.card.tutorial.button')}
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </CardContent>
@@ -132,18 +133,18 @@ export function HomePage() {
               </div>
               <div>
                 <h3 className="text-slate-800 font-semibold text-lg">
-                  机器学习预测
+                  {t('home.card.ai.title')}
                 </h3>
                 <p className="text-slate-600 text-sm">
-                  AI驱动，洞察市场未来趋势
+                  {t('home.card.ai.subtitle')}
                 </p>
               </div>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed mb-4">
-              利用先进的机器学习算法，为您提供精准的市场趋势预测，辅助交易决策。
+              {t('home.card.ai.desc')}
             </p>
             <Button size="sm" className="diffused-button text-white border-0">
-              点击试用
+              {t('home.card.ai.button')}
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </CardContent>
@@ -157,15 +158,15 @@ export function HomePage() {
               </div>
               <div>
                 <h3 className="text-slate-800 font-semibold text-lg">
-                  交易挖矿
+                  {t('home.card.mining.title')}
                 </h3>
                 <p className="text-slate-600 text-sm">
-                  每笔交易获得反佣和挖矿奖励
+                  {t('home.card.mining.subtitle')}
                 </p>
               </div>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed">
-              通过程序化工具捕捉市场信号，实现收益最大化
+              {t('home.card.mining.desc')}
             </p>
           </CardContent>
         </Card>
