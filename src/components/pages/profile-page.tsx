@@ -160,12 +160,6 @@ export function ProfilePage() {
               邮箱：{userInfo?.email || user?.email || 'N/A'}
             </p>
           </div>
-          <Button
-            size="sm"
-            className="glass-card text-slate-700 border-slate-300 bg-white/50"
-          >
-            编辑
-          </Button>
         </div>
       </div>
 
