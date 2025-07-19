@@ -1,4 +1,10 @@
-import type { UserInfo, TeamMember, WithdrawRequest } from '@/src/types/user'
+import type {
+  UserInfo,
+  TeamMember,
+  WithdrawRequest,
+  WithdrawalRecord,
+  CommissionRecord
+} from '@/src/types/user'
 import { AuthService } from './auth'
 import { API_BASE_URL } from './config'
 
@@ -102,15 +108,57 @@ export async function bindBscAddress(bscAddress: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/user/bind_bsc_address`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify({
-      bscAddress
-    })
+    body: JSON.stringify({ bscAddress })
   })
 
   if (!response.ok) {
     const errorData = await response.json()
     throw new Error(errorData.error || 'BSC地址绑定失败')
   }
+}
+
+export async function getWithdrawalRecords(): Promise<WithdrawalRecord[]> {
+  const token = AuthService.getToken()
+  if (!token) {
+    throw new Error('未登录')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/user/withdrawal_records`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.message || '获取提现记录失败')
+  }
+
+  return response.json()
+}
+
+export async function getCommissionRecords(): Promise<CommissionRecord[]> {
+  const token = AuthService.getToken()
+  if (!token) {
+    throw new Error('未登录')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/user/commission_records`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.message || '获取佣金记录失败')
+  }
+
+  return response.json()
 }
 
 // 为了向后兼容，保留UserService对象
@@ -121,5 +169,7 @@ export const UserService = {
   withdrawNtx,
   updatePassword,
   updateNickname,
-  bindBscAddress
+  bindBscAddress,
+  getWithdrawalRecords,
+  getCommissionRecords
 }

@@ -7,7 +7,11 @@ import {
   ExternalLink,
   Copy,
   Check,
-  RefreshCw
+  RefreshCw,
+  History,
+  Clock,
+  CheckCircle,
+  XCircle
 } from 'lucide-react'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
@@ -26,9 +30,19 @@ import {
   CardTitle
 } from '@/src/components/ui/card'
 import { toast } from 'sonner'
-import { getUserInfo, withdrawUsdt, withdrawNtx } from '@/src/services/user'
+import {
+  getUserInfo,
+  withdrawUsdt,
+  withdrawNtx,
+  getWithdrawalRecords,
+  getCommissionRecords
+} from '@/src/services/user'
 import { AuthService } from '@/src/services/auth'
-import type { UserInfo } from '@/src/types/user'
+import type {
+  UserInfo,
+  WithdrawalRecord,
+  CommissionRecord
+} from '@/src/types/user'
 
 interface AssetsPageProps {
   onBack: () => void
@@ -44,6 +58,17 @@ export function AssetsPage({ onBack }: AssetsPageProps) {
   const [isWithdrawing, setIsWithdrawing] = useState(false)
   const [addressCopied, setAddressCopied] = useState(false)
   const [addressError, setAddressError] = useState('')
+  const [currentView, setCurrentView] = useState<
+    'assets' | 'history' | 'commission'
+  >('assets')
+  const [withdrawalRecords, setWithdrawalRecords] = useState<
+    WithdrawalRecord[]
+  >([])
+  const [commissionRecords, setCommissionRecords] = useState<
+    CommissionRecord[]
+  >([])
+  const [loadingRecords, setLoadingRecords] = useState(false)
+  const [loadingCommission, setLoadingCommission] = useState(false)
 
   // 获取用户信息
   const fetchUserInfo = useCallback(async () => {
@@ -68,6 +93,33 @@ export function AssetsPage({ onBack }: AssetsPageProps) {
       toast.error('请先登录')
     }
   }, [fetchUserInfo])
+
+  // 获取提现记录
+  const fetchWithdrawalRecords = useCallback(async () => {
+    try {
+      setLoadingRecords(true)
+      const records = await getWithdrawalRecords()
+      setWithdrawalRecords(records)
+    } catch (error) {
+      console.error('获取提现记录失败:', error)
+      toast.error('获取提现记录失败')
+    } finally {
+      setLoadingRecords(false)
+    }
+  }, [])
+
+  const fetchCommissionRecords = useCallback(async () => {
+    try {
+      setLoadingCommission(true)
+      const records = await getCommissionRecords()
+      setCommissionRecords(records)
+    } catch (error) {
+      console.error('获取佣金记录失败:', error)
+      toast.error('获取佣金记录失败')
+    } finally {
+      setLoadingCommission(false)
+    }
+  }, [])
 
   // 验证BSC地址格式
   const validateBscAddress = (address: string) => {
@@ -189,6 +241,48 @@ export function AssetsPage({ onBack }: AssetsPageProps) {
     return balance.toFixed(2)
   }
 
+  // 格式化时间显示
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  // 获取状态显示
+  const getStatusDisplay = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return {
+          text: '待处理',
+          icon: Clock,
+          color: 'text-yellow-600'
+        }
+      case 'confirmed':
+        return {
+          text: '已完成',
+          icon: CheckCircle,
+          color: 'text-green-600'
+        }
+      case 'rejected':
+        return {
+          text: '已拒绝',
+          icon: XCircle,
+          color: 'text-red-600'
+        }
+      default:
+        return {
+          text: '未知',
+          icon: Clock,
+          color: 'text-gray-600'
+        }
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -257,130 +351,346 @@ export function AssetsPage({ onBack }: AssetsPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* 头部 */}
-      <div className="glass-card-strong px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex items-center space-x-2">
-            <Wallet className="w-6 h-6 text-blue-600" />
-            <h1 className="text-xl font-bold text-slate-800">我的资产</h1>
+      <div className="glass-card-strong px-6 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div className="flex items-center space-x-2">
+              <Wallet className="w-6 h-6 text-blue-600" />
+              <h1 className="text-xl font-bold text-slate-800">我的资产</h1>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={
+              currentView === 'assets'
+                ? fetchUserInfo
+                : currentView === 'history'
+                  ? fetchWithdrawalRecords
+                  : fetchCommissionRecords
+            }
+          >
+            <RefreshCw className="w-4 h-4 mr-1" />
+            刷新
+          </Button>
         </div>
-        <Button variant="outline" size="sm" onClick={fetchUserInfo}>
-          <RefreshCw className="w-4 h-4 mr-1" />
-          刷新
-        </Button>
+
+        {/* 切换按钮 */}
+        <div className="flex space-x-2">
+          <Button
+            variant={currentView === 'assets' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setCurrentView('assets')}
+            className="flex-1"
+          >
+            资产概览
+          </Button>
+          <Button
+            variant={currentView === 'history' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => {
+              setCurrentView('history')
+              if (withdrawalRecords.length === 0) {
+                fetchWithdrawalRecords()
+              }
+            }}
+            className="flex-1"
+          >
+            提现记录
+          </Button>
+          <Button
+            variant={currentView === 'commission' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => {
+              setCurrentView('commission')
+              if (commissionRecords.length === 0) {
+                fetchCommissionRecords()
+              }
+            }}
+            className="flex-1"
+          >
+            佣金记录
+          </Button>
+        </div>
       </div>
 
       <div className="p-4">
         <div className="max-w-md mx-auto">
-          {/* 资产卡片 */}
-          <div className="space-y-4 mb-6">
-            {/* USDT */}
-            <Card className="bg-white shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                      <Wallet className="w-5 h-5 text-green-600" />
+          {currentView === 'assets' ? (
+            <>
+              {/* 资产卡片 */}
+              <div className="space-y-4 mb-6">
+                {/* USDT */}
+                <Card className="bg-white shadow-sm">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                          <Wallet className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-slate-800">USDT</h3>
+                          <p className="text-sm text-slate-600">Tether USD</p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => handleWithdraw('usdt')}
+                        className="diffused-button text-white border-0"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-1" />
+                        提现
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-slate-800">
+                        {formatBalance(userInfo.usdtBalance)}
+                      </p>
+                      <p className="text-sm text-slate-600">可用余额</p>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-800">USDT</h3>
-                      <p className="text-sm text-slate-600">Tether USD</p>
-                    </div>
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => handleWithdraw('usdt')}
-                    className="diffused-button text-white border-0"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    提现
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-slate-800">
-                    {formatBalance(userInfo.usdtBalance)}
-                  </p>
-                  <p className="text-sm text-slate-600">可用余额</p>
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
 
-            {/* NTX */}
-            <Card className="bg-white shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                      <Wallet className="w-5 h-5 text-blue-600" />
+                {/* NTX */}
+                <Card className="bg-white shadow-sm">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                          <Wallet className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-slate-800">NTX</h3>
+                          <p className="text-sm text-slate-600">NTX Token</p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => handleWithdraw('ntx')}
+                        className="diffused-button text-white border-0"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-1" />
+                        提现
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-slate-800">
+                        {formatBalance(userInfo.ntxBalance)}
+                      </p>
+                      <p className="text-sm text-slate-600">可用余额</p>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-800">NTX</h3>
-                      <p className="text-sm text-slate-600">NTX Token</p>
-                    </div>
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => handleWithdraw('ntx')}
-                    className="diffused-button text-white border-0"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    提现
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-slate-800">
-                    {formatBalance(userInfo.ntxBalance)}
-                  </p>
-                  <p className="text-sm text-slate-600">可用余额</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* BSC地址信息 */}
-          <Card className="bg-white shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                  <Wallet className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-slate-800">BSC 钱包地址</h3>
-                  <p className="text-sm text-slate-600">Binance Smart Chain</p>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex-1 mr-3">
-                  <p className="text-sm font-mono text-slate-700 break-all">
-                    {userInfo.bscAddress || '未设置'}
-                  </p>
-                </div>
-                {userInfo.bscAddress && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={copyAddress}
-                    className="flex-shrink-0"
-                  >
-                    {addressCopied ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </Button>
-                )}
+                  </CardContent>
+                </Card>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* BSC地址信息 */}
+              <Card className="bg-white shadow-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                      <Wallet className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-slate-800">
+                        BSC 钱包地址
+                      </h3>
+                      <p className="text-sm text-slate-600">
+                        Binance Smart Chain
+                      </p>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 mr-3">
+                      <p className="text-sm font-mono text-slate-700 break-all">
+                        {userInfo.bscAddress || '未设置'}
+                      </p>
+                    </div>
+                    {userInfo.bscAddress && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={copyAddress}
+                        className="flex-shrink-0"
+                      >
+                        {addressCopied ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          ) : currentView === 'history' ? (
+            /* 提现记录 */
+            <div className="space-y-4">
+              {loadingRecords ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <Card key={i} className="bg-white shadow-sm animate-pulse">
+                      <CardContent className="p-4">
+                        <div className="h-4 bg-slate-200 rounded w-1/3 mb-2"></div>
+                        <div className="h-6 bg-slate-200 rounded w-1/2"></div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : withdrawalRecords.length === 0 ? (
+                <Card className="bg-white shadow-sm">
+                  <CardContent className="p-8 text-center">
+                    <History className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <p className="text-slate-600">暂无提现记录</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                withdrawalRecords.map((record) => {
+                  const statusDisplay = getStatusDisplay(record.status)
+                  const StatusIcon = statusDisplay.icon
+
+                  return (
+                    <Card key={record.id} className="bg-white shadow-sm">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                              <Wallet className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-slate-800">
+                                {record.currency.toUpperCase()} 提现
+                              </h4>
+                              <p className="text-sm text-slate-600">
+                                {formatDate(record.created_at)}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <StatusIcon
+                              className={`w-4 h-4 ${statusDisplay.color}`}
+                            />
+                            <span
+                              className={`text-sm font-medium ${statusDisplay.color}`}
+                            >
+                              {statusDisplay.text}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-slate-600">
+                              提现金额:
+                            </span>
+                            <span className="text-sm font-semibold text-slate-800">
+                              {formatBalance(record.amount)}{' '}
+                              {record.currency.toUpperCase()}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-slate-600">
+                              提现地址:
+                            </span>
+                            <span className="text-sm font-mono text-slate-700 break-all">
+                              {record.to_address.slice(0, 6)}...
+                              {record.to_address.slice(-4)}
+                            </span>
+                          </div>
+                          {record.confirmed_at && (
+                            <div className="flex justify-between">
+                              <span className="text-sm text-slate-600">
+                                完成时间:
+                              </span>
+                              <span className="text-sm text-slate-700">
+                                {formatDate(record.confirmed_at)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })
+              )}
+            </div>
+          ) : (
+            /* 佣金记录 */
+            <div className="space-y-4">
+              {loadingCommission ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <Card key={i} className="bg-white shadow-sm animate-pulse">
+                      <CardContent className="p-4">
+                        <div className="h-4 bg-slate-200 rounded w-1/3 mb-2"></div>
+                        <div className="h-6 bg-slate-200 rounded w-1/2"></div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : commissionRecords.length === 0 ? (
+                <Card className="bg-white shadow-sm">
+                  <CardContent className="p-8 text-center">
+                    <History className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <p className="text-slate-600">暂无佣金记录</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                commissionRecords.map((record) => (
+                  <Card key={record.id} className="bg-white shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <Wallet className="w-4 h-4 text-green-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-slate-800">
+                              邀请佣金
+                            </h4>
+                            <p className="text-sm text-slate-600">
+                              {formatDate(record.created_at)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-lg font-bold text-green-600">
+                            +{formatBalance(record.amount)} USDT
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-slate-600">
+                            邀请人:
+                          </span>
+                          <span className="text-sm text-slate-700">
+                            {record.invitee_nickname}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-slate-600">邮箱:</span>
+                          <span className="text-sm font-mono text-slate-700">
+                            {record.invitee_email}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </div>
 

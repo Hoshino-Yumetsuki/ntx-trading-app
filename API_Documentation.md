@@ -351,7 +351,7 @@ Authorization: Bearer {jwt_token}
 
 ### 2.5 获取佣金记录
 
-- **URL**: `/api/user/get_commission_records`
+- **URL**: `/api/user/commission_records`
 - **Method**: `GET`
 - **权限**: 需要JWT认证
 
@@ -376,7 +376,7 @@ Authorization: Bearer {jwt_token}
 
 ### 2.6 获取提现记录
 
-- **URL**: `/api/user/get_user_withdrawal_records`
+- **URL**: `/api/user/withdrawal_records`
 - **Method**: `GET`
 - **权限**: 需要JWT认证
 

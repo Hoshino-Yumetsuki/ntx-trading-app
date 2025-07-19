@@ -27,3 +27,21 @@ export interface WithdrawRequest {
   createdAt?: string
   id?: number
 }
+
+export interface WithdrawalRecord {
+  id: number
+  currency: string
+  amount: number
+  to_address: string
+  status: string
+  created_at: string
+  confirmed_at?: string
+}
+
+export interface CommissionRecord {
+  id: number
+  invitee_email: string
+  invitee_nickname: string
+  amount: number
+  created_at: string
+}
