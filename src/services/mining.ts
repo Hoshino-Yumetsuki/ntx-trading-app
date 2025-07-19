@@ -9,29 +9,105 @@ export interface PlatformData {
   platform_users: number
 }
 
+// 用户总数据接口
+export interface UserData {
+  total_mining: number
+  total_trading_cost: number
+}
+
+// 用户每日数据接口
+export interface DailyUserData {
+  mining_output: number
+  total_trading_cost: number
+}
+
+// 挖矿排行榜项目接口
+export interface LeaderboardItem {
+  nickname: string
+  email_masked: string
+  total_mining: number
+}
+
 // 获取平台数据
 export async function getPlatformData(): Promise<PlatformData> {
   const response = await fetch(`${API_BASE_URL}/mining/platform_data`)
-  
+
   if (!response.ok) {
     throw new Error('获取平台数据失败')
   }
-  
+
+  return response.json()
+}
+
+// 获取用户总数据
+export async function getUserData(token: string): Promise<UserData> {
+  const response = await fetch(`${API_BASE_URL}/mining/user_data`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error('获取用户数据失败')
+  }
+
+  return response.json()
+}
+
+// 获取用户每日数据
+export async function getDailyUserData(
+  token: string,
+  date?: string
+): Promise<DailyUserData> {
+  const url = new URL(`${API_BASE_URL}/mining/daily_user_data`)
+  if (date) {
+    url.searchParams.append('date', date)
+  }
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error('获取用户每日数据失败')
+  }
+
+  return response.json()
+}
+
+// 获取挖矿排行榜
+export async function getMiningLeaderboard(): Promise<LeaderboardItem[]> {
+  const response = await fetch(`${API_BASE_URL}/mining/mining_leaderboard`)
+
+  if (!response.ok) {
+    throw new Error('获取挖矿排行榜失败')
+  }
+
   return response.json()
 }
 
 // 格式化数字显示
-export function formatNumber(num: number): string {
+export function formatNumber(num: number | undefined | null): string {
+  if (num === undefined || num === null || Number.isNaN(num)) {
+    return '0.00'
+  }
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(2) + 'M'
+    return `${(num / 1000000).toFixed(2)}M`
   } else if (num >= 1000) {
-    return (num / 1000).toFixed(2) + 'K'
+    return `${(num / 1000).toFixed(2)}K`
   }
   return num.toFixed(2)
 }
 
 // 格式化货币显示
-export function formatCurrency(num: number, currency: string = ''): string {
+export function formatCurrency(
+  num: number | undefined | null,
+  currency: string = ''
+): string {
   const formatted = formatNumber(num)
   return currency ? `${formatted} ${currency}` : formatted
 }
@@ -39,6 +115,9 @@ export function formatCurrency(num: number, currency: string = ''): string {
 // MiningService对象，保持向后兼容
 export const MiningService = {
   getPlatformData,
+  getUserData,
+  getDailyUserData,
+  getMiningLeaderboard,
   formatNumber,
   formatCurrency
 }
