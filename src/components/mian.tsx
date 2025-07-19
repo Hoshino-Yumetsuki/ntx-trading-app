@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Home, BookOpen, Coins, User, Newspaper } from 'lucide-react' // Updated imports for BookOpen and Coins
+import { Home, Coins, User, Newspaper } from 'lucide-react' // Updated imports for BookOpen and Coins
 import { HomePage } from '@/src/components/pages/home-page'
 import { MiningPage } from '@/src/components/pages/mining-page'
-import { AcademyPage } from '@/src/components/pages/academy-page'
 import { ProfilePage } from '@/src/components/pages/profile-page'
 import { NewsPage } from '@/src/components/pages/news-page'
 import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
@@ -15,12 +14,12 @@ export function MainApp() {
   const tabs = [
     { id: 'home', label: '主页', icon: Home, component: HomePage },
     { id: 'news', label: '新闻', icon: Newspaper, component: NewsPage },
-    {
-      id: 'academy',
-      label: '黑马学院',
-      icon: BookOpen,
-      component: AcademyPage
-    },
+    //{
+    //  id: 'academy',
+    //  label: '黑马学院',
+    //  icon: BookOpen,
+    //  component: AcademyPage
+    //},
     { id: 'mining', label: '挖矿', icon: Coins, component: MiningPage },
     { id: 'profile', label: '我的', icon: User, component: ProfilePage }
   ]

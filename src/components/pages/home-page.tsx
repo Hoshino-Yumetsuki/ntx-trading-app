@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import {
@@ -8,15 +9,35 @@ import {
   ArrowRight,
   Target,
   Award,
-  Pickaxe,
   GraduationCap,
   BookOpen,
-  Brain,
-  Mic
+  Brain
 } from 'lucide-react'
+import Image from 'next/image'
 import { SignalCarousel } from '@/src/components/ui/signal-carousel'
+import { TutorialPage } from '@/src/components/subpages/tutorial-page'
 
 export function HomePage() {
+  const [_isTutorialOpen, setIsTutorialOpen] = useState(false)
+  const [showTutorialPage, setShowTutorialPage] = useState(false)
+
+  const openTutorial = () => {
+    setShowTutorialPage(true)
+  }
+
+  const _closeTutorial = () => {
+    setIsTutorialOpen(false)
+  }
+
+  const backToHome = () => {
+    setShowTutorialPage(false)
+  }
+
+  // 如果显示教程页面，渲染教程页面
+  if (showTutorialPage) {
+    return <TutorialPage onBack={backToHome} />
+  }
+
   return (
     <div className="min-h-screen">
       <div className="px-6 pt-8 pb-6">
@@ -29,27 +50,36 @@ export function HomePage() {
             <Zap className="w-5 h-5 text-blue-600" />
           </div>
         </div>
-        <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-slate-800 mb-4 leading-tight">
-            掌握机构操盘交易体系
-            <br />
-            <span className="gradient-text">提升你的交易能力</span>
-          </h2>
-        </div>
-        <div className="space-y-3 mb-4">
-          <Button className="w-full diffused-button text-white py-4 text-lg font-semibold rounded-xl border-0">
-            <Pickaxe className="w-5 h-5 mr-2" />
-            立即开始挖矿
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-          <Button className="w-full glass-card text-slate-700 hover:text-slate-800 py-4 text-lg font-semibold rounded-xl border-white/50 bg-white/30 hover:bg-white/40">
-            <GraduationCap className="w-5 h-5 mr-2" />
-            进入黑马学院
-          </Button>
-          <Button className="w-full glass-card text-slate-700 hover:text-slate-800 py-4 text-lg font-semibold rounded-xl border-white/50 bg-white/30 hover:bg-white/40">
-            <Mic className="w-5 h-5 mr-2" />
-            成为专业KOL
-          </Button>
+        {/* 新手教程大横幅 */}
+        <div className="relative mb-6 rounded-2xl overflow-hidden shadow-2xl">
+          <div className="relative h-64 bg-gradient-to-r from-blue-600 to-purple-600">
+            <Image
+              src="/poster1.jpg"
+              alt="新手教程"
+              fill
+              className="object-cover opacity-80"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-purple-600/70" />
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
+              <div className="mb-4">
+                <GraduationCap className="w-16 h-16 text-white mx-auto mb-4" />
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-3 leading-tight">
+                新手交易教程
+              </h2>
+              <p className="text-white/90 text-lg mb-6 max-w-md">
+                从零开始，掌握专业交易技能
+              </p>
+              <Button
+                onClick={openTutorial}
+                className="bg-white text-blue-600 hover:bg-white/90 px-8 py-3 text-lg font-semibold rounded-xl shadow-lg"
+              >
+                <BookOpen className="w-5 h-5 mr-2" />
+                开始学习
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
