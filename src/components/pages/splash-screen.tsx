@@ -11,7 +11,7 @@ export function SplashScreen() {
   }, [])
 
   return (
-    <div className="min-h-screen diffused-bg flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       <div
         className={`text-center transition-all duration-1000 ${animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >

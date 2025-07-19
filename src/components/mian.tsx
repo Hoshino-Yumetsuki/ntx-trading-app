@@ -29,7 +29,7 @@ export function MainApp() {
     tabs.find((tab) => tab.id === activeTab)?.component || HomePage
 
   return (
-    <div className="min-h-screen diffused-bg">
+    <div className="min-h-screen">
       <div className="flex-1 overflow-auto pb-28">
         <ActiveComponent />
 
