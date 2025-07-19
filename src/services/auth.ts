@@ -1,4 +1,11 @@
-import type { LoginRequest, LoginResponse } from '@/src/types/auth'
+import type {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  SendVerificationCodeRequest,
+  SendVerificationCodeResponse
+} from '@/src/types/auth'
 import { API_BASE_URL } from './config'
 
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
@@ -13,6 +20,44 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   if (!response.ok) {
     const errorData = await response.json()
     throw new Error(errorData.error || '登录失败')
+  }
+
+  return response.json()
+}
+
+export async function register(
+  data: RegisterRequest
+): Promise<RegisterResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || '注册失败')
+  }
+
+  return response.json()
+}
+
+export async function sendVerificationCode(
+  data: SendVerificationCodeRequest
+): Promise<SendVerificationCodeResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/send_verification_code`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || '发送验证码失败')
   }
 
   return response.json()
@@ -48,6 +93,8 @@ export function removeUser(): void {
 // 为了向后兼容，保留AuthService对象
 export const AuthService = {
   login,
+  register,
+  sendVerificationCode,
   setToken,
   getToken,
   removeToken,

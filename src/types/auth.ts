@@ -11,6 +11,26 @@ export interface LoginResponse {
   isAdmin: boolean
 }
 
+export interface RegisterRequest {
+  email: string
+  nickname: string
+  verification_code: string
+  password: string
+  invite_code?: string
+}
+
+export interface RegisterResponse {
+  message: string
+}
+
+export interface SendVerificationCodeRequest {
+  email: string
+}
+
+export interface SendVerificationCodeResponse {
+  message: string
+}
+
 export interface User {
   id: number
   email: string
