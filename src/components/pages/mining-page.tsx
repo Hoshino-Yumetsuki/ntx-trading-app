@@ -574,14 +574,12 @@ export function MiningPage() {
                           <p className="text-green-600 font-bold text-sm">
                             已绑定
                           </p>
-                          <p className="text-slate-600 text-xs">正在挖矿</p>
                         </div>
                       ) : (
                         <div>
                           <p className="text-blue-600 font-bold text-sm">
                             未绑定
                           </p>
-                          <p className="text-slate-600 text-xs">点击绑定</p>
                         </div>
                       )}
                     </div>
