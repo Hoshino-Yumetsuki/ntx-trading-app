@@ -8,6 +8,16 @@ import {
   CardHeader,
   CardTitle
 } from '@/src/components/ui/card'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/src/components/ui/dialog'
 import {
   TrendingUp,
   Users,
@@ -27,6 +37,7 @@ import {
   getMiningLeaderboard,
   getExchanges,
   getUserExchanges,
+  bindExchange,
   formatCurrency,
   type PlatformData,
   type UserData,
@@ -51,6 +62,11 @@ export function MiningPage() {
   const [userLoading, setUserLoading] = useState(false)
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
   const [exchangesLoading, setExchangesLoading] = useState(false)
+  const [bindingExchangeId, setBindingExchangeId] = useState<number | null>(
+    null
+  )
+  const [bindingUid, setBindingUid] = useState('')
+  const [showBindDialog, setShowBindDialog] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   // 获取平台数据
@@ -131,6 +147,53 @@ export function MiningPage() {
       toast.error('获取用户交易所失败')
     }
   }, [token])
+
+  // 处理绑定交易所
+  const handleBindExchange = (exchangeId: number, _exchangeName: string) => {
+    setBindingExchangeId(exchangeId)
+    setBindingUid('')
+    setShowBindDialog(true)
+  }
+
+  // 处理修改绑定
+  const handleModifyBinding = (exchangeId: number, _exchangeName: string) => {
+    setBindingExchangeId(exchangeId)
+    setBindingUid('')
+    setShowBindDialog(true)
+  }
+
+  // 确认绑定交易所
+  const confirmBindExchange = async () => {
+    if (!token || !bindingExchangeId || !bindingUid.trim()) {
+      toast.error('请输入交易所UID')
+      return
+    }
+
+    try {
+      await bindExchange(token, {
+        exchange_id: bindingExchangeId,
+        exchange_uid: bindingUid.trim()
+      })
+
+      toast.success('交易所绑定成功')
+      setShowBindDialog(false)
+      setBindingExchangeId(null)
+      setBindingUid('')
+
+      // 刷新用户绑定的交易所列表
+      await fetchUserExchanges()
+    } catch (error) {
+      console.error('绑定交易所失败:', error)
+      toast.error('绑定交易所失败，请重试')
+    }
+  }
+
+  // 取消绑定对话框
+  const cancelBindDialog = () => {
+    setShowBindDialog(false)
+    setBindingExchangeId(null)
+    setBindingUid('')
+  }
 
   // 刷新所有数据
   const refreshAllData = useCallback(async () => {
@@ -546,7 +609,7 @@ export function MiningPage() {
             ) : exchanges.length > 0 ? (
               exchanges.map((exchange, _index) => {
                 const isUserBound = userExchanges.some(
-                  (ue) => ue.exchange_id === exchange.id
+                  (ue) => ue.id === exchange.id
                 )
                 return (
                   <div
@@ -583,18 +646,30 @@ export function MiningPage() {
                         </div>
                       )}
                     </div>
-                    <Button
-                      size="sm"
-                      disabled={isUserBound}
-                      className={
-                        isUserBound
-                          ? 'bg-gray-300 text-gray-500 border-0 px-4 py-2 cursor-not-allowed'
-                          : 'diffused-button text-white border-0 px-4 py-2'
-                      }
-                    >
-                      <ExternalLink className="w-4 h-4 mr-1" />
-                      {isUserBound ? '已绑定' : '去绑定'}
-                    </Button>
+                    {isUserBound ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          handleModifyBinding(exchange.id, exchange.name)
+                        }
+                        className="border-0 px-4 py-2"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-1" />
+                        修改绑定
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handleBindExchange(exchange.id, exchange.name)
+                        }
+                        className="diffused-button text-white border-0 px-4 py-2"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-1" />
+                        去绑定
+                      </Button>
+                    )}
                   </div>
                 )
               })
@@ -608,6 +683,38 @@ export function MiningPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* 绑定交易所对话框 */}
+      <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>绑定交易所</DialogTitle>
+            <DialogDescription>
+              请输入您在交易所的UID来绑定账户。绑定后将开始挖矿。
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="exchange-uid" className="text-right">
+                交易所UID
+              </Label>
+              <Input
+                id="exchange-uid"
+                value={bindingUid}
+                onChange={(e) => setBindingUid(e.target.value)}
+                placeholder="请输入您的交易所UID"
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelBindDialog}>
+              取消
+            </Button>
+            <Button onClick={confirmBindExchange}>确认绑定</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

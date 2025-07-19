@@ -634,10 +634,7 @@ Authorization: Bearer {jwt_token}
   [
     {
       "id": 1,
-      "user_id": 123,
-      "exchange_id": 1,
-      "exchange_name": "Binance",
-      "exchange_uid": "user_exchange_id",
+      "name": 123,
       "logo_url": "https://example.com/binance.png",
       "mining_efficiency": 1.0
     }

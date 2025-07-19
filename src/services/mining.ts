@@ -36,14 +36,13 @@ export interface Exchange {
   cex_url: string
 }
 
+// 用户绑定的交易所（实际API返回格式）
 export interface UserExchange {
   id: number
-  user_id: number
-  exchange_id: number
-  exchange_name: string
-  exchange_uid: string
+  name: string
   logo_url: string
   mining_efficiency: number
+  cex_url: string
 }
 
 export interface BindExchangeRequest {
