@@ -28,6 +28,29 @@ export interface LeaderboardItem {
   mining_amount: number
 }
 
+export interface Exchange {
+  id: number
+  name: string
+  logo_url: string
+  mining_efficiency: number
+  cex_url: string
+}
+
+export interface UserExchange {
+  id: number
+  user_id: number
+  exchange_id: number
+  exchange_name: string
+  exchange_uid: string
+  logo_url: string
+  mining_efficiency: number
+}
+
+export interface BindExchangeRequest {
+  exchange_id: number
+  exchange_uid: string
+}
+
 // 获取平台数据
 export async function getPlatformData(): Promise<PlatformData> {
   const response = await fetch(`${API_BASE_URL}/mining/platform_data`)
@@ -103,13 +126,62 @@ export function formatNumber(num: number | undefined | null): string {
   return num.toFixed(2)
 }
 
-// 格式化货币显示
 export function formatCurrency(
   num: number | undefined | null,
-  currency: string = ''
+  currency = 'USDT'
 ): string {
-  const formatted = formatNumber(num)
-  return currency ? `${formatted} ${currency}` : formatted
+  if (num === undefined || num === null || Number.isNaN(num)) {
+    return '0.00'
+  }
+  return `${formatNumber(num)} ${currency}`
+}
+
+// 获取交易所列表
+export async function getExchanges(): Promise<Exchange[]> {
+  const response = await fetch(`${API_BASE_URL}/mining/get_exchanges`)
+
+  if (!response.ok) {
+    throw new Error('获取交易所列表失败')
+  }
+
+  return response.json()
+}
+
+// 绑定交易所
+export async function bindExchange(
+  token: string,
+  data: BindExchangeRequest
+): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/mining/bind_exchange`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+
+  if (!response.ok) {
+    throw new Error('绑定交易所失败')
+  }
+
+  return response.json()
+}
+
+// 获取用户绑定的交易所
+export async function getUserExchanges(token: string): Promise<UserExchange[]> {
+  const response = await fetch(`${API_BASE_URL}/mining/user_exchanges`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error('获取用户交易所失败')
+  }
+
+  return response.json()
 }
 
 // MiningService对象，保持向后兼容
@@ -118,6 +190,9 @@ export const MiningService = {
   getUserData,
   getDailyUserData,
   getMiningLeaderboard,
+  getExchanges,
+  getUserExchanges,
+  bindExchange,
   formatNumber,
   formatCurrency
 }

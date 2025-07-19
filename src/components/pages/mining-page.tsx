@@ -25,11 +25,15 @@ import {
   getUserData,
   getDailyUserData,
   getMiningLeaderboard,
+  getExchanges,
+  getUserExchanges,
   formatCurrency,
   type PlatformData,
   type UserData,
   type DailyUserData,
-  type LeaderboardItem
+  type LeaderboardItem,
+  type Exchange,
+  type UserExchange
 } from '@/src/services/mining'
 import { toast } from 'sonner'
 import { useAuth } from '@/src/contexts/AuthContext'
@@ -40,17 +44,14 @@ export function MiningPage() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [dailyData, setDailyData] = useState<DailyUserData | null>(null)
   const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([])
+  const [exchanges, setExchanges] = useState<Exchange[]>([])
+
+  const [userExchanges, setUserExchanges] = useState<UserExchange[]>([])
   const [loading, setLoading] = useState(true)
   const [userLoading, setUserLoading] = useState(false)
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
+  const [exchangesLoading, setExchangesLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
-  const exchanges = [
-    { name: 'Bitget', rank: 6, efficiency: 36.0, logo: 'BG' },
-    { name: 'HTX', rank: 9, efficiency: 30.0, logo: 'HTX' },
-    { name: 'Bybit', rank: 2, efficiency: 26.64, logo: 'BB' },
-    { name: 'Binance', rank: 1, efficiency: 24.6, logo: 'BN' },
-    { name: 'XT', rank: 20, efficiency: 42.0, logo: 'XT' }
-  ]
 
   // 获取平台数据
   const fetchPlatformData = useCallback(async () => {
@@ -104,23 +105,70 @@ export function MiningPage() {
     }
   }, [])
 
+  // 获取交易所列表
+  const fetchExchanges = useCallback(async () => {
+    try {
+      setExchangesLoading(true)
+      const data = await getExchanges()
+      setExchanges(data)
+    } catch (error) {
+      console.error('获取交易所列表失败:', error)
+      toast.error('获取交易所列表失败')
+    } finally {
+      setExchangesLoading(false)
+    }
+  }, [])
+
+  // 获取用户绑定的交易所
+  const fetchUserExchanges = useCallback(async () => {
+    if (!token) return
+
+    try {
+      const data = await getUserExchanges(token)
+      setUserExchanges(data)
+    } catch (error) {
+      console.error('获取用户交易所失败:', error)
+      toast.error('获取用户交易所失败')
+    }
+  }, [token])
+
   // 刷新所有数据
   const refreshAllData = useCallback(async () => {
     await Promise.all([
       fetchPlatformData(),
       fetchLeaderboard(),
-      user && token ? fetchUserData() : Promise.resolve()
+      fetchExchanges(),
+      user && token ? fetchUserData() : Promise.resolve(),
+      user && token ? fetchUserExchanges() : Promise.resolve()
     ])
-  }, [fetchPlatformData, fetchLeaderboard, fetchUserData, user, token])
+  }, [
+    fetchPlatformData,
+    fetchLeaderboard,
+    fetchExchanges,
+    fetchUserData,
+    fetchUserExchanges,
+    user,
+    token
+  ])
 
   // 组件挂载时获取数据
   useEffect(() => {
     fetchPlatformData()
     fetchLeaderboard()
+    fetchExchanges()
     if (user && token) {
       fetchUserData()
+      fetchUserExchanges()
     }
-  }, [user, token, fetchPlatformData, fetchLeaderboard, fetchUserData])
+  }, [
+    user,
+    token,
+    fetchPlatformData,
+    fetchLeaderboard,
+    fetchExchanges,
+    fetchUserData,
+    fetchUserExchanges
+  ])
 
   return (
     <div className="min-h-screen pb-6">
@@ -146,11 +194,13 @@ export function MiningPage() {
               variant="ghost"
               size="sm"
               onClick={refreshAllData}
-              disabled={loading || userLoading || leaderboardLoading}
+              disabled={
+                loading || userLoading || leaderboardLoading || exchangesLoading
+              }
               className="h-8 w-8 p-0 hover:bg-white/20"
             >
               <RefreshCw
-                className={`w-4 h-4 text-slate-600 ${loading || userLoading || leaderboardLoading ? 'animate-spin' : ''}`}
+                className={`w-4 h-4 text-slate-600 ${loading || userLoading || leaderboardLoading || exchangesLoading ? 'animate-spin' : ''}`}
               />
             </Button>
           </div>
@@ -471,41 +521,92 @@ export function MiningPage() {
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
-            {exchanges.map((exchange, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-5 data-card rounded-xl"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="premium-icon w-12 h-12 rounded-xl">
-                    <span className="text-slate-700 text-sm font-bold">
-                      {exchange.logo}
-                    </span>
+            {exchangesLoading ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-5 data-card rounded-xl"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-gray-200 rounded-xl animate-pulse" />
+                      <div className="space-y-2">
+                        <div className="h-5 bg-gray-200 rounded w-24 animate-pulse" />
+                        <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+                      </div>
+                    </div>
+                    <div className="text-right mr-4">
+                      <div className="h-5 bg-gray-200 rounded w-12 animate-pulse mb-1" />
+                      <div className="h-3 bg-gray-200 rounded w-16 animate-pulse" />
+                    </div>
+                    <div className="h-8 bg-gray-200 rounded w-16 animate-pulse" />
                   </div>
-                  <div>
-                    <p className="text-slate-800 font-semibold text-lg">
-                      {exchange.name}
-                    </p>
-                    <p className="text-slate-600 text-sm">
-                      CMC排名 #{exchange.rank}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right mr-4">
-                  <p className="text-green-600 font-bold text-lg">
-                    {exchange.efficiency}%
-                  </p>
-                  <p className="text-slate-600 text-xs">挖矿效率</p>
-                </div>
-                <Button
-                  size="sm"
-                  className="diffused-button text-white border-0 px-4 py-2"
-                >
-                  <ExternalLink className="w-4 h-4 mr-1" />
-                  去绑定
-                </Button>
+                ))}
               </div>
-            ))}
+            ) : exchanges.length > 0 ? (
+              exchanges.map((exchange, _index) => {
+                const isUserBound = userExchanges.some(
+                  (ue) => ue.exchange_id === exchange.id
+                )
+                return (
+                  <div
+                    key={exchange.id}
+                    className="flex items-center justify-between p-5 data-card rounded-xl"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="premium-icon w-12 h-12 rounded-xl">
+                        <span className="text-slate-700 text-sm font-bold">
+                          {exchange.name.substring(0, 2).toUpperCase()}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-slate-800 font-semibold text-lg">
+                          {exchange.name}
+                        </p>
+                        <p className="text-slate-600 text-sm">
+                          挖矿效率: {exchange.mining_efficiency.toFixed(1)}%
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right mr-4">
+                      {isUserBound ? (
+                        <div>
+                          <p className="text-green-600 font-bold text-sm">
+                            已绑定
+                          </p>
+                          <p className="text-slate-600 text-xs">正在挖矿</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="text-blue-600 font-bold text-sm">
+                            未绑定
+                          </p>
+                          <p className="text-slate-600 text-xs">点击绑定</p>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      size="sm"
+                      disabled={isUserBound}
+                      className={
+                        isUserBound
+                          ? 'bg-gray-300 text-gray-500 border-0 px-4 py-2 cursor-not-allowed'
+                          : 'diffused-button text-white border-0 px-4 py-2'
+                      }
+                    >
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      {isUserBound ? '已绑定' : '去绑定'}
+                    </Button>
+                  </div>
+                )
+              })
+            ) : (
+              <div className="text-center py-8">
+                <ExternalLink className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 mb-2">暂无可用交易所</p>
+                <p className="text-sm text-gray-400">请稍后再试</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
