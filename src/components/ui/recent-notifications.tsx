@@ -4,12 +4,14 @@ import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { getRecentNews } from '@/src/data/news-data'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface RecentNotificationsProps {
   onViewMore: () => void
 }
 
 export function RecentNotifications({ onViewMore }: RecentNotificationsProps) {
+  const { t } = useLanguage()
   const recentNews = getRecentNews(3)
 
   return (
@@ -17,7 +19,7 @@ export function RecentNotifications({ onViewMore }: RecentNotificationsProps) {
       <Card className="glass-card border-white/50">
         <CardContent className="p-4">
           <h3 className="text-slate-800 font-semibold text-base mb-3">
-            最新公告
+            {t('ui.notifications.title')}
           </h3>
           <ul className="space-y-2">
             {recentNews.map((item) => (
@@ -36,7 +38,7 @@ export function RecentNotifications({ onViewMore }: RecentNotificationsProps) {
             className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 mt-3"
             onClick={onViewMore}
           >
-            查看更多
+            {t('ui.notifications.viewMore')}
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
         </CardContent>

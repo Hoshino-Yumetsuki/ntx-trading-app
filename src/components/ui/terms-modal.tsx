@@ -1,6 +1,7 @@
 'use client'
 
 import { X } from 'lucide-react'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface TermsModalProps {
   isOpen: boolean
@@ -9,9 +10,11 @@ interface TermsModalProps {
 }
 
 export function TermsModal({ isOpen, onClose, type }: TermsModalProps) {
+  const { t } = useLanguage()
+
   if (!isOpen) return null
 
-  const title = type === 'terms' ? '服务条款' : '隐私政策'
+  const title = type === 'terms' ? t('ui.terms.title') : t('ui.privacy.title')
 
   const termsContent = `
 服务条款

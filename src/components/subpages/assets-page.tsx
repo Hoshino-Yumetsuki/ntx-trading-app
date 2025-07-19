@@ -38,6 +38,7 @@ import {
   getCommissionRecords
 } from '@/src/services/user'
 import { AuthService } from '@/src/services/auth'
+import { useLanguage } from '@/src/contexts/language-context'
 import type {
   UserInfo,
   WithdrawalRecord,
@@ -49,6 +50,7 @@ interface AssetsPageProps {
 }
 
 export function AssetsPage({ onBack }: AssetsPageProps) {
+  const { t } = useLanguage()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [showWithdrawDialog, setShowWithdrawDialog] = useState(false)
@@ -78,11 +80,11 @@ export function AssetsPage({ onBack }: AssetsPageProps) {
       setUserInfo(data)
     } catch (error) {
       console.error('获取用户信息失败:', error)
-      toast.error('获取用户信息失败')
+      toast.error(t('assets.error'))
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     const token = AuthService.getToken()
@@ -102,11 +104,11 @@ export function AssetsPage({ onBack }: AssetsPageProps) {
       setWithdrawalRecords(records)
     } catch (error) {
       console.error('获取提现记录失败:', error)
-      toast.error('获取提现记录失败')
+      toast.error(t('assets.error'))
     } finally {
       setLoadingRecords(false)
     }
-  }, [])
+  }, [t])
 
   const fetchCommissionRecords = useCallback(async () => {
     try {
@@ -115,11 +117,11 @@ export function AssetsPage({ onBack }: AssetsPageProps) {
       setCommissionRecords(records)
     } catch (error) {
       console.error('获取佣金记录失败:', error)
-      toast.error('获取佣金记录失败')
+      toast.error(t('assets.error'))
     } finally {
       setLoadingCommission(false)
     }
-  }, [])
+  }, [t])
 
   // 验证BSC地址格式
   const validateBscAddress = (address: string) => {

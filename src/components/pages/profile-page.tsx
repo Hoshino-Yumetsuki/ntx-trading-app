@@ -26,9 +26,11 @@ import type { UserInfo } from '@/src/types/user'
 import { toast } from 'sonner'
 import { SecuritySettings } from '@/src/components/subpages/security-settings'
 import { AssetsPage } from '@/src/components/subpages/assets-page'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function ProfilePage() {
   const { user, logout } = useAuth()
+  const { t } = useLanguage()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState<
@@ -60,31 +62,31 @@ export function ProfilePage() {
   const copyInviteCode = () => {
     if (userInfo?.myInviteCode) {
       navigator.clipboard.writeText(userInfo.myInviteCode)
-      toast.success('邀请码已复制到剪贴板')
+      toast.success(t('profile.copy.success'))
     }
   }
 
   const stats = [
     {
-      label: 'NTX 余额',
+      label: t('profile.stats.ntxBalance'),
       value: `${userInfo?.ntxBalance?.toLocaleString() || '0'} NTX`,
       icon: Award,
       color: 'text-yellow-600'
     },
     {
-      label: 'USDT 余额',
+      label: t('profile.stats.usdtBalance'),
       value: `$${userInfo?.usdtBalance?.toLocaleString() || '0'}`,
       icon: DollarSign,
       color: 'text-green-600'
     },
     {
-      label: 'GNTX 余额',
+      label: t('profile.stats.gntxBalance'),
       value: `${userInfo?.gntxBalance?.toLocaleString() || '0'} GNTX`,
       icon: TrendingUp,
       color: 'text-blue-600'
     },
     {
-      label: '推荐用户',
+      label: t('profile.stats.referrals'),
       value: `${userInfo?.invitedUserCount || 0}`,
       icon: Users,
       color: 'text-purple-600'
@@ -94,14 +96,14 @@ export function ProfilePage() {
   const menuItems = [
     {
       icon: DollarSign,
-      label: '我的资产',
-      description: '查看我的资产',
+      label: t('profile.menu.assets'),
+      description: t('profile.menu.assets.description'),
       onClick: () => setCurrentPage('assets')
     },
     {
       icon: Shield,
-      label: '安全中心',
-      description: '密码和安全验证',
+      label: t('profile.menu.security'),
+      description: t('profile.menu.security.description'),
       onClick: () => setCurrentPage('security')
     }
   ]
@@ -111,7 +113,7 @@ export function ProfilePage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">加载用户信息中...</p>
+          <p className="text-gray-600">{t('profile.loading')}</p>
         </div>
       </div>
     )
@@ -139,7 +141,7 @@ export function ProfilePage() {
           </Avatar>
           <div className="flex-1">
             <h2 className="text-slate-800 text-xl font-bold mb-1">
-              {userInfo?.nickname || user?.nickname || '用户'}
+              {userInfo?.nickname || user?.nickname || 'User'}
             </h2>
             <div className="flex items-center space-x-2 mb-2">
               <Badge className="bg-blue-100/80 text-blue-700 border-blue-300">
@@ -150,7 +152,7 @@ export function ProfilePage() {
               </Badge>
             </div>
             <p className="text-slate-600 text-sm">
-              邮箱：{userInfo?.email || user?.email || 'N/A'}
+              {t('profile.email')}：{userInfo?.email || user?.email || 'N/A'}
             </p>
           </div>
         </div>
@@ -160,12 +162,16 @@ export function ProfilePage() {
         {/* 邀请码卡片 */}
         <Card className="glass-card border-white/30">
           <CardHeader>
-            <CardTitle className="text-slate-800">我的邀请码</CardTitle>
+            <CardTitle className="text-slate-800">
+              {t('profile.inviteCode')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
               <div className="flex-1">
-                <p className="text-sm text-gray-600 mb-1">分享邀请码获得奖励</p>
+                <p className="text-sm text-gray-600 mb-1">
+                  {t('profile.inviteCode.description')}
+                </p>
                 <p className="text-lg font-mono font-bold text-blue-600">
                   {userInfo?.myInviteCode || 'Loading...'}
                 </p>
@@ -177,12 +183,14 @@ export function ProfilePage() {
                 disabled={!userInfo?.myInviteCode}
               >
                 <Copy className="w-4 h-4 mr-1" />
-                复制
+                {t('profile.copy')}
               </Button>
             </div>
             {userInfo?.invitedBy && (
               <div className="mt-3 text-sm text-gray-600">
-                <p>邀请人：{userInfo.invitedBy}</p>
+                <p>
+                  {t('profile.inviteCode.invitedBy')}：{userInfo.invitedBy}
+                </p>
               </div>
             )}
           </CardContent>
@@ -190,7 +198,9 @@ export function ProfilePage() {
 
         <Card className="glass-card border-white/30">
           <CardHeader>
-            <CardTitle className="text-slate-800">我的数据</CardTitle>
+            <CardTitle className="text-slate-800">
+              {t('profile.stats.totalReward')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
@@ -219,13 +229,17 @@ export function ProfilePage() {
         {userInfo?.bscAddress && (
           <Card className="glass-card border-white/30">
             <CardHeader>
-              <CardTitle className="text-slate-800">我的钱包</CardTitle>
+              <CardTitle className="text-slate-800">
+                {t('profile.wallet.title')}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-gray-600 mb-1">BSC 地址</p>
+                    <p className="text-sm text-gray-600 mb-1">
+                      {t('profile.wallet.bscAddress')}
+                    </p>
                     <p className="text-sm font-mono text-gray-800 break-all">
                       {userInfo.bscAddress}
                     </p>
@@ -234,12 +248,12 @@ export function ProfilePage() {
                     size="sm"
                     onClick={() => {
                       navigator.clipboard.writeText(userInfo.bscAddress)
-                      toast.success('地址已复制到剪贴板')
+                      toast.success(t('profile.copy.address'))
                     }}
                     className="ml-4 bg-green-500 hover:bg-green-600 text-white"
                   >
                     <Copy className="w-4 h-4 mr-1" />
-                    复制
+                    {t('profile.copy')}
                   </Button>
                 </div>
               </div>
@@ -249,7 +263,9 @@ export function ProfilePage() {
 
         <Card className="glass-card border-white/30">
           <CardHeader>
-            <CardTitle className="text-slate-800">快捷操作</CardTitle>
+            <CardTitle className="text-slate-800">
+              {t('profile.quickActions')}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {menuItems.map((item, index) => {
@@ -282,7 +298,9 @@ export function ProfilePage() {
         {/* 联系方式卡片 */}
         <Card className="glass-card border-white/30">
           <CardHeader>
-            <CardTitle className="text-slate-800">联系我们</CardTitle>
+            <CardTitle className="text-slate-800">
+              {t('profile.contact')}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between p-3 glass-card rounded-lg hover:bg-white/40 transition-all">
@@ -298,8 +316,12 @@ export function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-slate-800 font-medium">官方推特</p>
-                  <p className="text-slate-600 text-sm">获取最新动态和公告</p>
+                  <p className="text-slate-800 font-medium">
+                    {t('profile.contact.twitter')}
+                  </p>
+                  <p className="text-slate-600 text-sm">
+                    {t('profile.contact.twitter.description')}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -330,8 +352,12 @@ export function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-slate-800 font-medium">电报联系方式</p>
-                  <p className="text-slate-600 text-sm">技术支持和客服咨询</p>
+                  <p className="text-slate-800 font-medium">
+                    {t('profile.contact.telegram.title')}
+                  </p>
+                  <p className="text-slate-600 text-sm">
+                    {t('profile.contact.telegram.description')}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -359,7 +385,7 @@ export function ProfilePage() {
               onClick={handleLogout}
             >
               <LogOut className="w-5 h-5 mr-2" />
-              退出登录
+              {t('profile.logout')}
             </Button>
           </CardContent>
         </Card>

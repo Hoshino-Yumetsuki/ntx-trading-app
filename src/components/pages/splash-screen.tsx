@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { TrendingUp, Zap } from 'lucide-react'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function SplashScreen() {
+  const { t } = useLanguage()
   const [animate, setAnimate] = useState(false)
 
   useEffect(() => {
@@ -24,20 +26,22 @@ export function SplashScreen() {
           </div>
         </div>
 
-        <h1 className="text-4xl font-bold mb-4 gradient-text">NTX</h1>
+        <h1 className="text-4xl font-bold mb-4 gradient-text">
+          {t('splash.title')}
+        </h1>
 
         <div className="space-y-3 mb-8">
           <p className="text-xl font-semibold text-slate-700">
-            专业投资互动社区
+            {t('splash.subtitle')}
           </p>
           <p className="text-lg text-slate-600 max-w-xs mx-auto leading-relaxed">
-            为Web3交易而生
+            {t('splash.description')}
           </p>
         </div>
 
         <div className="flex items-center justify-center space-x-2 text-slate-600">
           <TrendingUp className="w-5 h-5 animate-bounce" />
-          <span className="text-sm">正在加载...</span>
+          <span className="text-sm">{t('splash.loading')}</span>
         </div>
       </div>
 

@@ -32,6 +32,7 @@ import {
 import { UserService } from '@/src/services/user'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { toast } from 'sonner'
+import { useLanguage } from '@/src/contexts/language-context'
 
 const passwordSchema = z
   .object({
@@ -71,6 +72,7 @@ type EditMode = 'none' | 'password' | 'nickname' | 'bscAddress'
 
 export function SecuritySettings({ onBack }: SecuritySettingsProps) {
   const { user, updateUser, logout } = useAuth()
+  const { t } = useLanguage()
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)

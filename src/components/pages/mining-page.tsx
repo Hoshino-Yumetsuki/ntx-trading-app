@@ -48,9 +48,11 @@ import {
 } from '@/src/services/mining'
 import { toast } from 'sonner'
 import { useAuth } from '@/src/contexts/AuthContext'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function MiningPage() {
   const { user, token } = useAuth()
+  const { t } = useLanguage()
   const [platformData, setPlatformData] = useState<PlatformData | null>(null)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [dailyData, setDailyData] = useState<DailyUserData | null>(null)
@@ -101,11 +103,11 @@ export function MiningPage() {
       setDailyData(dailyDataResult)
     } catch (error) {
       console.error('获取用户数据失败:', error)
-      toast.error('获取用户数据失败')
+      toast.error(t('mining.error.fetchUserData'))
     } finally {
       setUserLoading(false)
     }
-  }, [token])
+  }, [token, t])
 
   // 获取排行榜数据
   const fetchLeaderboard = useCallback(async () => {
@@ -115,11 +117,11 @@ export function MiningPage() {
       setLeaderboard(data)
     } catch (error) {
       console.error('获取排行榜失败:', error)
-      toast.error('获取排行榜失败')
+      toast.error(t('mining.error.fetchLeaderboard'))
     } finally {
       setLeaderboardLoading(false)
     }
-  }, [])
+  }, [t])
 
   // 获取交易所列表
   const fetchExchanges = useCallback(async () => {
@@ -129,11 +131,11 @@ export function MiningPage() {
       setExchanges(data)
     } catch (error) {
       console.error('获取交易所列表失败:', error)
-      toast.error('获取交易所列表失败')
+      toast.error(t('mining.error.fetchExchanges'))
     } finally {
       setExchangesLoading(false)
     }
-  }, [])
+  }, [t])
 
   // 获取用户绑定的交易所
   const fetchUserExchanges = useCallback(async () => {
@@ -144,9 +146,9 @@ export function MiningPage() {
       setUserExchanges(data)
     } catch (error) {
       console.error('获取用户交易所失败:', error)
-      toast.error('获取用户交易所失败')
+      toast.error(t('mining.error.fetchUserExchanges'))
     }
-  }, [token])
+  }, [token, t])
 
   // 处理绑定交易所
   const handleBindExchange = (exchangeId: number, _exchangeName: string) => {
@@ -165,7 +167,7 @@ export function MiningPage() {
   // 确认绑定交易所
   const confirmBindExchange = async () => {
     if (!token || !bindingExchangeId || !bindingUid.trim()) {
-      toast.error('请输入交易所UID')
+      toast.error(t('mining.error.enterUid'))
       return
     }
 
@@ -175,7 +177,7 @@ export function MiningPage() {
         exchange_uid: bindingUid.trim()
       })
 
-      toast.success('交易所绑定成功')
+      toast.success(t('mining.success.bindExchange'))
       setShowBindDialog(false)
       setBindingExchangeId(null)
       setBindingUid('')
@@ -184,7 +186,7 @@ export function MiningPage() {
       await fetchUserExchanges()
     } catch (error) {
       console.error('绑定交易所失败:', error)
-      toast.error('绑定交易所失败，请重试')
+      toast.error(t('mining.error.bindExchange'))
     }
   }
 
@@ -238,8 +240,10 @@ export function MiningPage() {
       <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold gradient-text">挖矿中心</h1>
-            <p className="text-slate-600 text-sm">交易即挖矿，获取NTX奖励</p>
+            <h1 className="text-2xl font-bold gradient-text">
+              {t('mining.title')}
+            </h1>
+            <p className="text-slate-600 text-sm">{t('mining.subtitle')}</p>
           </div>
           <div className="flex items-center space-x-3">
             <div className="text-right">
@@ -277,11 +281,11 @@ export function MiningPage() {
               <div className="premium-icon w-8 h-8 rounded-lg mr-3">
                 <BarChart3 className="w-4 h-4 text-blue-600" />
               </div>
-              平台数据
+              {t('mining.platform.title')}
             </CardTitle>
             <p className="text-slate-600 text-sm flex items-center ml-11">
               <Clock className="w-4 h-4 mr-1" />
-              每日UTC+8 8:00更新
+              {t('mining.platform.updateTime')}
             </p>
           </CardHeader>
           <CardContent>
@@ -299,7 +303,9 @@ export function MiningPage() {
                       ? formatCurrency(platformData.total_mined, 'NTX')
                       : '--'}
                 </p>
-                <p className="text-slate-600 text-sm">总挖矿量 (NTX)</p>
+                <p className="text-slate-600 text-sm">
+                  {t('mining.platform.totalMined')}
+                </p>
               </div>
               <div className="text-center data-card p-5 rounded-xl">
                 <div className="premium-icon w-10 h-10 rounded-lg mx-auto mb-3">
@@ -310,7 +316,9 @@ export function MiningPage() {
                     ? formatCurrency(platformData.total_commission, 'USDT')
                     : '--'}
                 </p>
-                <p className="text-slate-600 text-sm">总平台佣金 (USDT)</p>
+                <p className="text-slate-600 text-sm">
+                  {t('mining.platform.totalCommission')}
+                </p>
               </div>
               <div className="text-center data-card p-5 rounded-xl">
                 <div className="premium-icon w-10 h-10 rounded-lg mx-auto mb-3">
@@ -321,7 +329,9 @@ export function MiningPage() {
                     ? formatCurrency(platformData.total_burned, 'NTX')
                     : '--'}
                 </p>
-                <p className="text-slate-600 text-sm">总销毁量 (NTX)</p>
+                <p className="text-slate-600 text-sm">
+                  {t('mining.platform.totalBurned')}
+                </p>
               </div>
               <div className="text-center data-card p-5 rounded-xl">
                 <div className="premium-icon w-10 h-10 rounded-lg mx-auto mb-3">
@@ -332,7 +342,9 @@ export function MiningPage() {
                     ? formatCurrency(platformData.total_trading_volume, 'USDT')
                     : '--'}
                 </p>
-                <p className="text-slate-600 text-sm">总交易量 (USDT)</p>
+                <p className="text-slate-600 text-sm">
+                  {t('mining.platform.totalTradingVolume')}
+                </p>
               </div>
             </div>
 
@@ -341,13 +353,13 @@ export function MiningPage() {
                 <div className="premium-icon w-6 h-6 rounded mr-2">
                   <Clock className="w-3 h-3 text-blue-600" />
                 </div>
-                平台概览
+                {t('mining.platform.overview')}
               </h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600 flex items-center">
                     <Coins className="w-4 h-4 mr-1 text-yellow-600" />
-                    矿产量:
+                    {t('mining.platform.mined')}:
                   </span>
                   <span className="text-yellow-600 font-semibold">
                     {platformData
@@ -358,7 +370,7 @@ export function MiningPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600 flex items-center">
                     <Flame className="w-4 h-4 mr-1 text-red-500" />
-                    销毁量:
+                    {t('mining.platform.burned')}:
                   </span>
                   <span className="text-red-500 font-semibold">
                     {platformData
@@ -369,7 +381,7 @@ export function MiningPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600 flex items-center">
                     <DollarSign className="w-4 h-4 mr-1 text-green-600" />
-                    平台佣金:
+                    {t('mining.platform.commission')}:
                   </span>
                   <span className="text-green-600 font-semibold">
                     {platformData
@@ -380,7 +392,7 @@ export function MiningPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600 flex items-center">
                     <Users className="w-4 h-4 mr-1 text-blue-600" />
-                    挖矿人数:
+                    {t('mining.platform.miners')}:
                   </span>
                   <span className="text-blue-600 font-semibold">
                     {platformData
@@ -399,7 +411,7 @@ export function MiningPage() {
               <div className="premium-icon w-8 h-8 rounded-lg mr-3">
                 <Users className="w-4 h-4 text-blue-600" />
               </div>
-              我的数据
+              {t('mining.user.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -408,9 +420,11 @@ export function MiningPage() {
                 <div className="premium-icon w-12 h-12 rounded-lg mx-auto mb-4">
                   <Users className="w-6 h-6 text-gray-400" />
                 </div>
-                <p className="text-gray-500 mb-2">请登录查看您的挖矿数据</p>
+                <p className="text-gray-500 mb-2">
+                  {t('mining.user.loginPrompt')}
+                </p>
                 <p className="text-sm text-gray-400">
-                  登录后可查看总挖矿量、交易成本等详细信息
+                  {t('mining.user.loginDescription')}
                 </p>
               </div>
             ) : (
@@ -429,7 +443,9 @@ export function MiningPage() {
                           ? formatCurrency(userData.total_mining, 'NTX')
                           : '--'}
                     </p>
-                    <p className="text-slate-600 text-sm">总挖矿量 (NTX)</p>
+                    <p className="text-slate-600 text-sm">
+                      {t('mining.user.totalMining')}
+                    </p>
                   </div>
                   <div className="text-center data-card p-5 rounded-xl">
                     <div className="premium-icon w-10 h-10 rounded-lg mx-auto mb-3">
@@ -444,7 +460,9 @@ export function MiningPage() {
                           ? formatCurrency(userData.total_trading_cost, 'USDT')
                           : '--'}
                     </p>
-                    <p className="text-slate-600 text-sm">总交易成本 (USDT)</p>
+                    <p className="text-slate-600 text-sm">
+                      {t('mining.user.totalTradingCost')}
+                    </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -461,7 +479,9 @@ export function MiningPage() {
                           ? `+${formatCurrency(dailyData.mining_output, 'NTX')}`
                           : '--'}
                     </p>
-                    <p className="text-slate-600 text-sm">今日挖矿量 (NTX)</p>
+                    <p className="text-slate-600 text-sm">
+                      {t('mining.user.dailyMining')}
+                    </p>
                   </div>
                   <div className="text-center data-card p-5 rounded-xl">
                     <div className="premium-icon w-8 h-8 rounded-lg mx-auto mb-2">
@@ -483,7 +503,7 @@ export function MiningPage() {
                           : '--'}
                     </p>
                     <p className="text-slate-600 text-sm">
-                      今日交易成本 (USDT)
+                      {t('mining.user.dailyTradingCost')}
                     </p>
                   </div>
                 </div>
@@ -498,10 +518,10 @@ export function MiningPage() {
               <div className="premium-icon w-8 h-8 rounded-lg mr-3">
                 <Trophy className="w-4 h-4 text-yellow-600" />
               </div>
-              挖矿排行榜
+              {t('mining.leaderboard.title')}
             </CardTitle>
             <p className="text-slate-600 text-sm ml-11">
-              查看平台最佳挖矿者，学习他们的成功经验！
+              {t('mining.leaderboard.description')}
             </p>
           </CardHeader>
           <CardContent>
@@ -564,8 +584,12 @@ export function MiningPage() {
             ) : (
               <div className="text-center py-8">
                 <Trophy className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 mb-2">暂无排行榜数据</p>
-                <p className="text-sm text-gray-400">请稍后再试</p>
+                <p className="text-gray-500 mb-2">
+                  {t('mining.leaderboard.noData')}
+                </p>
+                <p className="text-sm text-gray-400">
+                  {t('mining.leaderboard.tryLater')}
+                </p>
               </div>
             )}
           </CardContent>
@@ -577,10 +601,10 @@ export function MiningPage() {
               <div className="premium-icon w-8 h-8 rounded-lg mr-3">
                 <ExternalLink className="w-4 h-4 text-blue-600" />
               </div>
-              交易所绑定
+              {t('mining.exchange.title')}
             </CardTitle>
             <p className="text-slate-600 text-sm ml-11">
-              选择您的交易所，绑定UID，立即开始挖矿！
+              {t('mining.exchange.description')}
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -627,7 +651,8 @@ export function MiningPage() {
                           {exchange.name}
                         </p>
                         <p className="text-slate-600 text-sm">
-                          挖矿效率: {exchange.mining_efficiency.toFixed(1)}%
+                          {t('mining.exchange.efficiency')}:{' '}
+                          {exchange.mining_efficiency.toFixed(1)}%
                         </p>
                       </div>
                     </div>
@@ -635,13 +660,13 @@ export function MiningPage() {
                       {isUserBound ? (
                         <div>
                           <p className="text-green-600 font-bold text-sm">
-                            已绑定
+                            {t('mining.exchange.status.bound')}
                           </p>
                         </div>
                       ) : (
                         <div>
                           <p className="text-blue-600 font-bold text-sm">
-                            未绑定
+                            {t('mining.exchange.status.unbound')}
                           </p>
                         </div>
                       )}
@@ -656,7 +681,7 @@ export function MiningPage() {
                         className="border-0 px-4 py-2"
                       >
                         <ExternalLink className="w-4 h-4 mr-1" />
-                        修改绑定
+                        {t('mining.exchange.modifyBinding')}
                       </Button>
                     ) : (
                       <Button
@@ -667,7 +692,7 @@ export function MiningPage() {
                         className="diffused-button text-white border-0 px-4 py-2"
                       >
                         <ExternalLink className="w-4 h-4 mr-1" />
-                        去绑定
+                        {t('mining.exchange.goBind')}
                       </Button>
                     )}
                   </div>
@@ -676,8 +701,12 @@ export function MiningPage() {
             ) : (
               <div className="text-center py-8">
                 <ExternalLink className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 mb-2">暂无可用交易所</p>
-                <p className="text-sm text-gray-400">请稍后再试</p>
+                <p className="text-gray-500 mb-2">
+                  {t('mining.exchange.noExchanges')}
+                </p>
+                <p className="text-sm text-gray-400">
+                  {t('mining.exchange.tryLater')}
+                </p>
               </div>
             )}
           </CardContent>
@@ -688,30 +717,32 @@ export function MiningPage() {
       <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>绑定交易所</DialogTitle>
+            <DialogTitle>{t('mining.dialog.title')}</DialogTitle>
             <DialogDescription>
-              请输入您在交易所的UID来绑定账户。绑定后将开始挖矿。
+              {t('mining.dialog.description')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="exchange-uid" className="text-right">
-                交易所UID
+                {t('mining.dialog.uidLabel')}
               </Label>
               <Input
                 id="exchange-uid"
                 value={bindingUid}
                 onChange={(e) => setBindingUid(e.target.value)}
-                placeholder="请输入您的交易所UID"
+                placeholder={t('mining.dialog.uidPlaceholder')}
                 className="col-span-3"
               />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={cancelBindDialog}>
-              取消
+              {t('mining.dialog.cancel')}
             </Button>
-            <Button onClick={confirmBindExchange}>确认绑定</Button>
+            <Button onClick={confirmBindExchange}>
+              {t('mining.dialog.confirm')}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

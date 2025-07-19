@@ -10,8 +10,11 @@ import { Button } from '@/src/components/ui/button'
 import { Newspaper, Share2, Clock } from 'lucide-react'
 import { toast } from '@/src/hooks/use-toast' // Assuming useToast is available for notifications
 import { newsItems } from '@/src/data/news-data' // 导入统一的新闻数据
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function NewsPage() {
+  const { t } = useLanguage()
+
   const handleShare = async (newsItem: (typeof newsItems)[0]) => {
     const shareData = {
       title: newsItem.title,
@@ -28,15 +31,15 @@ export function NewsPage() {
           `${shareData.title}\n${shareData.text}\n${shareData.url}`
         )
         toast({
-          title: '链接已复制',
-          description: '新闻内容已复制到剪贴板，您可以手动分享。'
+          title: t('news.share.success'),
+          description: t('news.share.success.desc')
         })
       }
     } catch (error) {
       console.error('分享失败:', error)
       toast({
-        title: '分享失败',
-        description: '无法分享新闻，请稍后再试。',
+        title: t('news.share.failed'),
+        description: t('news.share.failed.desc'),
         variant: 'destructive'
       })
     }
@@ -47,8 +50,10 @@ export function NewsPage() {
       <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold gradient-text">新闻中心</h1>
-            <p className="text-slate-600 text-sm">获取最新平台动态与市场资讯</p>
+            <h1 className="text-2xl font-bold gradient-text">
+              {t('news.title')}
+            </h1>
+            <p className="text-slate-600 text-sm">{t('news.subtitle')}</p>
           </div>
           <div className="premium-icon w-8 h-8 rounded-lg">
             <Newspaper className="w-5 h-5 text-blue-600" />
@@ -91,7 +96,7 @@ export function NewsPage() {
                     onClick={() => handleShare(item)}
                   >
                     <Share2 className="w-4 h-4 mr-1" />
-                    分享
+                    {t('news.share')}
                   </Button>
                 </div>
               </CardContent>
