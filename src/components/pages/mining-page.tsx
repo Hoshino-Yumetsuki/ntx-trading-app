@@ -17,16 +17,19 @@ import {
   Coins,
   DollarSign,
   Flame,
-  RefreshCw
+  RefreshCw,
+  Trophy
 } from 'lucide-react'
 import {
   getPlatformData,
   getUserData,
   getDailyUserData,
+  getMiningLeaderboard,
   formatCurrency,
   type PlatformData,
   type UserData,
-  type DailyUserData
+  type DailyUserData,
+  type LeaderboardItem
 } from '@/src/services/mining'
 import { toast } from 'sonner'
 import { useAuth } from '@/src/contexts/AuthContext'
@@ -36,8 +39,10 @@ export function MiningPage() {
   const [platformData, setPlatformData] = useState<PlatformData | null>(null)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [dailyData, setDailyData] = useState<DailyUserData | null>(null)
+  const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([])
   const [loading, setLoading] = useState(true)
   const [userLoading, setUserLoading] = useState(false)
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const exchanges = [
     { name: 'Bitget', rank: 6, efficiency: 36.0, logo: 'BG' },
@@ -85,21 +90,37 @@ export function MiningPage() {
     }
   }, [token])
 
+  // 获取排行榜数据
+  const fetchLeaderboard = useCallback(async () => {
+    try {
+      setLeaderboardLoading(true)
+      const data = await getMiningLeaderboard()
+      setLeaderboard(data)
+    } catch (error) {
+      console.error('获取排行榜失败:', error)
+      toast.error('获取排行榜失败')
+    } finally {
+      setLeaderboardLoading(false)
+    }
+  }, [])
+
   // 刷新所有数据
   const refreshAllData = useCallback(async () => {
     await Promise.all([
       fetchPlatformData(),
+      fetchLeaderboard(),
       user && token ? fetchUserData() : Promise.resolve()
     ])
-  }, [fetchPlatformData, fetchUserData, user, token])
+  }, [fetchPlatformData, fetchLeaderboard, fetchUserData, user, token])
 
   // 组件挂载时获取数据
   useEffect(() => {
     fetchPlatformData()
+    fetchLeaderboard()
     if (user && token) {
       fetchUserData()
     }
-  }, [user, token, fetchPlatformData, fetchUserData])
+  }, [user, token, fetchPlatformData, fetchLeaderboard, fetchUserData])
 
   return (
     <div className="min-h-screen pb-6">
@@ -125,11 +146,11 @@ export function MiningPage() {
               variant="ghost"
               size="sm"
               onClick={refreshAllData}
-              disabled={loading || userLoading}
+              disabled={loading || userLoading || leaderboardLoading}
               className="h-8 w-8 p-0 hover:bg-white/20"
             >
               <RefreshCw
-                className={`w-4 h-4 text-slate-600 ${loading || userLoading ? 'animate-spin' : ''}`}
+                className={`w-4 h-4 text-slate-600 ${loading || userLoading || leaderboardLoading ? 'animate-spin' : ''}`}
               />
             </Button>
           </div>
@@ -354,6 +375,85 @@ export function MiningPage() {
                   </div>
                 </div>
               </>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-white/50">
+          <CardHeader>
+            <CardTitle className="text-slate-800 flex items-center">
+              <div className="premium-icon w-8 h-8 rounded-lg mr-3">
+                <Trophy className="w-4 h-4 text-yellow-600" />
+              </div>
+              挖矿排行榜
+            </CardTitle>
+            <p className="text-slate-600 text-sm ml-11">
+              查看平台最佳挖矿者，学习他们的成功经验！
+            </p>
+          </CardHeader>
+          <CardContent>
+            {leaderboardLoading ? (
+              <div className="space-y-3">
+                {[...Array(5)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 data-card rounded-xl"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+                      <div className="space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+                        <div className="h-3 bg-gray-200 rounded w-32 animate-pulse" />
+                      </div>
+                    </div>
+                    <div className="h-4 bg-gray-200 rounded w-16 animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            ) : leaderboard.length > 0 ? (
+              <div className="space-y-3">
+                {leaderboard.slice(0, 10).map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 data-card rounded-xl hover:bg-white/60 transition-colors"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                          index === 0
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : index === 1
+                              ? 'bg-gray-100 text-gray-700'
+                              : index === 2
+                                ? 'bg-orange-100 text-orange-700'
+                                : 'bg-blue-100 text-blue-700'
+                        }`}
+                      >
+                        {index + 1}
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-800">
+                          {item.nickname}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {item.email_masked}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-yellow-600">
+                        {formatCurrency(item.mining_amount, 'NTX')}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Trophy className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 mb-2">暂无排行榜数据</p>
+                <p className="text-sm text-gray-400">请稍后再试</p>
+              </div>
             )}
           </CardContent>
         </Card>

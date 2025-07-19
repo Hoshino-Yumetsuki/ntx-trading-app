@@ -706,12 +706,12 @@ Authorization: Bearer {jwt_token}
     {
       "nickname": "用户1",
       "email_masked": "u***@example.com",
-      "total_mining": 5000.0
+      "mining_amount": 5000.0
     },
     {
       "nickname": "用户2",
       "email_masked": "u***@example.com",
-      "total_mining": 4500.0
+      "mining_amount": 4500.0
     }
   ]
   ```

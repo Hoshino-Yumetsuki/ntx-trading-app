@@ -25,7 +25,7 @@ export interface DailyUserData {
 export interface LeaderboardItem {
   nickname: string
   email_masked: string
-  total_mining: number
+  mining_amount: number
 }
 
 // 获取平台数据
