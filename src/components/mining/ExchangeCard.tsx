@@ -137,7 +137,7 @@ export function ExchangeCard({
                     <div className="w-12 h-12 rounded-xl overflow-hidden bg-white shadow-sm border border-gray-200 flex items-center justify-center">
                       {getExchangeIcon(exchange.name) ? (
                         <Image
-                          src={getExchangeIcon(exchange.name)!}
+                          src={getExchangeIcon(exchange.name) as string}
                           alt={exchange.name}
                           width={48}
                           height={48}
@@ -229,7 +229,7 @@ export function ExchangeCard({
                       <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg border-2 border-gray-100 flex items-center justify-center">
                         {getExchangeIcon(exchange.name) ? (
                           <Image
-                            src={getExchangeIcon(exchange.name)!}
+                            src={getExchangeIcon(exchange.name) as string}
                             alt={exchange.name}
                             width={64}
                             height={64}

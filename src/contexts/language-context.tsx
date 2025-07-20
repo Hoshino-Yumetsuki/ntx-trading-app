@@ -1,7 +1,12 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import type { Translations, SupportedLanguage, TranslationKey } from '@/src/types/i18n'
+import type React from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import type {
+  Translations,
+  SupportedLanguage,
+  TranslationKey
+} from '@/src/types/i18n'
 
 // 导入翻译文件
 import zhTranslations from '@/src/locales/zh.json'
@@ -13,7 +18,9 @@ interface LanguageContextType {
   t: (key: TranslationKey, fallback?: string) => string
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined
+)
 
 // 翻译资源映射
 const translations: Record<SupportedLanguage, Translations> = {
@@ -46,11 +53,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // 翻译函数
   const t = (key: TranslationKey, fallback?: string): string => {
     const translation = getNestedValue(translations[language], key)
-    
+
     if (translation) {
       return translation
     }
-    
+
     // 如果当前语言没有翻译，尝试使用英文
     if (language !== 'en') {
       const englishTranslation = getNestedValue(translations.en, key)
@@ -58,12 +65,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         return englishTranslation
       }
     }
-    
+
     // 如果有 fallback，使用 fallback
     if (fallback) {
       return fallback
     }
-    
+
     // 最后返回 key 本身
     console.warn(`Translation missing for key: ${key}`)
     return key
