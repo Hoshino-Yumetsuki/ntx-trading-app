@@ -585,7 +585,7 @@ Authorization: Bearer {jwt_token}
       "name": "Binance",
       "logo_url": "https://example.com/binance.png",
       "mining_efficiency": 1.0,
-      "is_active": true
+      "cex_url": "https://example.com/binance"
     }
   ]
   ```
