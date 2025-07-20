@@ -1,0 +1,280 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save"
+  },
+  "nav": {
+    "home": "Home",
+    "news": "News",
+    "mining": "Mining",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "loginSuccess": "Login successful",
+    "logoutSuccess": "Logout successful",
+    "loginFailed": "Login failed",
+    "registerSuccess": "Registration successful",
+    "registerFailed": "Registration failed"
+  },
+  "security": {
+    "changePassword": "Change Password",
+    "oldPassword": "Old Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordChanged": "Password changed successfully",
+    "passwordChangeFailed": "Failed to change password",
+    "nickname": {
+      "change": "Change Nickname",
+      "placeholder": "Enter new nickname"
+    }
+  },
+  "ui": {
+    "terms": {
+      "title": "Terms of Service"
+    },
+    "privacy": {
+      "title": "Privacy Policy"
+    },
+    "notifications": {
+      "title": "Latest Notifications",
+      "viewMore": "View More"
+    }
+  },
+  "tutorial": {
+    "title": "Tutorial",
+    "subtitle": "Learn how to use the NTX platform",
+    "back": "Back",
+    "overview": {
+      "title": "Platform Overview",
+      "content": "NTX is an innovative trading mining platform that rewards users with tokens through trading."
+    },
+    "audience": {
+      "title": "Target Audience",
+      "content": "Suitable for all users interested in cryptocurrency trading."
+    },
+    "account": {
+      "title": "Account Setup",
+      "content": "Complete your account information and set up security passwords."
+    },
+    "mining": {
+      "title": "Mining Tutorial",
+      "content": "Learn how to earn mining rewards through trading."
+    },
+    "rebate": {
+      "title": "Rebate System",
+      "content": "Understand the mechanism of earning rebates by referring friends."
+    },
+    "staking": {
+      "title": "Staking Mining",
+      "content": "Earn additional rewards by staking tokens."
+    },
+    "governance": {
+      "title": "Governance Mechanism",
+      "content": "Participate in platform governance and exercise voting rights."
+    },
+    "academy": {
+      "title": "Academy Courses",
+      "content": "Learn more about blockchain and trading knowledge."
+    }
+  },
+  "assets": {
+    "error": "Operation failed, please try again later",
+    "title": "My Assets",
+    "balance": "Balance",
+    "withdraw": "Withdraw",
+    "deposit": "Deposit",
+    "history": "Transaction History"
+  },
+  "splash": {
+    "title": "NTX Trading",
+    "subtitle": "Smart Trading Mining Platform",
+    "description": "Earn token rewards through trading",
+    "loading": "Loading..."
+  },
+  "profile": {
+    "loading": "Loading...",
+    "email": "Email",
+    "quickActions": "Quick Actions",
+    "copy": {
+      "success": "Copied successfully",
+      "address": "Address copied successfully",
+      "button": "Copy"
+    },
+    "inviteCode": {
+      "title": "Invite Code",
+      "description": "Invite friends to register and earn rebates",
+      "invitedBy": "Invited by"
+    },
+    "stats": {
+      "ntxBalance": "NTX Balance",
+      "usdtBalance": "USDT Balance",
+      "gntxBalance": "GNTX Balance",
+      "referrals": "Referrals",
+      "totalReward": "Total Rewards"
+    },
+    "menu": {
+      "assets": {
+        "title": "My Assets",
+        "description": "View and manage your assets"
+      },
+      "security": {
+        "title": "Security Settings",
+        "description": "Change password and security settings"
+      }
+    },
+    "wallet": {
+      "title": "Wallet Information",
+      "bscAddress": "BSC Address"
+    },
+    "contact": {
+      "title": "Contact",
+      "twitter": {
+        "title": "Twitter",
+        "description": "Follow our latest updates"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "description": "Join our community"
+      }
+    },
+    "logout": {
+      "title": "Logout"
+    }
+  },
+  "news": {
+    "title": "Latest News",
+    "loading": "Loading...",
+    "error": "Loading failed",
+    "empty": "No news available",
+    "readMore": "Read More"
+  },
+  "home": {
+    "welcome": "Welcome",
+    "title": "NTX Trading",
+    "subtitle": "Smart Trading Mining Platform",
+    "tutorial": {
+      "title": "NTX Tutorial",
+      "subtitle": "Learn how to use NTX",
+      "button": "Start Learning"
+    },
+    "card": {
+      "tutorial": {
+        "title": "Tutorial",
+        "subtitle": "Learn trading from scratch",
+        "desc": "Systematically learn cryptocurrency trading knowledge and master basic concepts and operational skills",
+        "button": "Start Learning"
+      },
+      "ai": {
+        "title": "AI Analysis",
+        "subtitle": "Professional market insights",
+        "desc": "Market analysis based on big data and machine learning, providing professional trading advice",
+        "button": "View Analysis"
+      },
+      "mining": {
+        "title": "Trading Mining",
+        "subtitle": "Earn rewards while trading",
+        "desc": "Earn NTX token rewards through trading activities and enjoy innovative mining experience"
+      }
+    }
+  },
+  "mining": {
+    "title": "Mining",
+    "subtitle": "Earn NTX rewards through trading mining",
+    "tabs": {
+      "data": "Mining Data",
+      "exchange": "Exchanges"
+    },
+    "data": {
+      "title": "Mining Data"
+    },
+    "platform": {
+      "title": "Platform Data",
+      "totalDataTitle": "Platform Total Data",
+      "dailyDataTitle": "Platform Daily Data",
+      "updateTime": "Data Update Time",
+      "totalMined": "Total Mined",
+      "totalCommission": "Total Commission",
+      "totalBurned": "Total Burned",
+      "totalVolume": "Total Trading Volume",
+      "totalUsers": "Platform Users",
+      "users": "Users"
+    },
+    "user": {
+      "title": "My Data",
+      "loginPrompt": "Please login to view your mining data",
+      "loginDescription": "After logging in, you can view your mining earnings, trading data and other information",
+      "totalMining": "Total Mining",
+      "totalTradingCost": "Total Trading Cost",
+      "dailyMining": "Daily Mining",
+      "dailyTradingCost": "Daily Trading Cost"
+    },
+    "daily": {
+      "selectDate": "Select Date",
+      "miningOutput": "Mining Output",
+      "commission": "Commission",
+      "burned": "Burned",
+      "tradingVolume": "Trading Volume",
+      "miners": "Number of Miners"
+    },
+    "exchange": {
+      "title": "Exchange Page",
+      "efficiency": "Mining Efficiency",
+      "bind": "Bind",
+      "unbind": "Unbind",
+      "goMining": "Go Mining",
+      "exchange": "Exchange",
+      "bindSteps": "Bind your exchange account to start mining.",
+      "step1": "Step 1: Register via Link",
+      "step2": "Step 2: Bind Exchange UID",
+      "goRegister": "Go Register",
+      "registerWarning": "Only new users registered via this link can bind",
+      "uidPlaceholder": "Enter exchange UID",
+      "uidWarning": "Only bind exchange UIDs registered via this link, other UIDs cannot participate in mining",
+      "noExchanges": "No exchanges available",
+      "tryLater": "Please try again later"
+    },
+    "exchanges": {
+      "title": "Bind Exchanges"
+    },
+    "leaderboard": {
+      "title": "Mining Leaderboard",
+      "description": "Real-time Mining Leaderboard",
+      "noData": "No leaderboard data available",
+      "tryLater": "Please try again later"
+    },
+    "error": {
+      "fetchUserData": "Failed to fetch user data",
+      "fetchLeaderboard": "Failed to fetch leaderboard data",
+      "fetchExchanges": "Failed to fetch exchange list",
+      "fetchUserExchanges": "Failed to fetch user exchange data",
+      "notLoggedIn": "Please login first",
+      "unbindExchange": "Unbind failed",
+      "enterUid": "Please enter UID",
+      "bindExchange": "Bind failed",
+      "dailyDataFailed": "Failed to fetch platform daily data"
+    },
+    "success": {
+      "unbindExchange": "Unbind successful",
+      "bindExchange": "Bind successful"
+    },
+    "dialog": {
+      "title": "Bind Exchange",
+      "description": "Please enter your UID at the exchange to bind the account",
+      "uidLabel": "UID",
+      "uidPlaceholder": "Enter your UID",
+      "cancel": "Cancel",
+      "confirm": "Confirm Bind"
+    }
+  }
+}

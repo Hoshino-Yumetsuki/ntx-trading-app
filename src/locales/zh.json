@@ -1,0 +1,280 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存"
+  },
+  "nav": {
+    "home": "首页",
+    "news": "资讯",
+    "mining": "挖矿",
+    "profile": "我的"
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "退出登录",
+    "register": "注册",
+    "username": "用户名",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "forgotPassword": "忘记密码？",
+    "loginSuccess": "登录成功",
+    "logoutSuccess": "退出成功",
+    "loginFailed": "登录失败",
+    "registerSuccess": "注册成功",
+    "registerFailed": "注册失败"
+  },
+  "security": {
+    "changePassword": "修改密码",
+    "oldPassword": "旧密码",
+    "newPassword": "新密码",
+    "confirmNewPassword": "确认新密码",
+    "passwordChanged": "密码修改成功",
+    "passwordChangeFailed": "密码修改失败",
+    "nickname": {
+      "change": "修改昵称",
+      "placeholder": "请输入新昵称"
+    }
+  },
+  "ui": {
+    "terms": {
+      "title": "服务条款"
+    },
+    "privacy": {
+      "title": "隐私政策"
+    },
+    "notifications": {
+      "title": "最新通知",
+      "viewMore": "查看更多"
+    }
+  },
+  "tutorial": {
+    "title": "新手教程",
+    "subtitle": "了解如何使用 NTX 平台",
+    "back": "返回",
+    "overview": {
+      "title": "平台概述",
+      "content": "NTX是一个创新的交易挖矿平台，通过交易获得代币奖励。"
+    },
+    "audience": {
+      "title": "适用人群",
+      "content": "适合所有对数字货币交易感兴趣的用户。"
+    },
+    "account": {
+      "title": "账户设置",
+      "content": "完善您的账户信息，设置安全密码。"
+    },
+    "mining": {
+      "title": "挖矿教程",
+      "content": "学习如何通过交易获得挖矿奖励。"
+    },
+    "rebate": {
+      "title": "返佣系统",
+      "content": "了解推荐好友获得返佣的机制。"
+    },
+    "staking": {
+      "title": "质押挖矿",
+      "content": "通过质押代币获得额外收益。"
+    },
+    "governance": {
+      "title": "治理机制",
+      "content": "参与平台治理，行使投票权。"
+    },
+    "academy": {
+      "title": "学院课程",
+      "content": "学习更多区块链和交易知识。"
+    }
+  },
+  "assets": {
+    "error": "操作失败，请稍后重试",
+    "title": "我的资产",
+    "balance": "余额",
+    "withdraw": "提现",
+    "deposit": "充值",
+    "history": "交易记录"
+  },
+  "splash": {
+    "title": "NTX Trading",
+    "subtitle": "智能交易挖矿平台",
+    "description": "通过交易获得代币奖励",
+    "loading": "加载中..."
+  },
+  "profile": {
+    "loading": "加载中...",
+    "email": "邮箱",
+    "quickActions": "快捷操作",
+    "copy": {
+      "success": "复制成功",
+      "address": "地址复制成功",
+      "button": "复制"
+    },
+    "inviteCode": {
+      "title": "邀请码",
+      "description": "邀请好友注册获得返佣",
+      "invitedBy": "邀请人"
+    },
+    "stats": {
+      "ntxBalance": "NTX余额",
+      "usdtBalance": "USDT余额",
+      "gntxBalance": "GNTX余额",
+      "referrals": "推荐人数",
+      "totalReward": "累计奖励"
+    },
+    "menu": {
+      "assets": {
+        "title": "我的资产",
+        "description": "查看和管理您的资产"
+      },
+      "security": {
+        "title": "安全设置",
+        "description": "修改密码和安全设置"
+      }
+    },
+    "wallet": {
+      "title": "钱包信息",
+      "bscAddress": "BSC地址"
+    },
+    "contact": {
+      "title": "联系方式",
+      "twitter": {
+        "title": "Twitter",
+        "description": "关注我们的最新动态"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "description": "加入我们的社群"
+      }
+    },
+    "logout": {
+      "title": "退出登录"
+    }
+  },
+  "news": {
+    "title": "最新资讯",
+    "loading": "加载中...",
+    "error": "加载失败",
+    "empty": "暂无资讯",
+    "readMore": "阅读更多"
+  },
+  "home": {
+    "welcome": "欢迎使用",
+    "title": "NTX Trading",
+    "subtitle": "智能交易挖矿平台",
+    "tutorial": {
+      "title": "NTX 新手教程",
+      "subtitle": "教你如何使用NTX",
+      "button": "开始学习"
+    },
+    "card": {
+      "tutorial": {
+        "title": "新手教程",
+        "subtitle": "从零开始学习交易",
+        "desc": "系统性学习数字货币交易知识，掌握基础概念和操作技巧",
+        "button": "立即学习"
+      },
+      "ai": {
+        "title": "AI智能分析",
+        "subtitle": "专业市场洞察",
+        "desc": "基于大数据和机器学习的市场分析，为您提供专业的交易建议",
+        "button": "查看分析"
+      },
+      "mining": {
+        "title": "交易挖矿",
+        "subtitle": "边交易边赚取奖励",
+        "desc": "通过交易活动获得NTX代币奖励，享受创新的挖矿体验"
+      }
+    }
+  },
+  "mining": {
+    "title": "挖矿",
+    "subtitle": "通过交易挖矿获得 NTX 奖励",
+    "tabs": {
+      "data": "挖矿数据",
+      "exchange": "交易所"
+    },
+    "data": {
+      "title": "挖矿数据"
+    },
+    "platform": {
+      "title": "平台数据",
+      "totalDataTitle": "平台总数据",
+      "dailyDataTitle": "平台日数据",
+      "updateTime": "数据更新时间",
+      "totalMined": "总挖矿量",
+      "totalCommission": "总佣金",
+      "totalBurned": "总销毁量",
+      "totalVolume": "总交易量",
+      "totalUsers": "平台用户",
+      "users": "人"
+    },
+    "user": {
+      "title": "我的数据",
+      "loginPrompt": "请先登录查看您的挖矿数据",
+      "loginDescription": "登录后可以查看您的挖矿收益、交易数据等信息",
+      "totalMining": "总挖矿量",
+      "totalTradingCost": "总交易成本",
+      "dailyMining": "日挖矿量",
+      "dailyTradingCost": "日交易成本"
+    },
+    "daily": {
+      "selectDate": "选择日期",
+      "miningOutput": "挖矿产出",
+      "commission": "佣金",
+      "burned": "销毁量",
+      "tradingVolume": "交易量",
+      "miners": "挖矿人数"
+    },
+    "exchange": {
+      "title": "交易所页面",
+      "efficiency": "挖矿效率",
+      "bind": "绑定",
+      "unbind": "解绑",
+      "goMining": "去挖矿",
+      "exchange": "交易所",
+      "bindSteps": "绑定您的交易所账户以开始挖矿。",
+      "step1": "第一步：通过链接注册",
+      "step2": "第二步：绑定交易所UID",
+      "goRegister": "去注册",
+      "registerWarning": "仅通过本链接注册的新用户可以进行绑定",
+      "uidPlaceholder": "请输入交易所UID",
+      "uidWarning": "仅绑定通过本链接注册的交易所UID，其他UID无法参与挖矿",
+      "noExchanges": "暂无可用交易所",
+      "tryLater": "请稍后再试"
+    },
+    "exchanges": {
+      "title": "绑定交易所"
+    },
+    "leaderboard": {
+      "title": "挖矿排行榜",
+      "description": "实时挖矿排行榜",
+      "noData": "暂无排行榜数据",
+      "tryLater": "请稍后再试"
+    },
+    "error": {
+      "fetchUserData": "获取用户数据失败",
+      "fetchLeaderboard": "获取排行榜数据失败",
+      "fetchExchanges": "获取交易所列表失败",
+      "fetchUserExchanges": "获取用户交易所数据失败",
+      "notLoggedIn": "请先登录",
+      "unbindExchange": "解绑失败",
+      "enterUid": "请输入 UID",
+      "bindExchange": "绑定失败",
+      "dailyDataFailed": "获取平台日数据失败"
+    },
+    "success": {
+      "unbindExchange": "解绑成功",
+      "bindExchange": "绑定成功"
+    },
+    "dialog": {
+      "title": "绑定交易所",
+      "description": "请输入您在交易所的 UID 来绑定账户",
+      "uidLabel": "UID",
+      "uidPlaceholder": "请输入您的 UID",
+      "cancel": "取消",
+      "confirm": "确认绑定"
+    }
+  }
+}

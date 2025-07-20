@@ -96,13 +96,13 @@ export function ProfilePage() {
   const menuItems = [
     {
       icon: DollarSign,
-      label: t('profile.menu.assets'),
+      label: t('profile.menu.assets.title'),
       description: t('profile.menu.assets.description'),
       onClick: () => setCurrentPage('assets')
     },
     {
       icon: Shield,
-      label: t('profile.menu.security'),
+      label: t('profile.menu.security.title'),
       description: t('profile.menu.security.description'),
       onClick: () => setCurrentPage('security')
     }
@@ -163,7 +163,7 @@ export function ProfilePage() {
         <Card className="glass-card border-white/30">
           <CardHeader>
             <CardTitle className="text-slate-800">
-              {t('profile.inviteCode')}
+              {t('profile.inviteCode.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -183,7 +183,7 @@ export function ProfilePage() {
                 disabled={!userInfo?.myInviteCode}
               >
                 <Copy className="w-4 h-4 mr-1" />
-                {t('profile.copy')}
+                {t('profile.copy.button')}
               </Button>
             </div>
             {userInfo?.invitedBy && (
@@ -253,7 +253,7 @@ export function ProfilePage() {
                     className="ml-4 bg-green-500 hover:bg-green-600 text-white"
                   >
                     <Copy className="w-4 h-4 mr-1" />
-                    {t('profile.copy')}
+                    {t('profile.copy.button')}
                   </Button>
                 </div>
               </div>
@@ -299,7 +299,7 @@ export function ProfilePage() {
         <Card className="glass-card border-white/30">
           <CardHeader>
             <CardTitle className="text-slate-800">
-              {t('profile.contact')}
+              {t('profile.contact.title')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -317,7 +317,7 @@ export function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-slate-800 font-medium">
-                    {t('profile.contact.twitter')}
+                    {t('profile.contact.twitter.title')}
                   </p>
                   <p className="text-slate-600 text-sm">
                     {t('profile.contact.twitter.description')}
@@ -385,7 +385,7 @@ export function ProfilePage() {
               onClick={handleLogout}
             >
               <LogOut className="w-5 h-5 mr-2" />
-              {t('profile.logout')}
+              {t('profile.logout.title')}
             </Button>
           </CardContent>
         </Card>
