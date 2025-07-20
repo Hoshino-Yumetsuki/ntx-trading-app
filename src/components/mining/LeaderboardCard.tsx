@@ -1,6 +1,11 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/src/components/ui/card'
 import { Trophy } from 'lucide-react'
 import { formatCurrency, type LeaderboardItem } from '@/src/services/mining'
 import { useLanguage } from '@/src/contexts/language-context'
@@ -10,7 +15,10 @@ interface LeaderboardCardProps {
   leaderboardLoading: boolean
 }
 
-export function LeaderboardCard({ leaderboard, leaderboardLoading }: LeaderboardCardProps) {
+export function LeaderboardCard({
+  leaderboard,
+  leaderboardLoading
+}: LeaderboardCardProps) {
   const { t } = useLanguage()
 
   return (

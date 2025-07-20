@@ -1,8 +1,17 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/src/components/ui/card'
 import { Users, Coins, DollarSign } from 'lucide-react'
-import { formatCurrency, type UserData, type DailyUserData } from '@/src/services/mining'
+import {
+  formatCurrency,
+  type UserData,
+  type DailyUserData
+} from '@/src/services/mining'
 import { useLanguage } from '@/src/contexts/language-context'
 
 interface UserDataCardProps {
@@ -12,7 +21,12 @@ interface UserDataCardProps {
   userLoading: boolean
 }
 
-export function UserDataCard({ user, userData, dailyData, userLoading }: UserDataCardProps) {
+export function UserDataCard({
+  user,
+  userData,
+  dailyData,
+  userLoading
+}: UserDataCardProps) {
   const { t } = useLanguage()
 
   return (
@@ -31,9 +45,7 @@ export function UserDataCard({ user, userData, dailyData, userLoading }: UserDat
             <div className="premium-icon w-12 h-12 rounded-lg mx-auto mb-4">
               <Users className="w-6 h-6 text-gray-400" />
             </div>
-            <p className="text-gray-500 mb-2">
-              {t('mining.user.loginPrompt')}
-            </p>
+            <p className="text-gray-500 mb-2">{t('mining.user.loginPrompt')}</p>
             <p className="text-sm text-gray-400">
               {t('mining.user.loginDescription')}
             </p>
@@ -103,13 +115,9 @@ export function UserDataCard({ user, userData, dailyData, userLoading }: UserDat
                 >
                   {userLoading
                     ? ''
-                    : dailyData &&
-                        dailyData.total_trading_cost !== undefined
+                    : dailyData && dailyData.total_trading_cost !== undefined
                       ? dailyData.total_trading_cost === 0
-                        ? formatCurrency(
-                            dailyData.total_trading_cost,
-                            'USDT'
-                          )
+                        ? formatCurrency(dailyData.total_trading_cost, 'USDT')
                         : `-${formatCurrency(dailyData.total_trading_cost, 'USDT')}`
                       : '--'}
                 </p>

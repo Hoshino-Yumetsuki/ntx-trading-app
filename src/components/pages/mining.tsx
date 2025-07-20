@@ -21,6 +21,7 @@ import {
   getExchanges,
   getUserExchanges,
   bindExchange,
+  unbindExchange,
   type PlatformData,
   type UserData,
   type DailyUserData,
@@ -48,6 +49,10 @@ export function MiningPage() {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
 
   const [userExchanges, setUserExchanges] = useState<UserExchange[]>([])
+  const [activeTab, setActiveTab] = useState<'mining' | 'exchange'>('mining')
+  const [miningSubTab, setMiningSubTab] = useState<'platform' | 'user'>(
+    'platform'
+  )
   const [loading, setLoading] = useState(true)
   const [userLoading, setUserLoading] = useState(false)
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
@@ -139,23 +144,34 @@ export function MiningPage() {
   }, [token, t])
 
   // 处理绑定交易所
-  const handleBindExchange = (exchangeId: number, _exchangeName: string) => {
+  const handleBindExchange = (exchangeId: number, uid: string) => {
     setBindingExchangeId(exchangeId)
-    setBindingUid('')
+    setBindingUid(uid)
     setShowBindDialog(true)
   }
 
-  // 处理修改绑定
-  const handleModifyBinding = (exchangeId: number, _exchangeName: string) => {
-    setBindingExchangeId(exchangeId)
-    setBindingUid('')
-    setShowBindDialog(true)
+  // 处理解绑交易所
+  const handleUnbindExchange = async (exchangeId: number) => {
+    if (!token) {
+      toast.error(t('mining.error.notLoggedIn') || '请先登录')
+      return
+    }
+
+    try {
+      await unbindExchange(token, exchangeId)
+      toast.success(t('mining.success.unbindExchange') || '解绑成功')
+      // 刷新用户绑定的交易所列表
+      await fetchUserExchanges()
+    } catch (error) {
+      console.error('解绑交易所失败:', error)
+      toast.error(t('mining.error.unbindExchange') || '解绑失败')
+    }
   }
 
   // 确认绑定交易所
   const confirmBindExchange = async () => {
     if (!token || !bindingExchangeId || !bindingUid.trim()) {
-      toast.error(t('mining.error.enterUid'))
+      toast.error(t('mining.error.enterUid') || '请输入 UID')
       return
     }
 
@@ -165,7 +181,7 @@ export function MiningPage() {
         exchange_uid: bindingUid.trim()
       })
 
-      toast.success(t('mining.success.bindExchange'))
+      toast.success(t('mining.success.bindExchange') || '绑定成功')
       setShowBindDialog(false)
       setBindingExchangeId(null)
       setBindingUid('')
@@ -174,7 +190,7 @@ export function MiningPage() {
       await fetchUserExchanges()
     } catch (error) {
       console.error('绑定交易所失败:', error)
-      toast.error(t('mining.error.bindExchange'))
+      toast.error(t('mining.error.bindExchange') || '绑定失败')
     }
   }
 
@@ -262,35 +278,138 @@ export function MiningPage() {
         </div>
       </div>
 
-      <div className="px-6 mt-6 space-y-6">
-        {/* 平台数据组件 */}
-        <PlatformDataCard 
-          platformData={platformData} 
-          loading={loading} 
-        />
+      {/* 标签页切换按钮 */}
+      <div className="px-6 mt-6">
+        <div className="flex space-x-1 bg-white/50 backdrop-blur-sm p-1 rounded-xl border border-white/30">
+          <button
+            type="button"
+            onClick={() => setActiveTab('mining')}
+            className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
+              activeTab === 'mining'
+                ? 'bg-white text-blue-600 shadow-md'
+                : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+            }`}
+          >
+            {t('mining.tabs.data') || '挖矿数据'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('exchange')}
+            className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
+              activeTab === 'exchange'
+                ? 'bg-white text-blue-600 shadow-md'
+                : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+            }`}
+          >
+            {t('mining.tabs.exchange') || '交易所'}
+          </button>
+        </div>
+      </div>
 
-        {/* 用户数据组件 */}
-        <UserDataCard 
-          user={user}
-          userData={userData}
-          dailyData={dailyData}
-          userLoading={userLoading}
-        />
+      <div className="px-6 mt-6">
+        {/* 挖矿数据标签页 */}
+        {activeTab === 'mining' && (
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-xl overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                {t('mining.data.title') || '挖矿数据'}
+              </h2>
 
-        {/* 排行榜组件 */}
-        <LeaderboardCard 
-          leaderboard={leaderboard}
-          leaderboardLoading={leaderboardLoading}
-        />
+              {/* 挖矿数据子标签页切换按钮 */}
+              <div className="mb-6">
+                <div className="flex space-x-1 bg-slate-100/80 backdrop-blur-sm p-1 rounded-lg border border-slate-200/50">
+                  <button
+                    type="button"
+                    onClick={() => setMiningSubTab('platform')}
+                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                      miningSubTab === 'platform'
+                        ? 'bg-white text-slate-800 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                    }`}
+                  >
+                    {t('mining.platform.title') || '平台数据'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMiningSubTab('user')}
+                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                      miningSubTab === 'user'
+                        ? 'bg-white text-slate-800 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                    }`}
+                  >
+                    {t('mining.user.title') || '我的数据'}
+                  </button>
+                </div>
+              </div>
 
-        {/* 交易所组件 */}
-        <ExchangeCard 
-          exchanges={exchanges}
-          userExchanges={userExchanges}
-          exchangesLoading={exchangesLoading}
-          onBindExchange={handleBindExchange}
-          onModifyBinding={handleModifyBinding}
-        />
+              {/* 挖矿数据内容区域 */}
+              <div>
+                {/* 平台数据组件 */}
+                {miningSubTab === 'platform' && (
+                  <div>
+                    <PlatformDataCard
+                      platformData={platformData}
+                      loading={loading}
+                    />
+                  </div>
+                )}
+
+                {/* 用户数据组件 */}
+                {miningSubTab === 'user' && (
+                  <div>
+                    <UserDataCard
+                      user={user}
+                      userData={userData}
+                      dailyData={dailyData}
+                      userLoading={userLoading}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 交易所页面标签页 */}
+        {activeTab === 'exchange' && (
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-xl overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                {t('mining.exchange.title') || '交易所页面'}
+              </h2>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* 交易所绑定组件 */}
+                <div>
+                  <h3 className="text-lg font-medium text-slate-700 mb-4">
+                    {t('mining.exchanges.title') || '绑定交易所'}
+                  </h3>
+                  <ExchangeCard
+                    exchanges={exchanges}
+                    userExchanges={userExchanges}
+                    exchangesLoading={exchangesLoading}
+                    onBindExchange={handleBindExchange}
+                    onUnbindExchange={handleUnbindExchange}
+                  />
+                </div>
+
+                {/* 挖矿排行榜组件 */}
+                <div>
+                  <h3 className="text-lg font-medium text-slate-700 mb-4">
+                    {t('mining.leaderboard.title') || '挖矿排行榜'}
+                  </h3>
+                  <LeaderboardCard
+                    leaderboard={leaderboard}
+                    leaderboardLoading={leaderboardLoading}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 绑定交易所对话框 */}

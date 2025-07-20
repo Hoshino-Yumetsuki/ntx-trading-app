@@ -9,6 +9,15 @@ export interface PlatformData {
   platform_users: number
 }
 
+// 平台日数据接口
+export interface DailyPlatformData {
+  mining_output: number
+  burned: number
+  commission: number
+  trading_volume: number
+  miners: number
+}
+
 // 用户总数据接口
 export interface UserData {
   total_mining: number
@@ -56,6 +65,23 @@ export async function getPlatformData(): Promise<PlatformData> {
 
   if (!response.ok) {
     throw new Error('获取平台数据失败')
+  }
+
+  return response.json()
+}
+
+// 获取平台日数据
+export async function getDailyPlatformData(
+  date?: string
+): Promise<DailyPlatformData> {
+  // 如果没有提供日期，使用今天的日期
+  const targetDate = date || new Date().toISOString().split('T')[0]
+  const response = await fetch(
+    `${API_BASE_URL}/mining/daily_platform_data?date=${targetDate}`
+  )
+
+  if (!response.ok) {
+    throw new Error('获取平台日数据失败')
   }
 
   return response.json()
@@ -167,6 +193,30 @@ export async function bindExchange(
   return response.json()
 }
 
+// 解绑交易所
+export async function unbindExchange(
+  token: string,
+  exchangeId: number
+): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/mining/bind_exchange`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      exchange_id: exchangeId,
+      exchange_uid: null
+    })
+  })
+
+  if (!response.ok) {
+    throw new Error('解绑交易所失败')
+  }
+
+  return response.json()
+}
+
 // 获取用户绑定的交易所
 export async function getUserExchanges(token: string): Promise<UserExchange[]> {
   const response = await fetch(`${API_BASE_URL}/mining/user_exchanges`, {
@@ -186,12 +236,14 @@ export async function getUserExchanges(token: string): Promise<UserExchange[]> {
 // MiningService对象，保持向后兼容
 export const MiningService = {
   getPlatformData,
+  getDailyPlatformData,
   getUserData,
   getDailyUserData,
   getMiningLeaderboard,
   getExchanges,
   getUserExchanges,
   bindExchange,
+  unbindExchange,
   formatNumber,
   formatCurrency
 }

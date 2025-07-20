@@ -46,8 +46,15 @@ export function LanguageSwitcher() {
         <>
           {/* Backdrop */}
           <div
+            role="button"
+            tabIndex={0}
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+                setIsOpen(false)
+              }
+            }}
           />
 
           {/* Dropdown */}
@@ -55,6 +62,7 @@ export function LanguageSwitcher() {
             {languages.map((lang) => (
               <button
                 key={lang.code}
+                type="button"
                 onClick={() => selectLanguage(lang.code as 'zh' | 'en')}
                 className={`w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors flex items-center space-x-3 ${
                   language === lang.code
