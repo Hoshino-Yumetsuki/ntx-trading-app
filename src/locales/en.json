@@ -237,7 +237,10 @@
       "noExchanges": "No exchanges available",
       "tryLater": "Please try again later"
     },
-    "exchanges": {
+    "exchangelist": {
+      "title": "Exchange List"
+    },
+    "bindExchanges": {
       "title": "Bind Exchanges"
     },
     "leaderboard": {

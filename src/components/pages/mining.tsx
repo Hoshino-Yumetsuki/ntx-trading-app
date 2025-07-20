@@ -378,14 +378,14 @@ export function MiningPage() {
             <div className="p-6">
               <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                {t('mining.exchange.title') || '交易所页面'}
+                {t('mining.exchangeList.title') || '交易所列表'}
               </h2>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* 交易所绑定组件 */}
                 <div>
                   <h3 className="text-lg font-medium text-slate-700 mb-4">
-                    {t('mining.exchanges.title') || '绑定交易所'}
+                    {t('mining.bindExchanges.title') || '绑定交易所'}
                   </h3>
                   <ExchangeCard
                     exchanges={exchanges}

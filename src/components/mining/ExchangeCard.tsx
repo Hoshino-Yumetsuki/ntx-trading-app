@@ -94,11 +94,9 @@ export function ExchangeCard({
             <div className="premium-icon w-8 h-8 rounded-lg mr-3">
               <ExternalLink className="w-4 h-4 text-blue-600" />
             </div>
-            {t('mining.exchange.title')}
+            {t('mining.exchangeList.title')}
           </CardTitle>
-          <p className="text-slate-600 text-sm ml-11">
-            {t('mining.exchange.description')}
-          </p>
+          <p className="text-slate-600 text-sm ml-11"></p>
         </CardHeader>
         <CardContent className="space-y-4">
           {exchangesLoading ? (
@@ -244,9 +242,7 @@ export function ExchangeCard({
 
                       {/* 交易所名称 */}
                       <DialogTitle className="text-xl font-bold text-slate-800">
-                        {t('mining.exchange.bindExchange') || '绑定'}{' '}
                         {exchange.name}{' '}
-                        {t('mining.exchange.exchange') || '交易所'}
                       </DialogTitle>
 
                       {/* 描述 */}

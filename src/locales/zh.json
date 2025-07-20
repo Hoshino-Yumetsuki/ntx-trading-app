@@ -237,7 +237,10 @@
       "noExchanges": "暂无可用交易所",
       "tryLater": "请稍后再试"
     },
-    "exchanges": {
+    "exchangeList": {
+      "title": "交易所列表"
+    },
+    "bindExchanges": {
       "title": "绑定交易所"
     },
     "leaderboard": {
