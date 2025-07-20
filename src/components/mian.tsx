@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { Home, Coins, User, Newspaper } from 'lucide-react' // Updated imports for BookOpen and Coins
-import { HomePage } from '@/src/components/pages/home-page'
-import { MiningPage } from '@/src/components/pages/mining-page'
-import { ProfilePage } from '@/src/components/pages/profile-page'
-import { NewsPage } from '@/src/components/pages/news-page'
+import { HomePage } from '@/src/components/pages/home'
+import { MiningPage } from '@/src/components/pages/mining'
+import { ProfilePage } from '@/src/components/pages/profile'
+import { NewsPage } from '@/src/components/pages/news'
 import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import { useLanguage } from '@/src/contexts/language-context'

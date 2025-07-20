@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { SignalCarousel } from '@/src/components/ui/signal-carousel'
-import { TutorialPage } from '@/src/components/subpages/tutorial-page'
+import { TutorialPage } from '@/src/components/subpages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function HomePage() {

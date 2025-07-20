@@ -25,7 +25,7 @@ import { UserService } from '@/src/services/user'
 import type { UserInfo } from '@/src/types/user'
 import { toast } from 'sonner'
 import { SecuritySettings } from '@/src/components/subpages/security-settings'
-import { AssetsPage } from '@/src/components/subpages/assets-page'
+import { AssetsPage } from '@/src/components/subpages/assets'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function ProfilePage() {
