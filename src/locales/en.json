@@ -5,7 +5,8 @@
     "success": "Success",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "save": "Save"
+    "save": "Save",
+    "refresh": "Refresh"
   },
   "nav": {
     "home": "Home",
@@ -87,14 +88,6 @@
       "title": "Academy Courses",
       "content": "Learn more about blockchain and trading knowledge."
     }
-  },
-  "assets": {
-    "error": "Operation failed, please try again later",
-    "title": "My Assets",
-    "balance": "Balance",
-    "withdraw": "Withdraw",
-    "deposit": "Deposit",
-    "history": "Transaction History"
   },
   "splash": {
     "title": "NTX Trading",
@@ -275,6 +268,44 @@
       "uidPlaceholder": "Enter your UID",
       "cancel": "Cancel",
       "confirm": "Confirm Bind"
+    }
+  },
+  "assets": {
+    "title": "My Assets",
+    "overview": "Assets Overview",
+    "withdraw": "Withdraw",
+    "withdrawHistory": "Withdraw History",
+    "commissionHistory": "Commission History",
+    "availableBalance": "Available Balance",
+    "withdrawAmount": "Withdraw Amount",
+    "withdrawAddress": "Withdraw Address",
+    "withdrawNow": "Withdraw Now",
+    "withdrawSuccess": "Withdrawal request submitted",
+    "withdrawFailed": "Withdrawal failed",
+    "submitting": "Submitting...",
+    "enterWithdrawAmount": "Enter withdraw amount",
+    "enterBscAddress": "Enter BSC wallet address (0x...)",
+    "bscWalletAddress": "BSC Wallet Address",
+    "notSet": "Not Set",
+    "addressFormatCorrect": "Address format is correct",
+    "addressWarning": "Please ensure the address is correct, wrong address may cause permanent loss of assets",
+    "completedTime": "Completed Time",
+    "inviteCommission": "Invite Commission",
+    "invitee": "Invitee",
+    "email": "Email",
+    "noWithdrawalRecords": "No withdrawal records",
+    "noCommissionRecords": "No commission records",
+    "error": "Failed to get asset information",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "failed": "Failed"
+    },
+    "validation": {
+      "amountRequired": "Please enter withdraw amount",
+      "addressRequired": "Please enter withdraw address",
+      "invalidBscAddress": "Please enter a valid BSC address",
+      "insufficientBalance": "Insufficient balance"
     }
   }
 }

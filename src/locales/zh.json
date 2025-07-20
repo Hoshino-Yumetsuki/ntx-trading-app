@@ -5,7 +5,8 @@
     "success": "成功",
     "cancel": "取消",
     "confirm": "确认",
-    "save": "保存"
+    "save": "保存",
+    "refresh": "刷新"
   },
   "nav": {
     "home": "首页",
@@ -87,14 +88,6 @@
       "title": "学院课程",
       "content": "学习更多区块链和交易知识。"
     }
-  },
-  "assets": {
-    "error": "操作失败，请稍后重试",
-    "title": "我的资产",
-    "balance": "余额",
-    "withdraw": "提现",
-    "deposit": "充值",
-    "history": "交易记录"
   },
   "splash": {
     "title": "NTX Trading",
@@ -275,6 +268,44 @@
       "uidPlaceholder": "请输入您的 UID",
       "cancel": "取消",
       "confirm": "确认绑定"
+    }
+  },
+  "assets": {
+    "title": "我的资产",
+    "overview": "资产概览",
+    "withdraw": "提现",
+    "withdrawHistory": "提现记录",
+    "commissionHistory": "佣金记录",
+    "availableBalance": "可用余额",
+    "withdrawAmount": "提现金额",
+    "withdrawAddress": "提现地址",
+    "withdrawNow": "立即提现",
+    "withdrawSuccess": "提现申请已提交",
+    "withdrawFailed": "提现失败",
+    "submitting": "提交中...",
+    "enterWithdrawAmount": "请输入提现金额",
+    "enterBscAddress": "请输入BSC钱包地址 (0x...)",
+    "bscWalletAddress": "BSC钱包地址",
+    "notSet": "未设置",
+    "addressFormatCorrect": "地址格式正确",
+    "addressWarning": "请确保地址正确，错误地址可能导致资产永久丢失",
+    "completedTime": "完成时间",
+    "inviteCommission": "邀请佣金",
+    "invitee": "邀请人",
+    "email": "邮箱",
+    "noWithdrawalRecords": "暂无提现记录",
+    "noCommissionRecords": "暂无佣金记录",
+    "error": "获取资产信息失败",
+    "status": {
+      "pending": "处理中",
+      "confirmed": "已完成",
+      "failed": "失败"
+    },
+    "validation": {
+      "amountRequired": "请输入提现金额",
+      "addressRequired": "请输入提现地址",
+      "invalidBscAddress": "请输入有效的BSC地址",
+      "insufficientBalance": "余额不足"
     }
   }
 }
