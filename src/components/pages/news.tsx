@@ -141,6 +141,7 @@ export function NewsPage() {
     return (
       <div
         className="markdown-content"
+        // biome-ignore lint: false positive
         dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
     )

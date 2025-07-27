@@ -10,7 +10,6 @@ import {
 } from '@/src/components/ui/dialog'
 import { Download, Share2, Copy } from 'lucide-react'
 import type { UserInfo } from '@/src/types/user'
-import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from 'sonner'
 import QRCode from 'qrcode'
 import Image from 'next/image'
@@ -26,7 +25,6 @@ export function InviteShareModal({
   onClose,
   userInfo
 }: InviteShareModalProps) {
-  const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -314,9 +312,11 @@ ${inviteUrl}`
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                 </div>
               ) : qrCodeDataUrl ? (
-                <img
+                <Image
                   src={qrCodeDataUrl}
                   alt="邀请二维码"
+                  width={128}
+                  height={128}
                   className="w-32 h-32"
                 />
               ) : (
