@@ -1,5 +1,6 @@
 export { ProfileHeader } from './profile-header'
 export { InviteCodeCard } from './invite-code-card'
+export { InviteShareModal } from './invite-share-modal'
 export { StatsCard } from './stats-card'
 export { GntxCard } from './gntx-card'
 export { QuickActionsCard } from './quick-actions-card'
