@@ -1,6 +1,5 @@
 'use client'
 
-import type React from 'react'
 import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
@@ -9,6 +8,8 @@ import { toast } from '@/src/hooks/use-toast'
 import { useLanguage } from '@/src/contexts/language-context'
 import { API_BASE_URL } from '@/src/services/config'
 import Image from 'next/image'
+import MarkdownIt from 'markdown-it'
+import '@/src/styles/markdown.css'
 
 interface NewsItem {
   id: number
@@ -116,6 +117,14 @@ export function NewsPage() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  // 初始化markdown-it实例
+  const md = new MarkdownIt({
+    html: true, // 允许HTML标签
+    linkify: true, // 自动识别链接
+    typographer: true, // 启用智能引号和其他排版功能
+    breaks: true // 将换行符转换为<br>
+  })
+
   // 渲染Markdown内容的函数
   const renderMarkdownContent = (content: string) => {
     if (!content) {
@@ -126,98 +135,15 @@ export function NewsPage() {
       )
     }
 
-    // 简单的Markdown解析和渲染
-    const lines = content.split('\n')
-    const elements: React.JSX.Element[] = []
-    let key = 0
+    // 使用markdown-it渲染HTML
+    const htmlContent = md.render(content)
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim()
-
-      if (!line) {
-        elements.push(<br key={key++} />)
-        continue
-      }
-
-      // 标题处理
-      if (line.startsWith('###')) {
-        elements.push(
-          <h3
-            key={key++}
-            className="text-lg font-semibold text-slate-800 mt-6 mb-3"
-          >
-            {line.replace(/^###\s*/, '')}
-          </h3>
-        )
-      } else if (line.startsWith('##')) {
-        elements.push(
-          <h2
-            key={key++}
-            className="text-xl font-bold text-slate-800 mt-6 mb-4"
-          >
-            {line.replace(/^##\s*/, '')}
-          </h2>
-        )
-      } else if (line.startsWith('#')) {
-        elements.push(
-          <h1
-            key={key++}
-            className="text-2xl font-bold text-slate-800 mt-6 mb-4"
-          >
-            {line.replace(/^#\s*/, '')}
-          </h1>
-        )
-      }
-      // 列表处理
-      else if (line.startsWith('- ') || line.startsWith('* ')) {
-        elements.push(
-          <li key={key++} className="text-slate-700 mb-1 ml-4 list-disc">
-            {line.replace(/^[-*]\s*/, '')}
-          </li>
-        )
-      }
-      // 代码块处理
-      else if (line.startsWith('```')) {
-        // 跳过代码块标记，处理代码内容
-        const codeLines = []
-        i++ // 跳过开始标记
-        while (i < lines.length && !lines[i].trim().startsWith('```')) {
-          codeLines.push(lines[i])
-          i++
-        }
-        elements.push(
-          <pre
-            key={key++}
-            className="bg-slate-100 p-4 rounded-md my-4 overflow-x-auto"
-          >
-            <code className="text-sm text-slate-800">
-              {codeLines.join('\n')}
-            </code>
-          </pre>
-        )
-      }
-      // 普通段落
-      else {
-        // 处理粗体和斜体
-        const processedLine = line
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.*?)\*/g, '<em>$1</em>')
-          .replace(
-            /`(.*?)`/g,
-            '<code class="bg-slate-100 px-1 rounded text-sm">$1</code>'
-          )
-
-        elements.push(
-          <p
-            key={key++}
-            className="text-slate-700 mb-3 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: processedLine }}
-          />
-        )
-      }
-    }
-
-    return <div className="space-y-2">{elements}</div>
+    return (
+      <div
+        className="markdown-content"
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+      />
+    )
   }
 
   if (viewingArticle && currentArticle) {
