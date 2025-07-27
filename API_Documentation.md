@@ -894,3 +894,41 @@ API返回以下HTTP状态码：
 ## API基础URL
 
 所有API都以 `/api` 为前缀，后接具体模块名称，如 `/api/auth`, `/api/user`, `/api/mining`, `/api/admin`, `/api/system`。
+
+
+## 新闻页面
+
+URL：/api/user/academy/articles
+
+```
+[
+    {
+        "id": 3,
+        "title": "[新闻]比特币首破12万美元创历史新高，美国“加密周”点燃多头情绪",
+        "summary": "7月14日，比特币在OKX等交易所最高冲至123,226美元，首次站上12万美元整数位；受ETF巨量流入及美国多项加密法案审议预期推动，日内涨幅一度扩大至3.35%，带动以太坊、SOL等主流币种普涨[^0^]。",
+        "imageUrl": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
+        "publishDate": "2025-07-19T18:26:25.146354388+00:00",
+        "modifyDate": "2025-07-19T18:27:13.453471209+00:00",
+        "isDisplayed": true
+    },
+    {
+        "id": 2,
+        "title": "[公告] NexTradeDAO Alpha测试版ui已经上线",
+        "summary": "NTX二代app震撼上线",
+        "imageUrl": "https://app.ntxdao.com/gntx/gntx.png",
+        "publishDate": "2025-07-19T18:15:44.175649401+00:00",
+        "modifyDate": "2025-07-19T18:17:52.321295612+00:00",
+        "isDisplayed": true
+    }
+]
+```
+
+### 新闻内容
+
+URL：api/user/academy/articles/{id}
+
+```
+
+{"id":3,"title":"[新闻]比特币首破12万美元创历史新高，美国“加密周”点燃多头情绪","summary":"7月14日，比特币在OKX等交易所最高冲至123,226美元，首次站上12万美元整数位；受ETF巨量流入及美国多项加密法案审议预期推动，日内涨幅一度扩大至3.35%，带动以太坊、SOL等主流币种普涨[^0^]。","imageUrl":"https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80","publishDate":"2025-07-19T18:26:25.146354388+00:00","modifyDate":"2025-07-19T18:27:13.453471209+00:00","isDisplayed":true,"content":"Markdown格式的新闻内容"}
+
+```

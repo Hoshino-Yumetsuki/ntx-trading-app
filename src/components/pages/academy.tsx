@@ -19,33 +19,38 @@ import {
   Shield,
   Target
 } from 'lucide-react'
-import Image from 'next/image' // Import Image component
 
 export function AcademyPage() {
   const courses = [
     {
-      title: '机构交易1/3：下跌中何时上涨？',
-      description: '识别牛熊拐点、趋势起点、反转信号的底层逻辑',
-      duration: '45分钟',
+      title: 'K线形态与多周期信号综合系统',
+      description:
+        '掌握机构操盘信号识别方法，学习三种顶级K线形态判断和最佳入场时机把握，配合多周期统一判断方法形成完整交易体系。',
+      duration: '课时：12课时 | 总时长：3小时15分钟',
       level: '进阶',
       locked: false,
-      category: '趋势分析'
+      category: '技术分析',
+      videoUrl: 'https://www.bilibili.com/video/BV14gycYwEVT/'
     },
     {
-      title: '机构交易2/3：上涨中何时下跌？',
-      description: '理解机构视角的行情空间结构转换思维',
-      duration: '52分钟',
+      title: '波段交易完整实战指南',
+      description:
+        '从实战角度讲解如何利用高低点序列确认趋势周期，掌握适合市场不同阶段的交易策略，建立规范化的风控和资金管理系统。',
+      duration: '课时：16课时 | 总时长：4小时40分钟',
       level: '进阶',
       locked: false,
-      category: '空间转换'
+      category: '交易策略',
+      videoUrl: 'https://www.bilibili.com/video/BV1quNbzqEuE/'
     },
     {
-      title: '机构交易3/3：突破点确认与行情延续',
-      description: '精准制定买入点、止损点、卖出点，避免追涨杀跌',
-      duration: '38分钟',
-      level: '高级',
-      locked: true,
-      category: '操盘模型'
+      title: '交易心理学与行为金融',
+      description:
+        '分析交易者常见心理偏差，教您控制恐惧与贪婪情绪，建立科学交易日志系统，实现交易心态与技术的良性循环。',
+      duration: '课时：8课时 | 总时长：2小时20分钟',
+      level: '基础',
+      locked: false,
+      category: '心理建设',
+      videoUrl: 'https://www.bilibili.com/video/BV1UFNqz1E9a/'
     }
   ]
 
@@ -64,29 +69,6 @@ export function AcademyPage() {
       icon: Shield,
       title: '仓位+风控模型',
       description: '科学资金管理，建立小亏大赚概率优势'
-    }
-  ]
-
-  const signalExamples = [
-    {
-      title: '上涨1+3策略',
-      image: '/placeholder.svg?height=150&width=300',
-      alt: '上涨1+3策略K线图'
-    },
-    {
-      title: '下跌1+3策略',
-      image: '/placeholder.svg?height=150&width=300',
-      alt: '下跌1+3策略K线图'
-    },
-    {
-      title: '黑马出世模型',
-      image: '/placeholder.svg?height=150&width=300',
-      alt: '黑马出世模型K线图'
-    },
-    {
-      title: '强势定价模型',
-      image: '/placeholder.svg?height=150&width=300',
-      alt: '强势定价模型K线图'
     }
   ]
 
@@ -109,7 +91,7 @@ export function AcademyPage() {
           <CardContent className="p-6">
             <div className="flex items-center space-x-4 mb-4">
               <Avatar className="w-16 h-16 ring-2 ring-blue-300 ring-offset-2 ring-offset-blue-50">
-                <AvatarImage src="/placeholder.svg?height=64&width=64" />
+                <AvatarImage src="_nze4inj_400x400.jpg" />
                 <AvatarFallback className="glass-card-strong bg-gradient-to-br from-blue-400 to-blue-600 text-white font-bold">
                   DT
                 </AvatarFallback>
@@ -123,13 +105,14 @@ export function AcademyPage() {
                   <Button
                     size="sm"
                     className="glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50 hover:bg-blue-100/50 transition-colors"
+                    onClick={() => window.open('https://x.com/wuk_Bitcoin', '_blank', 'noopener,noreferrer')}
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     @wuk_Bitcoin
                   </Button>
                   <div className="flex items-center text-yellow-600 bg-yellow-50 rounded-full px-2 py-0.5">
                     <Star className="w-4 h-4 mr-1 fill-current" />
-                    <span className="text-sm font-medium">4.9</span>
+                    <span className="text-sm font-medium">5.0</span>
                   </div>
                 </div>
               </div>
@@ -210,6 +193,7 @@ export function AcademyPage() {
                       <Button
                         size="sm"
                         className="glass-card text-green-600 hover:text-green-700 border-green-300 bg-green-50/50"
+                        onClick={() => window.open(course.videoUrl || '#', '_blank', 'noopener,noreferrer')}
                       >
                         <Play className="w-4 h-4 mr-1" />
                         学习
@@ -267,30 +251,6 @@ export function AcademyPage() {
               </div>
               信号实例展示
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {signalExamples.map((example, index) => (
-                <div
-                  key={index}
-                  className="glass-card rounded-xl overflow-hidden border-white/50"
-                >
-                  <Image
-                    src={example.image || '/placeholder.svg'}
-                    alt={example.alt}
-                    width={300}
-                    height={150}
-                    className="w-full h-auto object-cover"
-                  />
-                  <div className="p-4">
-                    <h5 className="text-slate-800 font-semibold text-base mb-2">
-                      {example.title}
-                    </h5>
-                    <Badge className="bg-red-100/80 text-red-700 border-red-300">
-                      需要学员权限
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
 

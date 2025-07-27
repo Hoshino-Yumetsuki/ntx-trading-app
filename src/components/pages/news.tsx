@@ -53,7 +53,6 @@ export function NewsPage() {
             <h1 className="text-2xl font-bold gradient-text">
               {t('news.title')}
             </h1>
-            <p className="text-slate-600 text-sm">{t('news.subtitle')}</p>
           </div>
           <div className="premium-icon w-8 h-8 rounded-lg">
             <Newspaper className="w-5 h-5 text-blue-600" />

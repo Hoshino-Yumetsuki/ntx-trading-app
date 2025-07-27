@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent } from '@/src/components/ui/card'
-import { TrendingUp, Users, Coins, DollarSign, Flame } from 'lucide-react'
+import { Users, Coins, DollarSign, Flame } from 'lucide-react'
 import {
   formatCurrency,
   formatNumber,

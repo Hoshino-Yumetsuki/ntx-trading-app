@@ -201,6 +201,14 @@
       "referrals": "Referrals",
       "totalReward": "Total Rewards"
     },
+    "gntx": {
+      "title": "GNTX Assets",
+      "description": "Global token supporting cross-chain trading and ecosystem applications",
+      "chain": "Chain Type",
+      "type": "Token Type",
+      "boundAddress": "Bound Address",
+      "viewOnExplorer": "View on Block Explorer"
+    },
     "menu": {
       "assets": {
         "title": "My Assets",

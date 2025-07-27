@@ -201,6 +201,14 @@
       "referrals": "推荐人数",
       "totalReward": "累计奖励"
     },
+    "gntx": {
+      "title": "GNTX 资产",
+      "description": "全球化通证，支持跨链交易和生态应用",
+      "chain": "链类型",
+      "type": "通证类型",
+      "boundAddress": "绑定地址",
+      "viewOnExplorer": "在区块浏览器查看"
+    },
     "menu": {
       "assets": {
         "title": "我的资产",
