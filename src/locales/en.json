@@ -243,7 +243,8 @@
     "loading": "Loading...",
     "error": "Loading failed",
     "empty": "No news available",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "back": "Back"
   },
   "home": {
     "welcome": "Welcome",

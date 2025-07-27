@@ -243,7 +243,8 @@
     "loading": "加载中...",
     "error": "加载失败",
     "empty": "暂无资讯",
-    "readMore": "阅读更多"
+    "readMore": "阅读更多",
+    "back": "返回"
   },
   "home": {
     "welcome": "欢迎使用",

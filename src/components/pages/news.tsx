@@ -1,57 +1,291 @@
 'use client'
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
+import type React from 'react'
+import { useState, useEffect } from 'react'
+import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
-import { Newspaper, Share2, Clock } from 'lucide-react'
-import { toast } from '@/src/hooks/use-toast' // Assuming useToast is available for notifications
-import { newsItems } from '@/src/data/news-data' // 导入统一的新闻数据
+import { Newspaper, Share2, Clock, ChevronLeft } from 'lucide-react'
+import { toast } from '@/src/hooks/use-toast'
 import { useLanguage } from '@/src/contexts/language-context'
+import { API_BASE_URL } from '@/src/services/config'
+import Image from 'next/image'
+
+interface NewsItem {
+  id: number
+  title: string
+  summary: string
+  imageUrl: string
+  publishDate: string
+  modifyDate: string
+  isDisplayed: boolean
+  content?: string
+}
 
 export function NewsPage() {
   const { t } = useLanguage()
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null)
+  const [viewingArticle, setViewingArticle] = useState(false)
 
-  const handleShare = async (newsItem: (typeof newsItems)[0]) => {
+  // 获取新闻列表
+  useEffect(() => {
+    async function fetchNews() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/academy/articles`)
+        if (response.ok) {
+          const data = await response.json()
+          setNewsItems(data)
+        } else {
+          console.error('获取新闻失败:', response.statusText)
+        }
+      } catch (error) {
+        console.error('获取新闻出错:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchNews()
+  }, [])
+
+  // 获取新闻详情
+  const fetchArticleContent = async (id: number) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/user/academy/articles/${id}`
+      )
+      if (response.ok) {
+        const data = await response.json()
+        console.log('Article content received:', data)
+        setCurrentArticle(data)
+        setViewingArticle(true)
+      } else {
+        toast({
+          title: t('news.error.title') || '获取失败',
+          description: t('news.error.description') || '无法获取文章内容',
+          variant: 'destructive'
+        })
+      }
+    } catch (error) {
+      console.error('获取文章详情失败:', error)
+      toast({
+        title: t('news.error.title') || '获取失败',
+        description: t('news.error.description') || '无法获取文章内容',
+        variant: 'destructive'
+      })
+    }
+  }
+
+  const handleShare = async (newsItem: NewsItem) => {
     const shareData = {
       title: newsItem.title,
-      text: newsItem.content,
-      url: window.location.origin + newsItem.link // Use current origin for example
+      text: newsItem.summary,
+      url: `${window.location.origin}/news/${newsItem.id}`
     }
 
     try {
       if (navigator.share) {
         await navigator.share(shareData)
       } else {
-        // Fallback for browsers that do not support Web Share API
         await navigator.clipboard.writeText(
           `${shareData.title}\n${shareData.text}\n${shareData.url}`
         )
         toast({
-          title: t('news.share.success'),
-          description: t('news.share.success.desc')
+          title: t('news.share.success') || '分享成功',
+          description: t('news.share.success.desc') || '链接已复制到剪贴板'
         })
       }
     } catch (error) {
       console.error('分享失败:', error)
       toast({
-        title: t('news.share.failed'),
-        description: t('news.share.failed.desc'),
+        title: t('news.share.failed') || '分享失败',
+        description: t('news.share.failed.desc') || '无法分享此文章',
         variant: 'destructive'
       })
     }
   }
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString()
+  }
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
+  // 渲染Markdown内容的函数
+  const renderMarkdownContent = (content: string) => {
+    if (!content) {
+      return (
+        <div className="text-slate-500 text-center py-8">
+          {t('news.no.content') || '文章内容为空'}
+        </div>
+      )
+    }
+
+    // 简单的Markdown解析和渲染
+    const lines = content.split('\n')
+    const elements: React.JSX.Element[] = []
+    let key = 0
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim()
+
+      if (!line) {
+        elements.push(<br key={key++} />)
+        continue
+      }
+
+      // 标题处理
+      if (line.startsWith('###')) {
+        elements.push(
+          <h3
+            key={key++}
+            className="text-lg font-semibold text-slate-800 mt-6 mb-3"
+          >
+            {line.replace(/^###\s*/, '')}
+          </h3>
+        )
+      } else if (line.startsWith('##')) {
+        elements.push(
+          <h2
+            key={key++}
+            className="text-xl font-bold text-slate-800 mt-6 mb-4"
+          >
+            {line.replace(/^##\s*/, '')}
+          </h2>
+        )
+      } else if (line.startsWith('#')) {
+        elements.push(
+          <h1
+            key={key++}
+            className="text-2xl font-bold text-slate-800 mt-6 mb-4"
+          >
+            {line.replace(/^#\s*/, '')}
+          </h1>
+        )
+      }
+      // 列表处理
+      else if (line.startsWith('- ') || line.startsWith('* ')) {
+        elements.push(
+          <li key={key++} className="text-slate-700 mb-1 ml-4 list-disc">
+            {line.replace(/^[-*]\s*/, '')}
+          </li>
+        )
+      }
+      // 代码块处理
+      else if (line.startsWith('```')) {
+        // 跳过代码块标记，处理代码内容
+        const codeLines = []
+        i++ // 跳过开始标记
+        while (i < lines.length && !lines[i].trim().startsWith('```')) {
+          codeLines.push(lines[i])
+          i++
+        }
+        elements.push(
+          <pre
+            key={key++}
+            className="bg-slate-100 p-4 rounded-md my-4 overflow-x-auto"
+          >
+            <code className="text-sm text-slate-800">
+              {codeLines.join('\n')}
+            </code>
+          </pre>
+        )
+      }
+      // 普通段落
+      else {
+        // 处理粗体和斜体
+        const processedLine = line
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(
+            /`(.*?)`/g,
+            '<code class="bg-slate-100 px-1 rounded text-sm">$1</code>'
+          )
+
+        elements.push(
+          <p
+            key={key++}
+            className="text-slate-700 mb-3 leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: processedLine }}
+          />
+        )
+      }
+    }
+
+    return <div className="space-y-2">{elements}</div>
+  }
+
+  if (viewingArticle && currentArticle) {
+    return (
+      <div className="min-h-screen pb-6">
+        <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-slate-600 hover:text-blue-600 absolute top-4 left-4"
+            onClick={() => setViewingArticle(false)}
+          >
+            <ChevronLeft className="w-4 h-4 mr-1" />
+            {t('news.back') || '返回'}
+          </Button>
+          <h1 className="text-xl font-bold text-slate-800 mt-4">
+            {currentArticle.title}
+          </h1>
+          <div className="flex items-center text-slate-500 text-xs mt-2">
+            <span>{formatDate(currentArticle.publishDate)}</span>
+            <span className="mx-2">•</span>
+            <span>{formatTime(currentArticle.publishDate)}</span>
+          </div>
+        </div>
+
+        <div className="px-6 py-4">
+          <Card className="glass-card border-white/30 overflow-hidden">
+            {currentArticle.imageUrl && (
+              <div className="w-full h-48 overflow-hidden relative">
+                <Image
+                  src={currentArticle.imageUrl}
+                  alt={currentArticle.title}
+                  className="object-cover"
+                  fill
+                  sizes="100vw"
+                  priority
+                />
+              </div>
+            )}
+            <CardContent className="p-6">
+              <div className="max-w-none">
+                {renderMarkdownContent(currentArticle.content || '')}
+              </div>
+              <div className="flex justify-end mt-6 pt-4 border-t border-slate-200">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-600 hover:text-blue-600 hover:bg-blue-50/50"
+                  onClick={() => handleShare(currentArticle)}
+                >
+                  <Share2 className="w-4 h-4 mr-1" />
+                  {t('news.share') || '分享'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen pb-6">
       <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-2">
           <div>
             <h1 className="text-2xl font-bold gradient-text">
-              {t('news.title')}
+              {t('news.title') || '资讯中心'}
             </h1>
           </div>
           <div className="premium-icon w-8 h-8 rounded-lg">
@@ -60,48 +294,52 @@ export function NewsPage() {
         </div>
       </div>
 
-      <div className="px-6 mt-6 space-y-5">
-        {newsItems.map((item, index) => (
-          <div key={item.id} className="flex relative">
-            <div className="flex flex-col items-center mr-4">
-              <div className="premium-icon w-6 h-6 rounded-full flex-shrink-0 z-20 shadow-md border border-blue-200">
-                <Clock className="w-3 h-3 text-blue-600" />
-              </div>
-              {index < newsItems.length - 1 && (
-                <div className="w-0.5 bg-gradient-to-b from-blue-400 to-blue-200 flex-grow mt-2 mb-2 z-10"></div>
-              )}
-            </div>
-
-            <Card className="glass-card border-white/50 flex-1 data-card">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-slate-800 text-lg font-semibold">
-                  {item.title}
-                </CardTitle>
-                <div className="flex items-center text-slate-500 text-xs mt-1">
-                  <span>{item.date}</span>
-                  <span className="mx-2">•</span>
-                  <span>{item.time}</span>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-slate-700 text-sm leading-relaxed mb-4">
-                  {item.content}
-                </p>
-                <div className="flex justify-end">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-slate-600 hover:text-blue-600 hover:bg-blue-50/50"
-                    onClick={() => handleShare(item)}
-                  >
-                    <Share2 className="w-4 h-4 mr-1" />
-                    {t('news.share')}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+      <div className="px-6 mt-4">
+        {loading ? (
+          <div className="text-center py-8 text-slate-500">
+            {t('news.loading') || '加载中...'}
           </div>
-        ))}
+        ) : newsItems.length > 0 ? (
+          <div className="space-y-3">
+            {newsItems.map((item, _index) => (
+              <Card
+                key={item.id}
+                className="glass-card border-white/20 hover:border-white/40 transition-all cursor-pointer"
+                onClick={() => fetchArticleContent(item.id)}
+              >
+                <div className="flex p-3">
+                  <div className="flex-1 pr-3">
+                    <h3 className="text-slate-800 font-medium text-sm mb-1 line-clamp-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-slate-600 text-xs line-clamp-2 mb-2">
+                      {item.summary}
+                    </p>
+                    <div className="flex items-center text-slate-500 text-xs">
+                      <Clock className="w-3 h-3 mr-1" />
+                      <span>{formatDate(item.publishDate)}</span>
+                    </div>
+                  </div>
+                  {item.imageUrl && (
+                    <div className="w-16 h-16 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.title}
+                        width={64}
+                        height={64}
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-slate-500">
+            {t('news.empty') || '暂无资讯'}
+          </div>
+        )}
       </div>
     </div>
   )

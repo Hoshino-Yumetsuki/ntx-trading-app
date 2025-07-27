@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { TrendingUp } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
+import Image from 'next/image'
 
 export function SplashScreen() {
   const { t } = useLanguage()
@@ -19,10 +20,13 @@ export function SplashScreen() {
       >
         <div className="mb-8 relative">
           <div className="w-24 h-24 mx-auto glass-card-strong rounded-2xl flex items-center justify-center mb-4">
-            <img
+            <Image
               src="/ntx_1_1.jpg"
               alt="NTX Logo"
-              className="w-full h-full object-contain rounded-xl"
+              width={96}
+              height={96}
+              className="object-contain rounded-xl"
+              priority
             />
           </div>
         </div>

@@ -105,7 +105,13 @@ export function AcademyPage() {
                   <Button
                     size="sm"
                     className="glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50 hover:bg-blue-100/50 transition-colors"
-                    onClick={() => window.open('https://x.com/wuk_Bitcoin', '_blank', 'noopener,noreferrer')}
+                    onClick={() =>
+                      window.open(
+                        'https://x.com/wuk_Bitcoin',
+                        '_blank',
+                        'noopener,noreferrer'
+                      )
+                    }
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     @wuk_Bitcoin
@@ -193,7 +199,13 @@ export function AcademyPage() {
                       <Button
                         size="sm"
                         className="glass-card text-green-600 hover:text-green-700 border-green-300 bg-green-50/50"
-                        onClick={() => window.open(course.videoUrl || '#', '_blank', 'noopener,noreferrer')}
+                        onClick={() =>
+                          window.open(
+                            course.videoUrl || '#',
+                            '_blank',
+                            'noopener,noreferrer'
+                          )
+                        }
                       >
                         <Play className="w-4 h-4 mr-1" />
                         学习

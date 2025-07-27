@@ -49,7 +49,10 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
             viewBox="0 0 24 24"
             fill="currentColor"
             className="w-4 h-4 mr-1"
+            role="img"
+            aria-label="GNTX token icon"
           >
+            <title>GNTX Token</title>
             <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
             <path
               fillRule="evenodd"
