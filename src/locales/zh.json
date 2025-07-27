@@ -1,4 +1,89 @@
 {
+  "login": {
+    "title": "登录账号",
+    "subtitle": "欢迎回到 NTX，请登录您的账号",
+    "banner": {
+      "joinNow": "即刻加入",
+      "platform": "全球一站式返佣挖矿服务平台",
+      "exchanges": "币安、OKX、BYBIT、Gate、bitget等",
+      "joinedExchanges": "严选交易所，现已加入平台"
+    },
+    "register": {
+      "title": "注册",
+      "subtitle": "创建您的账号"
+    },
+    "email": {
+      "label": "电子邮箱",
+      "placeholder": "请输入您的电子邮箱"
+    },
+    "password": {
+      "label": "密码",
+      "placeholder": "请输入您的密码",
+      "register": {
+        "placeholder": "请设置密码 (至少8位，包含大小写字母和数字)"
+      }
+    },
+    "nickname": {
+      "label": "昵称",
+      "placeholder": "请输入您的昵称"
+    },
+    "verificationCode": {
+      "label": "验证码",
+      "placeholder": "请输入验证码"
+    },
+    "confirmPassword": {
+      "label": "确认密码",
+      "placeholder": "请再次输入密码"
+    },
+    "inviteCode": {
+      "label": "邀请码 (选填)",
+      "placeholder": "请输入邀请码"
+    },
+    "loginButton": "登录",
+    "registerButton": "注册",
+    "sendCode": "发送验证码",
+    "resendCode": "重新发送",
+    "switchToLogin": "已有账号？返回登录",
+    "switchToRegister": "没有账号？立即注册",
+    "agreeTerms": "我已阅读并同意",
+    "termsOfService": "服务条款",
+    "and": "和",
+    "privacyPolicy": "隐私政策",
+    "error": {
+      "loginFailed": "登录失败，请检查邮箱和密码",
+      "registerFailed": "注册失败，请稍后重试",
+      "emailRequired": "请输入有效的邮箱地址",
+      "sendCodeFailed": "验证码发送失败，请稍后重试"
+    },
+    "success": {
+      "registerSuccess": "注册成功",
+      "codesSent": "验证码已发送，请查收邮件"
+    }
+  },
+  "validation": {
+    "email": {
+      "invalid": "请输入有效的电子邮箱地址"
+    },
+    "nickname": {
+      "minLength": "昵称至少需要2个字符",
+      "maxLength": "昵称不能超过20个字符"
+    },
+    "verificationCode": {
+      "length": "请输入6位验证码"
+    },
+    "password": {
+      "required": "密码不能为空",
+      "minLength": "密码至少需要8个字符",
+      "maxLength": "密码不能超过128个字符",
+      "lowercase": "密码需要包含小写字母",
+      "number": "密码需要包含数字",
+      "uppercase": "密码需要包含大写字母",
+      "mismatch": "两次输入的密码不匹配"
+    },
+    "terms": {
+      "required": "请阅读并同意条款和隐私政策"
+    }
+  },
   "common": {
     "loading": "加载中...",
     "error": "错误",
@@ -91,8 +176,8 @@
   },
   "splash": {
     "title": "NTX Trading",
-    "subtitle": "智能交易挖矿平台",
-    "description": "通过交易获得代币奖励",
+    "subtitle": "聪明的投资者",
+    "description": "绝不浪费每分本金",
     "loading": "加载中..."
   },
   "profile": {

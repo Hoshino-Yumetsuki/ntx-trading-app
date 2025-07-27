@@ -1,4 +1,89 @@
 {
+  "login": {
+    "title": "Login",
+    "subtitle": "Welcome back, please login to your account",
+    "banner": {
+      "joinNow": "Join Now",
+      "platform": "Global One-Stop Mining Rebate Platform",
+      "exchanges": "Binance, OKX, BYBIT, Gate, bitget and more",
+      "joinedExchanges": "Selected exchanges have joined the platform"
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create your account"
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "Please enter your email"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Please enter your password",
+      "register": {
+        "placeholder": "Set password (min. 8 chars with uppercase, lowercase, and number)"
+      }
+    },
+    "nickname": {
+      "label": "Nickname",
+      "placeholder": "Please enter your nickname"
+    },
+    "verificationCode": {
+      "label": "Verification Code",
+      "placeholder": "Please enter verification code"
+    },
+    "confirmPassword": {
+      "label": "Confirm Password",
+      "placeholder": "Please re-enter password"
+    },
+    "inviteCode": {
+      "label": "Invite Code (Optional)",
+      "placeholder": "Please enter invite code"
+    },
+    "loginButton": "Login",
+    "registerButton": "Register",
+    "sendCode": "Send Code",
+    "resendCode": "Resend",
+    "switchToLogin": "Already have an account? Back to login",
+    "switchToRegister": "No account? Register now",
+    "agreeTerms": "I have read and agree to",
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "error": {
+      "loginFailed": "Login failed. Please check your email and password.",
+      "registerFailed": "Registration failed. Please try again later.",
+      "emailRequired": "Please enter a valid email address",
+      "sendCodeFailed": "Failed to send verification code. Please try again later."
+    },
+    "success": {
+      "registerSuccess": "Registration successful",
+      "codesSent": "Verification code sent. Please check your email."
+    }
+  },
+  "validation": {
+    "email": {
+      "invalid": "Please enter a valid email address"
+    },
+    "nickname": {
+      "minLength": "Nickname must be at least 2 characters",
+      "maxLength": "Nickname cannot exceed 20 characters"
+    },
+    "verificationCode": {
+      "length": "Please enter 6-digit verification code"
+    },
+    "password": {
+      "required": "Password is required",
+      "minLength": "Password must be at least 8 characters",
+      "maxLength": "Password cannot exceed 128 characters",
+      "lowercase": "Password must contain a lowercase letter",
+      "number": "Password must contain a number",
+      "uppercase": "Password must contain an uppercase letter",
+      "mismatch": "Passwords do not match"
+    },
+    "terms": {
+      "required": "Please read and agree to the terms and privacy policy"
+    }
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",

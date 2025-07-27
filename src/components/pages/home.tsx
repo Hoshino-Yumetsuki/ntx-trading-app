@@ -14,7 +14,6 @@ import {
   Brain
 } from 'lucide-react'
 import Image from 'next/image'
-import { SignalCarousel } from '@/src/components/ui/signal-carousel'
 import { TutorialPage } from '@/src/components/subpages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
 
@@ -97,8 +96,6 @@ export function HomePage() {
         </div>
       </div>
 
-      <SignalCarousel />
-
       <div className="px-6 space-y-4">
         <Card className="glass-card border-white/50">
           <CardContent className="p-6">
@@ -129,6 +126,27 @@ export function HomePage() {
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <div className="premium-icon w-12 h-12 rounded-xl mr-4">
+                <TrendingUp className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h3 className="text-slate-800 font-semibold text-lg">
+                  {t('home.card.mining.title')}
+                </h3>
+                <p className="text-slate-600 text-sm">
+                  {t('home.card.mining.subtitle')}
+                </p>
+              </div>
+            </div>
+            <p className="text-slate-700 text-sm leading-relaxed">
+              {t('home.card.mining.desc')}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-white/50">
+          <CardContent className="p-6">
+            <div className="flex items-center mb-4">
+              <div className="premium-icon w-12 h-12 rounded-xl mr-4">
                 <Brain className="w-6 h-6 text-indigo-600" />
               </div>
               <div>
@@ -147,27 +165,6 @@ export function HomePage() {
               {t('home.card.ai.button')}
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card border-white/50">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-4">
-              <div className="premium-icon w-12 h-12 rounded-xl mr-4">
-                <TrendingUp className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h3 className="text-slate-800 font-semibold text-lg">
-                  {t('home.card.mining.title')}
-                </h3>
-                <p className="text-slate-600 text-sm">
-                  {t('home.card.mining.subtitle')}
-                </p>
-              </div>
-            </div>
-            <p className="text-slate-700 text-sm leading-relaxed">
-              {t('home.card.mining.desc')}
-            </p>
           </CardContent>
         </Card>
 

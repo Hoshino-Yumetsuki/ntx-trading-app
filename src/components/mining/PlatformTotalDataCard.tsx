@@ -114,45 +114,25 @@ export function PlatformTotalDataCard({
           </CardContent>
         </Card>
 
-        {/* 总交易量 */}
+        {/* 平台用户数 */}
         <Card className="glass-card border-white/50 hover:shadow-lg transition-shadow">
           <CardContent className="p-4">
             <div className="flex items-center space-x-3">
               <div className="premium-icon w-10 h-10 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-purple-600" />
+                <Users className="w-5 h-5 text-cyan-600" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-slate-600 truncate">
-                  {t('mining.platform.totalVolume') || '总交易量'}
+                  {t('mining.platform.totalUsers') || '平台用户'}
                 </p>
                 <p className="text-lg font-semibold text-slate-800 truncate">
-                  {formatCurrency(platformData?.total_trading_volume)}
+                  {formatNumber(platformData?.platform_users)}
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* 平台用户数 */}
-      <Card className="glass-card border-white/50 hover:shadow-lg transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-center space-x-3">
-            <div className="premium-icon w-10 h-10 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-cyan-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-slate-600">
-                {t('mining.platform.totalUsers') || '平台用户'}
-              </p>
-              <p className="text-2xl font-bold text-slate-800">
-                {formatNumber(platformData?.platform_users)}{' '}
-                {t('mining.platform.users') || '人'}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

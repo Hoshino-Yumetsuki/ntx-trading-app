@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { TrendingUp, Zap } from 'lucide-react'
+import { TrendingUp } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function SplashScreen() {
@@ -19,10 +19,11 @@ export function SplashScreen() {
       >
         <div className="mb-8 relative">
           <div className="w-24 h-24 mx-auto glass-card-strong rounded-2xl flex items-center justify-center mb-4">
-            <span className="text-3xl font-bold gradient-text">NTX</span>
-          </div>
-          <div className="absolute -top-2 -right-2 w-8 h-8 glass-card rounded-full flex items-center justify-center">
-            <Zap className="w-4 h-4 text-yellow-600" />
+            <img
+              src="/ntx_1_1.jpg"
+              alt="NTX Logo"
+              className="w-full h-full object-contain rounded-xl"
+            />
           </div>
         </div>
 
@@ -34,7 +35,7 @@ export function SplashScreen() {
           <p className="text-xl font-semibold text-slate-700">
             {t('splash.subtitle')}
           </p>
-          <p className="text-lg text-slate-600 max-w-xs mx-auto leading-relaxed">
+          <p className="text-2xl md:text-3xl font-bold text-blue-700 max-w-xs mx-auto leading-relaxed animate-pulse">
             {t('splash.description')}
           </p>
         </div>

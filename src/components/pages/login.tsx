@@ -144,9 +144,32 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-      <div className="max-w-md w-full space-y-8">
+      <div className="max-w-md w-full space-y-6">
+        {/* 只在注册页面显示横幅文字 */}
+        {isRegisterMode && (
+          <div className="mb-8 mt-6">
+            <div className="text-left mb-3">
+              <h3 className="text-3xl font-extrabold text-blue-700">
+                {t('login.banner.joinNow')}
+              </h3>
+              <h3 className="text-2xl font-bold mb-3 text-blue-700">
+                {t('login.banner.platform')}
+              </h3>
+            </div>
+            <div className="text-sm text-left text-gray-600 flex items-center">
+              <span>{t('login.banner.exchanges')}</span>
+              <span className="mx-1">{t('login.banner.joinedExchanges')}</span>
+              <span className="ml-1 bg-gray-100 rounded-full p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
+                </svg>
+              </span>
+            </div>
+          </div>
+        )}
+
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-3 text-3xl font-extrabold text-gray-900">
             {isRegisterMode ? t('login.register.title') : t('login.title')}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
