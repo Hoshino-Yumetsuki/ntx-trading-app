@@ -254,13 +254,13 @@ export function NewsPage() {
                     </div>
                   </div>
                   {item.imageUrl && (
-                    <div className="w-16 h-16 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
+                    <div className="w-20 h-20 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
                       <Image
                         src={item.imageUrl}
                         alt={item.title}
-                        width={64}
-                        height={64}
-                        className="object-cover"
+                        width={80}
+                        height={80}
+                        className="object-cover w-full h-full"
                       />
                     </div>
                   )}
