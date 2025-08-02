@@ -18,7 +18,9 @@ import {
   GraduationCap,
   Target,
   Coins,
-  Shield
+  Shield,
+  Heart,
+  Building
 } from 'lucide-react'
 
 interface TutorialPageProps {
@@ -31,31 +33,31 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
     {
       id: 'overview',
       title: t('tutorial.overview.title'),
-      icon: <BookOpen className="w-6 h-6" />,
+      icon: <Building className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.overview.content')
     },
     {
       id: 'audience',
       title: t('tutorial.audience.title'),
-      icon: <Users className="w-6 h-6" />,
+      icon: <Users className="w-6 h-6 text-purple-600" />,
       content: t('tutorial.audience.content')
     },
     {
       id: 'account-setup',
       title: t('tutorial.account.title'),
-      icon: <Wallet className="w-6 h-6" />,
+      icon: <Wallet className="w-6 h-6 text-green-600" />,
       content: t('tutorial.account.content')
     },
     {
       id: 'mining-mechanism',
       title: t('tutorial.mining.title'),
-      icon: <TrendingUp className="w-6 h-6" />,
+      icon: <TrendingUp className="w-6 h-6 text-indigo-600" />,
       content: t('tutorial.mining.content')
     },
     {
       id: 'rebate-structure',
       title: t('tutorial.rebate.title'),
-      icon: <Coins className="w-6 h-6" />,
+      icon: <Coins className="w-6 h-6 text-amber-600" />,
       content: t('tutorial.rebate.content'),
       images: [
         '/introduction/1.png',
@@ -66,19 +68,19 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
     {
       id: 'staking-dividends',
       title: t('tutorial.staking.title'),
-      icon: <Shield className="w-6 h-6" />,
+      icon: <Shield className="w-6 h-6 text-cyan-600" />,
       content: t('tutorial.staking.content')
     },
     {
       id: 'community-governance',
       title: t('tutorial.governance.title'),
-      icon: <Users className="w-6 h-6" />,
+      icon: <Heart className="w-6 h-6 text-pink-600" />,
       content: t('tutorial.governance.content')
     },
     {
       id: 'academy-system',
       title: t('tutorial.academy.title'),
-      icon: <GraduationCap className="w-6 h-6" />,
+      icon: <GraduationCap className="w-6 h-6 text-orange-600" />,
       content: t('tutorial.academy.content')
     }
   ]
