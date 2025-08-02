@@ -227,13 +227,19 @@ export function NewsPage() {
             {t('news.loading') || '加载中...'}
           </div>
         ) : newsItems.length > 0 ? (
-          <div className="space-y-3">
+          <div className="relative space-y-3 pl-8">
+            {/* 蓝线 */}
+            <div className="absolute left-3 top-0 bottom-0 w-[2px] bg-blue-400"></div>
+
             {newsItems.map((item, _index) => (
               <Card
                 key={item.id}
-                className="glass-card border-white/20 hover:border-white/40 transition-all cursor-pointer"
+                className="glass-card border-white/20 hover:border-white/40 transition-all cursor-pointer relative"
                 onClick={() => fetchArticleContent(item.id)}
               >
+                {/* 蓝点 */}
+                <div className="absolute left-0 top-1/2 w-[10px] h-[10px] rounded-full bg-blue-400 transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+
                 <div className="flex p-3">
                   <div className="flex-1 pr-3">
                     <h3 className="text-slate-800 font-medium text-sm mb-1 line-clamp-2">
