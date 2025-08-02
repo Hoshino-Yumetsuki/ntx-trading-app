@@ -5,7 +5,6 @@ import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import {
   TrendingUp,
-  Zap,
   ArrowRight,
   Target,
   Award,
@@ -59,9 +58,6 @@ export function HomePage() {
           <div>
             <h1 className="text-2xl font-bold gradient-text">NTX</h1>
             <p className="text-slate-600 text-sm">交易即挖矿</p>
-          </div>
-          <div className="premium-icon w-10 h-10 rounded-full">
-            <Zap className="w-5 h-5 text-blue-600" />
           </div>
         </div>
         {/* 新手教程大横幅 */}
