@@ -1,14 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
-import { Newspaper, Share2, Clock, ChevronLeft } from 'lucide-react'
-import { toast } from '@/src/hooks/use-toast'
-import { useLanguage } from '@/src/contexts/language-context'
-import { API_BASE_URL } from '@/src/services/config'
 import Image from 'next/image'
+import { Clock, Rss, Newspaper, Share2, ChevronLeft } from 'lucide-react'
+import DOMPurify from 'dompurify'
+import { useLanguage } from '@/src/contexts/language-context'
+import { toast } from '@/src/hooks/use-toast'
 import MarkdownIt from 'markdown-it'
+import Parser from 'rss-parser'
+import { API_BASE_URL } from '@/src/services/config'
 import '@/src/styles/markdown.css'
 
 interface NewsItem {
@@ -20,6 +22,7 @@ interface NewsItem {
   modifyDate: string
   isDisplayed: boolean
   content?: string
+  source?: string // 添加来源标识，区分API和RSS
 }
 
 export function NewsPage() {
@@ -29,50 +32,122 @@ export function NewsPage() {
   const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null)
   const [viewingArticle, setViewingArticle] = useState(false)
 
-  // 获取新闻列表
+  // 从RSS获取新闻
+  const fetchRssNews = useCallback(async () => {
+    try {
+      // 由于浏览器的跨域限制，使用代理或CORS友好的API
+      const response = await fetch('https://www.chaincatcher.com/rss/clist')
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data?.contents) {
+          const parser = new Parser()
+          const feed = await parser.parseString(data.contents)
+
+          // 将RSS项转换为NewsItem格式
+          const rssItems: NewsItem[] = feed.items.map((item, index) => ({
+            id: -1000 - index, // 使用负数ID避免与API文章ID冲突
+            title: item.title || '',
+            summary: item.contentSnippet || '',
+            imageUrl: item.enclosure?.url || '/placeholder.png', // 使用文章图片或占位图
+            publishDate: item.pubDate || new Date().toISOString(),
+            modifyDate: item.isoDate || new Date().toISOString(),
+            isDisplayed: true,
+            content: item.content || '',
+            source: 'rss'
+          }))
+
+          return rssItems
+        }
+      }
+      return []
+    } catch (error) {
+      console.error('获取RSS新闻出错:', error)
+      return []
+    }
+  }, [])
+
+  // 获取新闻列表（API和RSS）
   useEffect(() => {
-    async function fetchNews() {
+    async function fetchAllNews() {
       try {
+        // 从API获取文章
         const response = await fetch(`${API_BASE_URL}/user/academy/articles`)
+        let apiNews: NewsItem[] = []
+
         if (response.ok) {
           const data = await response.json()
-          setNewsItems(data)
+          apiNews = data.map((item: NewsItem) => ({ ...item, source: 'api' }))
         } else {
-          console.error('获取新闻失败:', response.statusText)
+          console.error('获取API新闻失败:', response.statusText)
+          toast({
+            title: '获取新闻失败',
+            description: '请稍后再试',
+            variant: 'destructive'
+          })
         }
+
+        // 从RSS获取文章
+        const rssNews = await fetchRssNews()
+
+        // 合并两种来源的文章并按发布日期排序
+        const allNews = [...apiNews, ...rssNews].sort(
+          (a, b) =>
+            new Date(b.publishDate).getTime() -
+            new Date(a.publishDate).getTime()
+        )
+
+        setNewsItems(allNews)
       } catch (error) {
         console.error('获取新闻出错:', error)
+        toast({
+          title: '获取新闻失败',
+          description: '请检查网络连接',
+          variant: 'destructive'
+        })
       } finally {
         setLoading(false)
       }
     }
 
-    fetchNews()
-  }, [])
+    fetchAllNews()
+  }, [fetchRssNews])
 
   // 获取新闻详情
   const fetchArticleContent = async (id: number) => {
     try {
+      // 如果是RSS文章(负数ID)，直接从现有数据中获取
+      if (id < 0) {
+        const rssArticle = newsItems.find((item) => item.id === id)
+        if (rssArticle) {
+          setCurrentArticle(rssArticle)
+          setViewingArticle(true)
+        } else {
+          throw new Error('找不到对应的RSS文章')
+        }
+        return
+      }
+
+      // 如果是API文章，从服务器获取详情
       const response = await fetch(
         `${API_BASE_URL}/user/academy/articles/${id}`
       )
       if (response.ok) {
         const data = await response.json()
-        console.log('Article content received:', data)
-        setCurrentArticle(data)
+        setCurrentArticle({ ...data, source: 'api' })
         setViewingArticle(true)
       } else {
         toast({
-          title: t('news.error.title') || '获取失败',
-          description: t('news.error.description') || '无法获取文章内容',
+          title: '获取文章详情失败',
+          description: '请稍后再试',
           variant: 'destructive'
         })
       }
     } catch (error) {
-      console.error('获取文章详情失败:', error)
+      console.error('获取文章出错:', error)
       toast({
-        title: t('news.error.title') || '获取失败',
-        description: t('news.error.description') || '无法获取文章内容',
+        title: '获取文章详情失败',
+        description: '请检查您的网络连接',
         variant: 'destructive'
       })
     }
@@ -167,6 +242,15 @@ export function NewsPage() {
             <span>{formatDate(currentArticle.publishDate)}</span>
             <span className="mx-2">•</span>
             <span>{formatTime(currentArticle.publishDate)}</span>
+            {currentArticle.source === 'rss' && (
+              <>
+                <span className="mx-2">•</span>
+                <span className="flex items-center text-blue-500">
+                  <Rss className="w-3 h-3 mr-1" />
+                  RSS
+                </span>
+              </>
+            )}
           </div>
         </div>
 
@@ -186,7 +270,19 @@ export function NewsPage() {
             )}
             <CardContent className="p-6">
               <div className="max-w-none">
-                {renderMarkdownContent(currentArticle.content || '')}
+                {currentArticle.source === 'rss' ? (
+                  // RSS内容通常是HTML格式，使用DOMPurify净化后再渲染
+                  <div
+                    className="markdown-content"
+                    // biome-ignore lint: false
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(currentArticle.content || '')
+                    }}
+                  />
+                ) : (
+                  // API内容是Markdown格式
+                  renderMarkdownContent(currentArticle.content || '')
+                )}
               </div>
               <div className="flex justify-end mt-6 pt-4 border-t border-slate-200">
                 <Button
@@ -251,6 +347,12 @@ export function NewsPage() {
                     <div className="flex items-center text-slate-500 text-xs">
                       <Clock className="w-3 h-3 mr-1" />
                       <span>{formatDate(item.publishDate)}</span>
+                      {item.source === 'rss' && (
+                        <span className="flex items-center ml-2 text-blue-500">
+                          <Rss className="w-3 h-3 mr-1" />
+                          RSS
+                        </span>
+                      )}
                     </div>
                   </div>
                   {item.imageUrl && (
