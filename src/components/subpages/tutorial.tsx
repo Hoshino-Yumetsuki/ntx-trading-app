@@ -132,53 +132,56 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
           </CardHeader>
         </Card>
 
-        {/* Tutorial Sections */}
-        <div className="space-y-4">
-          {tutorialSections.map((section, _index) => (
-            <Card
-              key={section.id}
-              className="glass-card border-white/50 overflow-hidden"
-            >
-              <CardHeader>
-                <div className="flex items-center">
-                  <div className="premium-icon w-12 h-12 rounded-xl mr-4">
-                    {section.icon}
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg text-slate-800">
-                      {section.title}
-                    </CardTitle>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="pt-0">
-                <div className="space-y-4">
-                  <div className="text-slate-700 leading-relaxed whitespace-pre-line">
-                    {section.content}
-                  </div>
-
-                  {section.images && (
-                    <div className="mt-4 space-y-4">
-                      {section.images.map((image, imageIndex) => (
-                        <div key={imageIndex}>
-                          <div className="relative w-full h-64">
-                            <Image
-                              src={image}
-                              alt={`${section.title} - 图${imageIndex + 1}`}
-                              fill
-                              className="object-contain rounded-lg shadow-lg"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+        {/* Tutorial Sections - Unified Card */}
+        <Card className="glass-card border-white/50 overflow-hidden shadow-xl">
+          <CardContent className="py-6">
+            <div className="space-y-8">
+              {tutorialSections.map((section, index) => (
+                <div key={section.id}>
+                  {/* 如果不是第一个部分，则添加分隔线 */}
+                  {index > 0 && (
+                    <div className="border-t border-slate-200/70 my-8"></div>
                   )}
+
+                  <div className="flex items-start">
+                    <div className="premium-icon w-12 h-12 rounded-xl mr-4 flex-shrink-0">
+                      {section.icon}
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="text-lg font-semibold text-slate-800 mb-3">
+                        {section.title}
+                      </h3>
+                      <div className="text-slate-700 leading-relaxed whitespace-pre-line mb-4">
+                        {section.content}
+                      </div>
+
+                      {/* 图片部分 */}
+                      {section.images && (
+                        <div className="mt-6 space-y-4">
+                          {section.images.map((image, imageIndex) => (
+                            <div
+                              key={imageIndex}
+                              className="bg-white/30 p-2 rounded-lg shadow-sm"
+                            >
+                              <div className="relative w-full h-64">
+                                <Image
+                                  src={image}
+                                  alt={`${section.title} - 图${imageIndex + 1}`}
+                                  fill
+                                  className="object-contain rounded-lg"
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
