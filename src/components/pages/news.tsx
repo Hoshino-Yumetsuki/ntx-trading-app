@@ -39,26 +39,25 @@ export function NewsPage() {
       const response = await fetch('https://rss.ntxdao.com/rss/clist')
 
       if (response.ok) {
-        const data = await response.json()
-        if (data?.contents) {
-          const parser = new Parser()
-          const feed = await parser.parseString(data.contents)
+        // 直接获取XML内容而不是尝试解析为JSON
+        const xmlText = await response.text()
+        const parser = new Parser()
+        const feed = await parser.parseString(xmlText)
 
-          // 将RSS项转换为NewsItem格式
-          const rssItems: NewsItem[] = feed.items.map((item, index) => ({
-            id: -1000 - index, // 使用负数ID避免与API文章ID冲突
-            title: item.title || '',
-            summary: item.contentSnippet || '',
-            imageUrl: item.enclosure?.url || '/placeholder.png', // 使用文章图片或占位图
-            publishDate: item.pubDate || new Date().toISOString(),
-            modifyDate: item.isoDate || new Date().toISOString(),
-            isDisplayed: true,
-            content: item.content || '',
-            source: 'rss'
-          }))
+        // 将RSS项转换为NewsItem格式
+        const rssItems: NewsItem[] = feed.items.map((item, index) => ({
+          id: -1000 - index, // 使用负数ID避免与API文章ID冲突
+          title: item.title || '',
+          summary: item.contentSnippet || '',
+          imageUrl: item.enclosure?.url || '/placeholder.png', // 使用文章图片或占位图
+          publishDate: item.pubDate || new Date().toISOString(),
+          modifyDate: item.isoDate || new Date().toISOString(),
+          isDisplayed: true,
+          content: item.content || '',
+          source: 'rss'
+        }))
 
-          return rssItems
-        }
+        return rssItems
       }
       return []
     } catch (error) {
@@ -332,18 +331,26 @@ export function NewsPage() {
 
         <div className="px-6 py-4">
           <Card className="glass-card border-white/30 overflow-hidden">
-            {currentArticle.imageUrl && (
-              <div className="w-full h-48 overflow-hidden relative">
-                <Image
-                  src={currentArticle.imageUrl}
-                  alt={currentArticle.title}
-                  className="object-cover"
-                  fill
-                  sizes="100vw"
-                  priority
-                />
-              </div>
-            )}
+            {currentArticle.imageUrl &&
+              currentArticle.imageUrl !== '/placeholder.png' &&
+              currentArticle.imageUrl.trim() !== '' && (
+                <div className="w-full h-48 overflow-hidden relative">
+                  <Image
+                    src={currentArticle.imageUrl}
+                    alt={currentArticle.title}
+                    className="object-cover"
+                    fill
+                    sizes="100vw"
+                    priority
+                    onError={(e) => {
+                      // 图片加载失败时隐藏父元素
+                      const target = e.target as HTMLImageElement
+                      const parent = target.parentElement?.parentElement
+                      if (parent) parent.style.display = 'none'
+                    }}
+                  />
+                </div>
+              )}
             <CardContent className="p-6">
               <div className="max-w-none">
                 {currentArticle.source === 'rss' ? (
@@ -431,17 +438,25 @@ export function NewsPage() {
                       )}
                     </div>
                   </div>
-                  {item.imageUrl && (
-                    <div className="w-20 h-20 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        width={80}
-                        height={80}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                  )}
+                  {item.imageUrl &&
+                    item.imageUrl !== '/placeholder.png' &&
+                    item.imageUrl.trim() !== '' && (
+                      <div className="w-20 h-20 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.title}
+                          width={80}
+                          height={80}
+                          className="object-cover w-full h-full"
+                          onError={(e) => {
+                            // 图片加载失败时隐藏父元素
+                            const target = e.target as HTMLImageElement
+                            const parent = target.parentElement
+                            if (parent) parent.style.display = 'none'
+                          }}
+                        />
+                      </div>
+                    )}
                 </div>
               </Card>
             ))}
