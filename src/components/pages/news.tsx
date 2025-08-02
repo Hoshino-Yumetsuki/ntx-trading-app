@@ -67,51 +67,127 @@ export function NewsPage() {
     }
   }, [])
 
+  // 合并和排序新闻项
+  const mergeAndSortNews = useCallback(
+    (apiNews: NewsItem[], rssNews: NewsItem[]) => {
+      return [...apiNews, ...rssNews].sort(
+        (a, b) =>
+          new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+      )
+    },
+    []
+  )
+
   // 获取新闻列表（API和RSS）
   useEffect(() => {
-    async function fetchAllNews() {
-      try {
-        // 从API获取文章
-        const response = await fetch(`${API_BASE_URL}/user/academy/articles`)
-        let apiNews: NewsItem[] = []
+    let apiNewsFetched = false
+    let rssNewsFetched = false
+    let apiNews: NewsItem[] = []
+    let rssNews: NewsItem[] = []
 
+    // 显示加载状态
+    setLoading(true)
+
+    // 异步获取API文章
+    async function fetchApiNews() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/academy/articles`)
         if (response.ok) {
           const data = await response.json()
           apiNews = data.map((item: NewsItem) => ({ ...item, source: 'api' }))
+          apiNewsFetched = true
+
+          // 如果RSS文章也已获取，则合并和排序
+          if (rssNewsFetched) {
+            setNewsItems(mergeAndSortNews(apiNews, rssNews))
+            setLoading(false)
+          } else {
+            // 仅显示API文章（如果有）
+            setNewsItems(apiNews)
+            // 保持加载状态，因为RSS还在加载
+          }
         } else {
           console.error('获取API新闻失败:', response.statusText)
+          apiNewsFetched = true
+          if (rssNewsFetched) {
+            // 如果RSS已获取，至少显示RSS内容
+            setNewsItems(rssNews)
+            setLoading(false)
+          }
+
           toast({
-            title: '获取新闻失败',
-            description: '请稍后再试',
+            title: '获取部分新闻失败',
+            description: 'API新闻获取失败，仍在尝试获取RSS文章',
             variant: 'destructive'
           })
         }
-
-        // 从RSS获取文章
-        const rssNews = await fetchRssNews()
-
-        // 合并两种来源的文章并按发布日期排序
-        const allNews = [...apiNews, ...rssNews].sort(
-          (a, b) =>
-            new Date(b.publishDate).getTime() -
-            new Date(a.publishDate).getTime()
-        )
-
-        setNewsItems(allNews)
       } catch (error) {
-        console.error('获取新闻出错:', error)
-        toast({
-          title: '获取新闻失败',
-          description: '请检查网络连接',
-          variant: 'destructive'
-        })
-      } finally {
-        setLoading(false)
+        console.error('获取API新闻出错:', error)
+        apiNewsFetched = true
+        if (rssNewsFetched) {
+          // 如果RSS已获取，至少显示RSS内容
+          setNewsItems(rssNews)
+          setLoading(false)
+        }
       }
     }
 
-    fetchAllNews()
-  }, [fetchRssNews])
+    // 异步获取RSS文章
+    async function fetchRssNewsAndUpdate() {
+      try {
+        const fetchedRssNews = await fetchRssNews()
+        rssNews = fetchedRssNews
+        rssNewsFetched = true
+
+        // 如果API文章已获取，则合并和排序
+        if (apiNewsFetched) {
+          setNewsItems(mergeAndSortNews(apiNews, rssNews))
+          setLoading(false)
+        } else {
+          // 仅显示RSS文章（如果有）
+          setNewsItems(rssNews)
+          // 保持加载状态，因为API还在加载
+        }
+      } catch (error) {
+        console.error('获取RSS新闻出错:', error)
+        rssNewsFetched = true
+        if (apiNewsFetched) {
+          // 如果API已获取，至少显示API内容
+          setNewsItems(apiNews)
+          setLoading(false)
+        }
+      }
+    }
+
+    // 并行启动两个获取过程
+    fetchApiNews()
+    fetchRssNewsAndUpdate()
+
+    // 设置超时，确保即使有一个源未响应，UI也会更新
+    const timeoutId = setTimeout(() => {
+      if (!apiNewsFetched && !rssNewsFetched) {
+        // 两个源都未响应
+        setLoading(false)
+        toast({
+          title: '获取新闻超时',
+          description: '请检查您的网络连接或稍后再试',
+          variant: 'destructive'
+        })
+      } else if (!apiNewsFetched && rssNewsFetched) {
+        // 只有RSS响应了
+        setNewsItems(rssNews)
+        setLoading(false)
+      } else if (apiNewsFetched && !rssNewsFetched) {
+        // 只有API响应了
+        setNewsItems(apiNews)
+        setLoading(false)
+      }
+      // 如果两者都响应了，那么在各自的获取函数中已处理
+    }, 10000) // 10秒超时
+
+    // 清理函数
+    return () => clearTimeout(timeoutId)
+  }, [fetchRssNews, mergeAndSortNews])
 
   // 获取新闻详情
   const fetchArticleContent = async (id: number) => {
