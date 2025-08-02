@@ -36,7 +36,7 @@ export function NewsPage() {
   const fetchRssNews = useCallback(async () => {
     try {
       // 由于浏览器的跨域限制，使用代理或CORS友好的API
-      const response = await fetch('https://www.chaincatcher.com/rss/clist')
+      const response = await fetch('https://rss.ntxdao.com/rss/clist')
 
       if (response.ok) {
         const data = await response.json()

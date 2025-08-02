@@ -90,6 +90,51 @@ export function HomePage() {
             </div>
           </div>
         </div>
+
+        {/* 立刻开赚交易所卡片 */}
+        <Card className="glass-card border-white/50 mt-6 mb-6">
+          <CardContent className="p-6">
+            {/* 居中显示的标题 */}
+            <div className="text-center mb-5">
+              <h3 className="text-lg font-semibold text-slate-800">立刻开赚</h3>
+            </div>
+
+            {/* 交易所图标横向滚动列表 - 居中显示 */}
+            <div
+              className="overflow-x-auto"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(203, 213, 225, 0.4) transparent'
+              }}
+            >
+              <div
+                className="flex justify-center pb-2 pt-1"
+                style={{ width: '100%' }}
+              >
+                {[
+                  { name: 'Binance', image: '/exchange/binance.png' },
+                  { name: 'BitGet', image: '/exchange/bitget.png' },
+                  { name: 'Bybit', image: '/exchange/bybit.jpg' },
+                  { name: 'HTX', image: '/exchange/htx.jpg' },
+                  { name: 'XT', image: '/exchange/xt.png' }
+                ].map((exchange) => (
+                  <div key={exchange.name} className="flex-shrink-0 px-3">
+                    <div className="w-20 h-20 bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={exchange.image}
+                          alt={exchange.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="px-6 space-y-4">
