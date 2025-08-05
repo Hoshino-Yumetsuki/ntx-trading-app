@@ -13,7 +13,7 @@ import {
   Brain
 } from 'lucide-react'
 import Image from 'next/image'
-import { TutorialPage } from '@/src/components/subpages/tutorial'
+import { TutorialPage } from '@/src/components/pages/subpages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function HomePage() {

@@ -1,19 +1,19 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useLanguage } from '../../contexts/language-context'
+import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from 'sonner'
-import { AuthService } from '../../services/auth'
+import { AuthService } from '@/src/services/auth'
 import {
   getUserInfo,
   getWithdrawalRecords,
   getCommissionRecords
-} from '../../services/user'
-import { AssetsHeader } from '../assets/assets-header'
-import { AssetsOverview } from '../assets/assets-overview'
-import { WithdrawalHistory } from '../assets/withdrawal-history'
-import { CommissionHistory } from '../assets/commission-history'
-import { WithdrawDialog } from '../assets/withdraw-dialog'
+} from '@/src/services/user'
+import { AssetsHeader } from '@/src/components/assets/assets-header'
+import { AssetsOverview } from '@/src/components/assets/assets-overview'
+import { WithdrawalHistory } from '@/src/components/assets/withdrawal-history'
+import { CommissionHistory } from '@/src/components/assets/commission-history'
+import { WithdrawDialog } from '@/src/components/assets/withdraw-dialog'
 import type {
   UserInfo,
   WithdrawalRecord,

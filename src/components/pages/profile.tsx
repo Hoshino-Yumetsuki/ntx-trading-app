@@ -5,8 +5,8 @@ import { useAuth } from '@/src/contexts/AuthContext'
 import { UserService } from '@/src/services/user'
 import type { UserInfo } from '@/src/types/user'
 import { toast } from 'sonner'
-import { SecuritySettings } from '@/src/components/subpages/security-settings'
-import AssetsPage from '@/src/components/subpages/assets'
+import { SecuritySettings } from '@/src/components/pages/subpages/security-settings'
+import AssetsPage from '@/src/components/pages/subpages/assets'
 import {
   ProfileHeader,
   InviteCodeCard,
@@ -14,7 +14,7 @@ import {
   QuickActionsCard,
   ContactCard,
   LogoutCard
-} from '@/src/components/profile'
+} from '@/src/components/pages/profile/index'
 
 export function ProfilePage() {
   const { logout } = useAuth()

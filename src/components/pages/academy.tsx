@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -7,71 +8,95 @@ import {
   CardHeader,
   CardTitle
 } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
 import {
   GraduationCap,
-  Play,
-  Lock,
-  ExternalLink,
-  Star,
+  BookOpen,
   TrendingUp,
-  Shield,
-  Target
+  Target,
+  Lock,
+  ArrowLeft
 } from 'lucide-react'
+import { LearningResourcesPage } from './academy/learning-resources'
+import { BlackHorseModelPage } from './academy/black-horse-model'
+import { StrategySignalsPage } from './academy/strategy-signals'
+import { UnlockCoursesPage } from './academy/unlock-courses'
 
 export function AcademyPage() {
-  const courses = [
-    {
-      title: 'K线形态与多周期信号综合系统',
-      description:
-        '掌握机构操盘信号识别方法，学习三种顶级K线形态判断和最佳入场时机把握，配合多周期统一判断方法形成完整交易体系。',
-      duration: '课时：12课时 | 总时长：3小时15分钟',
-      level: '进阶',
-      locked: false,
-      category: '技术分析',
-      videoUrl: 'https://www.bilibili.com/video/BV14gycYwEVT/'
-    },
-    {
-      title: '波段交易完整实战指南',
-      description:
-        '从实战角度讲解如何利用高低点序列确认趋势周期，掌握适合市场不同阶段的交易策略，建立规范化的风控和资金管理系统。',
-      duration: '课时：16课时 | 总时长：4小时40分钟',
-      level: '进阶',
-      locked: false,
-      category: '交易策略',
-      videoUrl: 'https://www.bilibili.com/video/BV1quNbzqEuE/'
-    },
-    {
-      title: '交易心理学与行为金融',
-      description:
-        '分析交易者常见心理偏差，教您控制恐惧与贪婪情绪，建立科学交易日志系统，实现交易心态与技术的良性循环。',
-      duration: '课时：8课时 | 总时长：2小时20分钟',
-      level: '基础',
-      locked: false,
-      category: '心理建设',
-      videoUrl: 'https://www.bilibili.com/video/BV1UFNqz1E9a/'
-    }
-  ]
+  const [activeTab, setActiveTab] = useState<string | null>(null)
 
-  const features = [
+  const tabs = [
     {
+      id: 'learning',
+      title: '学习资源',
+      icon: BookOpen,
+      component: LearningResourcesPage
+    },
+    {
+      id: 'model',
+      title: '黑马模型',
       icon: TrendingUp,
-      title: '趋势底层逻辑',
-      description: '识别牛熊拐点、趋势起点、反转信号'
+      component: BlackHorseModelPage
     },
     {
+      id: 'signals',
+      title: '策略信号',
       icon: Target,
-      title: '机构操盘模型',
-      description: '精准制定买入点、止损点、卖出点'
+      component: StrategySignalsPage
     },
     {
-      icon: Shield,
-      title: '仓位+风控模型',
-      description: '科学资金管理，建立小亏大赚概率优势'
+      id: 'unlock',
+      title: '解锁课程',
+      icon: Lock,
+      component: UnlockCoursesPage
     }
   ]
 
+  const handleBack = () => {
+    setActiveTab(null)
+  }
+
+  const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component
+  const activeTabData = tabs.find((tab) => tab.id === activeTab)
+
+  // 如果选择了某个tab，显示子页面
+  if (activeTab && ActiveComponent) {
+    return (
+      <div className="min-h-screen pb-6">
+        <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
+          <div className="flex items-start mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              className="mr-3 text-slate-600 hover:text-slate-800"
+            >
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              返回
+            </Button>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold gradient-text">
+                    {activeTabData?.title}
+                  </h1>
+                  <p className="text-slate-600 text-sm">掌握机构交易思维</p>
+                </div>
+                <div className="premium-icon w-8 h-8 rounded-lg">
+                  <GraduationCap className="w-5 h-5 text-blue-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 mt-6">
+          <ActiveComponent />
+        </div>
+      </div>
+    )
+  }
+
+  // 主页面：显示四个正方形按钮
   return (
     <div className="min-h-screen pb-6">
       <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
@@ -86,197 +111,66 @@ export function AcademyPage() {
         </div>
       </div>
 
-      <div className="px-6 mt-6 space-y-6">
-        <Card className="glass-card border-white/30 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4 mb-4">
-              <Avatar className="w-16 h-16 ring-2 ring-blue-300 ring-offset-2 ring-offset-blue-50">
-                <AvatarImage src="_nze4inj_400x400.jpg" />
-                <AvatarFallback className="glass-card-strong bg-gradient-to-br from-blue-400 to-blue-600 text-white font-bold">
-                  DT
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1">
-                <h3 className="text-slate-800 font-bold text-lg">Donato狐总</h3>
-                <p className="text-slate-600 text-sm mb-2">
-                  WEB3职业交易员 · 数十年量化交易经验
-                </p>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    size="sm"
-                    className="glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50 hover:bg-blue-100/50 transition-colors"
-                    onClick={() =>
-                      window.open(
-                        'https://x.com/wuk_Bitcoin',
-                        '_blank',
-                        'noopener,noreferrer'
-                      )
-                    }
+      {/* 学习资源卡片 */}
+      <div className="px-6 mt-6">
+        <Card className="glass-card border-white/30 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-slate-800 text-xl font-bold">
+              学习资源
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pb-6">
+            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+              {tabs.map((tab) => {
+                const Icon = tab.icon
+                return (
+                  <Card
+                    key={tab.id}
+                    className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                    onClick={() => setActiveTab(tab.id)}
                   >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    @wuk_Bitcoin
-                  </Button>
-                  <div className="flex items-center text-yellow-600 bg-yellow-50 rounded-full px-2 py-0.5">
-                    <Star className="w-4 h-4 mr-1 fill-current" />
-                    <span className="text-sm font-medium">5.0</span>
-                  </div>
-                </div>
-              </div>
+                    <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
+                      <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200">
+                        <Icon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <h3 className="text-slate-800 font-medium text-sm group-hover:text-blue-700 transition-colors">
+                        {tab.title}
+                      </h3>
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
-            <p className="text-slate-700 text-sm leading-relaxed border-t border-slate-200 pt-3 mt-2">
-              运用机构思维与庄家操盘策略，帮助用户掌握止损止盈、降低交易成本，建立系统化交易决策体系。
-            </p>
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/50 shadow-md">
-          <CardHeader className="border-b border-slate-100">
-            <CardTitle className="text-slate-800 flex items-center">
-              <span className="bg-blue-100 text-blue-600 p-1 rounded-md mr-2">
-                <GraduationCap className="w-5 h-5" />
-              </span>
-              核心课程体系
+        {/* LOOP 社区卡片 */}
+        <Card className="glass-card border-white/30 shadow-lg mt-6">
+          <CardHeader>
+            <CardTitle className="text-slate-800 text-xl font-bold">
+              LOOP 社区
             </CardTitle>
+            <p className="text-slate-600 text-sm mt-1">频道列表</p>
           </CardHeader>
-          <CardContent className="grid gap-4 pt-4">
-            {features.map((feature, index) => {
-              const Icon = feature.icon
-              return (
-                <div
+          <CardContent className="pb-6">
+            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+              {/* 四个空的频道卡片 */}
+              {[1, 2, 3, 4].map((index) => (
+                <Card
                   key={index}
-                  className="flex items-start space-x-3 p-3 glass-card rounded-lg hover:bg-blue-50/30 transition-colors"
+                  className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group opacity-50"
                 >
-                  <div className="premium-icon w-10 h-10 rounded-lg flex-shrink-0 bg-gradient-to-br from-blue-100 to-blue-200">
-                    <Icon className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-slate-800 font-medium mb-1">
-                      {feature.title}
-                    </h4>
-                    <p className="text-slate-600 text-sm">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
-          </CardContent>
-        </Card>
-
-        <div className="space-y-4">
-          <h2 className="text-slate-800 text-xl font-bold">学习资源</h2>
-          {courses.map((course, index) => (
-            <Card key={index} className="glass-card border-white/30">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Badge className="text-xs bg-purple-100/80 text-purple-700 border-purple-200">
-                        {course.category}
-                      </Badge>
-                      <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                        {course.level}
-                      </Badge>
+                  <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
+                    <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200">
+                      <div className="w-5 h-5 bg-gray-400 rounded"></div>
                     </div>
-                    <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                      {course.title}
+                    <h3 className="text-slate-400 font-medium text-sm">
+                      频道 {index}
                     </h3>
-                    <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                      {course.description}
-                    </p>
-                    <p className="text-slate-500 text-xs">{course.duration}</p>
-                  </div>
-                  <div className="ml-4">
-                    {course.locked ? (
-                      <Button
-                        size="sm"
-                        className="diffused-button text-white border-0"
-                      >
-                        <Lock className="w-4 h-4 mr-1" />
-                        解锁
-                      </Button>
-                    ) : (
-                      <Button
-                        size="sm"
-                        className="glass-card text-green-600 hover:text-green-700 border-green-300 bg-green-50/50"
-                        onClick={() =>
-                          window.open(
-                            course.videoUrl || '#',
-                            '_blank',
-                            'noopener,noreferrer'
-                          )
-                        }
-                      >
-                        <Play className="w-4 h-4 mr-1" />
-                        学习
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <Card className="glass-card border-white/30">
-          <CardHeader>
-            <CardTitle className="text-slate-800">适用对象</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <p className="text-slate-700 text-sm">
-                具备技术分析基础，想落地交易系统的操盘者
-              </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <p className="text-slate-700 text-sm">
-                有策略框架但执行效率低、选币耗时的交易员
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <p className="text-slate-700 text-sm">
-                具备趋势交易思维，想提升胜率与纪律性的进阶用户
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card border-white/50">
-          <CardHeader>
-            <CardTitle className="text-slate-800 flex items-center">
-              <div className="premium-icon w-8 h-8 rounded-lg mr-3">
-                <Target className="w-4 h-4 text-blue-600" />
-              </div>
-              机构操盘策略信号系统
-            </CardTitle>
-            <p className="text-slate-600 text-sm ml-11">
-              基于机构行为的趋势系统+程序化工具，清晰捕捉中期趋势
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <h4 className="text-slate-800 font-semibold mb-3 flex items-center">
-              <div className="premium-icon w-6 h-6 rounded mr-2">
-                <Star className="w-3 h-3 text-yellow-600" />
-              </div>
-              信号实例展示
-            </h4>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card-strong border-white/50">
-          <CardContent className="p-6 text-center">
-            <h3 className="gradient-text font-bold text-lg mb-2">
-              解锁完整课程
-            </h3>
-            <p className="text-slate-600 text-sm mb-4">
-              程序化辅助工具：学员专属【筛选系统】，落地模型应用
-            </p>
-            <Button className="diffused-button text-white font-semibold border-0">
-              获得机构级策略
-            </Button>
           </CardContent>
         </Card>
       </div>
