@@ -349,17 +349,6 @@ export function NewsPage() {
                   renderMarkdownContent(currentArticle.content || '')
                 )}
               </div>
-              <div className="flex justify-end mt-6 pt-4 border-t border-slate-200">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-slate-600 hover:text-blue-600 hover:bg-blue-50/50"
-                  onClick={() => handleShare(currentArticle)}
-                >
-                  <Share2 className="w-4 h-4 mr-1" />
-                  {t('news.share') || '分享'}
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </div>
