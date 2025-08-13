@@ -1,0 +1,225 @@
+'use client'
+
+import { useRef, useCallback, useState, useEffect } from 'react'
+import html2canvas from 'html2canvas'
+import QRCode from 'qrcode'
+import { ShareCard } from '@/src/components/ui/share-card'
+import { API_BASE_URL } from '@/src/services/config'
+
+interface NewsItem {
+  id: number
+  title: string
+  content?: string
+  summary: string
+  publishDate: string
+  source?: string
+}
+
+interface NewsImageGeneratorProps {
+  newsItem: NewsItem | null
+  onImageGenerated?: (imageUrl: string) => void
+}
+
+export function NewsImageGenerator({
+  newsItem,
+  onImageGenerated
+}: NewsImageGeneratorProps) {
+  const shareCardRef = useRef<HTMLDivElement>(null)
+
+  const _generateNewsShareImage = useCallback(async (): Promise<
+    string | null
+  > => {
+    if (!shareCardRef.current || !newsItem) return null
+
+    try {
+      // 生成二维码
+      const articleUrl = `${window.location.origin}/news/${newsItem.id}`
+      const qrCodeDataUrl = await QRCode.toDataURL(articleUrl, {
+        width: 120,
+        margin: 2,
+        color: {
+          dark: '#1e40af',
+          light: '#ffffff'
+        }
+      })
+
+      // 更新ShareCard中的二维码
+      const shareCardElement = shareCardRef.current.querySelector(
+        '[data-qr-placeholder]'
+      ) as HTMLImageElement
+      if (shareCardElement) {
+        shareCardElement.src = qrCodeDataUrl
+      }
+
+      // 等待DOM更新
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      if (shareCardRef.current) {
+        const canvas = await html2canvas(shareCardRef.current, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          height: shareCardRef.current.scrollHeight,
+          width: shareCardRef.current.scrollWidth
+        })
+
+        const imageDataUrl = canvas.toDataURL('image/png', 0.9)
+        onImageGenerated?.(imageDataUrl)
+        return imageDataUrl
+      }
+    } catch (error) {
+      console.error('生成新闻分享图片失败:', error)
+      throw error
+    }
+
+    return null
+  }, [newsItem, onImageGenerated])
+
+  if (!newsItem) return null
+
+  return (
+    <div className="fixed -top-[9999px] left-0 opacity-0 pointer-events-none">
+      <ShareCard
+        ref={shareCardRef}
+        title={newsItem.title}
+        content={newsItem.content || ''}
+        summary={newsItem.summary}
+        publishDate={newsItem.publishDate}
+        qrCodeDataUrl="" // 会在生成时动态生成
+        source={newsItem.source}
+      />
+    </div>
+  )
+}
+
+// Hook to use the news image generator
+export function useNewsImageGenerator(newsItem: NewsItem | null) {
+  const shareCardRef = useRef<HTMLDivElement>(null)
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('')
+  const [fullContent, setFullContent] = useState<string>('')
+  const [_isLoadingContent, setIsLoadingContent] = useState<boolean>(false)
+
+  // 获取完整文章内容
+  const fetchFullContent = useCallback(async () => {
+    if (!newsItem || newsItem.source === 'rss') {
+      // RSS文章直接使用现有内容，API文章需要获取完整内容
+      setFullContent(newsItem?.content || '')
+      return newsItem?.content || ''
+    }
+
+    setIsLoadingContent(true)
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/user/academy/articles/${newsItem.id}`
+      )
+      if (response.ok) {
+        const articleData = await response.json()
+        const content = articleData.content || newsItem.content || ''
+        setFullContent(content)
+        return content
+      } else {
+        console.error('获取文章详情失败:', response.statusText)
+        // 失败时使用现有内容
+        setFullContent(newsItem.content || '')
+        return newsItem.content || ''
+      }
+    } catch (error) {
+      console.error('获取文章详情出错:', error)
+      // 出错时使用现有内容
+      setFullContent(newsItem.content || '')
+      return newsItem.content || ''
+    } finally {
+      setIsLoadingContent(false)
+    }
+  }, [newsItem])
+
+  // 生成二维码
+  const generateQRCode = useCallback(async () => {
+    if (!newsItem) return ''
+
+    try {
+      const articleUrl = `${window.location.origin}/news/${newsItem.id}`
+      const qrDataUrl = await QRCode.toDataURL(articleUrl, {
+        width: 120,
+        margin: 2,
+        color: {
+          dark: '#1e40af',
+          light: '#ffffff'
+        }
+      })
+      setQrCodeDataUrl(qrDataUrl)
+      return qrDataUrl
+    } catch (error) {
+      console.error('生成二维码失败:', error)
+      return ''
+    }
+  }, [newsItem])
+
+  const generateImage = useCallback(async (): Promise<string | null> => {
+    if (!shareCardRef.current || !newsItem) return null
+
+    try {
+      // 获取完整文章内容
+      await fetchFullContent()
+
+      // 生成二维码
+      await generateQRCode()
+
+      // 等待DOM更新（包括内容加载）
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      if (shareCardRef.current) {
+        const canvas = await html2canvas(shareCardRef.current, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          height: shareCardRef.current.scrollHeight,
+          width: shareCardRef.current.scrollWidth
+        })
+
+        return canvas.toDataURL('image/png', 0.9)
+      }
+    } catch (error) {
+      console.error('生成新闻分享图片失败:', error)
+      throw error
+    }
+
+    return null
+  }, [newsItem, fetchFullContent, generateQRCode])
+
+  // 当newsItem变化时获取完整内容
+  useEffect(() => {
+    if (newsItem) {
+      fetchFullContent()
+    }
+  }, [newsItem, fetchFullContent])
+
+  // 当newsItem变化时生成二维码
+  useEffect(() => {
+    if (newsItem) {
+      generateQRCode()
+    }
+  }, [newsItem, generateQRCode])
+
+  const ImageGeneratorComponent = () => {
+    if (!newsItem) return null
+
+    return (
+      <div className="fixed -top-[9999px] left-0 opacity-0 pointer-events-none">
+        <ShareCard
+          ref={shareCardRef}
+          title={newsItem.title}
+          content={fullContent || newsItem.content || ''}
+          summary={newsItem.summary}
+          publishDate={newsItem.publishDate}
+          qrCodeDataUrl={qrCodeDataUrl}
+          source={newsItem.source}
+        />
+      </div>
+    )
+  }
+
+  return { generateImage, ImageGeneratorComponent }
+}

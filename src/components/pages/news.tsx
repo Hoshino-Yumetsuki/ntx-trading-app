@@ -10,6 +10,8 @@ import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
 import MarkdownIt from 'markdown-it'
 import Parser from 'rss-parser'
+import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
+import { useNewsImageGenerator } from './news/news-image-generator'
 import { API_BASE_URL } from '@/src/services/config'
 import '@/src/styles/markdown.css'
 
@@ -31,6 +33,10 @@ export function NewsPage() {
   const [loading, setLoading] = useState(true)
   const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null)
   const [viewingArticle, setViewingArticle] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
+  const [shareNewsItem, setShareNewsItem] = useState<NewsItem | null>(null)
+  const { generateImage, ImageGeneratorComponent } =
+    useNewsImageGenerator(shareNewsItem)
 
   // 从RSS获取新闻
   const fetchRssNews = useCallback(async () => {
@@ -228,33 +234,9 @@ export function NewsPage() {
     }
   }
 
-  const handleShare = async (newsItem: NewsItem) => {
-    const shareData = {
-      title: newsItem.title,
-      text: newsItem.summary,
-      url: `${window.location.origin}/news/${newsItem.id}`
-    }
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData)
-      } else {
-        await navigator.clipboard.writeText(
-          `${shareData.title}\n${shareData.text}\n${shareData.url}`
-        )
-        toast({
-          title: t('news.share.success') || '分享成功',
-          description: t('news.share.success.desc') || '链接已复制到剪贴板'
-        })
-      }
-    } catch (error) {
-      console.error('分享失败:', error)
-      toast({
-        title: t('news.share.failed') || '分享失败',
-        description: t('news.share.failed.desc') || '无法分享此文章',
-        variant: 'destructive'
-      })
-    }
+  const handleShare = (newsItem: NewsItem) => {
+    setShareNewsItem(newsItem)
+    setShowShareModal(true)
   }
 
   const formatDate = (dateString: string) => {
@@ -427,15 +409,28 @@ export function NewsPage() {
                     <p className="text-slate-600 text-xs line-clamp-2 mb-2">
                       {item.summary}
                     </p>
-                    <div className="flex items-center text-slate-500 text-xs">
-                      <Clock className="w-3 h-3 mr-1" />
-                      <span>{formatDate(item.publishDate)}</span>
-                      {item.source === 'rss' && (
-                        <span className="flex items-center ml-2 text-blue-500">
-                          <Rss className="w-3 h-3 mr-1" />
-                          RSS
-                        </span>
-                      )}
+                    <div className="flex items-center justify-between text-slate-500 text-xs">
+                      <div className="flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        <span>{formatDate(item.publishDate)}</span>
+                        {item.source === 'rss' && (
+                          <span className="flex items-center ml-2 text-blue-500">
+                            <Rss className="w-3 h-3 mr-1" />
+                            RSS
+                          </span>
+                        )}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleShare(item)
+                        }}
+                      >
+                        <Share2 className="w-3 h-3" />
+                      </Button>
                     </div>
                   </div>
                   {item.imageUrl &&
@@ -467,6 +462,26 @@ export function NewsPage() {
           </div>
         )}
       </div>
+
+      {/* 新闻分享模态框 */}
+      <UniversalShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        title="分享文章"
+        shareData={{
+          title: shareNewsItem?.title || '',
+          text: shareNewsItem?.summary || '',
+          url: shareNewsItem
+            ? `${window.location.origin}/news/${shareNewsItem.id}`
+            : ''
+        }}
+        imageGenerator={generateImage}
+        showImagePreview={true}
+        showDefaultShareButtons={true}
+      />
+
+      {/* 图片生成器组件 */}
+      <ImageGeneratorComponent />
     </div>
   )
 }

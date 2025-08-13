@@ -12,7 +12,8 @@ import { Copy, Share2 } from 'lucide-react'
 import type { UserInfo } from '@/src/types/user'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from 'sonner'
-import { InviteShareModal } from './invite-share-modal'
+import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
+import { useInviteImageGenerator } from './invite-image-generator'
 
 interface InviteCodeCardProps {
   userInfo: UserInfo | null
@@ -21,11 +22,21 @@ interface InviteCodeCardProps {
 export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   const { t } = useLanguage()
   const [showShareModal, setShowShareModal] = useState(false)
+  const { generateImage, ImageGeneratorComponent } =
+    useInviteImageGenerator(userInfo)
 
   const copyInviteCode = () => {
     if (userInfo?.myInviteCode) {
       navigator.clipboard.writeText(userInfo.myInviteCode)
       toast.success(t('profile.copy.success'))
+    }
+  }
+
+  const copyInviteLink = () => {
+    if (userInfo?.myInviteCode) {
+      const inviteUrl = `https://ntx-dao.com/register?invite=${userInfo.myInviteCode}`
+      navigator.clipboard.writeText(inviteUrl)
+      toast.success('邀请链接已复制到剪贴板')
     }
   }
 
@@ -81,11 +92,40 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
       </CardContent>
 
       {/* 分享海报模态框 */}
-      <InviteShareModal
+      <UniversalShareModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
-        userInfo={userInfo}
+        title="分享邀请海报"
+        shareData={{
+          title: '注册 NTX DAO',
+          text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n享受高达50%手续费返佣和交易挖矿\n\n邀请码：${userInfo?.myInviteCode || ''}`,
+          url: userInfo?.myInviteCode
+            ? `https://ntx-dao.com/register?invite=${userInfo.myInviteCode}`
+            : ''
+        }}
+        imageGenerator={generateImage}
+        showImagePreview={true}
+        customActions={[
+          {
+            label: '复制邀请码',
+            icon: Copy,
+            onClick: copyInviteCode,
+            variant: 'outline',
+            className: 'w-full'
+          },
+          {
+            label: '复制邀请链接',
+            icon: Copy,
+            onClick: copyInviteLink,
+            variant: 'outline',
+            className: 'w-full'
+          }
+        ]}
+        showDefaultShareButtons={true}
       />
+
+      {/* 图片生成器组件 */}
+      <ImageGeneratorComponent />
     </Card>
   )
 }
