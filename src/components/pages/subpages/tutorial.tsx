@@ -86,33 +86,13 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-white/20 z-10">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onBack}
-                className="mr-3 text-slate-600 hover:text-slate-800"
-              >
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                {t('tutorial.back')}
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold text-slate-800 mb-2">
-                  {t('tutorial.title')}
-                </h1>
-                <p className="text-slate-600 mb-6">{t('tutorial.subtitle')}</p>
-              </div>
-            </div>
-            <div className="premium-icon w-10 h-10 rounded-full">
-              <BookOpen className="w-5 h-5 text-blue-600" />
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-white">
+      {/* 头部 */}
+      <div className="px-6 py-4 flex items-center space-x-4">
+        <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <h1 className="text-xl font-bold text-slate-800">{t('tutorial.title')}</h1>
       </div>
 
       {/* Content */}
