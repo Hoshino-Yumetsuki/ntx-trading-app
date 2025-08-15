@@ -250,16 +250,13 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-white">
       {/* 头部 */}
-      <div className="glass-card-strong px-6 py-4 flex items-center space-x-4">
+      <div className="px-6 py-4 flex items-center space-x-4">
         <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <div className="flex items-center space-x-2">
-          <Shield className="w-6 h-6 text-blue-600" />
-          <h1 className="text-xl font-bold text-slate-800">安全设置</h1>
-        </div>
+        <h1 className="text-xl font-bold text-slate-800">安全设置</h1>
       </div>
 
       {/* 倒计时提示 */}
@@ -291,56 +288,59 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {securityItems.map((item, index) => {
+              {securityItems.map((item, index, arr) => {
               const Icon = item.icon
               return (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 glass-card rounded-lg"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="premium-icon w-10 h-10 rounded-lg">
-                      <Icon className="w-5 h-5 text-slate-600" />
+                <div key={index}>
+                  <div className="flex items-center justify-between py-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="premium-icon w-10 h-10 rounded-lg">
+                        <Icon className="w-5 h-5 text-slate-600" />
+                      </div>
+                      <div>
+                        <p className="text-slate-800 font-medium">{item.title}</p>
+                        <p className="text-slate-600 text-sm">
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-slate-800 font-medium">{item.title}</p>
-                      <p className="text-slate-600 text-sm">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {item.status === 'completed' && (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    )}
-                    {item.status === 'pending' && (
-                      <AlertCircle className="w-5 h-5 text-yellow-500" />
-                    )}
-                    {item.copyable &&
-                      item.description &&
-                      item.description !== '未设置' &&
-                      item.description !== '未获取' && (
+                    <div className="flex items-center space-x-2">
+                      {item.status === 'completed' && (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      )}
+                      {item.status === 'pending' && (
+                        <AlertCircle className="w-5 h-5 text-yellow-500" />
+                      )}
+                      {item.copyable &&
+                        item.description &&
+                        item.description !== '未设置' &&
+                        item.description !== '未获取' && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() =>
+                              handleCopy(item.description, item.title)
+                            }
+                            className="p-2"
+                          >
+                            <Copy className="w-4 h-4" />
+                          </Button>
+                        )}
+                      {item.action && (
                         <Button
                           size="sm"
-                          variant="ghost"
-                          onClick={() =>
-                            handleCopy(item.description, item.title)
-                          }
-                          className="p-2"
+                          variant="outline"
+                          onClick={item.onClick}
                         >
-                          <Copy className="w-4 h-4" />
+                          {item.action}
                         </Button>
                       )}
-                    {item.action && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={item.onClick}
-                      >
-                        {item.action}
-                      </Button>
-                    )}
+                    </div>
                   </div>
+                  {/* 添加分隔线，但最后一项不添加 */}
+                  {index < arr.length - 1 && (
+                    <div className="border-t border-slate-200"></div>
+                  )}
                 </div>
               )
             })}
