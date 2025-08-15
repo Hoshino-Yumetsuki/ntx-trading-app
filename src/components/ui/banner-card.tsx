@@ -26,17 +26,11 @@ export function BannerCard({
   return (
     <div className="relative mb-6 rounded-2xl overflow-hidden shadow-2xl">
       <div
-        className={`relative h-48 bg-gradient-to-r from-${gradientFrom} to-${gradientTo}`}
+        className="relative h-48 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `linear-gradient(to right, rgb(37 99 235 / 0.7), rgb(147 51 234 / 0.7)), url(${backgroundImage})`
+        }}
       >
-        <Image
-          src={backgroundImage}
-          alt={title}
-          fill
-          className="object-cover opacity-80"
-        />
-        <div
-          className={`absolute inset-0 bg-gradient-to-r from-${gradientFrom}/70 to-${gradientTo}/70`}
-        />
         <div className="absolute inset-0 flex flex-col justify-center px-8">
           <h2 className="text-3xl font-bold text-white mb-2">{title}</h2>
           <p className="text-white/90 text-sm mb-4 max-w-xs">{subtitle}</p>

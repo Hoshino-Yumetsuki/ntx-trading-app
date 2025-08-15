@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import { BannerCard } from '@/src/components/ui/banner-card'
@@ -18,6 +19,7 @@ import { TutorialPage } from '@/src/components/pages/subpages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function HomePage() {
+  const router = useRouter()
   const [_isTutorialOpen, _setIsTutorialOpen] = useState(false)
   const [showTutorialPage, setShowTutorialPage] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
@@ -69,8 +71,8 @@ export function HomePage() {
         />
 
         {/* 立刻开赚交易所卡片 */}
-        <Card className="glass-card border-white/50 mt-6 mb-6">
-          <CardContent className="p-6">
+        <div className="mt-6 mb-6 bg-white rounded-xl shadow-sm">
+          <div className="p-6">
             {/* 居中显示的标题 */}
             <div className="text-center mb-5">
               <h3 className="text-lg font-semibold text-slate-800">已接入</h3>
@@ -102,13 +104,13 @@ export function HomePage() {
             <div className="mt-5 text-center">
               <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md"
-                onClick={() => (window.location.href = '/mining')}
+                onClick={() => router.push('/mining')}
               >
                 绑定交易所，立刻开赚
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       <div className="px-6 space-y-4">
@@ -126,7 +128,10 @@ export function HomePage() {
             <p className="text-slate-700 text-sm leading-relaxed mb-6">
               系统性学习数字货币交易知识，掌握基础概念和交易技巧
             </p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md w-fit">
+            <Button 
+              onClick={openTutorial}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md w-fit"
+            >
               立刻学习
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
@@ -147,7 +152,10 @@ export function HomePage() {
             <p className="text-slate-700 text-sm leading-relaxed mb-6">
               学习专业技术策略，提升分析水平与交易能力
             </p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md w-fit">
+            <Button 
+              onClick={() => router.push('/academy')}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md w-fit"
+            >
               立即进入
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
