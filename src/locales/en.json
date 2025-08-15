@@ -181,6 +181,7 @@
     "loading": "Loading..."
   },
   "profile": {
+    "title": "Profile",
     "loading": "Loading...",
     "email": "Email",
     "quickActions": "Quick Actions",

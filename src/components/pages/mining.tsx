@@ -241,10 +241,10 @@ export function MiningPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
+      <div className="px-6 pt-8 pb-4">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold gradient-text">
+            <h1 className="text-2xl font-bold text-slate-800">
               {t('mining.title')}
             </h1>
             <p className="text-slate-600 text-sm">{t('mining.subtitle')}</p>
@@ -268,7 +268,7 @@ export function MiningPage() {
               disabled={
                 loading || userLoading || leaderboardLoading || exchangesLoading
               }
-              className="h-8 w-8 p-0 hover:bg-white/20"
+              className="h-8 w-8 p-0 hover:bg-slate-100"
             >
               <RefreshCw
                 className={`w-4 h-4 text-slate-600 ${loading || userLoading || leaderboardLoading || exchangesLoading ? 'animate-spin' : ''}`}

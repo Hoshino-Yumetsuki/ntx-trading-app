@@ -358,16 +358,11 @@ export function NewsPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
+      <div className="px-6 pt-8 pb-4">
         <div className="flex items-center justify-between mb-2">
-          <div>
-            <h1 className="text-2xl font-bold gradient-text">
-              {t('news.title') || '资讯中心'}
-            </h1>
-          </div>
-          <div className="premium-icon w-8 h-8 rounded-lg">
-            <Newspaper className="w-5 h-5 text-blue-600" />
-          </div>
+          <h1 className="text-2xl font-bold text-slate-800">
+            {t('news.title') || '资讯中心'}
+          </h1>
         </div>
       </div>
 

@@ -181,6 +181,7 @@
     "loading": "加载中..."
   },
   "profile": {
+    "title": "个人中心",
     "loading": "加载中...",
     "email": "邮箱",
     "quickActions": "快捷操作",

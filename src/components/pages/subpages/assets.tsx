@@ -127,7 +127,7 @@ export default function AssetsPage({ onBack }: AssetsPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen bg-white">
         <AssetsHeader
           onBack={onBack}
           currentView={currentView}
@@ -152,7 +152,7 @@ export default function AssetsPage({ onBack }: AssetsPageProps) {
 
   if (!userInfo) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen bg-white">
         <AssetsHeader
           onBack={onBack}
           currentView={currentView}
@@ -169,7 +169,7 @@ export default function AssetsPage({ onBack }: AssetsPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-white">
       <AssetsHeader
         onBack={onBack}
         currentView={currentView}

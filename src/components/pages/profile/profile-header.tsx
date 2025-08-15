@@ -1,7 +1,6 @@
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
-import { Badge } from '@/src/components/ui/badge'
 import type { UserInfo } from '@/src/types/user'
 import { useLanguage } from '@/src/contexts/language-context'
 import { useAuth } from '@/src/contexts/AuthContext'
@@ -15,40 +14,64 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
   const { t } = useLanguage()
 
   return (
-    <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
-      <div className="flex items-center space-x-4">
-        <Avatar className="w-20 h-20">
-          <AvatarImage src="/placeholder.svg?height=80&width=80" />
-          <AvatarFallback className="glass-card text-slate-700 text-2xl font-bold">
-            {(userInfo?.nickname || user?.nickname || 'U')
-              .charAt(0)
-              .toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <h2 className="text-slate-800 text-xl font-bold mb-1">
-            {userInfo?.nickname || user?.nickname || 'User'}
-          </h2>
-          <div className="flex items-center space-x-2 mb-2">
-            <Badge className="bg-blue-100/80 text-blue-700 border-blue-300">
-              {userInfo?.role || 'Normal User'}
-            </Badge>
-            <Badge className="bg-green-100/80 text-green-700 border-green-300">
-              EXP: {userInfo?.exp || 0}
-            </Badge>
+    <div className="px-6 pt-8 pb-4">
+      <h1 className="text-2xl font-bold text-slate-800 mb-4">
+        {t('profile.title') || '个人中心'}
+      </h1>
+      
+      {/* 用户信息卡片，使用蓝色背景 */}
+      <div className="bg-blue-600 text-white rounded-xl p-6 shadow-lg mb-4">
+        <div className="flex items-center mb-4">
+          <Avatar className="w-16 h-16 border-4 border-white/30">
+            <AvatarImage src="/placeholder.svg?height=80&width=80" />
+            <AvatarFallback className="bg-blue-700 text-white text-xl font-bold">
+              {(userInfo?.nickname || user?.nickname || 'U')
+                .charAt(0)
+                .toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="ml-4">
+            <h2 className="text-xl font-bold">
+              {userInfo?.nickname || user?.nickname || 'User'}
+            </h2>
+            <p className="text-blue-100 text-sm">
+              ID: {userInfo?.id || user?.id || 'N/A'}
+            </p>
           </div>
-          <p className="text-slate-600 text-sm">
+        </div>
+        
+        {/* 经验条和用户角色 */}
+        <div className="mb-4">
+          <div className="flex justify-between text-xs text-blue-100 mb-1">
+            <span>EXP: {userInfo?.exp || 0}</span>
+            <span>{userInfo?.role || 'Normal User'}</span>
+          </div>
+          <div className="h-2 bg-white/30 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-white rounded-full" 
+              style={{
+                width: `${Math.min(((userInfo?.exp || 0) / 100) * 100, 100)}%`
+              }}
+            ></div>
+          </div>
+        </div>
+        
+        {/* 邮箱信息 */}
+        <div className="text-sm text-left">
+          <p className="text-blue-100">
             {t('profile.email')}：{userInfo?.email || user?.email || 'N/A'}
           </p>
         </div>
       </div>
-      <div className="mt-4 pt-3 border-t border-slate-200/40 flex items-center">
+      
+      {/* GNTX 余额信息 */}
+      <div className="flex items-center bg-white p-4 rounded-lg shadow-sm mb-4">
         <div className="flex items-center text-blue-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-4 h-4 mr-1"
+            className="w-5 h-5 mr-2"
             role="img"
             aria-label="GNTX token icon"
           >
@@ -61,12 +84,12 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
             />
           </svg>
           <span className="font-medium">
-            {t('profile.gntx.title') || 'GNTX'}:
+            {t('profile.gntx.title') || 'GNTX 余额'}: 
           </span>
         </div>
         <span className="ml-2 font-bold text-blue-700">
           {userInfo?.gntxBalance?.toLocaleString() || '0'}{' '}
-          <span className="text-xs font-normal text-blue-500">GNTX</span>
+          <span className="text-sm font-normal text-blue-500">GNTX</span>
         </span>
       </div>
     </div>

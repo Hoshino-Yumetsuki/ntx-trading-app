@@ -62,7 +62,7 @@ export function AcademyPage() {
   if (activeTab && ActiveComponent) {
     return (
       <div className="min-h-screen pb-6">
-        <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
+        <div className="px-6 pt-12 pb-8 relative z-10">
           <div className="flex items-start mb-6">
             <Button
               variant="ghost"
@@ -74,16 +74,11 @@ export function AcademyPage() {
               返回
             </Button>
             <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-2xl font-bold gradient-text">
-                    {activeTabData?.title}
-                  </h1>
-                  <p className="text-slate-600 text-sm">掌握机构交易思维</p>
-                </div>
-                <div className="premium-icon w-8 h-8 rounded-lg">
-                  <GraduationCap className="w-5 h-5 text-blue-600" />
-                </div>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800">
+                  {activeTabData?.title}
+                </h1>
+                <p className="text-slate-600 text-sm">掌握机构交易思维</p>
               </div>
             </div>
           </div>
@@ -99,14 +94,11 @@ export function AcademyPage() {
   // 主页面：显示四个正方形按钮
   return (
     <div className="min-h-screen pb-6">
-      <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
-        <div className="flex items-center justify-between mb-6">
+      <div className="px-6 pt-12 pb-8 relative z-10">
+        <div className="flex mb-6">
           <div>
-            <h1 className="text-2xl font-bold gradient-text">黑马学院</h1>
+            <h1 className="text-2xl font-bold text-slate-800">黑马学院</h1>
             <p className="text-slate-600 text-sm">掌握机构交易思维</p>
-          </div>
-          <div className="premium-icon w-8 h-8 rounded-lg">
-            <GraduationCap className="w-5 h-5 text-blue-600" />
           </div>
         </div>
       </div>
