@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { Button } from '@/src/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 
@@ -19,8 +18,6 @@ export function BannerCard({
   subtitle,
   buttonText,
   backgroundImage,
-  gradientFrom = 'blue-600',
-  gradientTo = 'purple-600',
   onClick
 }: BannerCardProps) {
   return (

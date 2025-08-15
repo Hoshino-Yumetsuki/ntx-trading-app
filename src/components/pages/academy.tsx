@@ -8,13 +8,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/src/components/ui/card'
-import {
-  BookOpen,
-  TrendingUp,
-  Target,
-  Lock,
-  ArrowLeft
-} from 'lucide-react'
+import { BookOpen, TrendingUp, Target, Lock, ArrowLeft } from 'lucide-react'
 import { LearningResourcesPage } from './academy/learning-resources'
 import { BlackHorseModelPage } from './academy/black-horse-model'
 import { StrategySignalsPage } from './academy/strategy-signals'

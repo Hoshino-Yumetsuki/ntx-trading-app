@@ -33,7 +33,12 @@ export function MainApp() {
   }, [activeTab, isInitialized])
 
   const tabs = [
-    { id: 'home', label: t('nav.home'), icon: Home, component: HomePage },
+    {
+      id: 'home',
+      label: t('nav.home'),
+      icon: Home,
+      component: () => <HomePage onNavigate={setActiveTab} />
+    },
     { id: 'news', label: t('nav.news'), icon: Newspaper, component: NewsPage },
     {
       id: 'academy',
