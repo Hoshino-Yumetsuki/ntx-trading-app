@@ -288,7 +288,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-              {securityItems.map((item, index, arr) => {
+            {securityItems.map((item, index, arr) => {
               const Icon = item.icon
               return (
                 <div key={index}>
@@ -298,7 +298,9 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                         <Icon className="w-5 h-5 text-slate-600" />
                       </div>
                       <div>
-                        <p className="text-slate-800 font-medium">{item.title}</p>
+                        <p className="text-slate-800 font-medium">
+                          {item.title}
+                        </p>
                         <p className="text-slate-600 text-sm">
                           {item.description}
                         </p>

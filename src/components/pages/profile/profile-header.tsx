@@ -18,7 +18,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
       <h1 className="text-2xl font-bold text-slate-800 mb-4">
         {t('profile.title') || '个人中心'}
       </h1>
-      
+
       {/* 用户信息卡片，使用蓝色背景 */}
       <div className="bg-blue-600 text-white rounded-xl p-6 shadow-lg mb-4">
         <div className="flex items-center mb-4">
@@ -39,7 +39,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
             </p>
           </div>
         </div>
-        
+
         {/* 经验条和用户角色 */}
         <div className="mb-4">
           <div className="flex justify-between text-xs text-blue-100 mb-1">
@@ -47,15 +47,15 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
             <span>{userInfo?.role || 'Normal User'}</span>
           </div>
           <div className="h-2 bg-white/30 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-white rounded-full" 
+            <div
+              className="h-full bg-white rounded-full"
               style={{
                 width: `${Math.min(((userInfo?.exp || 0) / 100) * 100, 100)}%`
               }}
             ></div>
           </div>
         </div>
-        
+
         {/* 邮箱信息 */}
         <div className="text-sm text-left">
           <p className="text-blue-100">
@@ -63,7 +63,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
           </p>
         </div>
       </div>
-      
+
       {/* GNTX 余额信息 */}
       <div className="flex items-center bg-white p-4 rounded-lg shadow-sm mb-4">
         <div className="flex items-center text-blue-600">
@@ -84,7 +84,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
             />
           </svg>
           <span className="font-medium">
-            {t('profile.gntx.title') || 'GNTX 余额'}: 
+            {t('profile.gntx.title') || 'GNTX 余额'}:
           </span>
         </div>
         <span className="ml-2 font-bold text-blue-700">

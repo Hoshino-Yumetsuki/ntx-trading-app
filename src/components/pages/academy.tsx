@@ -9,7 +9,6 @@ import {
   CardTitle
 } from '@/src/components/ui/card'
 import {
-  GraduationCap,
   BookOpen,
   TrendingUp,
   Target,

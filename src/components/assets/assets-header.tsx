@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeft, Wallet, RefreshCw } from 'lucide-react'
+import { ArrowLeft, RefreshCw } from 'lucide-react'
 import { Button } from '@/src/components/ui/button'
 import { useLanguage } from '@/src/contexts/language-context'
 

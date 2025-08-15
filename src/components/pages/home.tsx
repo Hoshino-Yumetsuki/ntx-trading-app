@@ -97,12 +97,12 @@ export function HomePage() {
                 </div>
               ))}
             </div>
-            
+
             {/* 添加蓝色按钮 */}
             <div className="mt-5 text-center">
-              <Button 
+              <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md"
-                onClick={() => window.location.href = '/mining'}
+                onClick={() => (window.location.href = '/mining')}
               >
                 绑定交易所，立刻开赚
               </Button>
@@ -121,9 +121,7 @@ export function HomePage() {
               <h3 className="text-slate-800 font-semibold text-xl mb-2">
                 新手礼包
               </h3>
-              <p className="text-slate-600 text-sm mb-3">
-                学习行业基础知识
-              </p>
+              <p className="text-slate-600 text-sm mb-3">学习行业基础知识</p>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed mb-6">
               系统性学习数字货币交易知识，掌握基础概念和交易技巧
@@ -144,9 +142,7 @@ export function HomePage() {
               <h3 className="text-slate-800 font-semibold text-xl mb-2">
                 黑马学院
               </h3>
-              <p className="text-slate-600 text-sm mb-3">
-                专业技术教学
-              </p>
+              <p className="text-slate-600 text-sm mb-3">专业技术教学</p>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed mb-6">
               学习专业技术策略，提升分析水平与交易能力
@@ -207,9 +203,7 @@ export function HomePage() {
                 <h3 className="text-slate-800 font-semibold text-lg mb-1">
                   机构策略
                 </h3>
-                <p className="text-slate-600 text-xs">
-                  掌握机构交易思维
-                </p>
+                <p className="text-slate-600 text-xs">掌握机构交易思维</p>
               </div>
               <p className="text-slate-700 text-xs leading-relaxed mt-2">
                 学习专业交易策略，提升交易胜率
@@ -226,9 +220,7 @@ export function HomePage() {
                 <h3 className="text-slate-800 font-semibold text-lg mb-1">
                   持续回报
                 </h3>
-                <p className="text-slate-600 text-xs">
-                  让每一笔交易有回报
-                </p>
+                <p className="text-slate-600 text-xs">让每一笔交易有回报</p>
               </div>
               <p className="text-slate-700 text-xs leading-relaxed mt-2">
                 建立长期收益模式，实现财富增长
