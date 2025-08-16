@@ -223,13 +223,18 @@ export function AcademyPage() {
                     className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
                     onClick={() => handleCommunityClick(community)}
                   >
-                    <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
-                      <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200">
+                    <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center">
+                      <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 mb-3">
                         <Users className="w-5 h-5 text-blue-600" />
                       </div>
-                      <h3 className="text-slate-800 font-medium text-sm group-hover:text-blue-700 transition-colors">
-                        {community.name}
-                      </h3>
+                      <div className="space-y-1">
+                        <h3 className="text-slate-800 font-medium text-sm group-hover:text-blue-700 transition-colors">
+                          {community.name}
+                        </h3>
+                        <p className="text-slate-600 text-xs line-clamp-2">
+                          {community.description}
+                        </p>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
