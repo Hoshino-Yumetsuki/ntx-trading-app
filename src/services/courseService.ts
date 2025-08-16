@@ -1,5 +1,6 @@
 import type { Course, PermissionGroupWithPackages } from '@/src/types/course'
 import { API_BASE_URL } from '@/src/services/config'
+import { AuthService } from '@/src/services/auth'
 
 /**
  * Fetches all courses from the API
@@ -7,9 +8,8 @@ import { API_BASE_URL } from '@/src/services/config'
  */
 export async function getAllCourses(): Promise<Course[]> {
   try {
-    // Get JWT token from localStorage if available
-    const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    // Get JWT token using AuthService (stored under 'auth_token')
+    const token = AuthService.getToken()
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json'
@@ -42,9 +42,8 @@ export async function getAllCourses(): Promise<Course[]> {
  */
 export async function getUnlockedCourses(): Promise<Course[]> {
   try {
-    // Get JWT token from localStorage
-    const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    // Get JWT token using AuthService
+    const token = AuthService.getToken()
 
     if (!token) {
       console.error('No authentication token found')

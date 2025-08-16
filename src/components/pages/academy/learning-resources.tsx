@@ -23,6 +23,8 @@ import {
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
+import Image from 'next/image'
+import { AuthService } from '@/src/services/auth'
 
 export function LearningResourcesPage() {
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
@@ -32,7 +34,7 @@ export function LearningResourcesPage() {
   const [_isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const token = AuthService.getToken()
     setIsLoggedIn(!!token)
 
     const fetchCourses = async () => {
@@ -202,13 +204,23 @@ export function LearningResourcesPage() {
                           {course.description}
                         </p>
                       </div>
-                      <div className="ml-4">
+                      <div className="ml-4 flex flex-col items-end">
+                        {course.image && (
+                          <Image
+                            src={course.image}
+                            alt={course.name}
+                            width={96}
+                            height={96}
+                            className="rounded-md object-cover border border-white/40 mb-2"
+                            unoptimized
+                          />
+                        )}
                         <Button
                           size="sm"
                           className="glass-card text-green-600 hover:text-green-700 border-green-300 bg-green-50/50"
                           onClick={() =>
                             window.open(
-                              course.videoUrl || '#',
+                              course.link || course.videoUrl || '#',
                               '_blank',
                               'noopener,noreferrer'
                             )
@@ -277,7 +289,17 @@ export function LearningResourcesPage() {
                             </div>
                           )}
                       </div>
-                      <div className="ml-4">
+                      <div className="ml-4 flex flex-col items-end">
+                        {course.image && (
+                          <Image
+                            src={course.image}
+                            alt={course.name}
+                            width={96}
+                            height={96}
+                            className="rounded-md object-cover border border-white/40 mb-2"
+                            unoptimized
+                          />
+                        )}
                         <Button
                           size="sm"
                           className="bg-gray-300 text-gray-600 cursor-not-allowed border-0"

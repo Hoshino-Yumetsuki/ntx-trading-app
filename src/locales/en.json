@@ -241,6 +241,7 @@
   },
   "news": {
     "title": "Latest News",
+    "latest": "Article List",
     "loading": "Loading...",
     "error": "Loading failed",
     "empty": "No news available",

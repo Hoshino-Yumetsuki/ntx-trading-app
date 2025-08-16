@@ -1,10 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import Image from 'next/image'
-import { Clock, Rss, Share2, ChevronLeft } from 'lucide-react'
+import { Clock, Rss, Share2, ChevronLeft, } from 'lucide-react'
 import DOMPurify from 'dompurify'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
@@ -282,37 +287,39 @@ export function NewsPage() {
   if (viewingArticle && currentArticle) {
     return (
       <div className="min-h-screen pb-6">
-        <div className="glass-card-strong px-6 pt-12 pb-8 rounded-b-3xl relative z-10">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-slate-600 hover:text-blue-600 absolute top-4 left-4"
-            onClick={() => setViewingArticle(false)}
-          >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            {t('news.back') || '返回'}
-          </Button>
-          <h1 className="text-xl font-bold text-slate-800 mt-4">
-            {currentArticle.title}
-          </h1>
-          <div className="flex items-center text-slate-500 text-xs mt-2">
-            <span>{formatDate(currentArticle.publishDate)}</span>
-            <span className="mx-2">•</span>
-            <span>{formatTime(currentArticle.publishDate)}</span>
-            {currentArticle.source === 'rss' && (
-              <>
+        {/* 顶部 Hero 区域，与学院页一致结构 */}
+        <div className="px-6 pt-12 pb-8 relative z-10">
+          <div className="flex items-start mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setViewingArticle(false)}
+              className="mr-3 text-slate-600 hover:text-slate-800"
+            >
+              <ChevronLeft className="w-5 h-5 mr-2" />
+              {t('news.back') || '返回'}
+            </Button>
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-slate-800">
+                {currentArticle.title}
+              </h1>
+              <div className="flex items-center text-slate-500 text-xs mt-2">
+                <span>{formatDate(currentArticle.publishDate)}</span>
                 <span className="mx-2">•</span>
-                <span className="flex items-center text-blue-500">
-                  <Rss className="w-3 h-3 mr-1" />
-                  RSS
-                </span>
-              </>
-            )}
+                <span>{formatTime(currentArticle.publishDate)}</span>
+                {currentArticle.source === 'rss' && (
+                  <span className="flex items-center ml-2 text-blue-500">
+                    <Rss className="w-3 h-3 mr-1" /> RSS
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="px-6 py-4">
-          <Card className="glass-card border-white/30 overflow-hidden">
+        {/* 内容区域卡片，与学院页子页面布局一致 */}
+        <div className="px-6 mt-6">
+          <Card className="glass-card border-white/30 shadow-lg rounded-3xl overflow-hidden">
             {currentArticle.imageUrl &&
               currentArticle.imageUrl !== '/placeholder.png' &&
               currentArticle.imageUrl.trim() !== '' && (
@@ -358,114 +365,128 @@ export function NewsPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      <div className="px-6 pt-8 pb-4">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-slate-800">
-            {t('news.title') || '资讯中心'}
-          </h1>
+      {/* 顶部 Hero 区域，与学院主页一致结构 */}
+      <div className="px-6 pt-12 pb-8 relative z-10">
+        <div className="flex mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">
+              {t('news.title') || '资讯中心'}
+            </h1>
+          </div>
         </div>
       </div>
 
-      <div className="px-6 mt-4">
-        {loading ? (
-          <div className="text-center py-8 text-slate-500">
-            {t('news.loading') || '加载中...'}
-          </div>
-        ) : newsItems.length > 0 ? (
-          <div className="relative space-y-3 pl-8">
-            {/* 蓝线 */}
-            <div className="absolute left-3 top-0 bottom-0 w-[2px] bg-blue-400"></div>
+      {/* 内容区域卡片，与学院主页内容布局一致 */}
+      <div className="px-6 mt-6">
+        <Card className="glass-card border-white/30 shadow-lg rounded-3xl">
+          <CardHeader>
+            <CardTitle className="text-slate-800 text-xl font-bold">
+              {t('news.latest') || '文章列表'}
+            </CardTitle>
+          </CardHeader>
 
-            {newsItems.map((item, _index) => (
-              <Card
-                key={item.id}
-                className="glass-card border-white/20 hover:border-white/40 transition-all cursor-pointer relative"
-                onClick={() => fetchArticleContent(item.id)}
-              >
-                {/* 蓝点 */}
-                <div className="absolute left-0 top-1/2 w-[10px] h-[10px] rounded-full bg-blue-400 transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+          <CardContent className="p-6">
+            {loading ? (
+              <div className="text-center py-8 text-slate-500">
+                {t('news.loading') || '加载中...'}
+              </div>
+            ) : newsItems.length > 0 ? (
+              <div className="relative space-y-3 pl-8">
+                {/* 蓝线 */}
+                <div className="absolute left-3 top-0 bottom-0 w-[2px] bg-blue-400"></div>
 
-                <div className="flex p-3">
-                  <div className="flex-1 pr-3">
-                    <h3 className="text-slate-800 font-medium text-sm mb-1 line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-slate-600 text-xs line-clamp-2 mb-2">
-                      {item.summary}
-                    </p>
-                    <div className="flex items-center justify-between text-slate-500 text-xs">
-                      <div className="flex items-center">
-                        <Clock className="w-3 h-3 mr-1" />
-                        <span>{formatDate(item.publishDate)}</span>
-                        {item.source === 'rss' && (
-                          <span className="flex items-center ml-2 text-blue-500">
-                            <Rss className="w-3 h-3 mr-1" />
-                            RSS
-                          </span>
+                {newsItems.map((item, _index) => (
+                  <Card
+                    key={item.id}
+                    className="glass-card border-white/20 hover:border-white/40 transition-all cursor-pointer relative rounded-xl"
+                    onClick={() => fetchArticleContent(item.id)}
+                  >
+                    {/* 蓝点 */}
+                    <div className="absolute left-0 top-1/2 w-[10px] h-[10px] rounded-full bg-blue-400 transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+
+                    <div className="flex p-3">
+                      <div className="flex-1 pr-3">
+                        <h3 className="text-slate-800 font-medium text-sm mb-1 line-clamp-2">
+                          {item.title}
+                        </h3>
+                        <p className="text-slate-600 text-xs line-clamp-2 mb-2">
+                          {item.summary}
+                        </p>
+                        <div className="flex items-center justify-between text-slate-500 text-xs">
+                          <div className="flex items-center">
+                            <Clock className="w-3 h-3 mr-1" />
+                            <span>{formatDate(item.publishDate)}</span>
+                            {item.source === 'rss' && (
+                              <span className="flex items-center ml-2 text-blue-500">
+                                <Rss className="w-3 h-3 mr-1" />
+                                RSS
+                              </span>
+                            )}
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleShare(item)
+                            }}
+                          >
+                            <Share2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                      {item.imageUrl &&
+                        item.imageUrl !== '/placeholder.png' &&
+                        item.imageUrl.trim() !== '' && (
+                          <div className="w-20 h-20 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
+                            <Image
+                              src={item.imageUrl}
+                              alt={item.title}
+                              width={80}
+                              height={80}
+                              className="object-cover w-full h-full"
+                              onError={(e) => {
+                                // 图片加载失败时隐藏父元素
+                                const target = e.target as HTMLImageElement
+                                const parent = target.parentElement
+                                if (parent) parent.style.display = 'none'
+                              }}
+                            />
+                          </div>
                         )}
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleShare(item)
-                        }}
-                      >
-                        <Share2 className="w-3 h-3" />
-                      </Button>
                     </div>
-                  </div>
-                  {item.imageUrl &&
-                    item.imageUrl !== '/placeholder.png' &&
-                    item.imageUrl.trim() !== '' && (
-                      <div className="w-20 h-20 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.title}
-                          width={80}
-                          height={80}
-                          className="object-cover w-full h-full"
-                          onError={(e) => {
-                            // 图片加载失败时隐藏父元素
-                            const target = e.target as HTMLImageElement
-                            const parent = target.parentElement
-                            if (parent) parent.style.display = 'none'
-                          }}
-                        />
-                      </div>
-                    )}
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 text-slate-500">
-            {t('news.empty') || '暂无资讯'}
-          </div>
-        )}
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-500">
+                {t('news.empty') || '暂无资讯'}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* 新闻分享模态框 */}
+        <UniversalShareModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          title="分享文章"
+          shareData={{
+            title: shareNewsItem?.title || '',
+            text: shareNewsItem?.summary || '',
+            url: shareNewsItem
+              ? `${window.location.origin}/news/${shareNewsItem.id}`
+              : ''
+          }}
+          imageGenerator={generateImage}
+          showImagePreview={true}
+          showDefaultShareButtons={true}
+        />
+
+        {/* 图片生成器组件 */}
+        <ImageGeneratorComponent />
       </div>
-
-      {/* 新闻分享模态框 */}
-      <UniversalShareModal
-        isOpen={showShareModal}
-        onClose={() => setShowShareModal(false)}
-        title="分享文章"
-        shareData={{
-          title: shareNewsItem?.title || '',
-          text: shareNewsItem?.summary || '',
-          url: shareNewsItem
-            ? `${window.location.origin}/news/${shareNewsItem.id}`
-            : ''
-        }}
-        imageGenerator={generateImage}
-        showImagePreview={true}
-        showDefaultShareButtons={true}
-      />
-
-      {/* 图片生成器组件 */}
-      <ImageGeneratorComponent />
     </div>
   )
 }

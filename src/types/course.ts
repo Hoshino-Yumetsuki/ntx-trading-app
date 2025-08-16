@@ -20,6 +20,8 @@ export interface Course {
   level?: string
   videoUrl?: string
   category?: string
+  link?: string
+  image?: string
 }
 
 export interface PermissionGroup {

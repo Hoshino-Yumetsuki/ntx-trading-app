@@ -32,9 +32,9 @@ export function LoopCommunitiesPage() {
     fetchCommunities()
   }, [])
 
-  // 点击社区卡片，提取并打开URL
+  // 点击社区卡片，优先读取 link 字段并打开URL（无 link 时回退解析 content）
   const handleCommunityClick = (community: Course) => {
-    const url = extractUrlFromContent(community.content || '')
+    const url = community.link || extractUrlFromContent(community.content || '')
     if (url) {
       window.open(url, '_blank', 'noopener,noreferrer')
     }
