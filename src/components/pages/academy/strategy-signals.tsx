@@ -9,7 +9,7 @@ import {
 } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { Badge } from '@/src/components/ui/badge'
-import { Target, ExternalLink, Loader2, } from 'lucide-react'
+import { Target, ExternalLink, Loader2 } from 'lucide-react'
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses, extractUrlFromContent } from '@/src/utils/courseUtils'
