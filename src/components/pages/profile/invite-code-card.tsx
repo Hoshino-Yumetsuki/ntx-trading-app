@@ -34,7 +34,8 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
 
   const copyInviteLink = () => {
     if (userInfo?.myInviteCode) {
-      const inviteUrl = `https://ntx-dao.com/register?invite=${userInfo.myInviteCode}`
+      const origin = typeof window !== 'undefined' ? window.location.origin : ''
+      const inviteUrl = `${origin}/register?invite=${userInfo.myInviteCode}`
       navigator.clipboard.writeText(inviteUrl)
       toast.success('邀请链接已复制到剪贴板')
     }
@@ -100,7 +101,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
           title: '注册 NTX DAO',
           text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n享受高达50%手续费返佣和交易挖矿\n\n邀请码：${userInfo?.myInviteCode || ''}`,
           url: userInfo?.myInviteCode
-            ? `https://ntx-dao.com/register?invite=${userInfo.myInviteCode}`
+            ? `${typeof window !== 'undefined' ? window.location.origin : ''}/register?invite=${userInfo.myInviteCode}`
             : ''
         }}
         imageGenerator={generateImage}
@@ -122,6 +123,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
           }
         ]}
         showDefaultShareButtons={true}
+        showCopyLinkButton={false}
       />
 
       {/* 图片生成器组件 */}

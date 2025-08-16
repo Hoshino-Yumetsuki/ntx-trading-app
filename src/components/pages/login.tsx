@@ -50,8 +50,18 @@ const createRegisterSchema = (t: (key: string) => string) =>
       path: ['confirmPassword']
     })
 
-export function LoginPage() {
-  const [isRegisterMode, setIsRegisterMode] = useState(false)
+interface LoginPageProps {
+  initialMode?: 'login' | 'register'
+  initialInviteCode?: string
+}
+
+export function LoginPage({
+  initialMode = 'login',
+  initialInviteCode = ''
+}: LoginPageProps) {
+  const [isRegisterMode, setIsRegisterMode] = useState(
+    initialMode === 'register'
+  )
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -75,7 +85,8 @@ export function LoginPage() {
   })
 
   const registerForm = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema)
+    resolver: zodResolver(registerSchema),
+    defaultValues: { invite_code: initialInviteCode }
   })
 
   // 移除动态表单切换，直接在JSX中使用对应的表单

@@ -40,6 +40,8 @@ interface UniversalShareModalProps {
   customActions?: ShareAction[]
   // 是否显示默认分享按钮
   showDefaultShareButtons?: boolean
+  // 是否显示内置复制链接按钮
+  showCopyLinkButton?: boolean
 }
 
 export function UniversalShareModal({
@@ -50,7 +52,8 @@ export function UniversalShareModal({
   imageGenerator,
   showImagePreview = false,
   customActions = [],
-  showDefaultShareButtons = true
+  showDefaultShareButtons = true,
+  showCopyLinkButton = true
 }: UniversalShareModalProps) {
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -276,10 +279,12 @@ export function UniversalShareModal({
             )}
 
             {/* 链接操作 */}
-            <Button variant="outline" onClick={copyLink} className="w-full">
-              <Copy className="w-4 h-4 mr-2" />
-              复制链接
-            </Button>
+            {showCopyLinkButton && (
+              <Button variant="outline" onClick={copyLink} className="w-full">
+                <Copy className="w-4 h-4 mr-2" />
+                复制链接
+              </Button>
+            )}
 
             {/* 自定义操作 */}
             {customActions.length > 0 && (
