@@ -47,7 +47,7 @@
             "required_groups": [
                 {
                     "id": 2,
-                    "name": "VIP会员"
+                    "name": "交易大师"
                 }
             ]
         },
@@ -89,7 +89,7 @@
         {
             "group": {
                 "id": 2,
-                "name": "VIP会员",
+                "name": "交易大师",
                 "created_at": "2023-10-27T10:00:00Z"
             },
             "packages": [
