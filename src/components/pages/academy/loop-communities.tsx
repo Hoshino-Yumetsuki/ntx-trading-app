@@ -5,12 +5,18 @@ import { Card, CardContent } from '@/src/components/ui/card'
 import { Loader2, Users } from 'lucide-react'
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
-import { processCourses, extractUrlFromContent } from '@/src/utils/courseUtils'
+import { processCourses } from '@/src/utils/courseUtils'
+import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 
-export function LoopCommunitiesPage() {
+export function LoopCommunitiesPage({
+  onReadingChange
+}: {
+  onReadingChange?: (reading: boolean) => void
+}) {
   const [communities, setCommunities] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [viewingCommunity, setViewingCommunity] = useState<Course | null>(null)
 
   // 获取社区数据
   useEffect(() => {
@@ -32,12 +38,27 @@ export function LoopCommunitiesPage() {
     fetchCommunities()
   }, [])
 
-  // 点击社区卡片，优先读取 link 字段并打开URL（无 link 时回退解析 content）
+  // 点击社区卡片：优先跳转外链，无 link 时以 Markdown 形式展示内容
   const handleCommunityClick = (community: Course) => {
-    const url = community.link || extractUrlFromContent(community.content || '')
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer')
+    if (community.link) {
+      window.open(community.link, '_blank', 'noopener,noreferrer')
+    } else if (community.content) {
+      setViewingCommunity(community)
+      onReadingChange?.(true)
     }
+  }
+
+  if (viewingCommunity?.content) {
+    return (
+      <AcademyMarkdownReader
+        title={viewingCommunity.name}
+        content={viewingCommunity.content}
+        onBack={() => {
+          setViewingCommunity(null)
+          onReadingChange?.(false)
+        }}
+      />
+    )
   }
 
   if (loading) {

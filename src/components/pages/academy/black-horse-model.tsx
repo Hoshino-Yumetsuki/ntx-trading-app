@@ -12,13 +12,19 @@ import { Badge } from '@/src/components/ui/badge'
 import { TrendingUp, ExternalLink, Loader2 } from 'lucide-react'
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
-import { processCourses, extractUrlFromContent } from '@/src/utils/courseUtils'
+import { processCourses } from '@/src/utils/courseUtils'
+import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 
-export function BlackHorseModelPage() {
+export function BlackHorseModelPage({
+  onReadingChange
+}: {
+  onReadingChange?: (reading: boolean) => void
+}) {
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
+  const [viewingCourse, setViewingCourse] = useState<Course | null>(null)
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -44,6 +50,19 @@ export function BlackHorseModelPage() {
 
     fetchCourses()
   }, [])
+
+  if (viewingCourse?.content) {
+    return (
+      <AcademyMarkdownReader
+        title={viewingCourse.name}
+        content={viewingCourse.content}
+        onBack={() => {
+          setViewingCourse(null)
+          onReadingChange?.(false)
+        }}
+      />
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -104,20 +123,21 @@ export function BlackHorseModelPage() {
                             </p>
                           </div>
                           <div className="ml-4">
-                            {course.content && (
+                            {(course.link || course.content) && (
                               <Button
                                 size="sm"
                                 className="glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50 flex items-center"
                                 onClick={() => {
-                                  const url = extractUrlFromContent(
-                                    course.content || ''
-                                  )
-                                  if (url)
+                                  if (course.link) {
                                     window.open(
-                                      url,
+                                      course.link,
                                       '_blank',
                                       'noopener,noreferrer'
                                     )
+                                  } else if (course.content) {
+                                    setViewingCourse(course)
+                                    onReadingChange?.(true)
+                                  }
                                 }}
                               >
                                 <ExternalLink className="w-4 h-4 mr-1" />

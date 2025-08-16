@@ -9,7 +9,7 @@ import {
 } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import Image from 'next/image'
-import { Clock, Rss, Share2, ChevronLeft, } from 'lucide-react'
+import { Clock, Rss, Share2, ChevronLeft } from 'lucide-react'
 import DOMPurify from 'dompurify'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'

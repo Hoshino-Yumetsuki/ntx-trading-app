@@ -25,13 +25,16 @@ import { UnlockCoursesPage } from './academy/unlock-courses'
 import { LoopCommunitiesPage } from './academy/loop-communities'
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
-import { processCourses, extractUrlFromContent } from '@/src/utils/courseUtils'
+import { processCourses } from '@/src/utils/courseUtils'
+import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 
 export function AcademyPage() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
   const [communities, setCommunities] = useState<Course[]>([])
   const [loadingCommunities, setLoadingCommunities] = useState(true)
   const [communityError, setCommunityError] = useState('')
+  const [viewingCommunity, setViewingCommunity] = useState<Course | null>(null)
+  const [isReading, setIsReading] = useState(false)
 
   const tabs = [
     {
@@ -86,49 +89,66 @@ export function AcademyPage() {
     fetchCommunities()
   }, [])
 
-  // 点击社区卡片，优先读取 link 字段并打开URL（无 link 时回退解析 content）
+  // 点击社区卡片：优先跳转外链；无 link 时以 Markdown 形式展示内容
   const handleCommunityClick = (community: Course) => {
-    const url = community.link || extractUrlFromContent(community.content || '')
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer')
+    if (community.link) {
+      window.open(community.link, '_blank', 'noopener,noreferrer')
+    } else if (community.content) {
+      setViewingCommunity(community)
     }
   }
 
   const handleBack = () => {
     setActiveTab(null)
+    setIsReading(false)
   }
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component
   const activeTabData = tabs.find((tab) => tab.id === activeTab)
 
+  // 独立阅读视图：当社区只有内容时进入
+  if (viewingCommunity?.content) {
+    return (
+      <AcademyMarkdownReader
+        title={viewingCommunity.name}
+        content={viewingCommunity.content}
+        onBack={() => setViewingCommunity(null)}
+      />
+    )
+  }
+
   // 如果选择了某个tab，显示子页面
   if (activeTab && ActiveComponent) {
     return (
       <div className="min-h-screen pb-6">
-        <div className="px-6 pt-12 pb-8 relative z-10">
-          <div className="flex items-start mb-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleBack}
-              className="mr-3 text-slate-600 hover:text-slate-800"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              返回
-            </Button>
-            <div className="flex-1">
-              <div>
-                <h1 className="text-2xl font-bold text-slate-800">
-                  {activeTabData?.title}
-                </h1>
-                <p className="text-slate-600 text-sm">掌握机构交易思维</p>
+        {!isReading && (
+          <div className="px-6 pt-12 pb-8 relative z-10">
+            <div className="flex items-start mb-6">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleBack}
+                className="mr-3 text-slate-600 hover:text-slate-800"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" /> 返回
+              </Button>
+              <div className="flex-1">
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-800">
+                    {activeTabData?.title}
+                  </h1>
+                  <p className="text-slate-600 text-sm">掌握机构交易思维</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="px-6 mt-6">
-          <ActiveComponent />
+          {(() => {
+            const Comp: any = ActiveComponent
+            return <Comp onReadingChange={setIsReading} />
+          })()}
         </div>
       </div>
     )
@@ -246,3 +266,6 @@ export function AcademyPage() {
     </div>
   )
 }
+
+// Markdown 内容弹窗（主页面）
+// 放在文件末尾不会渲染。需要在组件内部。将其插入到主页面返回的 JSX 中。

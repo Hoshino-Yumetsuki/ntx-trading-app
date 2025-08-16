@@ -25,13 +25,19 @@ import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import Image from 'next/image'
 import { AuthService } from '@/src/services/auth'
+import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 
-export function LearningResourcesPage() {
+export function LearningResourcesPage({
+  onReadingChange
+}: {
+  onReadingChange?: (reading: boolean) => void
+}) {
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const [_isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+  const [viewingCourse, setViewingCourse] = useState<Course | null>(null)
 
   useEffect(() => {
     const token = AuthService.getToken()
@@ -78,6 +84,19 @@ export function LearningResourcesPage() {
       description: '科学资金管理，建立小亏大赚概率优势'
     }
   ]
+
+  if (viewingCourse?.content) {
+    return (
+      <AcademyMarkdownReader
+        title={viewingCourse.name}
+        content={viewingCourse.content}
+        onBack={() => {
+          setViewingCourse(null)
+          onReadingChange?.(false)
+        }}
+      />
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -218,13 +237,24 @@ export function LearningResourcesPage() {
                         <Button
                           size="sm"
                           className="glass-card text-green-600 hover:text-green-700 border-green-300 bg-green-50/50"
-                          onClick={() =>
-                            window.open(
-                              course.link || course.videoUrl || '#',
-                              '_blank',
-                              'noopener,noreferrer'
-                            )
-                          }
+                          onClick={() => {
+                            if (course.link) {
+                              window.open(
+                                course.link,
+                                '_blank',
+                                'noopener,noreferrer'
+                              )
+                            } else if (course.videoUrl) {
+                              window.open(
+                                course.videoUrl,
+                                '_blank',
+                                'noopener,noreferrer'
+                              )
+                            } else if (course.content) {
+                              setViewingCourse(course)
+                              onReadingChange?.(true)
+                            }
+                          }}
                         >
                           <Play className="w-4 h-4 mr-1" />
                           学习
