@@ -11,7 +11,6 @@ import {
 } from '@/src/components/ui/card'
 import {
   ArrowLeft,
-  BookOpen,
   Users,
   TrendingUp,
   Wallet,
@@ -92,7 +91,9 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
         <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="text-xl font-bold text-slate-800">{t('tutorial.title')}</h1>
+        <h1 className="text-xl font-bold text-slate-800">
+          {t('tutorial.title')}
+        </h1>
       </div>
 
       {/* Content */}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Home, Coins, User, Newspaper, BookOpen } from 'lucide-react' // Updated imports for BookOpen and Coins
+import { Home, Coins, User, Newspaper, BookOpen } from 'lucide-react'
 import { HomePage } from '@/src/components/pages/home'
 import { MiningPage } from '@/src/components/pages/mining'
 import { ProfilePage } from '@/src/components/pages/profile'
@@ -60,8 +60,16 @@ export function MainApp() {
     }
   ]
 
-  const ActiveComponent =
-    tabs.find((tab) => tab.id === activeTab)?.component || HomePage
+  // 确定要显示的活动组件
+  let ActiveComponent: any
+  // 检查是否是主标签页中的一个
+  const activeTabComponent = tabs.find((tab) => tab.id === activeTab)?.component
+  if (activeTabComponent) {
+    ActiveComponent = activeTabComponent
+  } else {
+    // 默认回到首页
+    ActiveComponent = tabs[0].component
+  }
 
   return (
     <div className="min-h-screen">

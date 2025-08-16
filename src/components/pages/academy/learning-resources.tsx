@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -16,42 +17,47 @@ import {
   ExternalLink,
   TrendingUp,
   Shield,
-  Target
+  Target,
+  Loader2
 } from 'lucide-react'
+import type { Course } from '@/src/types/course'
+import { getAllCourses } from '@/src/services/courseService'
+import { processCourses } from '@/src/utils/courseUtils'
 
 export function LearningResourcesPage() {
-  const courses = [
-    {
-      title: 'K线形态与多周期信号综合系统',
-      description:
-        '掌握机构操盘信号识别方法，学习三种顶级K线形态判断和最佳入场时机把握，配合多周期统一判断方法形成完整交易体系。',
-      duration: '课时：12课时 | 总时长：3小时15分钟',
-      level: '进阶',
-      locked: false,
-      category: '技术分析',
-      videoUrl: 'https://www.bilibili.com/video/BV14gycYwEVT/'
-    },
-    {
-      title: '波段交易完整实战指南',
-      description:
-        '从实战角度讲解如何利用高低点序列确认趋势周期，掌握适合市场不同阶段的交易策略，建立规范化的风控和资金管理系统。',
-      duration: '课时：16课时 | 总时长：4小时40分钟',
-      level: '进阶',
-      locked: false,
-      category: '交易策略',
-      videoUrl: 'https://www.bilibili.com/video/BV1quNbzqEuE/'
-    },
-    {
-      title: '交易心理学与行为金融',
-      description:
-        '分析交易者常见心理偏差，教您控制恐惧与贪婪情绪，建立科学交易日志系统，实现交易心态与技术的良性循环。',
-      duration: '课时：8课时 | 总时长：2小时20分钟',
-      level: '基础',
-      locked: false,
-      category: '心理建设',
-      videoUrl: 'https://www.bilibili.com/video/BV1UFNqz1E9a/'
+  const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
+  const [lockedCourses, setLockedCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
+  const [_isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    setIsLoggedIn(!!token)
+
+    const fetchCourses = async () => {
+      try {
+        setLoading(true)
+        const allCoursesData = await getAllCourses()
+
+        // Process courses to separate unlocked and locked, filter for articles only
+        const { unlockedCourses, lockedCourses } = processCourses(
+          allCoursesData,
+          'article'
+        )
+
+        setUnlockedCourses(unlockedCourses)
+        setLockedCourses(lockedCourses)
+      } catch (err) {
+        console.error('Failed to fetch courses:', err)
+        setError('获取课程失败，请稍后再试')
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchCourses()
+  }, [])
 
   const features = [
     {
@@ -147,60 +153,157 @@ export function LearningResourcesPage() {
         </CardContent>
       </Card>
 
-      <div className="space-y-4">
-        <h2 className="text-slate-800 text-xl font-bold">学习资源</h2>
-        {courses.map((course, index) => (
-          <Card key={index} className="glass-card border-white/30">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Badge className="text-xs bg-purple-100/80 text-purple-700 border-purple-200">
-                      {course.category}
-                    </Badge>
-                    <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                      {course.level}
-                    </Badge>
-                  </div>
-                  <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                    {course.title}
-                  </h3>
-                  <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                    {course.description}
-                  </p>
-                  <p className="text-slate-500 text-xs">{course.duration}</p>
-                </div>
-                <div className="ml-4">
-                  {course.locked ? (
-                    <Button
-                      size="sm"
-                      className="diffused-button text-white border-0"
-                    >
-                      <Lock className="w-4 h-4 mr-1" />
-                      解锁
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      className="glass-card text-green-600 hover:text-green-700 border-green-300 bg-green-50/50"
-                      onClick={() =>
-                        window.open(
-                          course.videoUrl || '#',
-                          '_blank',
-                          'noopener,noreferrer'
-                        )
-                      }
-                    >
-                      <Play className="w-4 h-4 mr-1" />
-                      学习
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center p-12">
+          <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+          <span className="ml-2 text-slate-600">加载课程中...</span>
+        </div>
+      ) : error ? (
+        <div className="p-6 text-center">
+          <p className="text-red-500">{error}</p>
+          <Button
+            onClick={() => window.location.reload()}
+            className="mt-4 glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50"
+          >
+            重试
+          </Button>
+        </div>
+      ) : (
+        <>
+          {/* Unlocked courses section */}
+          {unlockedCourses.length > 0 && (
+            <div className="space-y-4">
+              <h2 className="text-slate-800 text-xl font-bold flex items-center">
+                <span className="bg-green-100 text-green-600 p-1 rounded-md mr-2">
+                  <Play className="w-5 h-5" />
+                </span>
+                我的课程
+              </h2>
+              {unlockedCourses.map((course, index) => (
+                <Card
+                  key={index}
+                  className="glass-card border-white/30 border-l-4 border-l-green-400"
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Badge className="text-xs bg-purple-100/80 text-purple-700 border-purple-200">
+                            {course.category}
+                          </Badge>
+                          <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
+                            {course.level}
+                          </Badge>
+                        </div>
+                        <h3 className="text-slate-800 font-semibold text-lg mb-2">
+                          {course.name}
+                        </h3>
+                        <p className="text-slate-600 text-sm mb-3 leading-relaxed">
+                          {course.description}
+                        </p>
+                      </div>
+                      <div className="ml-4">
+                        <Button
+                          size="sm"
+                          className="glass-card text-green-600 hover:text-green-700 border-green-300 bg-green-50/50"
+                          onClick={() =>
+                            window.open(
+                              course.videoUrl || '#',
+                              '_blank',
+                              'noopener,noreferrer'
+                            )
+                          }
+                        >
+                          <Play className="w-4 h-4 mr-1" />
+                          学习
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Locked courses section */}
+          {lockedCourses.length > 0 && (
+            <div className="space-y-4 mt-8">
+              <h2 className="text-slate-800 text-xl font-bold flex items-center">
+                <span className="bg-orange-100 text-orange-600 p-1 rounded-md mr-2">
+                  <Lock className="w-5 h-5" />
+                </span>
+                待解锁课程
+              </h2>
+              {lockedCourses.map((course, index) => (
+                <Card key={index} className="glass-card border-white/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Badge className="text-xs bg-purple-100/80 text-purple-700 border-purple-200">
+                            {course.category}
+                          </Badge>
+                          <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
+                            {course.level}
+                          </Badge>
+                        </div>
+                        <h3 className="text-slate-800 font-semibold text-lg mb-2">
+                          {course.name}
+                        </h3>
+                        <p className="text-slate-600 text-sm mb-3 leading-relaxed">
+                          {course.description}
+                        </p>
+
+                        {/* Display required permission groups */}
+                        {course.required_groups &&
+                          course.required_groups.length > 0 && (
+                            <div className="mt-2">
+                              <p className="text-xs text-slate-500">
+                                需要：
+                                {course.required_groups.map((group, i) => (
+                                  <span
+                                    key={group.id}
+                                    className="inline-flex items-center ml-1"
+                                  >
+                                    <span className="text-blue-600">
+                                      {group.name}
+                                    </span>
+                                    {i < course.required_groups.length - 1
+                                      ? '，'
+                                      : ''}
+                                  </span>
+                                ))}
+                              </p>
+                            </div>
+                          )}
+                      </div>
+                      <div className="ml-4">
+                        <Button
+                          size="sm"
+                          className="bg-gray-300 text-gray-600 cursor-not-allowed border-0"
+                          disabled
+                        >
+                          <Play className="w-4 h-4 mr-1" />
+                          学习
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Show message when no courses available */}
+          {unlockedCourses.length === 0 && lockedCourses.length === 0 && (
+            <div className="text-center p-8">
+              <p className="text-slate-600">暂无课程可显示</p>
+            </div>
+          )}
+
+          {/* Login prompt removed */}
+        </>
+      )}
 
       <Card className="glass-card border-white/30">
         <CardHeader>

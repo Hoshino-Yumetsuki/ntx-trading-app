@@ -164,8 +164,8 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </CardContent>
         </Card>
 
-        {/* 以2x2方式排列四个正方形卡片 */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* 以 2x2 方式排列四个正方形卡片 */}
+        <div className="grid grid-cols-2 gap-4 mt-4">
           <Card className="glass-card border-white/50 aspect-square">
             <CardContent className="p-4 flex flex-col items-center text-center justify-between h-full">
               <div className="premium-icon w-12 h-12 rounded-xl mb-3">

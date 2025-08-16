@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -8,14 +8,30 @@ import {
   CardHeader,
   CardTitle
 } from '@/src/components/ui/card'
-import { BookOpen, TrendingUp, Target, Lock, ArrowLeft } from 'lucide-react'
+import {
+  BookOpen,
+  TrendingUp,
+  Target,
+  Lock,
+  ArrowLeft,
+  Users,
+  ChevronRight,
+  Loader2
+} from 'lucide-react'
 import { LearningResourcesPage } from './academy/learning-resources'
 import { BlackHorseModelPage } from './academy/black-horse-model'
 import { StrategySignalsPage } from './academy/strategy-signals'
 import { UnlockCoursesPage } from './academy/unlock-courses'
+import { LoopCommunitiesPage } from './academy/loop-communities'
+import type { Course } from '@/src/types/course'
+import { getAllCourses } from '@/src/services/courseService'
+import { processCourses, extractUrlFromContent } from '@/src/utils/courseUtils'
 
 export function AcademyPage() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [communities, setCommunities] = useState<Course[]>([])
+  const [loadingCommunities, setLoadingCommunities] = useState(true)
+  const [communityError, setCommunityError] = useState('')
 
   const tabs = [
     {
@@ -37,12 +53,46 @@ export function AcademyPage() {
       component: StrategySignalsPage
     },
     {
+      id: 'loop',
+      title: 'Loop 社区',
+      icon: Users,
+      component: LoopCommunitiesPage
+    },
+    {
       id: 'unlock',
       title: '解锁课程',
       icon: Lock,
       component: UnlockCoursesPage
     }
   ]
+
+  // 获取社区数据
+  useEffect(() => {
+    const fetchCommunities = async () => {
+      try {
+        setLoadingCommunities(true)
+        setCommunityError('')
+        const data = await getAllCourses()
+        const { unlockedCourses } = processCourses(data, 'loop_comm')
+        setCommunities(unlockedCourses)
+      } catch (error) {
+        console.error('Failed to fetch communities:', error)
+        setCommunityError('获取社区数据失败，请稍后再试')
+      } finally {
+        setLoadingCommunities(false)
+      }
+    }
+
+    fetchCommunities()
+  }, [])
+
+  // 点击社区卡片，提取并打开URL
+  const handleCommunityClick = (community: Course) => {
+    const url = extractUrlFromContent(community.content || '')
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
+  }
 
   const handleBack = () => {
     setActiveTab(null)
@@ -106,56 +156,85 @@ export function AcademyPage() {
           </CardHeader>
           <CardContent className="pb-6">
             <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-              {tabs.map((tab) => {
-                const Icon = tab.icon
-                return (
-                  <Card
-                    key={tab.id}
-                    className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
-                    onClick={() => setActiveTab(tab.id)}
-                  >
-                    <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
-                      <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200">
-                        <Icon className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <h3 className="text-slate-800 font-medium text-sm group-hover:text-blue-700 transition-colors">
-                        {tab.title}
-                      </h3>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+              {tabs
+                .filter((tab) => tab.id !== 'loop')
+                .map((tab) => {
+                  const Icon = tab.icon
+                  return (
+                    <Card
+                      key={tab.id}
+                      className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                      onClick={() => setActiveTab(tab.id)}
+                    >
+                      <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
+                        <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200">
+                          <Icon className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <h3 className="text-slate-800 font-medium text-sm group-hover:text-blue-700 transition-colors">
+                          {tab.title}
+                        </h3>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
             </div>
           </CardContent>
         </Card>
 
         {/* LOOP 社区卡片 */}
         <Card className="glass-card border-white/30 shadow-lg mt-6">
-          <CardHeader>
+          <CardHeader className="pb-2">
             <CardTitle className="text-slate-800 text-xl font-bold">
               LOOP 社区
             </CardTitle>
-            <p className="text-slate-600 text-sm mt-1">频道列表</p>
+            <div className="flex justify-between items-center mt-1">
+              <p className="text-slate-600 text-sm">加入社区，一起讨论学习</p>
+              {communities.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-500 hover:text-slate-700 text-xs flex items-center h-6 -mt-1 px-2 py-0"
+                  onClick={() => setActiveTab('loop')}
+                >
+                  更多社区 <ChevronRight className="w-3 h-3 ml-1" />
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="pb-6">
-            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-              {/* 四个空的频道卡片 */}
-              {[1, 2, 3, 4].map((index) => (
-                <Card
-                  key={index}
-                  className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group opacity-50"
-                >
-                  <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
-                    <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200">
-                      <div className="w-5 h-5 bg-gray-400 rounded"></div>
-                    </div>
-                    <h3 className="text-slate-400 font-medium text-sm">
-                      频道 {index}
-                    </h3>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {loadingCommunities ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                <span className="ml-2 text-slate-600">加载社区中...</span>
+              </div>
+            ) : communityError ? (
+              <div className="text-center py-6">
+                <p className="text-red-500">{communityError}</p>
+              </div>
+            ) : communities.length === 0 ? (
+              <div className="text-center py-6">
+                <p className="text-slate-600">暂无社区可显示</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                {communities.slice(0, 4).map((community) => (
+                  <Card
+                    key={community.id}
+                    className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                    onClick={() => handleCommunityClick(community)}
+                  >
+                    <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
+                      <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200">
+                        <Users className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <h3 className="text-slate-800 font-medium text-sm group-hover:text-blue-700 transition-colors">
+                        {community.name}
+                      </h3>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
