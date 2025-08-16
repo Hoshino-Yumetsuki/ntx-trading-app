@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -15,13 +15,23 @@ import {
   DialogTitle,
   DialogDescription
 } from '@/src/components/ui/dialog'
-import { Loader2, ShoppingCart, ExternalLink, Copy } from 'lucide-react'
+import {
+  Loader2,
+  ShoppingCart,
+  ExternalLink,
+  Copy,
+  Lock,
+  BookOpen,
+  BadgeCheck,
+  RefreshCw
+} from 'lucide-react'
 import { getPermissionGroups } from '@/src/services/courseService'
-import { createOrder } from '@/src/services/payment'
+import { createOrder, getMyOrders } from '@/src/services/payment'
 import type {
   PermissionGroupWithPackages,
   CreateOrderResponse
 } from '@/src/types/course'
+import type { Order } from '@/src/types/course'
 
 export function UnlockCoursesPage() {
   const [groups, setGroups] = useState<PermissionGroupWithPackages[]>([])
@@ -33,6 +43,35 @@ export function UnlockCoursesPage() {
   const [paymentInfo, setPaymentInfo] = useState<CreateOrderResponse | null>(
     null
   )
+
+  // CSR 订单列表
+  const [ordersOpen, setOrdersOpen] = useState(false)
+  const [orders, setOrders] = useState<Order[]>([])
+  const [ordersLoading, setOrdersLoading] = useState(false)
+  const [ordersError, setOrdersError] = useState('')
+
+  const fetchOrders = useCallback(async () => {
+    try {
+      setOrdersLoading(true)
+      setOrdersError('')
+      const data = await getMyOrders()
+      const sorted = [...data].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+      setOrders(sorted)
+    } catch (e: any) {
+      setOrdersError(e.message || '获取订单失败')
+    } finally {
+      setOrdersLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (ordersOpen) {
+      fetchOrders()
+    }
+  }, [ordersOpen, fetchOrders])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,12 +112,15 @@ export function UnlockCoursesPage() {
     <div className="space-y-6">
       <Card className="glass-card-strong border-white/50">
         <CardContent className="p-6 text-center">
+          <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow-inner">
+            <Lock className="h-6 w-6 text-slate-700" />
+          </div>
           <h3 className="gradient-text font-bold text-lg mb-2">解锁完整课程</h3>
           <p className="text-slate-600 text-sm mb-4">
             程序化辅助工具：学员专属【筛选系统】，落地模型应用
           </p>
           <Button
-            className="diffused-button text-white font-semibold border-0"
+            className="diffused-button text-white font-semibold border-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
             onClick={() => {
               const el = document.getElementById('packages-section')
               if (el) el.scrollIntoView({ behavior: 'smooth' })
@@ -91,7 +133,12 @@ export function UnlockCoursesPage() {
 
       <Card className="glass-card border-white/30">
         <CardContent className="p-6">
-          <h4 className="text-slate-800 font-semibold mb-4">课程包含内容</h4>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-blue-100">
+              <BookOpen className="h-4 w-4 text-blue-600" />
+            </div>
+            <h4 className="text-slate-800 font-semibold">课程包含内容</h4>
+          </div>
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
               <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
@@ -105,7 +152,7 @@ export function UnlockCoursesPage() {
               </div>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
               <div>
                 <h5 className="text-slate-800 font-medium text-sm">
                   专属筛选工具
@@ -116,7 +163,7 @@ export function UnlockCoursesPage() {
               </div>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
               <div>
                 <h5 className="text-slate-800 font-medium text-sm">
                   实战案例分析
@@ -127,7 +174,7 @@ export function UnlockCoursesPage() {
               </div>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
               <div>
                 <h5 className="text-slate-800 font-medium text-sm">
                   持续更新支持
@@ -144,10 +191,20 @@ export function UnlockCoursesPage() {
       {/* 购买套餐 */}
       <div id="packages-section" className="mt-2" />
       <Card className="glass-card border-white/30">
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-slate-800 text-xl font-bold">
             购买套餐
           </CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setOrdersOpen(true)
+            }}
+            className="text-slate-600 hover:text-slate-800"
+          >
+            <ExternalLink className="w-4 h-4 mr-1" /> 订单列表
+          </Button>
         </CardHeader>
         <CardContent className="pb-6">
           {loading ? (
@@ -191,7 +248,7 @@ export function UnlockCoursesPage() {
                             </div>
                           </div>
                           <Button
-                            className="min-w-[96px]"
+                            className="min-w-[96px] bg-blue-600 hover:bg-blue-700 text-white"
                             onClick={() => handleBuy(p.id)}
                             disabled={creatingOrder === p.id}
                           >
@@ -219,35 +276,110 @@ export function UnlockCoursesPage() {
 
       <Card className="glass-card border-white/30">
         <CardContent className="p-6">
-          <h4 className="text-slate-800 font-semibold mb-4">学员专享权益</h4>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-indigo-100">
+              <BadgeCheck className="h-4 w-4 text-indigo-600" />
+            </div>
+            <h4 className="text-slate-800 font-semibold">学员专属权益</h4>
+          </div>
           <div className="grid grid-cols-1 gap-3">
-            <div className="p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200">
-              <h5 className="text-blue-800 font-medium text-sm mb-1">
-                VIP交流群
-              </h5>
-              <p className="text-blue-600 text-xs">
+            <div className="p-4 rounded-lg bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white shadow-sm">
+              <h5 className="font-medium text-sm mb-1">VIP交流群</h5>
+              <p className="text-xs text-white/90">
                 与导师和优秀学员直接交流，分享交易心得
               </p>
             </div>
-            <div className="p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg border border-purple-200">
-              <h5 className="text-purple-800 font-medium text-sm mb-1">
-                一对一指导
-              </h5>
-              <p className="text-purple-600 text-xs">
+            <div className="p-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-sm">
+              <h5 className="font-medium text-sm mb-1">一对一指导</h5>
+              <p className="text-xs text-white/90">
                 针对个人交易问题提供专业指导建议
               </p>
             </div>
-            <div className="p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200">
-              <h5 className="text-green-800 font-medium text-sm mb-1">
-                实时策略更新
-              </h5>
-              <p className="text-green-600 text-xs">
+            <div className="p-4 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-sm">
+              <h5 className="font-medium text-sm mb-1">实时策略更新</h5>
+              <p className="text-xs text-white/90">
                 第一时间获取最新的市场策略和信号提醒
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* 订单列表（CSR 弹窗） */}
+      <Dialog
+        open={ordersOpen}
+        onOpenChange={(open) => {
+          setOrdersOpen(open)
+          if (open) fetchOrders()
+        }}
+      >
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>我的订单</DialogTitle>
+            <DialogDescription>查看课程购买与支付状态</DialogDescription>
+          </DialogHeader>
+          {ordersLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+              <span className="ml-2 text-slate-600">加载订单中...</span>
+            </div>
+          ) : ordersError ? (
+            <div className="text-center py-6">
+              <p className="text-red-500 text-sm">{ordersError}</p>
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="text-center py-6">
+              <p className="text-slate-600 text-sm">暂无订单</p>
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+              {orders.map((o) => (
+                <div
+                  key={o.id}
+                  className="p-4 rounded-lg border border-white/40 bg-white/60 backdrop-blur-sm flex items-center justify-between"
+                >
+                  <div className="space-y-1">
+                    <div className="text-slate-800 font-medium">
+                      订单 #{o.id}
+                      <span className="ml-2 text-xs text-slate-500">
+                        套餐ID {o.package_id}
+                      </span>
+                    </div>
+                    <div className="text-sm text-slate-600">
+                      应付 {o.amount} {o.currency} · 实付金额 {o.paymentAmount}{' '}
+                      {o.currency}
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      创建时间 {new Date(o.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                  <span
+                    className={
+                      'px-2 py-1 rounded text-xs font-medium ' +
+                      (o.status === 'confirmed'
+                        ? 'bg-green-100 text-green-700 border border-green-200'
+                        : o.status === 'pending'
+                          ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                          : 'bg-slate-100 text-slate-700 border border-slate-200')
+                    }
+                  >
+                    {o.status === 'pending'
+                      ? '待支付/待确认'
+                      : o.status === 'confirmed'
+                        ? '已确认'
+                        : '已关闭'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="flex justify-end pt-2">
+            <Button variant="outline" size="sm" onClick={fetchOrders}>
+              <RefreshCw className="w-4 h-4 mr-2" /> 刷新
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* 支付弹窗 */}
       <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
@@ -313,7 +445,8 @@ export function UnlockCoursesPage() {
                   className="flex-1"
                   onClick={() => {
                     setPaymentOpen(false)
-                    window.location.href = '/orders'
+                    setOrdersOpen(true)
+                    fetchOrders()
                   }}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" /> 查看订单
