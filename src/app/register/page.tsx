@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { LoginPage } from '@/src/components/pages/login'
 import { AuthProvider } from '@/src/contexts/AuthContext'
@@ -16,7 +17,9 @@ export default function RegisterPage() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <RegisterAppContent />
+        <Suspense fallback={null}>
+          <RegisterAppContent />
+        </Suspense>
       </AuthProvider>
     </LanguageProvider>
   )
