@@ -29,7 +29,13 @@ export async function getAllCourses(): Promise<Course[]> {
       throw new Error(`Failed to fetch courses: ${response.status}`)
     }
 
-    return await response.json()
+    const data = await response.json()
+    // Normalize field names to match our Course type
+    // API may return `requiredGroups` (camelCase); map it to `required_groups`
+    return (data || []).map((item: any) => ({
+      ...item,
+      required_groups: item?.required_groups ?? item?.requiredGroups ?? []
+    }))
   } catch (error) {
     console.error('Error fetching all courses:', error)
     return []

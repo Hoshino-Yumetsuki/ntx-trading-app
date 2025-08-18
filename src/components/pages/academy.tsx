@@ -147,7 +147,12 @@ export function AcademyPage() {
         <div className="px-6 mt-6">
           {(() => {
             const Comp: any = ActiveComponent
-            return <Comp onReadingChange={setIsReading} />
+            return (
+              <Comp
+                onReadingChange={setIsReading}
+                onNavigateTab={(tabId: string) => setActiveTab(tabId)}
+              />
+            )
           })()}
         </div>
       </div>

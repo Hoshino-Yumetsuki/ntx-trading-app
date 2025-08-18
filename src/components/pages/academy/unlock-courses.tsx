@@ -295,11 +295,18 @@ export function UnlockCoursesPage() {
                         >
                           <div>
                             <div className="text-slate-800 font-medium">
-                              {p.duration_days} 天套餐
+                              {p.duration_days > 10000
+                                ? '永久套餐'
+                                : `${p.duration_days} 天套餐`}
                             </div>
                             <div className="text-sm text-slate-600">
                               价格：{p.price} {p.currency}
                             </div>
+                            {(p.description || g.group.description) && (
+                              <div className="text-xs text-slate-500 mt-1">
+                                {p.description ?? g.group.description}
+                              </div>
+                            )}
                           </div>
                           <Button
                             className="min-w-[96px] bg-blue-600 hover:bg-blue-700 text-white"

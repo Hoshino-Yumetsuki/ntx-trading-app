@@ -28,9 +28,11 @@ import { AuthService } from '@/src/services/auth'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 
 export function LearningResourcesPage({
-  onReadingChange
+  onReadingChange,
+  onNavigateTab
 }: {
   onReadingChange?: (reading: boolean) => void
+  onNavigateTab?: (tabId: string) => void
 }) {
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
@@ -332,11 +334,11 @@ export function LearningResourcesPage({
                         )}
                         <Button
                           size="sm"
-                          className="bg-gray-300 text-gray-600 cursor-not-allowed border-0"
-                          disabled
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
+                          onClick={() => onNavigateTab?.('unlock')}
                         >
-                          <Play className="w-4 h-4 mr-1" />
-                          学习
+                          <Lock className="w-4 h-4 mr-1" />
+                          去解锁
                         </Button>
                       </div>
                     </div>

@@ -28,6 +28,7 @@ export interface PermissionGroup {
   id: number
   name: string
   created_at: string
+  description?: string
 }
 
 export interface CoursePackage {
@@ -36,6 +37,7 @@ export interface CoursePackage {
   duration_days: number
   price: number
   currency: string
+  description?: string
 }
 
 export interface PermissionGroupWithPackages {
