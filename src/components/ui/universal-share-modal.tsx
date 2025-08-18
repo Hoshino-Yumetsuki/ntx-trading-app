@@ -328,7 +328,7 @@ export function UniversalShareModal({
             />
             <div className="flex flex-col gap-2">
               <Button variant="outline" onClick={triggerUpload} className="w-full">
-                上传二维码图片并识别
+                上传自定义二维码
               </Button>
               {onQrOverride && (
                 <Button
