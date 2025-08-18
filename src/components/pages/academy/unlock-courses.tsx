@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, useId } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -37,6 +37,7 @@ import type { Order } from '@/src/types/course'
 import { format } from 'date-fns'
 
 export function UnlockCoursesPage() {
+  const packagesSectionId = useId()
   const [groups, setGroups] = useState<PermissionGroupWithPackages[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -175,7 +176,7 @@ export function UnlockCoursesPage() {
           <Button
             className="diffused-button text-white font-semibold border-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
             onClick={() => {
-              const el = document.getElementById('packages-section')
+              const el = document.getElementById(packagesSectionId)
               if (el) el.scrollIntoView({ behavior: 'smooth' })
             }}
           >
@@ -242,7 +243,7 @@ export function UnlockCoursesPage() {
       </Card>
 
       {/* 购买套餐 */}
-      <div id="packages-section" className="mt-2" />
+      <div id={packagesSectionId} className="mt-2" />
       <Card className="glass-card border-white/30">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-slate-800 text-xl font-bold">
@@ -393,14 +394,15 @@ export function UnlockCoursesPage() {
                 >
                   <div className="space-y-1">
                     <div className="text-slate-800 font-medium">
-                      订单 #{format(new Date(o.created_at), 'yyyyMMdd')}0000{o.id}
+                      订单 #{format(new Date(o.created_at), 'yyyyMMdd')}0000
+                      {o.id}
                       <span className="ml-2 text-xs text-slate-500">
                         套餐名称 {packageNameMap[o.package_id] ?? '-'}
                       </span>
                     </div>
                     <div className="text-sm text-slate-600">
-                      套餐金额 {o.amount} {o.currency} · 实付金额 {o.paymentAmount}{' '}
-                      {o.currency}
+                      套餐金额 {o.amount} {o.currency} · 实付金额{' '}
+                      {o.paymentAmount} {o.currency}
                     </div>
                     <div className="text-xs text-slate-500">
                       创建时间 {new Date(o.created_at).toLocaleString()}
@@ -428,7 +430,8 @@ export function UnlockCoursesPage() {
                         {typeof o.remainingTimeSeconds === 'number' && (
                           <div className="hidden sm:flex items-center text-xs text-slate-600 bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">
                             <Clock className="w-3 h-3 mr-1" />
-                            剩余 {formatTime(Math.max(0, o.remainingTimeSeconds))}
+                            剩余{' '}
+                            {formatTime(Math.max(0, o.remainingTimeSeconds))}
                           </div>
                         )}
                         <Button size="sm" onClick={() => openPayDialog(o)}>
@@ -454,7 +457,9 @@ export function UnlockCoursesPage() {
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[460px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>支付信息</DialogTitle>
-            <DialogDescription>请使用支持 USDT 的钱包进行链上转账</DialogDescription>
+            <DialogDescription>
+              请使用支持 USDT 的钱包进行链上转账
+            </DialogDescription>
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-3">
@@ -467,7 +472,9 @@ export function UnlockCoursesPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => copyToClipboard(selectedOrder.paymentAddress || '')}
+                    onClick={() =>
+                      copyToClipboard(selectedOrder.paymentAddress || '')
+                    }
                     className="ml-2"
                   >
                     <Copy className="w-4 h-4 mr-1" /> 复制
@@ -484,7 +491,9 @@ export function UnlockCoursesPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => copyToClipboard(String(selectedOrder.paymentAmount))}
+                    onClick={() =>
+                      copyToClipboard(String(selectedOrder.paymentAmount))
+                    }
                     className="ml-2"
                   >
                     <Copy className="w-4 h-4 mr-1" /> 复制
@@ -493,7 +502,9 @@ export function UnlockCoursesPage() {
               </div>
 
               <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-                <div className="text-xs text-red-700 mb-1 font-semibold">注意</div>
+                <div className="text-xs text-red-700 mb-1 font-semibold">
+                  注意
+                </div>
                 <div className="text-sm text-red-700 font-bold">
                   未在有效期内完成支付将导致订单关闭。
                 </div>
@@ -504,7 +515,9 @@ export function UnlockCoursesPage() {
                   <div className="flex items-center">
                     <Clock className="w-4 h-4 mr-1" /> 支付倒计时
                   </div>
-                  <div className={`font-mono ${timeLeft <= 60 ? 'text-red-600' : 'text-slate-800'}`}>
+                  <div
+                    className={`font-mono ${timeLeft <= 60 ? 'text-red-600' : 'text-slate-800'}`}
+                  >
                     {formatTime(Math.max(0, timeLeft))}
                   </div>
                 </div>
@@ -546,9 +559,7 @@ export function UnlockCoursesPage() {
               </div>
 
               <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
-                <div className="text-xs text-amber-700 mb-1">
-                  支付金额
-                </div>
+                <div className="text-xs text-amber-700 mb-1">支付金额</div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-semibold text-amber-900">
                     {paymentInfo.paymentAmount} {paymentInfo.currency}

@@ -11,7 +11,14 @@ import {
 } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { Loader2, RefreshCw, ArrowLeft, Copy, Clock } from 'lucide-react'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/src/components/ui/dialog'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
@@ -71,7 +78,10 @@ export function OrdersPage() {
   }, [groups])
 
   // 仅待支付订单
-  const pendingOrders = useMemo(() => orders.filter((o) => o.status === 'pending'), [orders])
+  const pendingOrders = useMemo(
+    () => orders.filter((o) => o.status === 'pending'),
+    [orders]
+  )
 
   // 打开支付弹窗
   const openPayDialog = async (order: Order) => {
@@ -173,7 +183,8 @@ export function OrdersPage() {
                   >
                     <div className="space-y-1">
                       <div className="text-slate-800 font-medium">
-                        订单 #{format(new Date(o.created_at), 'yyyyMMdd')}0000{o.id}
+                        订单 #{format(new Date(o.created_at), 'yyyyMMdd')}0000
+                        {o.id}
                         <span className="ml-2 text-xs text-slate-500">
                           套餐名称 {packageNameMap[o.package_id] ?? '-'}
                         </span>
@@ -190,10 +201,15 @@ export function OrdersPage() {
                       {typeof o.remainingTimeSeconds === 'number' && (
                         <div className="flex items-center text-xs text-slate-600 bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">
                           <Clock className="w-3 h-3 mr-1" />
-                          剩余时间 {formatTime(Math.max(0, o.remainingTimeSeconds))}
+                          剩余时间{' '}
+                          {formatTime(Math.max(0, o.remainingTimeSeconds))}
                         </div>
                       )}
-                      <Button size="sm" className="diffused-button" onClick={() => openPayDialog(o)}>
+                      <Button
+                        size="sm"
+                        className="diffused-button"
+                        onClick={() => openPayDialog(o)}
+                      >
                         去支付
                       </Button>
                     </div>
@@ -210,7 +226,9 @@ export function OrdersPage() {
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[460px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>支付信息</DialogTitle>
-            <DialogDescription>请使用支持 USDT 的钱包进行链上转账</DialogDescription>
+            <DialogDescription>
+              请使用支持 USDT 的钱包进行链上转账
+            </DialogDescription>
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-3">
@@ -223,7 +241,9 @@ export function OrdersPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => copyToClipboard(selectedOrder.paymentAddress)}
+                    onClick={() =>
+                      copyToClipboard(selectedOrder.paymentAddress)
+                    }
                     className="ml-2"
                   >
                     <Copy className="w-4 h-4 mr-1" /> 复制
@@ -240,7 +260,9 @@ export function OrdersPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => copyToClipboard(String(selectedOrder.paymentAmount))}
+                    onClick={() =>
+                      copyToClipboard(String(selectedOrder.paymentAmount))
+                    }
                     className="ml-2"
                   >
                     <Copy className="w-4 h-4 mr-1" /> 复制
@@ -249,7 +271,9 @@ export function OrdersPage() {
               </div>
 
               <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-                <div className="text-xs text-red-700 mb-1 font-semibold">注意</div>
+                <div className="text-xs text-red-700 mb-1 font-semibold">
+                  注意
+                </div>
                 <div className="text-sm text-red-700 font-bold">
                   未在有效期内完成支付将导致订单关闭。
                 </div>
@@ -260,7 +284,9 @@ export function OrdersPage() {
                   <div className="flex items-center">
                     <Clock className="w-4 h-4 mr-1" /> 支付倒计时
                   </div>
-                  <div className={`font-mono ${timeLeft <= 60 ? 'text-red-600' : 'text-slate-800'}`}>
+                  <div
+                    className={`font-mono ${timeLeft <= 60 ? 'text-red-600' : 'text-slate-800'}`}
+                  >
                     {formatTime(Math.max(0, timeLeft))}
                   </div>
                 </div>

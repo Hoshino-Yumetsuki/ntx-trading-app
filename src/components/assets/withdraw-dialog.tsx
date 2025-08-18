@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
 import { Label } from '@/src/components/ui/label'
@@ -32,6 +32,8 @@ export function WithdrawDialog({
   onSuccess
 }: WithdrawDialogProps) {
   const { t } = useLanguage()
+  const amountId = useId()
+  const addressId = useId()
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [withdrawAddress, setWithdrawAddress] = useState('')
   const [isWithdrawing, setIsWithdrawing] = useState(false)
@@ -134,9 +136,9 @@ export function WithdrawDialog({
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="amount">{t('assets.withdrawAmount')}</Label>
+            <Label htmlFor={amountId}>{t('assets.withdrawAmount')}</Label>
             <Input
-              id="amount"
+              id={amountId}
               type="number"
               placeholder={t('assets.enterWithdrawAmount')}
               value={withdrawAmount}
@@ -154,9 +156,9 @@ export function WithdrawDialog({
             </p>
           </div>
           <div>
-            <Label htmlFor="address">{t('assets.withdrawAddress')}</Label>
+            <Label htmlFor={addressId}>{t('assets.withdrawAddress')}</Label>
             <Input
-              id="address"
+              id={addressId}
               placeholder={t('assets.enterBscAddress')}
               value={withdrawAddress}
               onChange={(e) => handleAddressChange(e.target.value)}

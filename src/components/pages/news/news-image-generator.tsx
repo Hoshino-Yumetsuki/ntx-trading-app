@@ -144,7 +144,9 @@ export function useNewsImageGenerator(
 
     try {
       const textToEncode =
-        overrideQrText || shareUrl || `${window.location.origin}/news/${newsItem.id}`
+        overrideQrText ||
+        shareUrl ||
+        `${window.location.origin}/news/${newsItem.id}`
       const qrDataUrl = await QRCode.toDataURL(textToEncode, {
         width: 120,
         margin: 2,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useId } from 'react'
 import { Card, CardContent, CardHeader } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
@@ -42,6 +42,7 @@ export function PlatformDailyDataCard({
   initialDate
 }: PlatformDailyDataCardProps) {
   const { t } = useLanguage()
+  const dateInputId = useId()
   const [dailyData, setDailyData] = useState<DailyPlatformData | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -153,13 +154,13 @@ export function PlatformDailyDataCard({
                 <PopoverContent className="w-auto p-3" align="start">
                   <div className="space-y-2">
                     <label
-                      htmlFor="date-input"
+                      htmlFor={dateInputId}
                       className="text-sm font-medium text-slate-700"
                     >
                       {t('mining.daily.selectDate') || '选择日期'}
                     </label>
                     <Input
-                      id="date-input"
+                      id={dateInputId}
                       type="date"
                       value={selectedDate}
                       onChange={(e) => handleDateChange(e.target.value)}

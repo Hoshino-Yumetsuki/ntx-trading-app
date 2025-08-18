@@ -45,16 +45,11 @@ export function LanguageSwitcher() {
       {isOpen && (
         <>
           {/* Backdrop */}
-          <div
-            role="button"
-            tabIndex={0}
-            className="fixed inset-0 z-10"
+          <button
+            type="button"
+            className="fixed inset-0 z-10 w-full h-full border-none bg-transparent cursor-default"
             onClick={() => setIsOpen(false)}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
-                setIsOpen(false)
-              }
-            }}
+            aria-label="关闭语言选择"
           />
 
           {/* Dropdown */}

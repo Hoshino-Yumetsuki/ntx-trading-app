@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useId } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
 import { Label } from '@/src/components/ui/label'
@@ -40,6 +40,7 @@ import { useAuth } from '@/src/contexts/AuthContext'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function MiningPage() {
+  const exchangeUidId = useId()
   const { user, token } = useAuth()
   const { t } = useLanguage()
   const [platformData, setPlatformData] = useState<PlatformData | null>(null)
@@ -423,11 +424,11 @@ export function MiningPage() {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="exchange-uid" className="text-right">
+              <Label htmlFor={exchangeUidId} className="text-right">
                 {t('mining.dialog.uidLabel')}
               </Label>
               <Input
-                id="exchange-uid"
+                id={exchangeUidId}
                 value={bindingUid}
                 onChange={(e) => setBindingUid(e.target.value)}
                 placeholder={t('mining.dialog.uidPlaceholder')}

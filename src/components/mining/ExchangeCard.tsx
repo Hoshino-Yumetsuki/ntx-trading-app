@@ -255,10 +255,13 @@ export function ExchangeCard({
 
                   {/* 绑定说明文案 */}
                   <div className="mb-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-slate-700">
-                    <p className="font-medium mb-2">请务必完成以下操作以开始挖矿收益：</p>
+                    <p className="font-medium mb-2">
+                      请务必完成以下操作以开始挖矿收益：
+                    </p>
                     <ol className="list-decimal pl-5 space-y-1">
                       <li>
-                        打开 {exchange.name || 'HTX'} 交易所 APP/Web 的「个人中心」
+                        打开 {exchange.name || 'HTX'} 交易所 APP/Web
+                        的「个人中心」
                       </li>
                       <li>找到并复制您的 UID</li>
                       <li>回到 NTXTrade DAO，粘贴 UID 完成绑定！</li>

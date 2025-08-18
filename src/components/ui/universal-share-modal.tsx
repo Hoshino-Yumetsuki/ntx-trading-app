@@ -1,6 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef, type ChangeEvent } from 'react'
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  type ChangeEvent
+} from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Dialog,
@@ -104,15 +110,21 @@ export function UniversalShareModal({
       const canvas = document.createElement('canvas')
       canvas.width = img.naturalWidth
       canvas.height = img.naturalHeight
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        throw new Error('无法获取 canvas 2d 上下文')
+      }
       ctx.drawImage(img, 0, 0)
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
       const result = jsqr(imageData.data, imageData.width, imageData.height)
 
-      if (result && result.data) {
+      if (result?.data) {
         onQrOverride?.(result.data)
-        toast({ title: '二维码识别成功', description: '将使用自定义二维码内容' })
+        toast({
+          title: '二维码识别成功',
+          description: '将使用自定义二维码内容'
+        })
         // 如果有预览，则重新生成
         if (showImagePreview && imageGenerator) {
           _generateImage()
@@ -327,7 +339,11 @@ export function UniversalShareModal({
               onChange={handleFileChange}
             />
             <div className="flex flex-col gap-2">
-              <Button variant="outline" onClick={triggerUpload} className="w-full">
+              <Button
+                variant="outline"
+                onClick={triggerUpload}
+                className="w-full"
+              >
                 上传自定义二维码
               </Button>
               {onQrOverride && (

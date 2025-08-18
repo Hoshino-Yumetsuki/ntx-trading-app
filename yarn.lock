@@ -320,7 +320,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@biomejs/biome@npm:^2.1.2":
+"@biomejs/biome@npm:^2.2.0":
   version: 2.2.0
   resolution: "@biomejs/biome@npm:2.2.0"
   dependencies:
@@ -4102,7 +4102,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ntx-trading-app@workspace:."
   dependencies:
-    "@biomejs/biome": "npm:^2.1.2"
+    "@biomejs/biome": "npm:^2.2.0"
     "@hookform/resolvers": "npm:^3.10.0"
     "@radix-ui/react-avatar": "npm:^1.1.10"
     "@radix-ui/react-dialog": "npm:^1.1.14"

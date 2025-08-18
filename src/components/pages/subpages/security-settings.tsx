@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -70,6 +70,12 @@ interface SecuritySettingsProps {
 type EditMode = 'none' | 'password' | 'nickname' | 'bscAddress'
 
 export function SecuritySettings({ onBack }: SecuritySettingsProps) {
+  const oldPasswordId = useId()
+  const newPasswordId = useId()
+  const confirmPasswordId = useId()
+  const nicknameId = useId()
+  const bscAddressId = useId()
+
   const { user, updateUser, logout } = useAuth()
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
@@ -374,10 +380,10 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <Label htmlFor="oldPassword">当前密码</Label>
+                  <Label htmlFor={oldPasswordId}>当前密码</Label>
                   <div className="relative">
                     <Input
-                      id="oldPassword"
+                      id={oldPasswordId}
                       type={showOldPassword ? 'text' : 'password'}
                       placeholder="输入当前密码"
                       autoComplete="current-password"
@@ -410,10 +416,10 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="newPassword">新密码</Label>
+                  <Label htmlFor={newPasswordId}>新密码</Label>
                   <div className="relative">
                     <Input
-                      id="newPassword"
+                      id={newPasswordId}
                       type={showNewPassword ? 'text' : 'password'}
                       placeholder="输入新密码"
                       autoComplete="new-password"
@@ -446,10 +452,10 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">确认新密码</Label>
+                  <Label htmlFor={confirmPasswordId}>确认新密码</Label>
                   <div className="relative">
                     <Input
-                      id="confirmPassword"
+                      id={confirmPasswordId}
                       type={showConfirmPassword ? 'text' : 'password'}
                       placeholder="再次输入新密码"
                       autoComplete="new-password"
@@ -521,9 +527,9 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <Label htmlFor="nickname">昵称</Label>
+                  <Label htmlFor={nicknameId}>昵称</Label>
                   <Input
-                    id="nickname"
+                    id={nicknameId}
                     type="text"
                     placeholder="输入新昵称"
                     defaultValue={user?.nickname || ''}
@@ -580,9 +586,9 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <Label htmlFor="bscAddress">BSC地址</Label>
+                  <Label htmlFor={bscAddressId}>BSC地址</Label>
                   <Input
-                    id="bscAddress"
+                    id={bscAddressId}
                     type="text"
                     placeholder="输入BSC地址 (0x...)"
                     {...bscAddressForm.register('bscAddress')}

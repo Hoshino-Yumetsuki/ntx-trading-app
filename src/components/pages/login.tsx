@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -59,6 +59,15 @@ export function LoginPage({
   initialMode = 'login',
   initialInviteCode = ''
 }: LoginPageProps) {
+  // 生成唯一ID
+  const emailId = useId()
+  const passwordId = useId()
+  const nicknameId = useId()
+  const verificationCodeId = useId()
+  const inviteCodeId = useId()
+  const confirmPasswordId = useId()
+  const agreeToTermsId = useId()
+
   const [isRegisterMode, setIsRegisterMode] = useState(
     initialMode === 'register'
   )
@@ -240,7 +249,7 @@ export function LoginPage({
                   <input
                     {...loginForm.register('email')}
                     type="email"
-                    id="email"
+                    id={emailId}
                     className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
                     placeholder={t('login.email.placeholder')}
                   />
@@ -270,7 +279,7 @@ export function LoginPage({
                   <input
                     {...loginForm.register('password')}
                     type={showPassword ? 'text' : 'password'}
-                    id="password"
+                    id={passwordId}
                     className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
                     placeholder={t('login.password.placeholder')}
                   />
@@ -336,7 +345,7 @@ export function LoginPage({
                   <input
                     {...registerForm.register('email')}
                     type="email"
-                    id="email"
+                    id={emailId}
                     className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
                     placeholder={t('login.email.placeholder')}
                   />
@@ -366,7 +375,7 @@ export function LoginPage({
                   <input
                     {...registerForm.register('nickname')}
                     type="text"
-                    id="nickname"
+                    id={nicknameId}
                     className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
                     placeholder={t('login.nickname.placeholder')}
                   />
@@ -398,7 +407,7 @@ export function LoginPage({
                       <input
                         {...registerForm.register('verification_code')}
                         type="text"
-                        id="verification_code"
+                        id={verificationCodeId}
                         className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
                         placeholder={t('login.verificationCode.placeholder')}
                       />
@@ -444,7 +453,7 @@ export function LoginPage({
                   <input
                     {...registerForm.register('invite_code')}
                     type="text"
-                    id="invite_code"
+                    id={inviteCodeId}
                     className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
                     placeholder={t('login.inviteCode.placeholder')}
                   />
@@ -474,7 +483,7 @@ export function LoginPage({
                   <input
                     {...registerForm.register('password')}
                     type={showPassword ? 'text' : 'password'}
-                    id="password"
+                    id={passwordId}
                     className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
                     placeholder={t('login.password.register.placeholder')}
                   />
@@ -515,7 +524,7 @@ export function LoginPage({
                   <input
                     {...registerForm.register('confirmPassword')}
                     type={showConfirmPassword ? 'text' : 'password'}
-                    id="confirmPassword"
+                    id={confirmPasswordId}
                     className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
                     placeholder={t('login.confirmPassword.placeholder')}
                   />
@@ -548,13 +557,13 @@ export function LoginPage({
               <div className="flex items-center h-5">
                 <input
                   {...registerForm.register('agreeToTerms')}
-                  id="agreeToTerms"
+                  id={agreeToTermsId}
                   type="checkbox"
                   className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                 />
               </div>
               <div className="ml-3 text-sm">
-                <label htmlFor="agreeToTerms" className="text-gray-700">
+                <label htmlFor={agreeToTermsId} className="text-gray-700">
                   {t('login.agreeTerms')}
                   <button
                     type="button"
