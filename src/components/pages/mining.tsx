@@ -414,7 +414,7 @@ export function MiningPage() {
 
       {/* 绑定交易所对话框 */}
       <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{t('mining.dialog.title')}</DialogTitle>
             <DialogDescription>

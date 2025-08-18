@@ -104,7 +104,7 @@ export function ExchangeCard({
               {[...Array(3)].map((_, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-5 data-card rounded-xl"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 data-card rounded-xl"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gray-200 rounded-xl animate-pulse" />
@@ -129,7 +129,7 @@ export function ExchangeCard({
               return (
                 <div
                   key={exchange.id}
-                  className="flex items-center justify-between p-5 data-card rounded-xl"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 data-card rounded-xl"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 rounded-xl overflow-hidden bg-white shadow-sm border border-gray-200 flex items-center justify-center">
@@ -157,7 +157,7 @@ export function ExchangeCard({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                     {isUserBound ? (
                       <>
                         <Button
@@ -168,7 +168,7 @@ export function ExchangeCard({
                               '_blank'
                             )
                           }
-                          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2"
+                          className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2"
                         >
                           <ExternalLink className="w-4 h-4 mr-1" />
                           {t('mining.exchange.goMining') || '去挖矿'}
@@ -177,7 +177,7 @@ export function ExchangeCard({
                           size="sm"
                           variant="destructive"
                           onClick={() => handleUnbind(exchange.id)}
-                          className="px-4 py-2"
+                          className="w-full sm:w-auto px-4 py-2"
                         >
                           <UserX className="w-4 h-4 mr-1" />
                           {t('mining.exchange.unbind') || '解绑'}
@@ -187,7 +187,7 @@ export function ExchangeCard({
                       <Button
                         size="sm"
                         onClick={() => handleBindClick(exchange.id)}
-                        className="diffused-button text-white border-0 px-4 py-2"
+                        className="w-full sm:w-auto diffused-button text-white border-0 px-4 py-2"
                       >
                         <UserPlus className="w-4 h-4 mr-1" />
                         {t('mining.exchange.bind') || '绑定'}
@@ -213,7 +213,7 @@ export function ExchangeCard({
 
       {/* 绑定对话框 */}
       <Dialog open={isBindDialogOpen} onOpenChange={setIsBindDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[480px] max-h-[80vh] overflow-y-auto">
           {bindingExchangeId &&
             (() => {
               const exchange = exchanges.find((e) => e.id === bindingExchangeId)
@@ -252,6 +252,21 @@ export function ExchangeCard({
                       </DialogDescription>
                     </div>
                   </DialogHeader>
+
+                  {/* 绑定说明文案 */}
+                  <div className="mb-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-slate-700">
+                    <p className="font-medium mb-2">请务必完成以下操作以开始挖矿收益：</p>
+                    <ol className="list-decimal pl-5 space-y-1">
+                      <li>
+                        打开 {exchange.name || 'HTX'} 交易所 APP/Web 的「个人中心」
+                      </li>
+                      <li>找到并复制您的 UID</li>
+                      <li>回到 NTXTrade DAO，粘贴 UID 完成绑定！</li>
+                    </ol>
+                    <p className="mt-3 font-bold text-red-600">
+                      未绑定 UID 将无法参与挖矿！
+                    </p>
+                  </div>
 
                   {/* 挖矿效率显示 */}
                   <div className="flex justify-center mb-6">
