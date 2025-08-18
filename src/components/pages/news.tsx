@@ -40,8 +40,13 @@ export function NewsPage() {
   const [viewingArticle, setViewingArticle] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [shareNewsItem, setShareNewsItem] = useState<NewsItem | null>(null)
-  const { generateImage, ImageGeneratorComponent } =
-    useNewsImageGenerator(shareNewsItem)
+  const getShareUrl = useCallback(
+    (item: NewsItem | null) =>
+      item ? `${window.location.origin}/?tab=news&news=${item.id}` : '',
+    []
+  )
+  const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
+    useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
   // 从RSS获取新闻
   const fetchRssNews = useCallback(async () => {
@@ -470,18 +475,23 @@ export function NewsPage() {
         {/* 新闻分享模态框 */}
         <UniversalShareModal
           isOpen={showShareModal}
-          onClose={() => setShowShareModal(false)}
+          onClose={() => {
+            setShowShareModal(false)
+            // 关闭时恢复默认二维码
+            setOverrideQrText?.('')
+          }}
           title="分享文章"
           shareData={{
             title: shareNewsItem?.title || '',
             text: shareNewsItem?.summary || '',
-            url: shareNewsItem
-              ? `${window.location.origin}/news/${shareNewsItem.id}`
-              : ''
+            url: getShareUrl(shareNewsItem)
           }}
           imageGenerator={generateImage}
           showImagePreview={true}
           showDefaultShareButtons={true}
+          onQrOverride={(text) => {
+            setOverrideQrText?.(text)
+          }}
         />
 
         {/* 图片生成器组件 */}

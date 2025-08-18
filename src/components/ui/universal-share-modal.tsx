@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef, type ChangeEvent } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Dialog,
@@ -10,8 +10,9 @@ import {
 } from '@/src/components/ui/dialog'
 import { Download, Share2, Copy } from 'lucide-react'
 import { toast } from '@/src/hooks/use-toast'
-import Image from 'next/image'
+import NextImage from 'next/image'
 import QRCode from 'qrcode'
+import jsqr from 'jsqr'
 
 export interface ShareData {
   title: string
@@ -42,6 +43,8 @@ interface UniversalShareModalProps {
   showDefaultShareButtons?: boolean
   // 是否显示内置复制链接按钮
   showCopyLinkButton?: boolean
+  // 当识别到上传二维码的内容时回调，用于覆盖二维码文本
+  onQrOverride?: (text: string) => void
 }
 
 export function UniversalShareModal({
@@ -53,11 +56,13 @@ export function UniversalShareModal({
   showImagePreview = false,
   customActions = [],
   showDefaultShareButtons = true,
-  showCopyLinkButton = true
+  showCopyLinkButton = true,
+  onQrOverride
 }: UniversalShareModalProps) {
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [_qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // 生成二维码
   const generateQRCode = useCallback(async () => {
@@ -77,6 +82,60 @@ export function UniversalShareModal({
       console.error('生成二维码失败:', error)
     }
   }, [shareData.url])
+
+  // 选择并上传二维码图片
+  const triggerUpload = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      const img = new window.Image()
+      img.crossOrigin = 'anonymous'
+      img.src = URL.createObjectURL(file)
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject(new Error('图片加载失败'))
+      })
+
+      const canvas = document.createElement('canvas')
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      const ctx = canvas.getContext('2d')!
+      ctx.drawImage(img, 0, 0)
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+      const result = jsqr(imageData.data, imageData.width, imageData.height)
+
+      if (result && result.data) {
+        onQrOverride?.(result.data)
+        toast({ title: '二维码识别成功', description: '将使用自定义二维码内容' })
+        // 如果有预览，则重新生成
+        if (showImagePreview && imageGenerator) {
+          _generateImage()
+        }
+      } else {
+        toast({
+          title: '识别失败',
+          description: '未能识别到二维码内容，请尝试更清晰的图片',
+          variant: 'destructive'
+        })
+      }
+    } catch (error) {
+      console.error('二维码识别异常:', error)
+      toast({
+        title: '识别失败',
+        description: '处理二维码图片时发生错误',
+        variant: 'destructive'
+      })
+    } finally {
+      // 重置 input 以便可重复选择同一文件
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
 
   // 生成图片
   const _generateImage = useCallback(async () => {
@@ -236,23 +295,61 @@ export function UniversalShareModal({
               ) : generatedImage ? (
                 <div className="relative">
                   <div className="max-w-full overflow-hidden rounded-lg">
-                    <Image
+                    <NextImage
                       src={generatedImage}
                       alt="分享预览"
                       width={300}
                       height={400}
                       className="rounded-lg shadow-lg mx-auto w-auto h-auto max-w-full max-h-[500px] object-contain"
+                      unoptimized
                     />
                   </div>
                   <p className="text-xs text-gray-500 mt-2">分享图片预览</p>
                 </div>
               ) : (
-                <div className="py-8 text-gray-500">
-                  <p className="text-sm">图片生成中...</p>
+                <div className="py-8 text-gray-500 flex flex-col items-center gap-3">
+                  <p className="text-sm">暂无预览</p>
+                  <Button variant="outline" onClick={_generateImage}>
+                    重新生成
+                  </Button>
                 </div>
               )}
             </div>
           )}
+
+          {/* 自定义二维码：上传并识别（移至预览下方，上下布局） */}
+          <div className="bg-gray-50 rounded-lg p-3">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <div className="flex flex-col gap-2">
+              <Button variant="outline" onClick={triggerUpload} className="w-full">
+                上传二维码图片并识别
+              </Button>
+              {onQrOverride && (
+                <Button
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => {
+                    onQrOverride('')
+                    toast({ title: '已还原默认二维码' })
+                    if (showImagePreview && imageGenerator) {
+                      _generateImage()
+                    }
+                  }}
+                >
+                  还原默认
+                </Button>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。
+            </p>
+          </div>
 
           {/* 操作按钮区域 */}
           <div className="space-y-3">

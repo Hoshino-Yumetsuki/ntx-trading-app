@@ -32,7 +32,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         style={{
           fontFamily: 'system-ui, sans-serif',
           width: '600px',
-          minHeight: '800px',
           margin: '0 auto'
         }}
       >
@@ -48,6 +47,9 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
                   width={40}
                   height={40}
                   className="w-full h-full object-cover"
+                  priority
+                  loading="eager"
+                  unoptimized
                 />
               </div>
               <div className="flex flex-col justify-center">
@@ -98,6 +100,9 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
                   width={60}
                   height={60}
                   className="w-15 h-15"
+                  priority
+                  loading="eager"
+                  unoptimized
                 />
               </div>
             ) : (

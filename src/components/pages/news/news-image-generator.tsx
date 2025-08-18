@@ -94,11 +94,15 @@ export function NewsImageGenerator({
 }
 
 // Hook to use the news image generator
-export function useNewsImageGenerator(newsItem: NewsItem | null) {
+export function useNewsImageGenerator(
+  newsItem: NewsItem | null,
+  shareUrl?: string
+) {
   const shareCardRef = useRef<HTMLDivElement>(null)
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('')
   const [fullContent, setFullContent] = useState<string>('')
   const [_isLoadingContent, setIsLoadingContent] = useState<boolean>(false)
+  const [overrideQrText, setOverrideQrText] = useState<string>('')
 
   // 获取完整文章内容
   const fetchFullContent = useCallback(async () => {
@@ -139,8 +143,9 @@ export function useNewsImageGenerator(newsItem: NewsItem | null) {
     if (!newsItem) return ''
 
     try {
-      const articleUrl = `${window.location.origin}/news/${newsItem.id}`
-      const qrDataUrl = await QRCode.toDataURL(articleUrl, {
+      const textToEncode =
+        overrideQrText || shareUrl || `${window.location.origin}/news/${newsItem.id}`
+      const qrDataUrl = await QRCode.toDataURL(textToEncode, {
         width: 120,
         margin: 2,
         color: {
@@ -154,7 +159,31 @@ export function useNewsImageGenerator(newsItem: NewsItem | null) {
       console.error('生成二维码失败:', error)
       return ''
     }
-  }, [newsItem])
+  }, [newsItem, overrideQrText, shareUrl])
+
+  // 等待卡片内图片加载完毕，避免截断，确保高度自适应
+  const waitForImages = useCallback(async (root: HTMLElement) => {
+    const imgs = Array.from(root.querySelectorAll('img')) as HTMLImageElement[]
+    if (imgs.length === 0) return
+
+    const imgPromises = imgs.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          if (img.complete) return resolve()
+          const onDone = () => {
+            img.removeEventListener('load', onDone)
+            img.removeEventListener('error', onDone)
+            resolve()
+          }
+          img.addEventListener('load', onDone)
+          img.addEventListener('error', onDone)
+        })
+    )
+
+    // 全局超时，避免个别资源阻塞
+    const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2500))
+    await Promise.race([Promise.all(imgPromises), timeout])
+  }, [])
 
   const generateImage = useCallback(async (): Promise<string | null> => {
     if (!shareCardRef.current || !newsItem) return null
@@ -168,6 +197,11 @@ export function useNewsImageGenerator(newsItem: NewsItem | null) {
 
       // 等待DOM更新（包括内容加载）
       await new Promise((resolve) => setTimeout(resolve, 300))
+
+      // 等待图片加载，确保高度自适应且不截断
+      if (shareCardRef.current) {
+        await waitForImages(shareCardRef.current)
+      }
 
       if (shareCardRef.current) {
         const canvas = await html2canvas(shareCardRef.current, {
@@ -187,7 +221,7 @@ export function useNewsImageGenerator(newsItem: NewsItem | null) {
     }
 
     return null
-  }, [newsItem, fetchFullContent, generateQRCode])
+  }, [newsItem, fetchFullContent, generateQRCode, waitForImages])
 
   // 当newsItem变化时获取完整内容
   useEffect(() => {
@@ -221,5 +255,5 @@ export function useNewsImageGenerator(newsItem: NewsItem | null) {
     )
   }
 
-  return { generateImage, ImageGeneratorComponent }
+  return { generateImage, ImageGeneratorComponent, setOverrideQrText }
 }
