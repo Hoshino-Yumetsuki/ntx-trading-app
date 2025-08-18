@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -13,7 +13,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
+  DialogFooter
 } from '@/src/components/ui/dialog'
 import {
   Loader2,
@@ -23,7 +24,8 @@ import {
   Lock,
   BookOpen,
   BadgeCheck,
-  RefreshCw
+  RefreshCw,
+  Clock
 } from 'lucide-react'
 import { getPermissionGroups } from '@/src/services/courseService'
 import { createOrder, getMyOrders } from '@/src/services/payment'
@@ -32,6 +34,7 @@ import type {
   CreateOrderResponse
 } from '@/src/types/course'
 import type { Order } from '@/src/types/course'
+import { format } from 'date-fns'
 
 export function UnlockCoursesPage() {
   const [groups, setGroups] = useState<PermissionGroupWithPackages[]>([])
@@ -49,6 +52,20 @@ export function UnlockCoursesPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [ordersLoading, setOrdersLoading] = useState(false)
   const [ordersError, setOrdersError] = useState('')
+  const [payDialogOpen, setPayDialogOpen] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [timeLeft, setTimeLeft] = useState<number>(0)
+
+  // 将 package_id 映射为套餐名称（使用 group.name）
+  const packageNameMap = useMemo(() => {
+    const map: Record<number, string> = {}
+    for (const g of groups) {
+      for (const p of g.packages) {
+        map[p.id] = g.group.name
+      }
+    }
+    return map
+  }, [groups])
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -72,6 +89,42 @@ export function UnlockCoursesPage() {
       fetchOrders()
     }
   }, [ordersOpen, fetchOrders])
+
+  const openPayDialog = async (order: Order) => {
+    // 先打开弹窗，随后用最新数据刷新
+    setSelectedOrder(order)
+    setPayDialogOpen(true)
+    setTimeLeft(0)
+    try {
+      const data = await getMyOrders()
+      const sorted = [...data].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+      setOrders(sorted)
+      const latest = sorted.find((o) => o.id === order.id) || order
+      setSelectedOrder(latest)
+      setTimeLeft(latest.remainingTimeSeconds || 0)
+    } catch (_) {
+      // 回退到旧数据
+      setTimeLeft(order.remainingTimeSeconds || 0)
+    }
+  }
+
+  useEffect(() => {
+    if (!payDialogOpen) return
+    if (!timeLeft) return
+    const id = setInterval(() => {
+      setTimeLeft((t) => (t > 0 ? t - 1 : 0))
+    }, 1000)
+    return () => clearInterval(id)
+  }, [payDialogOpen, timeLeft])
+
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60)
+    const sec = s % 60
+    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -340,35 +393,50 @@ export function UnlockCoursesPage() {
                 >
                   <div className="space-y-1">
                     <div className="text-slate-800 font-medium">
-                      订单 #{o.id}
+                      订单 #{format(new Date(o.created_at), 'yyyyMMdd')}0000{o.id}
                       <span className="ml-2 text-xs text-slate-500">
-                        套餐ID {o.package_id}
+                        套餐名称 {packageNameMap[o.package_id] ?? '-'}
                       </span>
                     </div>
                     <div className="text-sm text-slate-600">
-                      应付 {o.amount} {o.currency} · 实付金额 {o.paymentAmount}{' '}
+                      套餐金额 {o.amount} {o.currency} · 实付金额 {o.paymentAmount}{' '}
                       {o.currency}
                     </div>
                     <div className="text-xs text-slate-500">
                       创建时间 {new Date(o.created_at).toLocaleString()}
                     </div>
                   </div>
-                  <span
-                    className={
-                      'px-2 py-1 rounded text-xs font-medium ' +
-                      (o.status === 'confirmed'
-                        ? 'bg-green-100 text-green-700 border border-green-200'
-                        : o.status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
-                          : 'bg-slate-100 text-slate-700 border border-slate-200')
-                    }
-                  >
-                    {o.status === 'pending'
-                      ? '待支付/待确认'
-                      : o.status === 'confirmed'
-                        ? '已确认'
-                        : '已关闭'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={
+                        'px-2 py-1 rounded text-xs font-medium ' +
+                        (o.status === 'confirmed'
+                          ? 'bg-green-100 text-green-700 border border-green-200'
+                          : o.status === 'pending'
+                            ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                            : 'bg-slate-100 text-slate-700 border border-slate-200')
+                      }
+                    >
+                      {o.status === 'pending'
+                        ? '待支付/待确认'
+                        : o.status === 'confirmed'
+                          ? '支付成功'
+                          : '已关闭'}
+                    </span>
+                    {o.status === 'pending' && (
+                      <>
+                        {typeof o.remainingTimeSeconds === 'number' && (
+                          <div className="hidden sm:flex items-center text-xs text-slate-600 bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">
+                            <Clock className="w-3 h-3 mr-1" />
+                            剩余 {formatTime(Math.max(0, o.remainingTimeSeconds))}
+                          </div>
+                        )}
+                        <Button size="sm" onClick={() => openPayDialog(o)}>
+                          去支付
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -378,6 +446,76 @@ export function UnlockCoursesPage() {
               <RefreshCw className="w-4 h-4 mr-2" /> 刷新
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 订单支付弹窗 */}
+      <Dialog open={payDialogOpen} onOpenChange={setPayDialogOpen}>
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[460px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>支付信息</DialogTitle>
+            <DialogDescription>请使用支持 USDT 的钱包进行链上转账</DialogDescription>
+          </DialogHeader>
+          {selectedOrder && (
+            <div className="space-y-3">
+              <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
+                <div className="text-xs text-blue-700 mb-1">支付地址</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm break-all font-mono text-blue-900">
+                    {selectedOrder.paymentAddress || '-'}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(selectedOrder.paymentAddress || '')}
+                    className="ml-2"
+                  >
+                    <Copy className="w-4 h-4 mr-1" /> 复制
+                  </Button>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
+                <div className="text-xs text-amber-700 mb-1">支付金额</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold text-amber-900">
+                    {selectedOrder.paymentAmount} {selectedOrder.currency}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(String(selectedOrder.paymentAmount))}
+                    className="ml-2"
+                  >
+                    <Copy className="w-4 h-4 mr-1" /> 复制
+                  </Button>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+                <div className="text-xs text-red-700 mb-1 font-semibold">注意</div>
+                <div className="text-sm text-red-700 font-bold">
+                  未在有效期内完成支付将导致订单关闭。
+                </div>
+              </div>
+
+              {typeof timeLeft === 'number' && (
+                <div className="flex items-center justify-between text-sm text-slate-700">
+                  <div className="flex items-center">
+                    <Clock className="w-4 h-4 mr-1" /> 支付倒计时
+                  </div>
+                  <div className={`font-mono ${timeLeft <= 60 ? 'text-red-600' : 'text-slate-800'}`}>
+                    {formatTime(Math.max(0, timeLeft))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPayDialogOpen(false)}>
+              关闭
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -409,7 +547,7 @@ export function UnlockCoursesPage() {
 
               <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
                 <div className="text-xs text-amber-700 mb-1">
-                  支付金额（唯一值）
+                  支付金额
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-semibold text-amber-900">

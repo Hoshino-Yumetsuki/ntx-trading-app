@@ -53,6 +53,9 @@ export interface Order {
   status: 'pending' | 'confirmed' | 'closed'
   created_at: string
   updated_at: string
+  // Optional fields present for pending orders
+  paymentAddress?: string
+  remainingTimeSeconds?: number
 }
 
 export interface CreateOrderResponse {
