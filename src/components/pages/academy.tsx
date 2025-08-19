@@ -22,6 +22,7 @@ import { LearningResourcesPage } from './academy/learning-resources'
 import { BlackHorseModelPage } from './academy/black-horse-model'
 import { StrategySignalsPage } from './academy/strategy-signals'
 import { UnlockCoursesPage } from './academy/unlock-courses'
+import { OrdersPage } from './academy/orders'
 import { LoopCommunitiesPage } from './academy/loop-communities'
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
@@ -68,6 +69,12 @@ export function AcademyPage() {
       title: '解锁课程',
       icon: Lock,
       component: UnlockCoursesPage
+    },
+    {
+      id: 'orders',
+      title: '我的订单',
+      icon: Lock,
+      component: OrdersPage
     }
   ]
 
@@ -148,7 +155,9 @@ export function AcademyPage() {
               <h1 className="text-2xl font-bold text-blue-600 mt-3">
                 {activeTabData?.title}
               </h1>
-              <p className="text-slate-600 text-sm">掌握机构交易思维</p>
+              <p className="text-slate-600 text-sm">
+                {activeTab === 'orders' ? '查看课程购买与支付状态' : '掌握机构交易思维'}
+              </p>
             </div>
           </div>
         )}
@@ -215,7 +224,7 @@ export function AcademyPage() {
           <CardContent className="pb-6">
             <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
               {tabs
-                .filter((tab) => tab.id !== 'loop')
+                .filter((tab) => !['loop', 'orders'].includes(tab.id))
                 .map((tab) => {
                   const Icon = tab.icon
                   return (
