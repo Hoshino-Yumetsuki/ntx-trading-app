@@ -408,7 +408,7 @@ export function NewsPage() {
           />
           <div className="absolute left-6 top-8 md:left-8 md:top-10 z-10">
             <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md">
-              {t('news.latest') || '最新资讯'}
+              {t('news.title') || '最新资讯'}
             </h2>
           </div>
         </div>
@@ -419,7 +419,7 @@ export function NewsPage() {
         <Card className="glass-card border-white/30 shadow-lg rounded-3xl">
           <CardHeader>
             <CardTitle className="text-slate-800 text-xl font-bold">
-              {t('news.latest') || '最新资讯'}
+              {t('news.latest') || '文章列表'}
             </CardTitle>
           </CardHeader>
 
