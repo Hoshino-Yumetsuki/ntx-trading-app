@@ -245,7 +245,7 @@ export function MiningPage() {
       <div className="px-6 pt-8 pb-4">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">
+            <h1 className="text-2xl font-bold text-blue-600">
               {t('mining.title')}
             </h1>
             <p className="text-slate-600 text-sm">{t('mining.subtitle')}</p>

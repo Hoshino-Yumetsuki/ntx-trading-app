@@ -295,30 +295,39 @@ export function NewsPage() {
       <div className="min-h-screen pb-6">
         {/* 顶部 Hero 区域，与学院页一致结构 */}
         <div className="px-6 pt-12 pb-8 relative z-10">
-          <div className="flex items-start mb-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewingArticle(false)}
-              className="mr-3 text-slate-600 hover:text-slate-800"
-            >
-              <ChevronLeft className="w-5 h-5 mr-2" />
-              {t('news.back') || '返回'}
-            </Button>
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold text-slate-800">
-                {currentArticle.title}
-              </h1>
-              <div className="flex items-center text-slate-500 text-xs mt-2">
-                <span>{formatDate(currentArticle.publishDate)}</span>
-                <span className="mx-2">•</span>
-                <span>{formatTime(currentArticle.publishDate)}</span>
-                {currentArticle.source === 'rss' && (
-                  <span className="flex items-center ml-2 text-blue-500">
-                    <Rss className="w-3 h-3 mr-1" /> RSS
-                  </span>
-                )}
+          <div className="flex flex-col mb-6">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewingArticle(false)}
+                className="mr-3 text-slate-600 hover:text-slate-800"
+              >
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                {t('news.back') || '返回'}
+              </Button>
+              <div className="relative w-28 h-9 md:w-32 md:h-10">
+                <Image
+                  src="/Frame17@3x.png"
+                  alt="NTX Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
+            </div>
+            <h1 className="text-2xl font-bold text-slate-800 mt-3">
+              {currentArticle.title}
+            </h1>
+            <div className="flex items-center text-slate-500 text-xs mt-2">
+              <span>{formatDate(currentArticle.publishDate)}</span>
+              <span className="mx-2">•</span>
+              <span>{formatTime(currentArticle.publishDate)}</span>
+              {currentArticle.source === 'rss' && (
+                <span className="flex items-center ml-2 text-blue-500">
+                  <Rss className="w-3 h-3 mr-1" /> RSS
+                </span>
+              )}
             </div>
           </div>
         </div>
