@@ -16,6 +16,8 @@ import {
 import Image from 'next/image'
 import { TutorialPage } from '@/src/components/pages/subpages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
+import { getRecentNews, newsItems } from '@/src/data/news-data'
+import { AutoScaleBox } from '@/src/components/ui/auto-scale-box'
 
 interface HomePageProps {
   onNavigate?: (page: string) => void
@@ -25,7 +27,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [_isTutorialOpen, _setIsTutorialOpen] = useState(false)
   const [showTutorialPage, setShowTutorialPage] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
-  const { t } = useLanguage()
+  const { t, language, setLanguage } = useLanguage()
+  const [showAllNews, setShowAllNews] = useState(false)
+  const latestNews = showAllNews ? newsItems : getRecentNews(3)
 
   // 从 localStorage 恢复教程页面状态
   useEffect(() => {
@@ -59,16 +63,34 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   return (
     <div className="min-h-screen">
       <div className="px-6 pt-8 pb-6">
-        <div className="flex flex-col items-start mb-6">
-          <h1 className="text-3xl font-bold text-blue-600 mb-0.5">NTX</h1>
-          <p className="text-slate-800 text-xl font-medium">Web 3 一站式服务</p>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col">
+            <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
+              <Image
+                src="/Frame17@3x.png"
+                alt="NTX Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+            <p className="text-slate-800 text-xl font-medium">Web3 一站式服务</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+            className="text-slate-600 hover:text-slate-800"
+          >
+            {language === 'zh' ? '中文' : 'EN'}
+          </Button>
         </div>
         {/* 新手教程大横幅 */}
         <BannerCard
           title={t('home.tutorial.title')}
           subtitle={t('home.tutorial.subtitle')}
           buttonText={t('home.tutorial.button')}
-          backgroundImage="/poster1.jpg"
+          backgroundImage="/Group34394@3x.png"
           onClick={openTutorial}
         />
 
@@ -80,14 +102,16 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               <h3 className="text-lg font-semibold text-slate-800">已接入</h3>
             </div>
 
-            {/* 交易所图标显示 - 只展示三个 */}
-            <div className="flex justify-center pb-2 pt-1">
+            {/* 交易所图标显示 - 3x2 网格 */}
+            <div className="grid grid-cols-3 gap-3 pb-2 pt-1">
               {[
                 { name: 'Binance', image: '/exchange/binance.png' },
-                { name: 'BitGet', image: '/exchange/bitget.png' },
-                { name: 'Bybit', image: '/exchange/bybit.jpg' }
+                { name: 'Bitget', image: '/exchange/bitget.png' },
+                { name: 'Bybit', image: '/exchange/bybit.jpg' },
+                { name: 'HTX', image: '/exchange/htx.jpg' },
+                { name: 'XT', image: '/exchange/xt.png' }
               ].map((exchange) => (
-                <div key={exchange.name} className="px-2 flex-1 max-w-[100px]">
+                <div key={exchange.name} className="">
                   <div className="aspect-square bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3">
                     <div className="relative w-full h-full">
                       <Image
@@ -167,77 +191,125 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         {/* 以 2x2 方式排列四个正方形卡片 */}
         <div className="grid grid-cols-2 gap-4 mt-4">
           <Card className="glass-card border-white/50 aspect-square">
-            <CardContent className="p-4 flex flex-col items-center text-center justify-between h-full">
-              <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                <TrendingUp className="w-6 h-6 text-green-600" />
-              </div>
-              <div className="mb-auto">
-                <h3 className="text-slate-800 font-semibold text-lg mb-1">
-                  {t('home.card.mining.title')}
-                </h3>
-                <p className="text-slate-600 text-xs">
-                  {t('home.card.mining.subtitle')}
-                </p>
-              </div>
-              <p className="text-slate-700 text-xs leading-relaxed mt-2">
-                {t('home.card.mining.desc')}
-              </p>
+            <CardContent className="p-4 h-full">
+              <AutoScaleBox className="h-full w-full">
+                <div className="flex flex-col items-center text-center justify-between h-full">
+                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
+                    <TrendingUp className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div className="mb-auto w-full">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                      {t('home.card.mining.title')}
+                    </h3>
+                    <p className="text-slate-600 text-xs break-words">
+                      {t('home.card.mining.subtitle')}
+                    </p>
+                  </div>
+                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
+                    {t('home.card.mining.desc')}
+                  </p>
+                </div>
+              </AutoScaleBox>
             </CardContent>
           </Card>
 
           <Card className="glass-card border-white/50 aspect-square">
-            <CardContent className="p-4 flex flex-col items-center text-center justify-between h-full">
-              <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                <Brain className="w-6 h-6 text-indigo-600" />
-              </div>
-              <div className="mb-auto">
-                <h3 className="text-slate-800 font-semibold text-lg mb-1">
-                  {t('home.card.ai.title')}
-                </h3>
-                <p className="text-slate-600 text-xs">
-                  {t('home.card.ai.subtitle')}
-                </p>
-              </div>
-              <p className="text-slate-700 text-xs leading-relaxed mt-2">
-                {t('home.card.ai.desc')}
-              </p>
+            <CardContent className="p-4 h-full">
+              <AutoScaleBox className="h-full w-full">
+                <div className="flex flex-col items-center text-center justify-between h-full">
+                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
+                    <Brain className="w-6 h-6 text-indigo-600" />
+                  </div>
+                  <div className="mb-auto w-full">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                      {t('home.card.ai.title')}
+                    </h3>
+                    <p className="text-slate-600 text-xs break-words">
+                      {t('home.card.ai.subtitle')}
+                    </p>
+                  </div>
+                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
+                    {t('home.card.ai.desc')}
+                  </p>
+                </div>
+              </AutoScaleBox>
             </CardContent>
           </Card>
 
           <Card className="glass-card border-white/50 aspect-square">
-            <CardContent className="p-4 flex flex-col items-center text-center justify-between h-full">
-              <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                <Target className="w-6 h-6 text-blue-600" />
-              </div>
-              <div className="mb-auto">
-                <h3 className="text-slate-800 font-semibold text-lg mb-1">
-                  机构策略
-                </h3>
-                <p className="text-slate-600 text-xs">掌握机构交易思维</p>
-              </div>
-              <p className="text-slate-700 text-xs leading-relaxed mt-2">
-                学习专业交易策略，提升交易胜率
-              </p>
+            <CardContent className="p-4 h-full">
+              <AutoScaleBox className="h-full w-full">
+                <div className="flex flex-col items-center text-center justify-between h-full">
+                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
+                    <Target className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="mb-auto w-full">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                      机构策略
+                    </h3>
+                    <p className="text-slate-600 text-xs break-words">掌握机构交易思维</p>
+                  </div>
+                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
+                    学习专业交易策略，提升交易胜率
+                  </p>
+                </div>
+              </AutoScaleBox>
             </CardContent>
           </Card>
 
           <Card className="glass-card border-white/50 aspect-square">
-            <CardContent className="p-4 flex flex-col items-center text-center justify-between h-full">
-              <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                <Award className="w-6 h-6 text-yellow-600" />
-              </div>
-              <div className="mb-auto">
-                <h3 className="text-slate-800 font-semibold text-lg mb-1">
-                  持续回报
-                </h3>
-                <p className="text-slate-600 text-xs">让每一笔交易有回报</p>
-              </div>
-              <p className="text-slate-700 text-xs leading-relaxed mt-2">
-                建立长期收益模式，实现财富增长
-              </p>
+            <CardContent className="p-4 h-full">
+              <AutoScaleBox className="h-full w-full">
+                <div className="flex flex-col items-center text-center justify-between h-full">
+                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
+                    <Award className="w-6 h-6 text-yellow-600" />
+                  </div>
+                  <div className="mb-auto w-full">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                      持续回报
+                    </h3>
+                    <p className="text-slate-600 text-xs break-words">让每一笔交易有回报</p>
+                  </div>
+                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
+                    建立长期收益模式，实现财富增长
+                  </p>
+                </div>
+              </AutoScaleBox>
             </CardContent>
           </Card>
         </div>
+
+        {/* 最新通知 */}
+        <Card className="glass-card border-white/50">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-slate-800 font-semibold text-lg">最新通知</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAllNews((v) => !v)}
+                className="text-slate-600 hover:text-slate-800"
+              >
+                {showAllNews ? '收起' : '查看更多'}
+              </Button>
+            </div>
+            <div className="space-y-3">
+              {latestNews.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-3 rounded-lg border border-white/40 bg-white/60 backdrop-blur-sm"
+                >
+                  <div className="text-slate-800 text-sm font-medium line-clamp-1">
+                    {item.title}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">
+                    {item.date} {item.time} · {item.category ?? '通知'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
