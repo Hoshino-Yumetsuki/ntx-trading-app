@@ -125,23 +125,30 @@ export function AcademyPage() {
       <div className="min-h-screen pb-6">
         {!isReading && (
           <div className="px-6 pt-12 pb-8 relative z-10">
-            <div className="flex items-start mb-6">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleBack}
-                className="mr-3 text-slate-600 hover:text-slate-800"
-              >
-                <ArrowLeft className="w-5 h-5 mr-2" /> 返回
-              </Button>
-              <div className="flex-1">
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-800">
-                    {activeTabData?.title}
-                  </h1>
-                  <p className="text-slate-600 text-sm">掌握机构交易思维</p>
+            <div className="flex flex-col mb-6">
+              <div className="flex items-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleBack}
+                  className="mr-3 text-slate-600 hover:text-slate-800"
+                >
+                  <ArrowLeft className="w-5 h-5 mr-2" /> 返回
+                </Button>
+                <div className="relative w-28 h-9 md:w-32 md:h-10">
+                  <Image
+                    src="/Frame17@3x.png"
+                    alt="NTX Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
               </div>
+              <h1 className="text-2xl font-bold text-blue-600 mt-3">
+                {activeTabData?.title}
+              </h1>
+              <p className="text-slate-600 text-sm">掌握机构交易思维</p>
             </div>
           </div>
         )}
