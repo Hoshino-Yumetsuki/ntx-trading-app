@@ -27,6 +27,8 @@ import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
+import Image from 'next/image'
+import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 
 export function AcademyPage() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
@@ -39,7 +41,7 @@ export function AcademyPage() {
   const tabs = [
     {
       id: 'learning',
-      title: '学习资源',
+      title: '交易研究院',
       icon: BookOpen,
       component: LearningResourcesPage
     },
@@ -57,7 +59,7 @@ export function AcademyPage() {
     },
     {
       id: 'loop',
-      title: 'Loop 社区',
+      title: 'LOOP 社区',
       icon: Users,
       component: LoopCommunitiesPage
     },
@@ -162,11 +164,35 @@ export function AcademyPage() {
   // 主页面：显示四个正方形按钮
   return (
     <div className="min-h-screen pb-6">
-      <div className="px-6 pt-12 pb-8 relative z-10">
-        <div className="flex mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800">黑马学院</h1>
-            <p className="text-slate-600 text-sm">掌握机构交易思维</p>
+      <div className="px-6 pt-8 pb-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
+            <Image
+              src="/Frame17@3x.png"
+              alt="NTX Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          <LanguageSwitcher />
+        </div>
+
+        {/* 顶部 Banner */}
+        <div
+          className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
+          style={{
+            backgroundImage: "url('/Group81@3x.png')",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
+          }}
+        >
+          <div className="flex items-center h-full">
+            <div className="bg-black/35 rounded-md px-3 py-2">
+              <div className="text-2xl font-bold mb-1">黑马学院</div>
+              <div className="opacity-90">掌握机构交易思维</div>
+            </div>
           </div>
         </div>
       </div>
@@ -221,7 +247,7 @@ export function AcademyPage() {
                   className="text-slate-500 hover:text-slate-700 text-xs flex items-center h-6 -mt-1 px-2 py-0"
                   onClick={() => setActiveTab('loop')}
                 >
-                  更多社区 <ChevronRight className="w-3 h-3 ml-1" />
+                  更多 <ChevronRight className="w-3 h-3 ml-1" />
                 </Button>
               )}
             </div>
