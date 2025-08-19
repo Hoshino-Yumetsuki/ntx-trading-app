@@ -15,7 +15,6 @@ import {
   TrendingUp,
   Wallet,
   GraduationCap,
-  Target,
   Coins,
   Shield,
   Heart,
@@ -38,25 +37,25 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
     {
       id: 'audience',
       title: t('tutorial.audience.title'),
-      icon: <Users className="w-6 h-6 text-purple-600" />,
+      icon: <Users className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.audience.content')
     },
     {
       id: 'account-setup',
       title: t('tutorial.account.title'),
-      icon: <Wallet className="w-6 h-6 text-green-600" />,
+      icon: <Wallet className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.account.content')
     },
     {
       id: 'mining-mechanism',
       title: t('tutorial.mining.title'),
-      icon: <TrendingUp className="w-6 h-6 text-indigo-600" />,
+      icon: <TrendingUp className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.mining.content')
     },
     {
       id: 'rebate-structure',
       title: t('tutorial.rebate.title'),
-      icon: <Coins className="w-6 h-6 text-amber-600" />,
+      icon: <Coins className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.rebate.content'),
       images: [
         '/introduction/1.png',
@@ -67,33 +66,71 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
     {
       id: 'staking-dividends',
       title: t('tutorial.staking.title'),
-      icon: <Shield className="w-6 h-6 text-cyan-600" />,
+      icon: <Shield className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.staking.content')
     },
     {
       id: 'community-governance',
       title: t('tutorial.governance.title'),
-      icon: <Heart className="w-6 h-6 text-pink-600" />,
+      icon: <Heart className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.governance.content')
     },
     {
       id: 'academy-system',
       title: t('tutorial.academy.title'),
-      icon: <GraduationCap className="w-6 h-6 text-orange-600" />,
+      icon: <GraduationCap className="w-6 h-6 text-blue-600" />,
       content: t('tutorial.academy.content')
     }
   ]
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 头部 */}
-      <div className="px-6 py-4 flex items-center space-x-4">
-        <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="text-xl font-bold text-slate-800">
-          {t('tutorial.title')}
-        </h1>
+      {/* 顶部：返回与标题 */}
+      <div className="px-6 pt-12 pb-2 relative z-10">
+        <div className="flex items-center space-x-3">
+          <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          {/* 替换为 NTX 图标 */}
+          <div className="relative w-28 h-9 md:w-32 md:h-10">
+            <Image
+              src="/Frame17@3x.png"
+              alt="NTX Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Header Banner：右图左文，图片可部分与文字重叠 */}
+      <div className="px-6">
+        <div className="relative mb-6 rounded-2xl overflow-visible">
+          <div className="relative h-32">
+            {/* 左侧文字区域 */}
+            <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
+              <div>
+                <h2 className="text-2xl font-bold text-blue-600">
+                  {t('tutorial.title') || '新手教程'}
+                </h2>
+                <p className="text-slate-500 text-sm mt-1">
+                  {t('tutorial.subtitle') || '快速了解与上手指南'}
+                </p>
+              </div>
+            </div>
+            {/* 右侧大图，允许在文字下方显示部分区域 */}
+            <div className="absolute -right-2 md:-right-3 top-1/2 -translate-y-1/2 w-56 h-56 md:w-64 md:h-64 z-0 pointer-events-none">
+              <Image
+                src="/Group34406@3x.png"
+                alt="Tutorial Header"
+                fill
+                className="object-contain object-right"
+                priority
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Content */}
@@ -101,10 +138,16 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
         {/* Introduction Card */}
         <Card className="glass-card border-white/50 shadow-xl">
           <CardHeader className="text-center pb-4">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-white" />
+            <div className="relative w-16 h-16 mx-auto mb-4">
+              <Image
+                src="/Frame48@3x.png"
+                alt="Welcome Icon"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
-            <CardTitle className="text-2xl gradient-text">
+            <CardTitle className="text-2xl font-semibold text-blue-600">
               欢迎来到 NexTrade DAO
             </CardTitle>
             <p className="text-slate-600 mt-2">
@@ -125,11 +168,11 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
                   )}
 
                   <div className="flex items-start">
-                    <div className="premium-icon w-12 h-12 rounded-xl mr-4 flex-shrink-0">
+                    <div className="mr-4 flex-shrink-0 flex items-center justify-center">
                       {section.icon}
                     </div>
                     <div className="flex-grow">
-                      <h3 className="text-lg font-semibold text-slate-800 mb-3">
+                      <h3 className="text-lg font-semibold text-blue-600 mb-3">
                         {section.title}
                       </h3>
                       <div className="text-slate-700 leading-relaxed whitespace-pre-line mb-4">
