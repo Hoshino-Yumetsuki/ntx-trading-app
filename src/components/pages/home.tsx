@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import { BannerCard } from '@/src/components/ui/banner-card'
+import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import {
   TrendingUp,
   ArrowRight,
@@ -27,7 +28,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [_isTutorialOpen, _setIsTutorialOpen] = useState(false)
   const [showTutorialPage, setShowTutorialPage] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
-  const { t, language, setLanguage } = useLanguage()
+  const { t } = useLanguage()
   const [showAllNews, setShowAllNews] = useState(false)
   const latestNews = showAllNews ? newsItems : getRecentNews(3)
 
@@ -76,14 +77,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </div>
             <p className="text-slate-800 text-xl font-medium">Web3 一站式服务</p>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
-            className="text-slate-600 hover:text-slate-800"
-          >
-            {language === 'zh' ? '中文' : 'EN'}
-          </Button>
+          <LanguageSwitcher />
         </div>
         {/* 新手教程大横幅 */}
         <BannerCard

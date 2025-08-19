@@ -8,6 +8,7 @@ import {
   CardTitle
 } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
+import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
 import { Clock, Rss, Share2, ChevronLeft } from 'lucide-react'
 import DOMPurify from 'dompurify'
@@ -322,6 +323,8 @@ export function NewsPage() {
           </div>
         </div>
 
+        
+
         {/* 内容区域卡片，与学院页子页面布局一致 */}
         <div className="px-6 mt-6">
           <Card className="glass-card border-white/30 shadow-lg rounded-3xl overflow-hidden">
@@ -372,11 +375,32 @@ export function NewsPage() {
     <div className="min-h-screen pb-6">
       {/* 顶部 Hero 区域，与学院主页一致结构 */}
       <div className="px-6 pt-12 pb-8 relative z-10">
-        <div className="flex mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800">
-              {t('news.title') || '资讯中心'}
-            </h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col">
+            <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
+              <Image
+                src="/Frame17@3x.png"
+                alt="NTX Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+            <p className="text-slate-800 text-xl font-medium">交易即挖矿</p>
+          </div>
+          <LanguageSwitcher />
+        </div>
+
+        {/* 顶部 Banner（图片+标题叠加） */}
+        <div className="relative mb-6 rounded-2xl overflow-hidden">
+          <div
+            className="h-32 w-full bg-cover bg-center"
+            style={{ backgroundImage: 'url(/Group35@3x.png)' }}
+          />
+          <div className="absolute left-6 top-8 md:left-8 md:top-10 z-10">
+            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md">
+              {t('news.latest') || '最新资讯'}
+            </h2>
           </div>
         </div>
       </div>
@@ -386,7 +410,7 @@ export function NewsPage() {
         <Card className="glass-card border-white/30 shadow-lg rounded-3xl">
           <CardHeader>
             <CardTitle className="text-slate-800 text-xl font-bold">
-              {t('news.latest') || '文章列表'}
+              {t('news.latest') || '最新资讯'}
             </CardTitle>
           </CardHeader>
 

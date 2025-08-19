@@ -8,7 +8,6 @@ import { ProfilePage } from '@/src/components/pages/profile'
 import { NewsPage } from '@/src/components/pages/news'
 import { AcademyPage } from '@/src/components/pages/academy'
 import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
-import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function MainApp() {
@@ -73,12 +72,7 @@ export function MainApp() {
 
   return (
     <div className="min-h-screen">
-      {/* Language Switcher Header */}
-      <div className="fixed top-0 right-0 z-50 p-4">
-        <LanguageSwitcher />
-      </div>
-
-      <div className="flex-1 overflow-auto pb-28 pt-16">
+      <div className="flex-1 overflow-auto pb-28 pt-0">
         <ActiveComponent />
 
         {activeTab === 'home' && (
