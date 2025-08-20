@@ -163,66 +163,75 @@ export function LoginPage({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
-      <div className="max-w-md w-full space-y-6">
-        {/* 只在注册页面显示横幅文字 */}
-        {isRegisterMode && (
-          <div className="mt-6 mb-8">
-            <button
-              type="button"
-              onClick={toggleMode}
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-3"
-              aria-label={t('common.back')}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <div className="text-left mb-3">
-              <h3 className="text-3xl font-extrabold text-blue-700">
-                {t('login.banner.joinNow')}
-              </h3>
-              <h3 className="text-2xl font-bold mb-3 text-blue-700">
-                {t('login.banner.platform')}
-              </h3>
-            </div>
-            <div className="text-sm text-left text-gray-600">
-              <span>
-                {t('login.banner.exchanges')}
-                {t('login.banner.joinedExchanges')}
-                {'\u00A0'}
-                <span className="inline-flex align-middle bg-gray-100 rounded-full p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-blue-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    role="img"
-                    aria-label="Global network icon"
-                  >
-                    <title>Global network</title>
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"
-                    />
-                  </svg>
-                </span>
-              </span>
+    <div className="min-h-screen">
+      {/* 顶部 Banner 区域 */}
+      <div className="relative overflow-visible">
+        <div className="px-6 pt-12 pb-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="relative h-48 md:h-56 overflow-visible">
+              {/* 左侧文案 */}
+              <div className="relative z-10 h-full flex items-center pr-48 md:pr-56">
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
+                    立刻加入
+                  </h1>
+                  <h2 className="text-xl md:text-2xl font-semibold text-blue-600 mb-4">
+                    返佣创业平台
+                  </h2>
+                  <p className="text-slate-600 text-sm md:text-base">
+                    币安、OKX、BYBIT、GATE、Bitget 等严选交易所等现已加入平台
+                  </p>
+                </div>
+              </div>
+              {/* 右侧插画 */}
+              <div className={`absolute top-1/2 -translate-y-1/2 z-0 pointer-events-none ${
+                isRegisterMode 
+                  ? 'right-0 h-48 md:h-56 overflow-visible' 
+                  : '-right-2 md:-right-3 w-56 h-56 md:w-64 md:h-64'
+              }`}>
+                <img
+                  src={isRegisterMode ? "/Frame49@3x.png" : "/Group34575@3x.png"}
+                  alt={isRegisterMode ? "Register Illustration" : "Login Illustration"}
+                  className={`${
+                    isRegisterMode 
+                      ? 'h-full w-auto object-contain object-right' 
+                      : 'w-full h-full object-contain object-right'
+                  }`}
+                />
+              </div>
             </div>
           </div>
-        )}
-
-        <div className="text-left">
-          <h2 className="mt-3 text-3xl font-extrabold text-gray-900">
-            {isRegisterMode ? t('login.register.title') : t('login.title')}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {isRegisterMode
-              ? t('login.register.subtitle')
-              : t('login.subtitle')}
-          </p>
         </div>
+      </div>
+
+      {/* 登录表单区域 */}
+      <div className="px-4 pb-8">
+        <div className="max-w-md mx-auto">
+          {/* 注册模式返回按钮 */}
+          {isRegisterMode && (
+            <div className="mb-6">
+              <button
+                type="button"
+                onClick={toggleMode}
+                className="inline-flex items-center text-blue-600 hover:text-blue-700"
+                aria-label={t('common.back')}
+              >
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                返回登录
+              </button>
+            </div>
+          )}
+
+          <div className="text-left mb-8">
+            <h2 className="text-2xl font-bold text-slate-800">
+              {isRegisterMode ? t('login.register.title') : t('login.title')}
+            </h2>
+            <p className="mt-2 text-sm text-slate-600">
+              {isRegisterMode
+                ? t('login.register.subtitle')
+                : t('login.subtitle')}
+            </p>
+          </div>
 
         {!isRegisterMode ? (
           // 登录表单
@@ -610,16 +619,17 @@ export function LoginPage({
           </form>
         )}
 
-        <div className="text-center">
-          <button
-            type="button"
-            onClick={toggleMode}
-            className="text-blue-600 hover:text-blue-500 text-sm font-medium"
-          >
-            {isRegisterMode
-              ? t('login.switchToLogin')
-              : t('login.switchToRegister')}
-          </button>
+          <div className="text-center mt-6">
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="text-blue-600 hover:text-blue-500 text-sm font-medium"
+            >
+              {isRegisterMode
+                ? t('login.switchToLogin')
+                : t('login.switchToRegister')}
+            </button>
+          </div>
         </div>
       </div>
 
