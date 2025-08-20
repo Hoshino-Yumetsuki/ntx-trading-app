@@ -184,95 +184,87 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </CardContent>
         </Card>
 
-        {/* 以 2x2 方式排列四个正方形卡片 */}
+        {/* 四个功能卡片（长方形 2x2，所有屏幕保持两列） */}
         <div className="grid grid-cols-2 gap-4 mt-4">
-          <Card className="glass-card border-white/50 aspect-square">
+          <Card className="glass-card border-white/50 h-32">
             <CardContent className="p-4 h-full">
               <AutoScaleBox className="h-full w-full">
-                <div className="flex flex-col items-center text-center justify-between h-full">
-                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                    <TrendingUp className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div className="mb-auto w-full">
-                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                <div className="flex flex-row items-center text-left h-full gap-2">
+                  <div className="flex-1">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-blue-600 -ml-0.5" />
                       {t('home.card.mining.title')}
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
                       {t('home.card.mining.subtitle')}
                     </p>
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                      {t('home.card.mining.desc')}
+                    </p>
                   </div>
-                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
-                    {t('home.card.mining.desc')}
-                  </p>
                 </div>
               </AutoScaleBox>
             </CardContent>
           </Card>
 
-          <Card className="glass-card border-white/50 aspect-square">
+          <Card className="glass-card border-white/50 h-32">
             <CardContent className="p-4 h-full">
               <AutoScaleBox className="h-full w-full">
-                <div className="flex flex-col items-center text-center justify-between h-full">
-                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                    <Brain className="w-6 h-6 text-indigo-600" />
-                  </div>
-                  <div className="mb-auto w-full">
-                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                <div className="flex flex-row items-center text-left h-full gap-2">
+                  <div className="flex-1">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
+                      <Brain className="w-4 h-4 text-blue-600 -ml-0.5" />
                       {t('home.card.ai.title')}
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
                       {t('home.card.ai.subtitle')}
                     </p>
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                      {t('home.card.ai.desc')}
+                    </p>
                   </div>
-                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
-                    {t('home.card.ai.desc')}
-                  </p>
                 </div>
               </AutoScaleBox>
             </CardContent>
           </Card>
 
-          <Card className="glass-card border-white/50 aspect-square">
+          <Card className="glass-card border-white/50 h-32">
             <CardContent className="p-4 h-full">
               <AutoScaleBox className="h-full w-full">
-                <div className="flex flex-col items-center text-center justify-between h-full">
-                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                    <Target className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div className="mb-auto w-full">
-                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                <div className="flex flex-row items-center text-left h-full gap-2">
+                  <div className="flex-1">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
+                      <Target className="w-4 h-4 text-blue-600 -ml-0.5" />
                       机构策略
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
                       掌握机构交易思维
                     </p>
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                      学习专业交易策略，提升交易胜率
+                    </p>
                   </div>
-                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
-                    学习专业交易策略，提升交易胜率
-                  </p>
                 </div>
               </AutoScaleBox>
             </CardContent>
           </Card>
 
-          <Card className="glass-card border-white/50 aspect-square">
+          <Card className="glass-card border-white/50 h-32">
             <CardContent className="p-4 h-full">
               <AutoScaleBox className="h-full w-full">
-                <div className="flex flex-col items-center text-center justify-between h-full">
-                  <div className="premium-icon w-12 h-12 rounded-xl mb-3">
-                    <Award className="w-6 h-6 text-yellow-600" />
-                  </div>
-                  <div className="mb-auto w-full">
-                    <h3 className="text-slate-800 font-semibold text-lg mb-1">
+                <div className="flex flex-row items-center text-left h-full gap-2">
+                  <div className="flex-1">
+                    <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
+                      <Award className="w-4 h-4 text-blue-600 -ml-0.5" />
                       持续回报
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
                       让每一笔交易有回报
                     </p>
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                      建立长期收益模式，实现财富增长
+                    </p>
                   </div>
-                  <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
-                    建立长期收益模式，实现财富增长
-                  </p>
                 </div>
               </AutoScaleBox>
             </CardContent>

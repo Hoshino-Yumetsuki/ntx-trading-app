@@ -257,7 +257,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* 顶部：返回与标识（与新手教程一致） */}
       <div className="px-6 pt-12 pb-2 relative z-10">
         <div className="flex items-center space-x-3">

@@ -9,6 +9,7 @@ import { NewsPage } from '@/src/components/pages/news'
 import { AcademyPage } from '@/src/components/pages/academy'
 import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
 import { useLanguage } from '@/src/contexts/language-context'
+import { AppBackground } from '@/src/components/ui/app-background'
 
 export function MainApp() {
   const [activeTab, setActiveTab] = useState('home')
@@ -71,7 +72,8 @@ export function MainApp() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-screen overflow-hidden">
+      {activeTab !== 'news' && <AppBackground />}
       <div className="flex-1 overflow-auto pb-28 pt-0">
         <ActiveComponent />
 
