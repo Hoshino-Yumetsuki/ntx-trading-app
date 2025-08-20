@@ -63,7 +63,7 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
               <Button
                 size="sm"
                 onClick={() => onWithdraw('usdt')}
-                className="diffused-button text-white border-0"
+                className="bg-blue-600 hover:bg-blue-700 text-white border-0"
               >
                 <ExternalLink className="w-4 h-4 mr-1" />
                 {t('assets.withdraw')}
@@ -98,7 +98,7 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
               <Button
                 size="sm"
                 onClick={() => onWithdraw('ntx')}
-                className="diffused-button text-white border-0"
+                className="bg-blue-600 hover:bg-blue-700 text-white border-0"
               >
                 <ExternalLink className="w-4 h-4 mr-1" />
                 {t('assets.withdraw')}
@@ -136,7 +136,7 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
         <CardContent>
           <div className="flex items-center justify-between">
             <div className="flex-1 mr-3">
-              <p className="text-sm font-mono text-slate-700 break-all">
+              <p className="text-sm font-mono text-slate-700 break-all font-tektur-semibold">
                 {userInfo.bscAddress || t('assets.notSet')}
               </p>
             </div>

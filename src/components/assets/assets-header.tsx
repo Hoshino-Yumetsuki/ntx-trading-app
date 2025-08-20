@@ -1,8 +1,9 @@
 'use client'
 
-import { ArrowLeft, RefreshCw } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/src/components/ui/button'
 import { useLanguage } from '@/src/contexts/language-context'
+import Image from 'next/image'
 
 interface AssetsHeaderProps {
   onBack: () => void
@@ -20,20 +21,41 @@ export function AssetsHeader({
   const { t } = useLanguage()
 
   return (
-    <div className="px-6 py-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <h1 className="text-xl font-bold text-slate-800">
-            {t('assets.title')}
-          </h1>
-        </div>
-        <Button variant="outline" size="sm" onClick={onRefresh}>
-          <RefreshCw className="w-4 h-4 mr-1" />
-          {t('common.refresh')}
+    <div className="px-6 pt-12 pb-4 relative z-10">
+      {/* 顶部：返回与标识，与新手教程保持一致 */}
+      <div className="flex items-center space-x-3 mb-3">
+        <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
+          <ArrowLeft className="w-5 h-5" />
         </Button>
+        <div className="relative w-28 h-9 md:w-32 md:h-10">
+          <Image
+            src="/Frame17@3x.png"
+            alt="NTX Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+      </div>
+
+      {/* Header Banner：左文右图 */}
+      <div className="relative mb-4 rounded-2xl overflow-visible">
+        <div className="relative h-28">
+          {/* 左侧标题 */}
+          <div className="relative z-10 h-full flex items-center pl-1 pr-40">
+            <h1 className="text-2xl font-bold text-blue-600">{t('assets.title')}</h1>
+          </div>
+          {/* 右侧图标 */}
+          <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-40 h-40 md:w-48 md:h-48 z-0 pointer-events-none">
+            <Image
+              src="/9481dc54cf0484575744a3a5008ed6911@3x.png"
+              alt="Assets Header"
+              fill
+              className="object-contain object-right"
+              priority
+            />
+          </div>
+        </div>
       </div>
 
       {/* 切换按钮 - 使用挖矿数据页面类似的样式 */}
