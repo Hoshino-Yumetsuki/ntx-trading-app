@@ -187,7 +187,7 @@ export function ExchangeCard({
                       <Button
                         size="sm"
                         onClick={() => handleBindClick(exchange.id)}
-                        className="w-full sm:w-auto diffused-button text-white border-0 px-4 py-2"
+                        className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white border-0 px-4 py-2"
                       >
                         <UserPlus className="w-4 h-4 mr-1" />
                         {t('mining.exchange.bind') || '绑定'}
@@ -364,7 +364,7 @@ export function ExchangeCard({
                       type="button"
                       onClick={handleBindConfirm}
                       disabled={!uid.trim()}
-                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       {t('mining.exchange.bind') || '绑定'}
                     </Button>
