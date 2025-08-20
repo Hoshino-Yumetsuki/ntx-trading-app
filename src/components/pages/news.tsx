@@ -332,8 +332,6 @@ export function NewsPage() {
           </div>
         </div>
 
-        
-
         {/* 内容区域卡片，与学院页子页面布局一致 */}
         <div className="px-6 mt-6">
           <Card className="glass-card border-white/30 shadow-lg rounded-3xl overflow-hidden">

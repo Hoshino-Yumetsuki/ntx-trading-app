@@ -1,6 +1,13 @@
-"use client"
+'use client'
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
+import type React from 'react'
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useCallback
+} from 'react'
 
 type AutoScaleBoxProps = {
   children: React.ReactNode
@@ -26,21 +33,21 @@ export function AutoScaleBox({
   const contentRef = useRef<HTMLDivElement | null>(null)
   const [scale, setScale] = useState(1)
 
-  const measure = () => {
+  const measure = useCallback(() => {
     const container = containerRef.current
     const content = contentRef.current
     if (!container || !content) return
 
     // 先复位 scale 以读取内容自然尺寸
-    content.style.transform = "scale(1)"
-    content.style.transformOrigin = "top center"
+    content.style.transform = 'scale(1)'
+    content.style.transformOrigin = 'top center'
 
     const cW = container.clientWidth
     const cH = container.clientHeight
 
     // 内容的自然尺寸（不缩放）
     const contentRect = content.getBoundingClientRect()
-    const parentRect = container.getBoundingClientRect()
+    const _parentRect = container.getBoundingClientRect()
     // 近似还原真实内容宽高（去除父缩放影响）
     const contentW = contentRect.width
     const contentH = contentRect.height
@@ -52,7 +59,7 @@ export function AutoScaleBox({
     s = Math.max(s, minScale)
 
     setScale(s)
-  }
+  }, [minScale, maxScale])
 
   useLayoutEffect(() => {
     measure()
@@ -68,25 +75,29 @@ export function AutoScaleBox({
     ro.observe(content)
 
     const onResize = () => measure()
-    window.addEventListener("resize", onResize)
+    window.addEventListener('resize', onResize)
 
     return () => {
       ro.disconnect()
-      window.removeEventListener("resize", onResize)
+      window.removeEventListener('resize', onResize)
     }
-  }, [])
+  }, [measure])
 
   // 当 scale 变化时应用
   useEffect(() => {
     const content = contentRef.current
     if (!content) return
     content.style.transform = `scale(${scale})`
-    content.style.transformOrigin = "top center"
+    content.style.transformOrigin = 'top center'
   }, [scale])
 
   return (
-    <div ref={containerRef} className={className} style={{ overflow: "hidden" }}>
-      <div ref={contentRef} style={{ width: "100%" }}>
+    <div
+      ref={containerRef}
+      className={className}
+      style={{ overflow: 'hidden' }}
+    >
+      <div ref={contentRef} style={{ width: '100%' }}>
         {children}
       </div>
     </div>

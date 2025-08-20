@@ -14,6 +14,7 @@ import {
 import { toast } from 'sonner'
 import { TermsModal } from '@/src/components/ui/terms-modal'
 import { useLanguage } from '@/src/contexts/language-context'
+import Image from 'next/image'
 
 const createLoginSchema = (t: (key: string) => string) =>
   z.object({
@@ -184,19 +185,24 @@ export function LoginPage({
                 </div>
               </div>
               {/* 右侧插画 */}
-              <div className={`absolute top-1/2 -translate-y-1/2 z-0 pointer-events-none ${
-                isRegisterMode 
-                  ? 'right-0 h-48 md:h-56 overflow-visible' 
-                  : '-right-2 md:-right-3 w-56 h-56 md:w-64 md:h-64'
-              }`}>
-                <img
-                  src={isRegisterMode ? "/Frame49@3x.png" : "/Group34575@3x.png"}
-                  alt={isRegisterMode ? "Register Illustration" : "Login Illustration"}
-                  className={`${
-                    isRegisterMode 
-                      ? 'h-full w-auto object-contain object-right' 
-                      : 'w-full h-full object-contain object-right'
-                  }`}
+              <div
+                className={`absolute top-1/2 -translate-y-1/2 z-0 pointer-events-none ${
+                  isRegisterMode
+                    ? 'right-0 w-48 h-48 md:w-56 md:h-56 overflow-visible'
+                    : '-right-2 md:-right-3 w-56 h-56 md:w-64 md:h-64'
+                }`}
+              >
+                <Image
+                  src={
+                    isRegisterMode ? '/Frame49@3x.png' : '/Group34575@3x.png'
+                  }
+                  alt={
+                    isRegisterMode
+                      ? 'Register Illustration'
+                      : 'Login Illustration'
+                  }
+                  fill
+                  className="object-contain object-right"
                 />
               </div>
             </div>
@@ -233,391 +239,393 @@ export function LoginPage({
             </p>
           </div>
 
-        {!isRegisterMode ? (
-          // 登录表单
-          <form
-            className="mt-8 space-y-8"
-            onSubmit={loginForm.handleSubmit(onLoginSubmit)}
-          >
-            <div className="space-y-6">
-              {/* 邮箱字段 */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {t('login.email.label')}
-                </label>
-                <div
-                  className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                    loginForm.formState.errors.email
-                      ? 'border-red-300'
-                      : 'border-white/30'
-                  }`}
-                >
-                  <input
-                    {...loginForm.register('email')}
-                    type="email"
-                    id={emailId}
-                    className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                    placeholder={t('login.email.placeholder')}
-                  />
-                </div>
-                {loginForm.formState.errors.email && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {loginForm.formState.errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* 密码字段 */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {t('login.password.label')}
-                </label>
-                <div
-                  className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                    loginForm.formState.errors.password
-                      ? 'border-red-300'
-                      : 'border-white/30'
-                  }`}
-                >
-                  <input
-                    {...loginForm.register('password')}
-                    type={showPassword ? 'text' : 'password'}
-                    id={passwordId}
-                    className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
-                    placeholder={t('login.password.placeholder')}
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowPassword(!showPassword)}
+          {!isRegisterMode ? (
+            // 登录表单
+            <form
+              className="mt-8 space-y-8"
+              onSubmit={loginForm.handleSubmit(onLoginSubmit)}
+            >
+              <div className="space-y-6">
+                {/* 邮箱字段 */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
-                  </button>
-                </div>
-                {loginForm.formState.errors.password && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {loginForm.formState.errors.password.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {error && (
-              <div className="text-red-600 text-sm text-center">{error}</div>
-            )}
-
-            <div>
-              <button
-                type="submit"
-                disabled={loginForm.formState.isSubmitting || isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {(loginForm.formState.isSubmitting || isLoading) && (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                )}
-                {t('login.loginButton')}
-              </button>
-            </div>
-          </form>
-        ) : (
-          // 注册表单
-          <form
-            className="mt-8 space-y-8"
-            onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-          >
-            <div className="space-y-6">
-              {/* 邮箱字段 */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {t('login.email.label')}
-                </label>
-                <div
-                  className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                    registerForm.formState.errors.email
-                      ? 'border-red-300'
-                      : 'border-white/30'
-                  }`}
-                >
-                  <input
-                    {...registerForm.register('email')}
-                    type="email"
-                    id={emailId}
-                    className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                    placeholder={t('login.email.placeholder')}
-                  />
-                </div>
-                {registerForm.formState.errors.email && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {registerForm.formState.errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* 昵称字段 */}
-              <div>
-                <label
-                  htmlFor="nickname"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {t('login.nickname.label')}
-                </label>
-                <div
-                  className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                    registerForm.formState.errors.nickname
-                      ? 'border-red-300'
-                      : 'border-white/30'
-                  }`}
-                >
-                  <input
-                    {...registerForm.register('nickname')}
-                    type="text"
-                    id={nicknameId}
-                    className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                    placeholder={t('login.nickname.placeholder')}
-                  />
-                </div>
-                {registerForm.formState.errors.nickname && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {registerForm.formState.errors.nickname.message}
-                  </p>
-                )}
-              </div>
-
-              {/* 验证码字段 */}
-              <div>
-                <label
-                  htmlFor="verification_code"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {t('login.verificationCode.label')}
-                </label>
-                <div className="mt-2 flex space-x-3">
-                  <div className="flex-1">
-                    <div
-                      className={`glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                        registerForm.formState.errors.verification_code
-                          ? 'border-red-300'
-                          : 'border-white/30'
-                      }`}
-                    >
-                      <input
-                        {...registerForm.register('verification_code')}
-                        type="text"
-                        id={verificationCodeId}
-                        className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                        placeholder={t('login.verificationCode.placeholder')}
-                      />
-                    </div>
+                    {t('login.email.label')}
+                  </label>
+                  <div
+                    className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                      loginForm.formState.errors.email
+                        ? 'border-red-300'
+                        : 'border-white/30'
+                    }`}
+                  >
+                    <input
+                      {...loginForm.register('email')}
+                      type="email"
+                      id={emailId}
+                      className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                      placeholder={t('login.email.placeholder')}
+                    />
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleSendVerificationCode}
-                    disabled={isLoadingVerification}
-                    className="h-12 px-4 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isLoadingVerification ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : verificationSent ? (
-                      t('login.resendCode')
-                    ) : (
-                      t('login.sendCode')
-                    )}
-                  </button>
+                  {loginForm.formState.errors.email && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {loginForm.formState.errors.email.message}
+                    </p>
+                  )}
                 </div>
-                {registerForm.formState.errors.verification_code && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {registerForm.formState.errors.verification_code.message}
-                  </p>
-                )}
+
+                {/* 密码字段 */}
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t('login.password.label')}
+                  </label>
+                  <div
+                    className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                      loginForm.formState.errors.password
+                        ? 'border-red-300'
+                        : 'border-white/30'
+                    }`}
+                  >
+                    <input
+                      {...loginForm.register('password')}
+                      type={showPassword ? 'text' : 'password'}
+                      id={passwordId}
+                      className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
+                      placeholder={t('login.password.placeholder')}
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                  {loginForm.formState.errors.password && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {loginForm.formState.errors.password.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              {/* 邀请码字段 */}
+              {error && (
+                <div className="text-red-600 text-sm text-center">{error}</div>
+              )}
+
               <div>
-                <label
-                  htmlFor="invite_code"
-                  className="block text-sm font-medium text-gray-700"
+                <button
+                  type="submit"
+                  disabled={loginForm.formState.isSubmitting || isLoading}
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {t('login.inviteCode.label')}
-                </label>
-                <div
-                  className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                    registerForm.formState.errors.invite_code
-                      ? 'border-red-300'
-                      : 'border-white/30'
-                  }`}
-                >
+                  {(loginForm.formState.isSubmitting || isLoading) && (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  )}
+                  {t('login.loginButton')}
+                </button>
+              </div>
+            </form>
+          ) : (
+            // 注册表单
+            <form
+              className="mt-8 space-y-8"
+              onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
+            >
+              <div className="space-y-6">
+                {/* 邮箱字段 */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t('login.email.label')}
+                  </label>
+                  <div
+                    className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                      registerForm.formState.errors.email
+                        ? 'border-red-300'
+                        : 'border-white/30'
+                    }`}
+                  >
+                    <input
+                      {...registerForm.register('email')}
+                      type="email"
+                      id={emailId}
+                      className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                      placeholder={t('login.email.placeholder')}
+                    />
+                  </div>
+                  {registerForm.formState.errors.email && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {registerForm.formState.errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 昵称字段 */}
+                <div>
+                  <label
+                    htmlFor="nickname"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t('login.nickname.label')}
+                  </label>
+                  <div
+                    className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                      registerForm.formState.errors.nickname
+                        ? 'border-red-300'
+                        : 'border-white/30'
+                    }`}
+                  >
+                    <input
+                      {...registerForm.register('nickname')}
+                      type="text"
+                      id={nicknameId}
+                      className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                      placeholder={t('login.nickname.placeholder')}
+                    />
+                  </div>
+                  {registerForm.formState.errors.nickname && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {registerForm.formState.errors.nickname.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 验证码字段 */}
+                <div>
+                  <label
+                    htmlFor="verification_code"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t('login.verificationCode.label')}
+                  </label>
+                  <div className="mt-2 flex space-x-3">
+                    <div className="flex-1">
+                      <div
+                        className={`glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                          registerForm.formState.errors.verification_code
+                            ? 'border-red-300'
+                            : 'border-white/30'
+                        }`}
+                      >
+                        <input
+                          {...registerForm.register('verification_code')}
+                          type="text"
+                          id={verificationCodeId}
+                          className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                          placeholder={t('login.verificationCode.placeholder')}
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSendVerificationCode}
+                      disabled={isLoadingVerification}
+                      className="h-12 px-4 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoadingVerification ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : verificationSent ? (
+                        t('login.resendCode')
+                      ) : (
+                        t('login.sendCode')
+                      )}
+                    </button>
+                  </div>
+                  {registerForm.formState.errors.verification_code && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {registerForm.formState.errors.verification_code.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 邀请码字段 */}
+                <div>
+                  <label
+                    htmlFor="invite_code"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t('login.inviteCode.label')}
+                  </label>
+                  <div
+                    className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                      registerForm.formState.errors.invite_code
+                        ? 'border-red-300'
+                        : 'border-white/30'
+                    }`}
+                  >
+                    <input
+                      {...registerForm.register('invite_code')}
+                      type="text"
+                      id={inviteCodeId}
+                      className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                      placeholder={t('login.inviteCode.placeholder')}
+                    />
+                  </div>
+                  {registerForm.formState.errors.invite_code && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {registerForm.formState.errors.invite_code.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 密码字段 */}
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t('login.password.label')}
+                  </label>
+                  <div
+                    className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                      registerForm.formState.errors.password
+                        ? 'border-red-300'
+                        : 'border-white/30'
+                    }`}
+                  >
+                    <input
+                      {...registerForm.register('password')}
+                      type={showPassword ? 'text' : 'password'}
+                      id={passwordId}
+                      className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
+                      placeholder={t('login.password.register.placeholder')}
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                  {registerForm.formState.errors.password && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {registerForm.formState.errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* 确认密码字段 */}
+                <div>
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t('login.confirmPassword.label')}
+                  </label>
+                  <div
+                    className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
+                      registerForm.formState.errors.confirmPassword
+                        ? 'border-red-300'
+                        : 'border-white/30'
+                    }`}
+                  >
+                    <input
+                      {...registerForm.register('confirmPassword')}
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      id={confirmPasswordId}
+                      className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
+                      placeholder={t('login.confirmPassword.placeholder')}
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                  {registerForm.formState.errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {registerForm.formState.errors.confirmPassword.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {error && (
+                <div className="text-red-600 text-sm text-center">{error}</div>
+              )}
+
+              {/* 同意条款勾选框 */}
+              <div className="mt-4 flex items-start">
+                <div className="flex items-center h-5">
                   <input
-                    {...registerForm.register('invite_code')}
-                    type="text"
-                    id={inviteCodeId}
-                    className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                    placeholder={t('login.inviteCode.placeholder')}
+                    {...registerForm.register('agreeToTerms')}
+                    id={agreeToTermsId}
+                    type="checkbox"
+                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                   />
                 </div>
-                {registerForm.formState.errors.invite_code && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {registerForm.formState.errors.invite_code.message}
-                  </p>
-                )}
-              </div>
-
-              {/* 密码字段 */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {t('login.password.label')}
-                </label>
-                <div
-                  className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                    registerForm.formState.errors.password
-                      ? 'border-red-300'
-                      : 'border-white/30'
-                  }`}
-                >
-                  <input
-                    {...registerForm.register('password')}
-                    type={showPassword ? 'text' : 'password'}
-                    id={passwordId}
-                    className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
-                    placeholder={t('login.password.register.placeholder')}
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
-                  </button>
+                <div className="ml-3 text-sm">
+                  <label htmlFor={agreeToTermsId} className="text-gray-700">
+                    {t('login.agreeTerms')}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTermsModalType('terms')
+                        setShowTermsModal(true)
+                      }}
+                      className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
+                    >
+                      {t('login.termsOfService')}
+                    </button>
+                    {t('login.and')}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTermsModalType('privacy')
+                        setShowTermsModal(true)
+                      }}
+                      className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
+                    >
+                      {t('login.privacyPolicy')}
+                    </button>
+                  </label>
+                  {registerForm.formState.errors.agreeToTerms && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {registerForm.formState.errors.agreeToTerms.message}
+                    </p>
+                  )}
                 </div>
-                {registerForm.formState.errors.password && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {registerForm.formState.errors.password.message}
-                  </p>
-                )}
               </div>
 
-              {/* 确认密码字段 */}
               <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700"
+                <button
+                  type="submit"
+                  disabled={registerForm.formState.isSubmitting}
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {t('login.confirmPassword.label')}
-                </label>
-                <div
-                  className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
-                    registerForm.formState.errors.confirmPassword
-                      ? 'border-red-300'
-                      : 'border-white/30'
-                  }`}
-                >
-                  <input
-                    {...registerForm.register('confirmPassword')}
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    id={confirmPasswordId}
-                    className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
-                    placeholder={t('login.confirmPassword.placeholder')}
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
-                  </button>
-                </div>
-                {registerForm.formState.errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {registerForm.formState.errors.confirmPassword.message}
-                  </p>
-                )}
+                  {registerForm.formState.isSubmitting && (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  )}
+                  {t('login.registerButton')}
+                </button>
               </div>
-            </div>
-
-            {error && (
-              <div className="text-red-600 text-sm text-center">{error}</div>
-            )}
-
-            {/* 同意条款勾选框 */}
-            <div className="mt-4 flex items-start">
-              <div className="flex items-center h-5">
-                <input
-                  {...registerForm.register('agreeToTerms')}
-                  id={agreeToTermsId}
-                  type="checkbox"
-                  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                />
-              </div>
-              <div className="ml-3 text-sm">
-                <label htmlFor={agreeToTermsId} className="text-gray-700">
-                  {t('login.agreeTerms')}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTermsModalType('terms')
-                      setShowTermsModal(true)
-                    }}
-                    className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
-                  >
-                    {t('login.termsOfService')}
-                  </button>
-                  {t('login.and')}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTermsModalType('privacy')
-                      setShowTermsModal(true)
-                    }}
-                    className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
-                  >
-                    {t('login.privacyPolicy')}
-                  </button>
-                </label>
-                {registerForm.formState.errors.agreeToTerms && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {registerForm.formState.errors.agreeToTerms.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={registerForm.formState.isSubmitting}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {registerForm.formState.isSubmitting && (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                )}
-                {t('login.registerButton')}
-              </button>
-            </div>
-          </form>
-        )}
+            </form>
+          )}
 
           <div className="text-center mt-6">
             <button

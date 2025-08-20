@@ -156,7 +156,9 @@ export function AcademyPage() {
                 {activeTabData?.title}
               </h1>
               <p className="text-slate-600 text-sm">
-                {activeTab === 'orders' ? '查看课程购买与支付状态' : '掌握机构交易思维'}
+                {activeTab === 'orders'
+                  ? '查看课程购买与支付状态'
+                  : '掌握机构交易思维'}
               </p>
             </div>
           </div>

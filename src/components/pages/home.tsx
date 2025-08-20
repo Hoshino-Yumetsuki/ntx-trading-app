@@ -75,7 +75,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 priority
               />
             </div>
-            <p className="text-slate-800 text-xl font-medium">Web3 一站式服务</p>
+            <p className="text-slate-800 text-xl font-medium">
+              Web3 一站式服务
+            </p>
           </div>
           <LanguageSwitcher />
         </div>
@@ -241,7 +243,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     <h3 className="text-slate-800 font-semibold text-lg mb-1">
                       机构策略
                     </h3>
-                    <p className="text-slate-600 text-xs break-words">掌握机构交易思维</p>
+                    <p className="text-slate-600 text-xs break-words">
+                      掌握机构交易思维
+                    </p>
                   </div>
                   <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
                     学习专业交易策略，提升交易胜率
@@ -262,7 +266,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     <h3 className="text-slate-800 font-semibold text-lg mb-1">
                       持续回报
                     </h3>
-                    <p className="text-slate-600 text-xs break-words">让每一笔交易有回报</p>
+                    <p className="text-slate-600 text-xs break-words">
+                      让每一笔交易有回报
+                    </p>
                   </div>
                   <p className="text-slate-700 text-xs leading-relaxed mt-2 break-words">
                     建立长期收益模式，实现财富增长

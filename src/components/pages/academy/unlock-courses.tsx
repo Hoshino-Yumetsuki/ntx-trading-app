@@ -13,8 +13,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter
+  DialogDescription
 } from '@/src/components/ui/dialog'
 import {
   Loader2,
@@ -23,12 +22,14 @@ import {
   Copy,
   Lock,
   BookOpen,
-  BadgeCheck,
-  
+  BadgeCheck
 } from 'lucide-react'
 import { getPermissionGroups } from '@/src/services/courseService'
 import { createOrder } from '@/src/services/payment'
-import type { PermissionGroupWithPackages, CreateOrderResponse } from '@/src/types/course'
+import type {
+  PermissionGroupWithPackages,
+  CreateOrderResponse
+} from '@/src/types/course'
 
 export function UnlockCoursesPage({
   onNavigateTab
@@ -45,8 +46,6 @@ export function UnlockCoursesPage({
   const [paymentInfo, setPaymentInfo] = useState<CreateOrderResponse | null>(
     null
   )
-
-  
 
   useEffect(() => {
     const fetchData = async () => {

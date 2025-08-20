@@ -15,10 +15,12 @@ interface AssetsHeaderProps {
 export function AssetsHeader({
   onBack,
   currentView,
-  onRefresh,
+  onRefresh: _onRefresh,
   onViewChange
 }: AssetsHeaderProps) {
   const { t } = useLanguage()
+  // Mark as used to satisfy linter; refresh is provided by parent when needed
+  void _onRefresh
 
   return (
     <div className="px-6 pt-12 pb-4 relative z-10">
@@ -43,7 +45,9 @@ export function AssetsHeader({
         <div className="relative h-28">
           {/* 左侧标题 */}
           <div className="relative z-10 h-full flex items-center pl-1 pr-40">
-            <h1 className="text-2xl font-bold text-blue-600">{t('assets.title')}</h1>
+            <h1 className="text-2xl font-bold text-blue-600">
+              {t('assets.title')}
+            </h1>
           </div>
           {/* 右侧图标 */}
           <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-40 h-40 md:w-48 md:h-48 z-0 pointer-events-none">

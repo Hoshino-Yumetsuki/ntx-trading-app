@@ -440,7 +440,10 @@ export function MiningPage() {
             <Button variant="outline" onClick={cancelBindDialog}>
               {t('mining.dialog.cancel')}
             </Button>
-            <Button onClick={confirmBindExchange} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button
+              onClick={confirmBindExchange}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               {t('mining.dialog.confirm')}
             </Button>
           </DialogFooter>
