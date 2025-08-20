@@ -29,6 +29,7 @@ import {
   Hash,
   Copy
 } from 'lucide-react'
+import Image from 'next/image'
 import { UserService } from '@/src/services/user'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { toast } from 'sonner'
@@ -257,12 +258,49 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 头部 */}
-      <div className="px-6 py-4 flex items-center space-x-4">
-        <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="text-xl font-bold text-slate-800">安全设置</h1>
+      {/* 顶部：返回与标识（与新手教程一致） */}
+      <div className="px-6 pt-12 pb-2 relative z-10">
+        <div className="flex items-center space-x-3">
+          <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="relative w-28 h-9 md:w-32 md:h-10">
+            <Image
+              src="/Frame17@3x.png"
+              alt="NTX Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Header Banner：左文右图 */}
+      <div className="px-6">
+        <div className="relative mb-6 rounded-2xl overflow-visible">
+          <div className="relative h-32">
+            {/* 左侧文字区域 */}
+            <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
+              <div>
+                <h2 className="text-2xl font-bold text-blue-600">安全设置</h2>
+                <p className="text-slate-500 text-sm mt-1">
+                  保护您的账户安全，定期检查和更新安全设置
+                </p>
+              </div>
+            </div>
+            {/* 右侧大图 */}
+            <div className="absolute -right-2 md:-right-3 top-1/2 -translate-y-1/2 w-56 h-56 md:w-64 md:h-64 z-0 pointer-events-none">
+              <Image
+                src="/Group34393@3x.png"
+                alt="Security Header"
+                fill
+                className="object-contain object-right"
+                priority
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 倒计时提示 */}
