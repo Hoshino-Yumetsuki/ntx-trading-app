@@ -34,7 +34,7 @@ import {
   UserDataCard,
   LeaderboardCard,
   ExchangeCard
-} from '@/src/components/mining'
+} from '@/src/components/pages/mining/index'
 import { toast } from 'sonner'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { useLanguage } from '@/src/contexts/language-context'

@@ -15,7 +15,7 @@ import {
   GraduationCap
 } from 'lucide-react'
 import Image from 'next/image'
-import { TutorialPage } from '@/src/components/pages/subpages/tutorial'
+import { TutorialPage } from '@/src/components/pages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
 import { getRecentNews, newsItems } from '@/src/data/news-data'
 import { AutoScaleBox } from '@/src/components/ui/auto-scale-box'

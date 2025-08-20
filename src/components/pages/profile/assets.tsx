@@ -9,11 +9,11 @@ import {
   getWithdrawalRecords,
   getCommissionRecords
 } from '@/src/services/user'
-import { AssetsHeader } from '@/src/components/assets/assets-header'
-import { AssetsOverview } from '@/src/components/assets/assets-overview'
-import { WithdrawalHistory } from '@/src/components/assets/withdrawal-history'
-import { CommissionHistory } from '@/src/components/assets/commission-history'
-import { WithdrawDialog } from '@/src/components/assets/withdraw-dialog'
+import { AssetsHeader } from '@/src/components/pages/assets/assets-header'
+import { AssetsOverview } from '@/src/components/pages/assets/assets-overview'
+import { WithdrawalHistory } from '@/src/components/pages/assets/withdrawal-history'
+import { CommissionHistory } from '@/src/components/pages/assets/commission-history'
+import { WithdrawDialog } from '@/src/components/pages/assets/withdraw-dialog'
 import type {
   UserInfo,
   WithdrawalRecord,
