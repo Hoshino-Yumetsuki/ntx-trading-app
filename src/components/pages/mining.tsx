@@ -52,7 +52,7 @@ export function MiningPage() {
   const [userExchanges, setUserExchanges] = useState<UserExchange[]>([])
   const [activeTab, setActiveTab] = useState<'mining' | 'exchange'>('mining')
   const [miningSubTab, setMiningSubTab] = useState<'platform' | 'user'>(
-    'platform'
+    'user'
   )
   const [loading, setLoading] = useState(true)
   const [userLoading, setUserLoading] = useState(false)
@@ -322,17 +322,6 @@ export function MiningPage() {
                 <div className="flex space-x-1 bg-slate-100/80 backdrop-blur-sm p-1 rounded-lg border border-slate-200/50">
                   <button
                     type="button"
-                    onClick={() => setMiningSubTab('platform')}
-                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                      miningSubTab === 'platform'
-                        ? 'bg-white text-slate-800 shadow-sm'
-                        : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
-                    }`}
-                  >
-                    {t('mining.platform.title') || '平台数据'}
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setMiningSubTab('user')}
                     className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                       miningSubTab === 'user'
@@ -341,6 +330,17 @@ export function MiningPage() {
                     }`}
                   >
                     {t('mining.user.title') || '我的数据'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMiningSubTab('platform')}
+                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                      miningSubTab === 'platform'
+                        ? 'bg-white text-slate-800 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                    }`}
+                  >
+                    {t('mining.platform.title') || '平台数据'}
                   </button>
                 </div>
               </div>
