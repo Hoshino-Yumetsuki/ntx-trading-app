@@ -101,11 +101,12 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             {/* 交易所图标显示 - 3x2 网格 */}
             <div className="grid grid-cols-3 gap-3 pb-2 pt-1">
               {[
-                { name: 'Binance', image: '/exchange/binance.png' },
-                { name: 'Bitget', image: '/exchange/bitget.png' },
-                { name: 'Bybit', image: '/exchange/bybit.jpg' },
-                { name: 'HTX', image: '/exchange/htx.jpg' },
-                { name: 'XT', image: '/exchange/xt.png' }
+                { name: '1', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_1.png' },
+                { name: '2', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_2.png' },
+                { name: '3', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_3.png' },
+                { name: '4', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_1.png' },
+                { name: '5', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_2.png' },
+                { name: '6', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_3.png' }
               ].map((exchange) => (
                 <div key={exchange.name} className="">
                   <div className="aspect-square bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3">
