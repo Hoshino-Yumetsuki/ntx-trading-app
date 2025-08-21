@@ -164,7 +164,7 @@ body {
 /* 无障碍：尊重降低动态偏好 */
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
-    animation: none !important;
+    animation: none;
   }
 }
 

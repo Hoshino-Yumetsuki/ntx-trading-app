@@ -33,12 +33,36 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const latestNews = showAllNews ? newsItems : getRecentNews(3)
   // 首页交易所图标（用于横向无缝滚动）
   const exchanges = [
-    { name: '1', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_1.png' },
-    { name: '2', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_2.png' },
-    { name: '3', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_3.png' },
-    { name: '4', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_1.png' },
-    { name: '5', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_2.png' },
-    { name: '6', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_3.png' }
+    {
+      name: '1',
+      image:
+        '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_1.png'
+    },
+    {
+      name: '2',
+      image:
+        '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_2.png'
+    },
+    {
+      name: '3',
+      image:
+        '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_3.png'
+    },
+    {
+      name: '4',
+      image:
+        '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_1.png'
+    },
+    {
+      name: '5',
+      image:
+        '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_2.png'
+    },
+    {
+      name: '6',
+      image:
+        '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_3.png'
+    }
   ]
   const half = Math.ceil(exchanges.length / 2)
   const topRow = exchanges.slice(0, half)
@@ -74,33 +98,65 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      {/* 背景装饰图片（平分高度，居于各自 1/3、2/3、3/3 的中心） */}
+      <Image
+        src="/FigmaDDSSlicePNG073d40ed32eb293f261f340b011653b3.png"
+        alt=""
+        aria-hidden="true"
+        width={112}
+        height={120}
+        className="absolute -z-10 pointer-events-none select-none"
+        style={{ left: -20, top: '16.6667%', transform: 'translateY(-50%)' }}
+      />
+      <Image
+        src="/FigmaDDSSlicePNGdf68e4790d973f6ba8dd73779c028ed4.png"
+        alt=""
+        aria-hidden="true"
+        width={174}
+        height={174}
+        className="absolute -z-10 pointer-events-none select-none"
+        style={{ left: 282, top: '33.3333%', transform: 'translateY(-50%)' }}
+      />
+      <Image
+        src="/FigmaDDSSlicePNG89310c4605f81ae570df5b14121e66db.png"
+        alt=""
+        aria-hidden="true"
+        width={171}
+        height={171}
+        className="absolute -z-10 pointer-events-none select-none"
+        style={{ left: 0, top: '50%', transform: 'translateY(-50%)' }}
+      />
       <div className="px-6 pt-8 pb-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex flex-col">
-            <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
-              <Image
-                src="/Frame17@3x.png"
-                alt="NTX Logo"
-                fill
-                className="object-contain"
-                priority
-              />
+        <div className="relative">
+          <div className="flex items-center justify-between mb-6 relative z-10">
+            <div className="flex flex-col">
+              <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
+                <Image
+                  src="/Frame17@3x.png"
+                  alt="NTX Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <p className="text-slate-800 text-xl font-medium">
+                Web3 一站式服务
+              </p>
             </div>
-            <p className="text-slate-800 text-xl font-medium">
-              Web3 一站式服务
-            </p>
+            <LanguageSwitcher />
           </div>
-          <LanguageSwitcher />
+          {/* 新手教程大横幅 */}
+          <div className="relative z-10">
+            <BannerCard
+              title={t('home.tutorial.title')}
+              subtitle={t('home.tutorial.subtitle')}
+              buttonText={t('home.tutorial.button')}
+              backgroundImage="/Group34394@3x.png"
+              onClick={openTutorial}
+            />
+          </div>
         </div>
-        {/* 新手教程大横幅 */}
-        <BannerCard
-          title={t('home.tutorial.title')}
-          subtitle={t('home.tutorial.subtitle')}
-          buttonText={t('home.tutorial.button')}
-          backgroundImage="/Group34394@3x.png"
-          onClick={openTutorial}
-        />
 
         {/* 立刻开赚交易所卡片 */}
         <div className="mt-6 mb-6 bg-white rounded-xl shadow-sm">
@@ -120,10 +176,18 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-3">
                     {topRow.map((exchange, idx) => (
-                      <div key={`g1-top-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                      <div
+                        key={`g1-top-${exchange.name}-${idx}`}
+                        className="w-24 h-24 md:w-28 md:h-28 shrink-0"
+                      >
                         <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
                           <div className="relative w-full h-full">
-                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                            <Image
+                              src={exchange.image}
+                              alt={exchange.name}
+                              fill
+                              className="object-contain"
+                            />
                           </div>
                         </div>
                       </div>
@@ -131,10 +195,18 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   </div>
                   <div className="flex items-center gap-3">
                     {bottomRow.map((exchange, idx) => (
-                      <div key={`g1-bottom-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                      <div
+                        key={`g1-bottom-${exchange.name}-${idx}`}
+                        className="w-24 h-24 md:w-28 md:h-28 shrink-0"
+                      >
                         <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
                           <div className="relative w-full h-full">
-                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                            <Image
+                              src={exchange.image}
+                              alt={exchange.name}
+                              fill
+                              className="object-contain"
+                            />
                           </div>
                         </div>
                       </div>
@@ -145,10 +217,18 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 <div className="flex flex-col gap-3" aria-hidden="true">
                   <div className="flex items-center gap-3">
                     {topRow.map((exchange, idx) => (
-                      <div key={`g2-top-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                      <div
+                        key={`g2-top-${exchange.name}-${idx}`}
+                        className="w-24 h-24 md:w-28 md:h-28 shrink-0"
+                      >
                         <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
                           <div className="relative w-full h-full">
-                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                            <Image
+                              src={exchange.image}
+                              alt={exchange.name}
+                              fill
+                              className="object-contain"
+                            />
                           </div>
                         </div>
                       </div>
@@ -156,10 +236,18 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   </div>
                   <div className="flex items-center gap-3">
                     {bottomRow.map((exchange, idx) => (
-                      <div key={`g2-bottom-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                      <div
+                        key={`g2-bottom-${exchange.name}-${idx}`}
+                        className="w-24 h-24 md:w-28 md:h-28 shrink-0"
+                      >
                         <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
                           <div className="relative w-full h-full">
-                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                            <Image
+                              src={exchange.image}
+                              alt={exchange.name}
+                              fill
+                              className="object-contain"
+                            />
                           </div>
                         </div>
                       </div>
