@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import { PlatformTotalDataCard } from './PlatformTotalDataCard'
 import { PlatformDailyDataCard } from './PlatformDailyDataCard'
 import type { PlatformData } from '@/src/services/mining'
 import { useLanguage } from '@/src/contexts/language-context'
+import { Input } from '@/src/components/ui/input'
 
 interface PlatformDataCardProps {
   platformData: PlatformData | null
@@ -15,29 +17,41 @@ export function PlatformDataCard({
   loading
 }: PlatformDataCardProps) {
   const { t } = useLanguage()
+  const getYesterdayDate = () => {
+    const d = new Date()
+    d.setDate(d.getDate() - 1)
+    return d.toISOString().split('T')[0]
+  }
+  const today = new Date().toISOString().split('T')[0]
+  const [selectedDate, setSelectedDate] = useState<string>(getYesterdayDate())
 
   return (
     <div className="space-y-8">
       {/* 平台总数据区域 */}
       <div className="space-y-4">
-        <div className="flex items-center space-x-2">
-          <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full"></div>
-          <h3 className="text-lg font-semibold text-slate-800">
-            {t('mining.platform.totalDataTitle') || '平台总数据'}
-          </h3>
-        </div>
+        <h3 className="text-lg font-medium text-slate-700 mb-3">
+          {t('mining.platform.totalDataTitle') || '平台总数据'}
+        </h3>
         <PlatformTotalDataCard platformData={platformData} loading={loading} />
       </div>
 
       {/* 平台日数据区域 */}
       <div className="space-y-4">
-        <div className="flex items-center space-x-2">
-          <div className="w-1 h-6 bg-gradient-to-b from-green-500 to-green-600 rounded-full"></div>
-          <h3 className="text-lg font-semibold text-slate-800">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-lg font-medium text-slate-700">
             {t('mining.platform.dailyDataTitle') || '平台日数据'}
           </h3>
+          <div className="flex items-center gap-2">
+            <Input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              max={today}
+              className="h-9 w-auto"
+            />
+          </div>
         </div>
-        <PlatformDailyDataCard />
+        <PlatformDailyDataCard selectedDate={selectedDate} />
       </div>
     </div>
   )
