@@ -36,27 +36,27 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     {
       name: '1',
       image:
-        '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_1.png'
+        '/exchange/binance.png'
     },
     {
       name: '2',
       image:
-        '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_2.png'
+        '/exchange/htx.jpg'
     },
     {
       name: '3',
       image:
-        '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_3.png'
+        '/exchange/bybit.jpg'
     },
     {
       name: '4',
       image:
-        '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_1.png'
+        '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_2.png'
     },
     {
       name: '5',
       image:
-        '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_2.png'
+        '/exchange/bitget.png'
     },
     {
       name: '6',

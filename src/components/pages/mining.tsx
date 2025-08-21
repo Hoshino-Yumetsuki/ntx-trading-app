@@ -284,17 +284,6 @@ export function MiningPage() {
         <div className="flex space-x-1 bg-white/50 backdrop-blur-sm p-1 rounded-xl border border-white/30">
           <button
             type="button"
-            onClick={() => setActiveTab('mining')}
-            className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
-              activeTab === 'mining'
-                ? 'bg-white text-blue-600 shadow-md'
-                : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
-            }`}
-          >
-            {t('mining.tabs.data') || '挖矿数据'}
-          </button>
-          <button
-            type="button"
             onClick={() => setActiveTab('exchange')}
             className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
               activeTab === 'exchange'
@@ -303,6 +292,17 @@ export function MiningPage() {
             }`}
           >
             {t('mining.tabs.exchange') || '交易所'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('mining')}
+            className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
+              activeTab === 'mining'
+                ? 'bg-white text-blue-600 shadow-md'
+                : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+            }`}
+          >
+            {t('mining.tabs.data') || '挖矿数据'}
           </button>
         </div>
       </div>
