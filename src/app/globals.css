@@ -42,6 +42,11 @@ body {
     font-family: "Tektur", Arial, Helvetica, sans-serif;
     font-weight: 600;
   }
+  /* DIN Black utility */
+  .font-din-black {
+    font-family: "DIN Black-Regular", "DIN Alternate", "DIN", Arial, sans-serif;
+    font-weight: 900;
+  }
   /* 横向无缝滚动工具类 */
   .marquee {
     overflow: hidden;

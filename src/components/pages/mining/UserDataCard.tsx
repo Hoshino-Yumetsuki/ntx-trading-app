@@ -39,12 +39,16 @@ export function UserDataCard({
             {t('mining.user.title') || '我的数据'}
           </h3>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="text-center data-card p-5 rounded-xl">
-              <div className="premium-icon w-12 h-12 rounded-lg mx-auto mb-3">
-                <Hammer className="w-6 h-6 text-blue-600" />
-              </div>
+            <div
+              className="data-card p-5 rounded-xl text-left"
+              style={{ border: 'none' }}
+            >
+              <Hammer className="w-8 h-8 text-blue-600 mb-3" />
+              <p className="text-sm text-[#4D576A] mb-1">
+                {t('mining.user.totalMining')}
+              </p>
               <p
-                className={`text-2xl font-bold text-blue-600 mb-1 ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-24 mx-auto' : ''}`}
+                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
               >
                 {userLoading
                   ? ''
@@ -52,16 +56,17 @@ export function UserDataCard({
                     ? formatCurrency(userData.total_mining, 'NTX')
                     : '--'}
               </p>
-              <p className="text-slate-600 text-sm">
-                {t('mining.user.totalMining')}
-              </p>
             </div>
-            <div className="text-center data-card p-5 rounded-xl">
-              <div className="premium-icon w-12 h-12 rounded-lg mx-auto mb-3">
-                <Database className="w-6 h-6 text-blue-600" />
-              </div>
+            <div
+              className="data-card p-5 rounded-xl text-left"
+              style={{ border: 'none' }}
+            >
+              <Database className="w-8 h-8 text-blue-600 mb-3" />
+              <p className="text-sm text-[#4D576A] mb-1">
+                {t('mining.user.totalTradingCost')}
+              </p>
               <p
-                className={`text-2xl font-bold text-blue-600 mb-1 ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-24 mx-auto' : ''}`}
+                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
               >
                 {userLoading
                   ? ''
@@ -69,18 +74,19 @@ export function UserDataCard({
                     ? formatCurrency(userData.total_trading_cost, 'USDT')
                     : '--'}
               </p>
-              <p className="text-slate-600 text-sm">
-                {t('mining.user.totalTradingCost')}
-              </p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center data-card p-5 rounded-xl">
-              <div className="premium-icon w-12 h-12 rounded-lg mx-auto mb-2">
-                <Hammer className="w-5 h-5 text-blue-600" />
-              </div>
+            <div
+              className="data-card p-5 rounded-xl text-left"
+              style={{ border: 'none' }}
+            >
+              <Hammer className="w-8 h-8 text-blue-600 mb-3" />
+              <p className="text-sm text-[#4D576A] mb-1">
+                {t('mining.user.dailyMining')}
+              </p>
               <p
-                className={`text-xl font-bold text-blue-600 mb-1 ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-20 mx-auto' : ''}`}
+                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
               >
                 {userLoading
                   ? ''
@@ -88,25 +94,23 @@ export function UserDataCard({
                     ? formatCurrency(dailyData.mining_output, 'NTX')
                     : '--'}
               </p>
-              <p className="text-slate-600 text-sm">
-                {t('mining.user.dailyMining')}
-              </p>
             </div>
-            <div className="text-center data-card p-5 rounded-xl">
-              <div className="premium-icon w-12 h-12 rounded-lg mx-auto mb-2">
-                <Database className="w-5 h-5 text-blue-600" />
-              </div>
+            <div
+              className="data-card p-5 rounded-xl text-left"
+              style={{ border: 'none' }}
+            >
+              <Database className="w-8 h-8 text-blue-600 mb-3" />
+              <p className="text-sm text-[#4D576A] mb-1">
+                {t('mining.user.dailyTradingCost')}
+              </p>
               <p
-                className={`text-xl font-bold text-blue-600 mb-1 ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-20 mx-auto' : ''}`}
+                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
               >
                 {userLoading
                   ? ''
                   : dailyData && dailyData.total_trading_cost !== undefined
                     ? formatCurrency(dailyData.total_trading_cost, 'USDT')
                     : '--'}
-              </p>
-              <p className="text-slate-600 text-sm">
-                {t('mining.user.dailyTradingCost')}
               </p>
             </div>
           </div>
