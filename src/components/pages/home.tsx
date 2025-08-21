@@ -35,18 +35,15 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const exchanges = [
     {
       name: '1',
-      image:
-        '/exchange/binance.png'
+      image: '/exchange/binance.png'
     },
     {
       name: '2',
-      image:
-        '/exchange/htx.jpg'
+      image: '/exchange/htx.jpg'
     },
     {
       name: '3',
-      image:
-        '/exchange/bybit.jpg'
+      image: '/exchange/bybit.jpg'
     },
     {
       name: '4',
@@ -55,8 +52,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     },
     {
       name: '5',
-      image:
-        '/exchange/bitget.png'
+      image: '/exchange/bitget.png'
     },
     {
       name: '6',

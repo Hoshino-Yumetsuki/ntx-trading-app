@@ -51,9 +51,7 @@ export function MiningPage() {
 
   const [userExchanges, setUserExchanges] = useState<UserExchange[]>([])
   const [activeTab, setActiveTab] = useState<'mining' | 'exchange'>('mining')
-  const [miningSubTab, setMiningSubTab] = useState<'platform' | 'user'>(
-    'user'
-  )
+  const [miningSubTab, setMiningSubTab] = useState<'platform' | 'user'>('user')
   const [loading, setLoading] = useState(true)
   const [userLoading, setUserLoading] = useState(false)
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
@@ -310,65 +308,58 @@ export function MiningPage() {
       <div className="px-6 mt-6">
         {/* 挖矿数据标签页 */}
         {activeTab === 'mining' && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-xl overflow-hidden">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                {t('mining.data.title') || '挖矿数据'}
-              </h2>
+          <div>
+            <h2 className="text-lg font-medium text-slate-700 mb-3">
+              {t('mining.data.title') || '挖矿数据'}
+            </h2>
 
-              {/* 挖矿数据子标签页切换按钮 */}
-              <div className="mb-6">
-                <div className="flex space-x-1 bg-slate-100/80 backdrop-blur-sm p-1 rounded-lg border border-slate-200/50">
-                  <button
-                    type="button"
-                    onClick={() => setMiningSubTab('user')}
-                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                      miningSubTab === 'user'
-                        ? 'bg-white text-slate-800 shadow-sm'
-                        : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
-                    }`}
-                  >
-                    {t('mining.user.title') || '我的数据'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMiningSubTab('platform')}
-                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                      miningSubTab === 'platform'
-                        ? 'bg-white text-slate-800 shadow-sm'
-                        : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
-                    }`}
-                  >
-                    {t('mining.platform.title') || '平台数据'}
-                  </button>
-                </div>
+            {/* 挖矿数据子标签页切换按钮 */}
+            <div className="mb-4">
+              <div className="flex space-x-1 bg-slate-100/80 backdrop-blur-sm p-1 rounded-lg border border-slate-200/50">
+                <button
+                  type="button"
+                  onClick={() => setMiningSubTab('user')}
+                  className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                    miningSubTab === 'user'
+                      ? 'bg-white text-slate-800 shadow-sm'
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                  }`}
+                >
+                  {t('mining.user.title') || '我的数据'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMiningSubTab('platform')}
+                  className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                    miningSubTab === 'platform'
+                      ? 'bg-white text-slate-800 shadow-sm'
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                  }`}
+                >
+                  {t('mining.platform.title') || '平台数据'}
+                </button>
               </div>
+            </div>
 
-              {/* 挖矿数据内容区域 */}
-              <div>
-                {/* 平台数据组件 */}
-                {miningSubTab === 'platform' && (
-                  <div>
-                    <PlatformDataCard
-                      platformData={platformData}
-                      loading={loading}
-                    />
-                  </div>
-                )}
+            {/* 挖矿数据内容区域 */}
+            <div>
+              {/* 平台数据组件 */}
+              {miningSubTab === 'platform' && (
+                <PlatformDataCard
+                  platformData={platformData}
+                  loading={loading}
+                />
+              )}
 
-                {/* 用户数据组件 */}
-                {miningSubTab === 'user' && (
-                  <div>
-                    <UserDataCard
-                      user={user}
-                      userData={userData}
-                      dailyData={dailyData}
-                      userLoading={userLoading}
-                    />
-                  </div>
-                )}
-              </div>
+              {/* 用户数据组件 */}
+              {miningSubTab === 'user' && (
+                <UserDataCard
+                  user={user}
+                  userData={userData}
+                  dailyData={dailyData}
+                  userLoading={userLoading}
+                />
+              )}
             </div>
           </div>
         )}
