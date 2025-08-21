@@ -25,7 +25,7 @@ export function BannerCard({
       <div
         className="relative h-48 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(to right, rgb(37 99 235 / 0.7), rgb(147 51 234 / 0.7)), url(${backgroundImage})`
+          backgroundImage: `url(${backgroundImage})`
         }}
       >
         <div className="absolute inset-0 flex flex-col justify-center px-8">
