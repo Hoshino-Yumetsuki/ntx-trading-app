@@ -31,6 +31,18 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const { t } = useLanguage()
   const [showAllNews, setShowAllNews] = useState(false)
   const latestNews = showAllNews ? newsItems : getRecentNews(3)
+  // 首页交易所图标（用于横向无缝滚动）
+  const exchanges = [
+    { name: '1', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_1.png' },
+    { name: '2', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_2.png' },
+    { name: '3', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_3.png' },
+    { name: '4', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_1.png' },
+    { name: '5', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_2.png' },
+    { name: '6', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_3.png' }
+  ]
+  const half = Math.ceil(exchanges.length / 2)
+  const topRow = exchanges.slice(0, half)
+  const bottomRow = exchanges.slice(half)
 
   // 从 localStorage 恢复教程页面状态
   useEffect(() => {
@@ -98,29 +110,63 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               <h3 className="text-lg font-semibold text-slate-800">已接入</h3>
             </div>
 
-            {/* 交易所图标显示 - 3x2 网格 */}
-            <div className="grid grid-cols-3 gap-3 pb-2 pt-1">
-              {[
-                { name: '1', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_1.png' },
-                { name: '2', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_2.png' },
-                { name: '3', image: '/exchange/FigmaDDSSlicePNG4dec3c6f1a0591399bbfdd0c072958f2_logo_3.png' },
-                { name: '4', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_1.png' },
-                { name: '5', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_2.png' },
-                { name: '6', image: '/exchange/FigmaDDSSlicePNGfe92bcfcf509cf83dab07b63b5c6eb40_logo_3.png' }
-              ].map((exchange) => (
-                <div key={exchange.name} className="">
-                  <div className="aspect-square bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3">
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={exchange.image}
-                        alt={exchange.name}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
+            {/* 交易所图标横向无缝滚动 */}
+            <div className="marquee h-[13rem] md:h-[15rem]">
+              <div
+                className="marquee-track gap-8"
+                style={{ animationDuration: '18s', alignItems: 'flex-start' }}
+              >
+                {/* 第1组：上下两行 */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    {topRow.map((exchange, idx) => (
+                      <div key={`g1-top-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                        <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
+                          <div className="relative w-full h-full">
+                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {bottomRow.map((exchange, idx) => (
+                      <div key={`g1-bottom-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                        <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
+                          <div className="relative w-full h-full">
+                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
+                {/* 第2组：镜像用于无缝循环 */}
+                <div className="flex flex-col gap-3" aria-hidden="true">
+                  <div className="flex items-center gap-3">
+                    {topRow.map((exchange, idx) => (
+                      <div key={`g2-top-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                        <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
+                          <div className="relative w-full h-full">
+                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {bottomRow.map((exchange, idx) => (
+                      <div key={`g2-bottom-${exchange.name}-${idx}`} className="w-24 h-24 md:w-28 md:h-28 shrink-0">
+                        <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-3 w-full h-full">
+                          <div className="relative w-full h-full">
+                            <Image src={exchange.image} alt={exchange.name} fill className="object-contain" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* 添加蓝色按钮 */}

@@ -42,6 +42,19 @@ body {
     font-family: "Tektur", Arial, Helvetica, sans-serif;
     font-weight: 600;
   }
+  /* 横向无缝滚动工具类 */
+  .marquee {
+    overflow: hidden;
+  }
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    animation: marquee-left 25s linear infinite;
+    will-change: transform;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
 }
 
 @layer base {
@@ -135,6 +148,23 @@ body {
   }
   66% {
     transform: translate(25px, -15px) rotate(-0.5deg);
+  }
+}
+
+/* 横向左移无缝滚动 */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* 无障碍：尊重降低动态偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
   }
 }
 
