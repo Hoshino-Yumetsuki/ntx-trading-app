@@ -41,7 +41,13 @@ export function UserDataCard({
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div
               className="data-card p-5 rounded-xl text-left"
-              style={{ border: 'none' }}
+              style={{
+                border: 'none',
+                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right top',
+                backgroundSize: '96px'
+              }}
             >
               <Hammer className="w-8 h-8 text-blue-600 mb-3" />
               <p className="text-sm text-[#4D576A] mb-1">
@@ -59,7 +65,13 @@ export function UserDataCard({
             </div>
             <div
               className="data-card p-5 rounded-xl text-left"
-              style={{ border: 'none' }}
+              style={{
+                border: 'none',
+                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right top',
+                backgroundSize: '96px'
+              }}
             >
               <Database className="w-8 h-8 text-blue-600 mb-3" />
               <p className="text-sm text-[#4D576A] mb-1">
@@ -79,7 +91,13 @@ export function UserDataCard({
           <div className="grid grid-cols-2 gap-4">
             <div
               className="data-card p-5 rounded-xl text-left"
-              style={{ border: 'none' }}
+              style={{
+                border: 'none',
+                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right top',
+                backgroundSize: '96px'
+              }}
             >
               <Hammer className="w-8 h-8 text-blue-600 mb-3" />
               <p className="text-sm text-[#4D576A] mb-1">
@@ -97,7 +115,13 @@ export function UserDataCard({
             </div>
             <div
               className="data-card p-5 rounded-xl text-left"
-              style={{ border: 'none' }}
+              style={{
+                border: 'none',
+                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right top',
+                backgroundSize: '96px'
+              }}
             >
               <Database className="w-8 h-8 text-blue-600 mb-3" />
               <p className="text-sm text-[#4D576A] mb-1">
