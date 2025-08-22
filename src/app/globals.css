@@ -49,7 +49,8 @@ body {
   }
   /* 横向无缝滚动工具类 */
   .marquee {
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
   .marquee-track {
     display: flex;
