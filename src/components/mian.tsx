@@ -8,7 +8,7 @@ import { MiningPage } from '@/src/components/pages/mining'
 import { ProfilePage } from '@/src/components/pages/profile'
 import { NewsPage } from '@/src/components/pages/news'
 import { AcademyPage } from '@/src/components/pages/academy'
-import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
+// import { RecentNotifications } from '@/src/components/ui/recent-notifications'
 import { BrokerPage } from '@/src/components/pages/broker'
 import { useLanguage } from '@/src/contexts/language-context'
 import { AppBackground } from '@/src/components/ui/app-background'
@@ -100,9 +100,9 @@ export function MainApp() {
           <ActiveComponent />
         )}
 
-        {activeTab === 'home' && (
+        {/* {activeTab === 'home' && (
           <RecentNotifications onViewMore={() => setActiveTab('news')} />
-        )}
+        )} */}
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl">

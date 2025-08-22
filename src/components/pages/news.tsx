@@ -290,7 +290,7 @@ export function NewsPage() {
     )
   }
 
-  if (viewingArticle && currentArticle) {
+if (viewingArticle && currentArticle) {
     return (
       <div className="min-h-screen pb-6">
         {/* 顶部 Hero 区域，与学院页一致结构 */}
@@ -300,7 +300,7 @@ export function NewsPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setViewingArticle(false)}
+          onClick={() => setViewingArticle(false)}
                 className="mr-3 text-slate-600 hover:text-slate-800"
               >
                 <ChevronLeft className="w-5 h-5 mr-2" />
@@ -332,7 +332,7 @@ export function NewsPage() {
           </div>
         </div>
 
-        {/* 内容区域卡片，与学院页子页面布局一致 */}
+        {/* 内容区域卡片 */}
         <div className="px-6 mt-6">
           <Card className="glass-card border-white/30 shadow-lg rounded-3xl overflow-hidden">
             {currentArticle.imageUrl &&
@@ -347,7 +347,6 @@ export function NewsPage() {
                     sizes="100vw"
                     priority
                     onError={(e) => {
-                      // 图片加载失败时隐藏父元素
                       const target = e.target as HTMLImageElement
                       const parent = target.parentElement?.parentElement
                       if (parent) parent.style.display = 'none'
@@ -358,16 +357,13 @@ export function NewsPage() {
             <CardContent className="p-6">
               <div className="max-w-none">
                 {currentArticle.source === 'rss' ? (
-                  // RSS内容通常是HTML格式，使用DOMPurify净化后再渲染
                   <div
                     className="markdown-content"
-                    // biome-ignore lint: false
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(currentArticle.content || '')
                     }}
                   />
                 ) : (
-                  // API内容是Markdown格式
                   renderMarkdownContent(currentArticle.content || '')
                 )}
               </div>
@@ -378,9 +374,9 @@ export function NewsPage() {
     )
   }
 
-  return (
-    <div className="min-h-screen pb-6">
-      {/* 顶部 Hero 区域，与学院主页一致结构 */}
+return (
+    <div className="min-h-screen bg-white pb-6"> {/* 更改背景为白色 */}
+      {/* 顶部 Hero 区域，保持不变 */}
       <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
@@ -398,7 +394,7 @@ export function NewsPage() {
           <LanguageSwitcher />
         </div>
 
-        {/* 顶部 Banner（图片+标题叠加） */}
+        {/* 顶部 Banner，保持不变 */}
         <div className="relative mb-6 rounded-2xl overflow-hidden">
           <div
             className="h-32 w-full bg-cover bg-center"
@@ -412,122 +408,99 @@ export function NewsPage() {
         </div>
       </div>
 
-      {/* 内容区域卡片，与学院主页内容布局一致 */}
-      <div className="px-6 mt-6">
-        <Card className="glass-card border-white/30 shadow-lg rounded-3xl">
-          <CardHeader>
-            <CardTitle className="text-slate-800 text-xl font-bold">
-              {t('news.latest') || '文章列表'}
-            </CardTitle>
-          </CardHeader>
+      {/* --- 内容区域重构开始 --- */}
+      <div className="px-6"> {/* 原来这里是 mt-6 和 Card，现在简化 */}
+        {loading ? (
+          <div className="text-center py-8 text-slate-500">
+            {t('news.loading') || '加载中...'}
+          </div>
+        ) : newsItems.length > 0 ? (
+          // 蓝湖时间线布局容器
+          <div className="relative">
+              {/* 蓝色竖线，贯穿始终 */}
+              <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
 
-          <CardContent className="p-6">
-            {loading ? (
-              <div className="text-center py-8 text-slate-500">
-                {t('news.loading') || '加载中...'}
-              </div>
-            ) : newsItems.length > 0 ? (
-              <div className="relative space-y-3 pl-8">
-                {/* 蓝线 */}
-                <div className="absolute left-3 top-0 bottom-0 w-[2px] bg-blue-400"></div>
-
-                {newsItems.map((item, _index) => (
-                  <Card
-                    key={item.id}
-                    className="glass-card border-white/20 hover:border-white/40 transition-all cursor-pointer relative rounded-xl"
-                    onClick={() => fetchArticleContent(item.id)}
-                  >
-                    {/* 蓝点 */}
-                    <div className="absolute left-0 top-1/2 w-[10px] h-[10px] rounded-full bg-blue-400 transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
-
-                    <div className="flex p-3">
-                      <div className="flex-1 pr-3">
-                        <h3 className="text-slate-800 font-medium text-sm mb-1 line-clamp-2">
-                          {item.title}
-                        </h3>
-                        <p className="text-slate-600 text-xs line-clamp-2 mb-2">
-                          {item.summary}
-                        </p>
-                        <div className="flex items-center justify-between text-slate-500 text-xs">
-                          <div className="flex items-center">
-                            <Clock className="w-3 h-3 mr-1" />
-                            <span>{formatDate(item.publishDate)}</span>
-                            {item.source === 'rss' && (
-                              <span className="flex items-center ml-2 text-blue-500">
-                                <Rss className="w-3 h-3 mr-1" />
-                                RSS
-                              </span>
-                            )}
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleShare(item)
-                            }}
-                          >
-                            <Share2 className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </div>
-                      {item.imageUrl &&
-                        item.imageUrl !== '/placeholder.png' &&
-                        item.imageUrl.trim() !== '' && (
-                          <div className="w-20 h-20 bg-slate-100 rounded-md overflow-hidden flex-shrink-0">
-                            <Image
-                              src={item.imageUrl}
-                              alt={item.title}
-                              width={80}
-                              height={80}
-                              className="object-cover w-full h-full"
-                              onError={(e) => {
-                                // 图片加载失败时隐藏父元素
-                                const target = e.target as HTMLImageElement
-                                const parent = target.parentElement
-                                if (parent) parent.style.display = 'none'
-                              }}
-                            />
-                          </div>
-                        )}
+            <div className="flex flex-col gap-y-8"> {/* 控制每个新闻项的垂直间距 */}
+              {newsItems.map((item) => (
+                // 每个新闻项的容器
+                <div
+                  key={item.id}
+                  className="relative pl-6 cursor-pointer" // 左内边距给圆点和竖线留出空间
+                  onClick={() => fetchArticleContent(item.id)}
+                >
+                  {/* 蓝点 */}
+                  <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
+                  
+                  {/* 内容垂直堆叠 */}
+                  <div className="flex flex-col gap-y-2"> {/* 内容内部的间距 */}
+                    {/* 标题 - 对应 text_5, text_8 等 */}
+                    <div className="flex justify-between items-start gap-2">
+                      <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
+                        {item.title}
+                      </h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
+                        onClick={(e) => {
+                          e.stopPropagation(); // 防止点击分享时触发进入详情页的事件
+                          handleShare(item);
+                        }}
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-slate-500">
-                {t('news.empty') || '暂无资讯'}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    
+                    {/* 日期和来源 - 对应 group_5, text_6 */}
+                    <div className="flex items-center text-xs text-[#AAB7CF]">
+                      <Clock className="w-3 h-3 mr-1.5" />
+                      <span>{formatDate(item.publishDate)}</span>
+                      {item.source === 'rss' && (
+                        <span className="flex items-center ml-2 text-blue-500">
+                          <Rss className="w-3 h-3 mr-1" />
+                          <span>RSS</span>
+                        </span>
+                      )}
+                    </div>
 
-        {/* 新闻分享模态框 */}
-        <UniversalShareModal
-          isOpen={showShareModal}
-          onClose={() => {
-            setShowShareModal(false)
-            // 关闭时恢复默认二维码
-            setOverrideQrText?.('')
-          }}
-          title="分享文章"
-          shareData={{
-            title: shareNewsItem?.title || '',
-            text: shareNewsItem?.summary || '',
-            url: getShareUrl(shareNewsItem)
-          }}
-          imageGenerator={generateImage}
-          showImagePreview={true}
-          showDefaultShareButtons={true}
-          onQrOverride={(text) => {
-            setOverrideQrText?.(text)
-          }}
-        />
-
-        {/* 图片生成器组件 */}
-        <ImageGeneratorComponent />
+                    {/* 摘要 - 对应 text_7 */}
+                    <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
+                      {item.summary}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-slate-500">
+            {t('news.empty') || '暂无资讯'}
+          </div>
+        )}
       </div>
+      {/* --- 内容区域重构结束 --- */}
+
+      {/* 新闻分享模态框和图片生成器，保持不变 */}
+      <UniversalShareModal
+        isOpen={showShareModal}
+        onClose={() => {
+          setShowShareModal(false)
+          setOverrideQrText?.('')
+        }}
+        title="分享文章"
+        shareData={{
+          title: shareNewsItem?.title || '',
+          text: shareNewsItem?.summary || '',
+          url: getShareUrl(shareNewsItem)
+        }}
+        imageGenerator={generateImage}
+        showImagePreview={true}
+        showDefaultShareButtons={true}
+        onQrOverride={(text) => {
+          setOverrideQrText?.(text)
+        }}
+      />
+      <ImageGeneratorComponent />
     </div>
   )
 }
