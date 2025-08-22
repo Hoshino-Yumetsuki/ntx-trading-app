@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { UserService } from '@/src/services/user'
 import type { UserInfo } from '@/src/types/user'
@@ -18,6 +19,7 @@ import {
 
 export function ProfilePage() {
   const { logout } = useAuth()
+  const router = useRouter()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState<
@@ -44,6 +46,11 @@ export function ProfilePage() {
     try {
       await logout()
       toast.success('已退出登录')
+      // 回到首页标签并跳转到根路径
+      try {
+        localStorage.setItem('ntx-active-tab', 'home')
+      } catch {}
+      router.push('/')
     } catch (error) {
       console.error('退出登录失败:', error)
       toast.error('退出登录失败')

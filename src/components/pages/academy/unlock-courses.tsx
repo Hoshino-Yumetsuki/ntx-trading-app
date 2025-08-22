@@ -30,6 +30,8 @@ import type {
   PermissionGroupWithPackages,
   CreateOrderResponse
 } from '@/src/types/course'
+import { useAuth } from '@/src/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
 
 export function UnlockCoursesPage({
   onNavigateTab
@@ -46,6 +48,9 @@ export function UnlockCoursesPage({
   const [paymentInfo, setPaymentInfo] = useState<CreateOrderResponse | null>(
     null
   )
+
+  const { isAuthenticated } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +69,11 @@ export function UnlockCoursesPage({
   }, [])
 
   const handleBuy = async (packageId: number) => {
+    // 未登录则跳转到登录页
+    if (!isAuthenticated) {
+      router.push('/login')
+      return
+    }
     try {
       setCreatingOrder(packageId)
       const res = await createOrder(packageId)

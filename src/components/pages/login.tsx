@@ -15,6 +15,7 @@ import { toast } from 'sonner'
 import { TermsModal } from '@/src/components/ui/terms-modal'
 import { useLanguage } from '@/src/contexts/language-context'
 import Image from 'next/image'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 
 const createLoginSchema = (t: (key: string) => string) =>
   z.object({
@@ -83,6 +84,9 @@ export function LoginPage({
   )
   const { login, isLoading } = useAuth()
   const { t } = useLanguage()
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const loginSchema = createLoginSchema(t)
   const registerSchema = createRegisterSchema(t)
@@ -105,6 +109,15 @@ export function LoginPage({
     try {
       setError(null)
       await login(data.email, data.password)
+      // 登录成功：根据 next 参数决定默认标签
+      const next = searchParams.get('next')
+      if (next === 'profile') {
+        try {
+          localStorage.setItem('ntx-active-tab', 'profile')
+        } catch {}
+      }
+      // 返回首页
+      router.push('/')
     } catch (err) {
       setError(
         err instanceof Error ? err.message : t('login.error.loginFailed')
@@ -126,6 +139,15 @@ export function LoginPage({
       setIsRegisterMode(false)
       registerForm.reset()
       loginForm.reset()
+      // 注册成功：根据 next 参数决定默认标签
+      const next = searchParams.get('next')
+      if (next === 'profile') {
+        try {
+          localStorage.setItem('ntx-active-tab', 'profile')
+        } catch {}
+      }
+      // 返回首页
+      router.push('/')
     } catch (err) {
       setError(
         err instanceof Error ? err.message : t('login.error.registerFailed')
@@ -218,7 +240,13 @@ export function LoginPage({
             <div className="mb-6">
               <button
                 type="button"
-                onClick={toggleMode}
+                onClick={() => {
+                  if (pathname === '/register') {
+                    router.push('/')
+                  } else {
+                    toggleMode()
+                  }
+                }}
                 className="inline-flex items-center text-blue-600 hover:text-blue-700"
                 aria-label={t('common.back')}
               >
@@ -630,7 +658,15 @@ export function LoginPage({
           <div className="text-center mt-6">
             <button
               type="button"
-              onClick={toggleMode}
+              onClick={() => {
+                if (isRegisterMode) {
+                  // 注册页切到登录：跳首页
+                  router.push('/')
+                } else {
+                  // 登录页切到注册：跳注册路由
+                  router.push('/register')
+                }
+              }}
               className="text-blue-600 hover:text-blue-500 text-sm font-medium"
             >
               {isRegisterMode
@@ -638,6 +674,20 @@ export function LoginPage({
                 : t('login.switchToRegister')}
             </button>
           </div>
+
+          {/* 登录模式：在“去注册”按钮下方放置“返回主界面” */}
+          {!isRegisterMode && (
+            <div className="text-center mt-3">
+              <button
+                type="button"
+                onClick={() => router.push('/')}
+                className="text-blue-600 hover:text-blue-500 text-sm font-medium"
+                aria-label={t('common.back')}
+              >
+                返回主界面
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

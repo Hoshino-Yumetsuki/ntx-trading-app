@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Home, Coins, User, Newspaper, BookOpen } from 'lucide-react'
 import { HomePage } from '@/src/components/pages/home'
 import { MiningPage } from '@/src/components/pages/mining'
@@ -10,11 +11,14 @@ import { AcademyPage } from '@/src/components/pages/academy'
 import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
 import { useLanguage } from '@/src/contexts/language-context'
 import { AppBackground } from '@/src/components/ui/app-background'
+import { useAuth } from '@/src/contexts/AuthContext'
 
 export function MainApp() {
   const [activeTab, setActiveTab] = useState('home')
   const [isInitialized, setIsInitialized] = useState(false)
   const { t } = useLanguage()
+  const { isAuthenticated } = useAuth()
+  const router = useRouter()
 
   // 从 localStorage 恢复页面状态
   useEffect(() => {
@@ -31,6 +35,13 @@ export function MainApp() {
       localStorage.setItem('ntx-active-tab', activeTab)
     }
   }, [activeTab, isInitialized])
+
+  // 若在“我的”页且登出/未登录，则自动切回首页
+  useEffect(() => {
+    if (activeTab === 'profile' && !isAuthenticated) {
+      setActiveTab('home')
+    }
+  }, [isAuthenticated, activeTab])
 
   const tabs = [
     {
@@ -91,7 +102,15 @@ export function MainApp() {
               <button
                 type="button"
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === 'profile') {
+                    if (!isAuthenticated) {
+                      router.push('/login?next=profile')
+                      return
+                    }
+                  }
+                  setActiveTab(tab.id)
+                }}
                 className={`flex flex-col items-center py-2 px-4 rounded-xl transition-all duration-200 ${
                   isActive
                     ? 'text-blue-600 bg-white/40 backdrop-blur-sm shadow-lg'

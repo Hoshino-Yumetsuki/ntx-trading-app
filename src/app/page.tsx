@@ -3,14 +3,13 @@
 import { useState, useEffect } from 'react'
 import { SplashScreen } from '@/src/components/pages/splash-screen'
 import { MainApp } from '@/src/components/mian'
-import { LoginPage } from '@/src/components/pages/login'
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext'
 import { LanguageProvider } from '@/src/contexts/language-context'
 import { Loader2 } from 'lucide-react'
 
 function AppContent() {
   const [showSplash, setShowSplash] = useState(true)
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isLoading } = useAuth()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -33,10 +32,6 @@ function AppContent() {
         </div>
       </div>
     )
-  }
-
-  if (!isAuthenticated) {
-    return <LoginPage />
   }
 
   return <MainApp />

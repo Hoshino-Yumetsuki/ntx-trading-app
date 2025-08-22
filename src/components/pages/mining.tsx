@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useId } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
 import { Label } from '@/src/components/ui/label'
@@ -43,6 +44,7 @@ export function MiningPage() {
   const exchangeUidId = useId()
   const { user, token } = useAuth()
   const { t } = useLanguage()
+  const router = useRouter()
   const [platformData, setPlatformData] = useState<PlatformData | null>(null)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [dailyData, setDailyData] = useState<DailyUserData | null>(null)
@@ -142,8 +144,20 @@ export function MiningPage() {
     }
   }, [token, t])
 
+  // 未登录则跳转到登录页，返回可用 token
+  const getAuthTokenOrOpen = (): string | null => {
+    if (!token) {
+      toast.error(t('mining.error.notLoggedIn') || '请先登录')
+      router.push('/login')
+      return null
+    }
+    return token
+  }
+
   // 处理绑定交易所
   const handleBindExchange = (exchangeId: number, uid: string) => {
+    const authToken = getAuthTokenOrOpen()
+    if (!authToken) return
     setBindingExchangeId(exchangeId)
     setBindingUid(uid)
     setShowBindDialog(true)
@@ -151,13 +165,11 @@ export function MiningPage() {
 
   // 处理解绑交易所
   const handleUnbindExchange = async (exchangeId: number) => {
-    if (!token) {
-      toast.error(t('mining.error.notLoggedIn') || '请先登录')
-      return
-    }
+    const authToken = getAuthTokenOrOpen()
+    if (!authToken) return
 
     try {
-      await unbindExchange(token, exchangeId)
+      await unbindExchange(authToken, exchangeId)
       toast.success(t('mining.success.unbindExchange') || '解绑成功')
       // 刷新用户绑定的交易所列表
       await fetchUserExchanges()
@@ -169,13 +181,15 @@ export function MiningPage() {
 
   // 确认绑定交易所
   const confirmBindExchange = async () => {
-    if (!token || !bindingExchangeId || !bindingUid.trim()) {
+    const authToken = getAuthTokenOrOpen()
+    if (!authToken) return
+    if (!bindingExchangeId || !bindingUid.trim()) {
       toast.error(t('mining.error.enterUid') || '请输入 UID')
       return
     }
 
     try {
-      await bindExchange(token, {
+      await bindExchange(authToken, {
         exchange_id: bindingExchangeId,
         exchange_uid: bindingUid.trim()
       })
