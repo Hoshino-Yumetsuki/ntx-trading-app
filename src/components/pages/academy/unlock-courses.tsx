@@ -92,6 +92,9 @@ export function UnlockCoursesPage({
     } catch (_) {}
   }
 
+  // 仅显示未隐藏的分组
+  const visibleGroups = groups.filter((g) => !g.group.hidden)
+
   return (
     <div className="space-y-6">
       <Card className="glass-card-strong border-white/50">
@@ -198,13 +201,13 @@ export function UnlockCoursesPage({
             <div className="text-center py-6">
               <p className="text-red-500">{error}</p>
             </div>
-          ) : groups.length === 0 ? (
+          ) : visibleGroups.length === 0 ? (
             <div className="text-center py-6">
               <p className="text-slate-600">暂无可购买的套餐</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {groups.map((g) => (
+              {visibleGroups.map((g) => (
                 <Card
                   key={g.group.id}
                   className="glass-card border-white/30 overflow-hidden"

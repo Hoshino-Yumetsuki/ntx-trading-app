@@ -29,6 +29,7 @@ export interface PermissionGroup {
   name: string
   created_at: string
   description?: string
+  hidden?: boolean
 }
 
 export interface CoursePackage {
