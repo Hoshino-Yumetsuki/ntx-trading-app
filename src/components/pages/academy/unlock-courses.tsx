@@ -34,9 +34,13 @@ import { useAuth } from '@/src/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 
 export function UnlockCoursesPage({
-  onNavigateTab
+  onNavigateTab,
+  showHiddenOnly = false,
+  hideInfoCards = false
 }: {
   onNavigateTab?: (tabId: string) => void
+  showHiddenOnly?: boolean
+  hideInfoCards?: boolean
 }) {
   const packagesSectionId = useId()
   const [groups, setGroups] = useState<PermissionGroupWithPackages[]>([])
@@ -92,88 +96,96 @@ export function UnlockCoursesPage({
     } catch (_) {}
   }
 
-  // 仅显示未隐藏的分组
-  const visibleGroups = groups.filter((g) => !g.group.hidden)
+  // 过滤分组：普通模式显示未隐藏，经纪商模式只显示隐藏
+  const visibleGroups = groups.filter((g) =>
+    showHiddenOnly ? !!g.group.hidden : !g.group.hidden
+  )
 
   return (
     <div className="space-y-6">
-      <Card className="glass-card-strong border-white/50">
-        <CardContent className="p-6 text-center">
-          <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow-inner">
-            <Lock className="h-6 w-6 text-slate-700" />
-          </div>
-          <h3 className="gradient-text font-bold text-lg mb-2">解锁完整课程</h3>
-          <p className="text-slate-600 text-sm mb-4">
-            程序化辅助工具：学员专属【筛选系统】，落地模型应用
-          </p>
-          <Button
-            className="diffused-button text-white font-semibold border-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
-            onClick={() => {
-              const el = document.getElementById(packagesSectionId)
-              if (el) el.scrollIntoView({ behavior: 'smooth' })
-            }}
-          >
-            获得机构级策略
-          </Button>
-        </CardContent>
-      </Card>
+      {!hideInfoCards && (
+        <Card className="glass-card-strong border-white/50">
+          <CardContent className="p-6 text-center">
+            <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow-inner">
+              <Lock className="h-6 w-6 text-slate-700" />
+            </div>
+            <h3 className="gradient-text font-bold text-lg mb-2">
+              解锁完整课程
+            </h3>
+            <p className="text-slate-600 text-sm mb-4">
+              程序化辅助工具：学员专属【筛选系统】，落地模型应用
+            </p>
+            <Button
+              className="diffused-button text-white font-semibold border-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
+              onClick={() => {
+                const el = document.getElementById(packagesSectionId)
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              获得机构级策略
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
-      <Card className="glass-card border-white/30">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-blue-100">
-              <BookOpen className="h-4 w-4 text-blue-600" />
+      {!hideInfoCards && (
+        <Card className="glass-card border-white/30">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-blue-100">
+                <BookOpen className="h-4 w-4 text-blue-600" />
+              </div>
+              <h4 className="text-slate-800 font-semibold">课程包含内容</h4>
             </div>
-            <h4 className="text-slate-800 font-semibold">课程包含内容</h4>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h5 className="text-slate-800 font-medium text-sm">
-                  完整交易系统
-                </h5>
-                <p className="text-slate-600 text-xs">
-                  包含入场、止损、止盈的完整交易决策框架
-                </p>
+            <div className="space-y-3">
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <div>
+                  <h5 className="text-slate-800 font-medium text-sm">
+                    完整交易系统
+                  </h5>
+                  <p className="text-slate-600 text-xs">
+                    包含入场、止损、止盈的完整交易决策框架
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <div>
+                  <h5 className="text-slate-800 font-medium text-sm">
+                    专属筛选工具
+                  </h5>
+                  <p className="text-slate-600 text-xs">
+                    学员专属的程序化筛选系统，快速发现优质标的
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <div>
+                  <h5 className="text-slate-800 font-medium text-sm">
+                    实战案例分析
+                  </h5>
+                  <p className="text-slate-600 text-xs">
+                    真实市场案例解析，理论与实践相结合
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <div>
+                  <h5 className="text-slate-800 font-medium text-sm">
+                    持续更新支持
+                  </h5>
+                  <p className="text-slate-600 text-xs">
+                    根据市场变化持续更新策略和工具
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h5 className="text-slate-800 font-medium text-sm">
-                  专属筛选工具
-                </h5>
-                <p className="text-slate-600 text-xs">
-                  学员专属的程序化筛选系统，快速发现优质标的
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h5 className="text-slate-800 font-medium text-sm">
-                  实战案例分析
-                </h5>
-                <p className="text-slate-600 text-xs">
-                  真实市场案例解析，理论与实践相结合
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h5 className="text-slate-800 font-medium text-sm">
-                  持续更新支持
-                </h5>
-                <p className="text-slate-600 text-xs">
-                  根据市场变化持续更新策略和工具
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* 购买套餐 */}
       <div id={packagesSectionId} className="mt-2" />
@@ -266,36 +278,38 @@ export function UnlockCoursesPage({
         </CardContent>
       </Card>
 
-      <Card className="glass-card border-white/30">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-indigo-100">
-              <BadgeCheck className="h-4 w-4 text-indigo-600" />
+      {!hideInfoCards && (
+        <Card className="glass-card border-white/30">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-indigo-100">
+                <BadgeCheck className="h-4 w-4 text-indigo-600" />
+              </div>
+              <h4 className="text-slate-800 font-semibold">学员专属权益</h4>
             </div>
-            <h4 className="text-slate-800 font-semibold">学员专属权益</h4>
-          </div>
-          <div className="grid grid-cols-1 gap-3">
-            <div className="p-4 rounded-lg bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white shadow-sm">
-              <h5 className="font-medium text-sm mb-1">VIP交流群</h5>
-              <p className="text-xs text-white/90">
-                与导师和优秀学员直接交流，分享交易心得
-              </p>
+            <div className="grid grid-cols-1 gap-3">
+              <div className="p-4 rounded-lg bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white shadow-sm">
+                <h5 className="font-medium text-sm mb-1">VIP交流群</h5>
+                <p className="text-xs text-white/90">
+                  与导师和优秀学员直接交流，分享交易心得
+                </p>
+              </div>
+              <div className="p-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-sm">
+                <h5 className="font-medium text-sm mb-1">一对一指导</h5>
+                <p className="text-xs text-white/90">
+                  针对个人交易问题提供专业指导建议
+                </p>
+              </div>
+              <div className="p-4 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-sm">
+                <h5 className="font-medium text-sm mb-1">实时策略更新</h5>
+                <p className="text-xs text-white/90">
+                  第一时间获取最新的市场策略和信号提醒
+                </p>
+              </div>
             </div>
-            <div className="p-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-sm">
-              <h5 className="font-medium text-sm mb-1">一对一指导</h5>
-              <p className="text-xs text-white/90">
-                针对个人交易问题提供专业指导建议
-              </p>
-            </div>
-            <div className="p-4 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-sm">
-              <h5 className="font-medium text-sm mb-1">实时策略更新</h5>
-              <p className="text-xs text-white/90">
-                第一时间获取最新的市场策略和信号提醒
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* 支付弹窗 */}
       <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>

@@ -90,9 +90,10 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
 
   // 双横幅（仅图片，可滚动）
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
+  const goBroker = () => onNavigate?.('broker')
   const banners = [
     { src: '/p01.png', alt: '新手教程', onClick: () => openTutorial() },
-    { src: '/p00.png', alt: '成为经济商', onClick: () => {} }
+    { src: '/p00.png', alt: '成为经济商', onClick: goBroker }
   ]
 
   // 指示点与自动轮播
@@ -106,8 +107,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     onSelect()
     return () => {
       try {
-        // @ts-ignore - emblaApi.off may not be typed
-        emblaApi.off && emblaApi.off('select', onSelect)
+        emblaApi.off?.('select', onSelect)
       } catch {}
     }
   }, [emblaApi])
@@ -176,11 +176,12 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </div>
           {/* 大横幅（可滚动，整图点击） */}
           <div className="relative z-10">
-            <div
+            <section
               className="overflow-hidden"
               ref={emblaRef}
-              onMouseEnter={() => setPaused(true)}
-              onMouseLeave={() => setPaused(false)}
+              aria-label="首页横幅轮播"
+              onPointerEnter={() => setPaused(true)}
+              onPointerLeave={() => setPaused(false)}
             >
               <div className="flex">
                 {banners.map((b, i) => (
@@ -201,7 +202,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   </button>
                 ))}
               </div>
-            </div>
+            </section>
             {/* 指示点 */}
             <div className="flex items-center justify-center gap-2 mt-2">
               {banners.map((_, i) => (
@@ -211,7 +212,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   aria-label={`切换到横幅 ${i + 1}`}
                   onClick={() => emblaApi?.scrollTo(i)}
                   className={`h-2.5 rounded-full transition-all ${
-                    selectedIndex === i ? 'w-6 bg-blue-600' : 'w-2.5 bg-slate-300'
+                    selectedIndex === i
+                      ? 'w-6 bg-blue-600'
+                      : 'w-2.5 bg-slate-300'
                   }`}
                 />
               ))}

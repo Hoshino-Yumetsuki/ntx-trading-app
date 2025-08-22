@@ -9,6 +9,7 @@ import { ProfilePage } from '@/src/components/pages/profile'
 import { NewsPage } from '@/src/components/pages/news'
 import { AcademyPage } from '@/src/components/pages/academy'
 import { RecentNotifications } from '@/src/components/ui/recent-notifications' // Import RecentNotifications
+import { BrokerPage } from '@/src/components/pages/broker'
 import { useLanguage } from '@/src/contexts/language-context'
 import { AppBackground } from '@/src/components/ui/app-background'
 import { useAuth } from '@/src/contexts/AuthContext'
@@ -48,7 +49,7 @@ export function MainApp() {
       id: 'home',
       label: t('nav.home'),
       icon: Home,
-      component: () => <HomePage onNavigate={setActiveTab} />
+      component: HomePage
     },
     { id: 'news', label: t('nav.news'), icon: Newspaper, component: NewsPage },
     {
@@ -73,20 +74,31 @@ export function MainApp() {
 
   // 确定要显示的活动组件
   let ActiveComponent: any
-  // 检查是否是主标签页中的一个
-  const activeTabComponent = tabs.find((tab) => tab.id === activeTab)?.component
-  if (activeTabComponent) {
-    ActiveComponent = activeTabComponent
+  // 特殊页面：经纪商
+  if (activeTab === 'broker') {
+    ActiveComponent = BrokerPage
   } else {
-    // 默认回到首页
-    ActiveComponent = tabs[0].component
+    // 检查是否是主标签页中的一个
+    const activeTabComponent = tabs.find(
+      (tab) => tab.id === activeTab
+    )?.component
+    if (activeTabComponent) {
+      ActiveComponent = activeTabComponent
+    } else {
+      // 默认回到首页
+      ActiveComponent = tabs[0].component
+    }
   }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
       {activeTab !== 'news' && <AppBackground />}
       <div className="flex-1 overflow-auto pb-28 pt-0">
-        <ActiveComponent />
+        {activeTab === 'home' ? (
+          <HomePage onNavigate={setActiveTab} />
+        ) : (
+          <ActiveComponent />
+        )}
 
         {activeTab === 'home' && (
           <RecentNotifications onViewMore={() => setActiveTab('news')} />

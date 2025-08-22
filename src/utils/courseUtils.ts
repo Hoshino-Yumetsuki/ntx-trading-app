@@ -39,6 +39,10 @@ export function enrichCoursesWithUIData(courses: Course[]): Course[] {
       case 'loop_comm':
         category = 'Loop社区'
         break
+      case 'broker':
+        category = '经纪商'
+        level = '进阶'
+        break
     }
 
     // Generate a placeholder duration if not provided

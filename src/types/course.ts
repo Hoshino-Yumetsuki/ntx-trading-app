@@ -1,6 +1,11 @@
 // Course types based on API schema
 
-export type CourseType = 'article' | 'dark_horse' | 'signal' | 'loop_comm'
+export type CourseType =
+  | 'article'
+  | 'dark_horse'
+  | 'signal'
+  | 'loop_comm'
+  | 'broker'
 
 export interface RequiredGroup {
   id: number
