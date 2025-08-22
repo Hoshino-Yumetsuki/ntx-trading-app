@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
-import { BannerCard } from '@/src/components/ui/banner-card'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import {
   TrendingUp,
@@ -15,6 +14,7 @@ import {
   GraduationCap
 } from 'lucide-react'
 import Image from 'next/image'
+import useEmblaCarousel from 'embla-carousel-react'
 import { TutorialPage } from '@/src/components/pages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
 import { getRecentNews, newsItems } from '@/src/data/news-data'
@@ -88,6 +88,38 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     setShowTutorialPage(false)
   }
 
+  // 双横幅（仅图片，可滚动）
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
+  const banners = [
+    { src: '/p01.png', alt: '新手教程', onClick: () => openTutorial() },
+    { src: '/p00.png', alt: '成为经济商', onClick: () => {} }
+  ]
+
+  // 指示点与自动轮播
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    if (!emblaApi) return
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap())
+    emblaApi.on('select', onSelect)
+    onSelect()
+    return () => {
+      try {
+        // @ts-ignore - emblaApi.off may not be typed
+        emblaApi.off && emblaApi.off('select', onSelect)
+      } catch {}
+    }
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    const id = setInterval(() => {
+      if (!paused) emblaApi.scrollNext()
+    }, 4000)
+    return () => clearInterval(id)
+  }, [emblaApi, paused])
+
   // 如果显示教程页面，渲染教程页面
   if (showTutorialPage) {
     return <TutorialPage onBack={backToHome} />
@@ -142,15 +174,48 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </div>
             <LanguageSwitcher />
           </div>
-          {/* 新手教程大横幅 */}
+          {/* 大横幅（可滚动，整图点击） */}
           <div className="relative z-10">
-            <BannerCard
-              title={t('home.tutorial.title')}
-              subtitle={t('home.tutorial.subtitle')}
-              buttonText={t('home.tutorial.button')}
-              backgroundImage="/Group34394@3x.png"
-              onClick={openTutorial}
-            />
+            <div
+              className="overflow-hidden"
+              ref={emblaRef}
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+            >
+              <div className="flex">
+                {banners.map((b, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={b.onClick}
+                    className="relative flex-[0_0_100%] min-w-0 w-full rounded-2xl overflow-hidden"
+                    style={{ aspectRatio: '702 / 350' }}
+                  >
+                    <Image
+                      src={b.src}
+                      alt={b.alt}
+                      fill
+                      className="object-contain"
+                      priority={i === 0}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* 指示点 */}
+            <div className="flex items-center justify-center gap-2 mt-2">
+              {banners.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`切换到横幅 ${i + 1}`}
+                  onClick={() => emblaApi?.scrollTo(i)}
+                  className={`h-2.5 rounded-full transition-all ${
+                    selectedIndex === i ? 'w-6 bg-blue-600' : 'w-2.5 bg-slate-300'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
