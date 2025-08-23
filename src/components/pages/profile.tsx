@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { UserService } from '@/src/services/user'
 import type { UserInfo } from '@/src/types/user'
@@ -91,6 +92,29 @@ export function ProfilePage() {
       <div className="px-6 space-y-4 -mt-4">
         {/* User Info Card - 新增的用户信息卡片 */}
         <UserInfoCard userInfo={userInfo} />
+
+        {/* 我的社区 图片卡片 */}
+        <div className="relative w-full rounded-[16pt] overflow-hidden">
+          {/* 1029:216 比例占位 */}
+          <div className="pt-[21%]"></div>
+          {/* 背景图 */}
+          <Image
+            src="/Group34385@3x.png"
+            alt="我的社区"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+          {/* 左侧文字覆盖 */}
+          <div className="absolute inset-0 flex items-center">
+            <div className="pl-4 md:pl-6">
+              <span className="text-white text-lg font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                我的社区
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* Invite Code Card */}
         <InviteCodeCard userInfo={userInfo} />
