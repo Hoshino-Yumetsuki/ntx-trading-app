@@ -52,7 +52,7 @@ export function MiningPage() {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
 
   const [userExchanges, setUserExchanges] = useState<UserExchange[]>([])
-  const [activeTab, setActiveTab] = useState<'mining' | 'exchange'>('mining')
+  const [activeTab, setActiveTab] = useState<'mining' | 'exchange'>('exchange')
   const [miningSubTab, setMiningSubTab] = useState<'platform' | 'user'>('user')
   const [loading, setLoading] = useState(true)
   const [userLoading, setUserLoading] = useState(false)
