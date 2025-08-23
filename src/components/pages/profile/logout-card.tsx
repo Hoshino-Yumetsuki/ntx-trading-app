@@ -13,7 +13,7 @@ export function LogoutCard({ onLogout }: LogoutCardProps) {
   const { t } = useLanguage()
 
   return (
-    <Card className="glass-card border-white/30">
+    <Card className="glass-card border-white/30 rounded-[16pt]">
       <CardContent className="p-4">
         <Button
           variant="ghost"

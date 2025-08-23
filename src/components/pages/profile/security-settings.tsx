@@ -278,7 +278,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
 
       {/* Header Banner：左文右图 */}
       <div className="px-6">
-        <div className="relative mb-6 rounded-2xl overflow-visible">
+        <div className="relative mb-6 rounded-[16pt] overflow-visible">
           <div className="relative h-32">
             {/* 左侧文字区域 */}
             <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
@@ -321,7 +321,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
 
       <div className="px-6 py-6 space-y-6">
         {/* 安全状态概览 */}
-        <Card className="glass-card border-white/30">
+        <Card className="glass-card border-white/30 rounded-[16pt]">
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center space-x-2">
               <Shield className="w-5 h-5 text-green-600" />
@@ -338,7 +338,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                 <div key={index}>
                   <div className="flex items-center justify-between py-4">
                     <div className="flex items-center space-x-3">
-                      <div className="premium-icon w-10 h-10 rounded-lg">
+                      <div className="premium-icon w-10 h-10 rounded-[16pt]">
                         <Icon className="w-5 h-5 text-slate-600" />
                       </div>
                       <div>
@@ -395,7 +395,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
 
         {/* 编辑表单 - 根据编辑模式显示 */}
         {editMode === 'password' && (
-          <Card className="glass-card border-white/30">
+          <Card className="glass-card border-white/30 rounded-[16pt]">
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
                 <Key className="w-5 h-5 text-blue-600" />
@@ -551,7 +551,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
 
         {/* 更新昵称表单 */}
         {editMode === 'nickname' && (
-          <Card className="glass-card border-white/30">
+          <Card className="glass-card border-white/30 rounded-[16pt]">
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
                 <User className="w-5 h-5 text-blue-600" />
@@ -608,7 +608,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
 
         {/* 绑定BSC地址表单 */}
         {editMode === 'bscAddress' && (
-          <Card className="glass-card border-white/30">
+          <Card className="glass-card border-white/30 rounded-[16pt]">
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
                 <Wallet className="w-5 h-5 text-blue-600" />
@@ -665,7 +665,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
         )}
 
         {/* 安全提示 */}
-        <Card className="glass-card border-white/30">
+        <Card className="glass-card border-white/30 rounded-[16pt]">
           <CardHeader>
             <CardTitle className="text-slate-800">安全提示</CardTitle>
           </CardHeader>

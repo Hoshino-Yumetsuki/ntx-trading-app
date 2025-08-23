@@ -45,7 +45,7 @@ export function StatsCard({ userInfo }: StatsCardProps) {
   ]
 
   return (
-    <Card className="glass-card border-white/30">
+    <Card className="glass-card border-white/30 rounded-[16pt]">
       <CardHeader>
         <CardTitle className="text-slate-800">
           {t('profile.stats.totalReward')}
@@ -56,8 +56,11 @@ export function StatsCard({ userInfo }: StatsCardProps) {
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
-              <div key={index} className="text-center data-card p-5 rounded-lg">
-                <div className="premium-icon w-10 h-10 rounded-lg mx-auto mb-3">
+              <div
+                key={index}
+                className="text-center data-card p-5 rounded-[16pt]"
+              >
+                <div className="premium-icon w-10 h-10 rounded-[16pt] mx-auto mb-3">
                   <Icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
                 <p className={`text-lg font-bold ${stat.color} mb-1`}>

@@ -18,7 +18,7 @@ export function GntxCard({ userInfo }: GntxCardProps) {
   const { t } = useLanguage()
 
   return (
-    <Card className="glass-card border-white/30 overflow-hidden">
+    <Card className="glass-card border-white/30 overflow-hidden rounded-[16pt]">
       <div className="absolute top-0 right-0 w-20 h-20 -mt-10 -mr-10 bg-blue-500/10 rounded-full" />
       <div className="absolute bottom-0 left-0 w-16 h-16 -mb-8 -ml-8 bg-blue-500/10 rounded-full" />
 
@@ -30,7 +30,7 @@ export function GntxCard({ userInfo }: GntxCardProps) {
       </CardHeader>
 
       <CardContent>
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
           <div className="text-2xl md:text-3xl font-bold text-blue-700 text-center">
             {userInfo?.gntxBalance?.toLocaleString() || '0'}{' '}
             <span className="text-blue-500">GNTX</span>

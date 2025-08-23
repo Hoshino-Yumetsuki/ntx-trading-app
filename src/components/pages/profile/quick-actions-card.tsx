@@ -32,7 +32,7 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
   ]
 
   return (
-    <Card className="glass-card border-white/30">
+    <Card className="glass-card border-white/30 rounded-[16pt]">
       <CardHeader>
         <CardTitle className="text-slate-800">
           {t('profile.quickActions')}
@@ -45,11 +45,11 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
             <button
               key={index}
               type="button"
-              className="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/40 transition-all cursor-pointer w-full text-left"
+              className="flex items-center justify-between p-4 glass-card rounded-[16pt] hover:bg-white/40 transition-all cursor-pointer w-full text-left"
               onClick={item.onClick}
             >
               <div className="flex items-center space-x-3">
-                <div className="premium-icon w-10 h-10 rounded-lg">
+                <div className="premium-icon w-10 h-10 rounded-[16pt]">
                   <Icon className="w-5 h-5 text-slate-600" />
                 </div>
                 <div>

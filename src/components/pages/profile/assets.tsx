@@ -136,11 +136,11 @@ export default function AssetsPage({ onBack }: AssetsPageProps) {
         />
         <div className="p-4">
           <div className="max-w-md mx-auto space-y-4">
-            <div className="bg-white rounded-lg p-6 animate-pulse">
+            <div className="bg-white rounded-[16pt] p-6 animate-pulse">
               <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
               <div className="h-8 bg-slate-200 rounded w-1/2"></div>
             </div>
-            <div className="bg-white rounded-lg p-6 animate-pulse">
+            <div className="bg-white rounded-[16pt] p-6 animate-pulse">
               <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
               <div className="h-8 bg-slate-200 rounded w-1/2"></div>
             </div>

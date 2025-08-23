@@ -46,14 +46,14 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   }
 
   return (
-    <Card className="glass-card border-white/30">
+    <Card className="glass-card border-white/30 rounded-[16pt]">
       <CardHeader>
         <CardTitle className="text-slate-800">
           {t('profile.inviteCode.title')}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+        <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[16pt] border border-blue-200">
           <div className="mb-3">
             <p className="text-sm text-gray-600 mb-1">
               {t('profile.inviteCode.description')}

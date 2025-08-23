@@ -22,7 +22,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
 
       {/* 用户信息卡片，使用图片背景 */}
       <div
-        className="text-white rounded-xl p-6 shadow-lg mb-4 relative"
+        className="text-white rounded-[16pt] p-6 shadow-lg mb-4 relative"
         style={{
           backgroundImage: 'url(/Group72@3x.png)',
           backgroundRepeat: 'no-repeat',

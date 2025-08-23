@@ -16,7 +16,7 @@ interface UserInfoCardProps {
 
 export function UserInfoCard({ userInfo }: UserInfoCardProps) {
   return (
-    <Card className="glass-card border-white/30 relative">
+    <Card className="glass-card border-white/30 relative rounded-[16pt]">
       {/* 右上角装饰 */}
       <Image
         src="/Frame29@3x.png"
@@ -46,7 +46,7 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
         </div>
 
         {/* 经验和用户组 */}
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
           <div className="flex text-sm text-slate-700 mb-1">
             <div className="flex items-center">
               <Award className="w-4 h-4 mr-1 text-blue-600" />

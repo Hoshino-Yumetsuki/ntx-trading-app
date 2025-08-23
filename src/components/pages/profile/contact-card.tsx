@@ -19,16 +19,16 @@ export function ContactCard() {
   }
 
   return (
-    <Card className="glass-card border-white/30">
+    <Card className="glass-card border-white/30 rounded-[16pt]">
       <CardHeader>
         <CardTitle className="text-slate-800">
           {t('profile.contact.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex items-center justify-between p-3 glass-card rounded-lg hover:bg-white/40 transition-all">
+        <div className="flex items-center justify-between p-3 glass-card rounded-[16pt] hover:bg-white/40 transition-all">
           <div className="flex items-center space-x-3">
-            <div className="premium-icon w-10 h-10 rounded-lg">
+            <div className="premium-icon w-10 h-10 rounded-[16pt]">
               <svg
                 className="w-5 h-5 text-slate-600"
                 viewBox="0 0 24 24"
@@ -59,9 +59,9 @@ export function ContactCard() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-3 glass-card rounded-lg hover:bg-white/40 transition-all">
+        <div className="flex items-center justify-between p-3 glass-card rounded-[16pt] hover:bg-white/40 transition-all">
           <div className="flex items-center space-x-3">
-            <div className="premium-icon w-10 h-10 rounded-lg">
+            <div className="premium-icon w-10 h-10 rounded-[16pt]">
               <svg
                 className="w-5 h-5 text-slate-600"
                 viewBox="0 0 24 24"
