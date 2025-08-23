@@ -15,6 +15,15 @@ interface UserInfoCardProps {
 }
 
 export function UserInfoCard({ userInfo }: UserInfoCardProps) {
+  const gntx = userInfo?.gntxBalance ?? 0
+  const invites = userInfo?.invitedUserCount ?? 0
+  const gProgress = Math.min(gntx / 1, 1)
+  const iProgress = Math.min(invites / 100, 1)
+  const brokerProgress = Math.min(gProgress, iProgress)
+  const brokerPercent = Math.floor(brokerProgress * 100)
+  const remainingGntx = Math.max(0, 1 - gntx)
+  const remainingInvites = Math.max(0, 100 - invites)
+
   return (
     <Card className="glass-card border-white/30 relative rounded-[16pt]">
       {/* 右上角装饰 */}
@@ -43,6 +52,12 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
           <div className="text-sm text-slate-700">
             当前 GNTX 持有：{userInfo?.gntxBalance?.toLocaleString() || '0'}
           </div>
+          <div className="text-sm text-slate-700">
+            已邀请人数：
+            <span className="text-blue-600">
+              {(userInfo?.invitedUserCount ?? 0).toLocaleString()}
+            </span>
+          </div>
         </div>
 
         {/* 经验和用户组 */}
@@ -53,13 +68,38 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
               <span>EXP: {userInfo?.exp || 0}</span>
             </div>
           </div>
-          <div className="h-2 bg-white/70 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-blue-600 rounded-full"
-              style={{
-                width: `${Math.min(((userInfo?.exp || 0) / 100) * 100, 100)}%`
-              }}
-            ></div>
+          {/* EXP 进度条已移除，仅保留成为经纪商进度 */}
+
+          {/* 距离成为经纪商 */}
+          <div className="mt-4">
+            <div className="text-sm text-slate-700 mb-1">距离成为经纪商：</div>
+            <div className="h-2 bg-white/70 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-600 rounded-full"
+                style={{ width: `${brokerPercent}%` }}
+              ></div>
+            </div>
+            <div className="text-xs text-slate-600 mt-1">
+              {brokerPercent}% 完成
+            </div>
+            <div className="text-xs text-slate-600 mt-1 text-right">
+              <div>
+                还需要{' '}
+                <span className="text-blue-600">
+                  {remainingGntx.toLocaleString(undefined, {
+                    maximumFractionDigits: 4
+                  })}
+                </span>{' '}
+                GNTX
+              </div>
+              <div>
+                还需要邀请{' '}
+                <span className="text-blue-600">
+                  {remainingInvites.toLocaleString()}
+                </span>{' '}
+                人
+              </div>
+            </div>
           </div>
         </div>
       </CardContent>
