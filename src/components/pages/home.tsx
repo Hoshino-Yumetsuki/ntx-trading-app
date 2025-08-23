@@ -4,16 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
-import {
-  TrendingUp,
-  ArrowRight,
-  Target,
-  Award,
-  Gift,
-  BookOpen,
-  Brain,
-  GraduationCap
-} from 'lucide-react'
+import { TrendingUp, ArrowRight, Target, Award, Brain } from 'lucide-react'
 import Image from 'next/image'
 import useEmblaCarousel from 'embla-carousel-react'
 import { TutorialPage } from '@/src/components/pages/tutorial'
@@ -26,13 +17,13 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate }: HomePageProps = {}) {
-  const [_isTutorialOpen, _setIsTutorialOpen] = useState(false);
-  const [showTutorialPage, setShowTutorialPage] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const { t } = useLanguage();
-  const recentNews = getRecentNews(3);
-  const [showAllNews, setShowAllNews] = useState(false);
-  const latestNews = showAllNews ? newsItems : getRecentNews(3);
+  const [_isTutorialOpen, _setIsTutorialOpen] = useState(false)
+  const [showTutorialPage, setShowTutorialPage] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
+  const { t } = useLanguage()
+  const recentNews = getRecentNews(3)
+  const [showAllNews, _setShowAllNews] = useState(false)
+  const _latestNews = showAllNews ? newsItems : getRecentNews(3)
   // 首页交易所图标（用于横向无缝滚动）
   const exchanges = [
     {
@@ -49,8 +40,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     },
     {
       name: '4',
-      image:
-        '/exchange/gate.png'
+      image: '/exchange/gate.png'
     },
     {
       name: '5',
@@ -58,8 +48,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     },
     {
       name: '6',
-      image:
-        '/exchange/okex.png'
+      image: '/exchange/okex.png'
     }
   ]
   const half = Math.ceil(exchanges.length / 2)
@@ -346,63 +335,65 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
       <div className="px-6 space-y-4">
         <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
           <CardContent className="p-6 flex flex-col items-center text-center">
-          <div className="flex items-center justify-center gap-x-2 mb-3">
-            <img 
-              src="/tur.png" 
-              alt="新手礼包图标" 
-              className="w-[15px] h-[15px]"
-            />
-            <h3 className="text-slate-800 font-semibold text-base">
-              {t('home.card.tutorial.title')}
-            </h3>
-          </div>
+            <div className="flex items-center justify-center gap-x-2 mb-3">
+              <Image
+                src="/tur.png"
+                alt="新手礼包图标"
+                width={15}
+                height={15}
+                className="w-[15px] h-[15px]"
+              />
+              <h3 className="text-slate-800 font-semibold text-base">
+                {t('home.card.tutorial.title')}
+              </h3>
+            </div>
 
-          <p className="text-slate-500 text-sm mb-3">
-            {t('home.card.tutorial.subtitle')}
-          </p>
-          <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-[244px]">
-            {t('home.card.tutorial.desc')}
-          </p>
-          <Button
-            onClick={openTutorial}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-6 rounded-lg shadow-md h-8"
-          >
-            {t('home.card.tutorial.button')}
-            <ArrowRight className="w-3 h-3 ml-1.5" />
-          </Button>
-        </CardContent>
-      </Card>
-      
+            <p className="text-slate-500 text-sm mb-3">
+              {t('home.card.tutorial.subtitle')}
+            </p>
+            <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-[244px]">
+              {t('home.card.tutorial.desc')}
+            </p>
+            <Button
+              onClick={openTutorial}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-6 rounded-lg shadow-md h-8"
+            >
+              {t('home.card.tutorial.button')}
+              <ArrowRight className="w-3 h-3 ml-1.5" />
+            </Button>
+          </CardContent>
+        </Card>
 
-      <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
+        <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
           <CardContent className="p-6 flex flex-col items-center text-center">
-          <div className="flex items-center justify-center gap-x-2 mb-3">
-            <img 
-              src="/dh.png" 
+            <div className="flex items-center justify-center gap-x-2 mb-3">
+              <Image
+                src="/dh.png"
+                alt="黑马模型图标"
+                width={15}
+                height={15}
+                className="w-[15px] h-[15px]"
+              />
+              <h3 className="text-slate-800 font-semibold text-base">
+                {t('home.card.dark_horse.title')}
+              </h3>
+            </div>
 
-              className="w-[15px] h-[15px]"
-            />
-            <h3 className="text-slate-800 font-semibold text-base">
-              {t('home.card.dark_horse.title')}
-            </h3>
-          </div>
-
-          <p className="text-slate-500 text-sm mb-3">
-            {t('home.card.dark_horse.subtitle')}
-          </p>
-          <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-[244px]">
-            {t('home.card.dark_horse.desc')}
-          </p>
-          <Button
-            onClick={() => onNavigate?.('academy')}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-6 rounded-lg shadow-md h-8"
-          >
-            {t('home.card.dark_horse.button')}
-            <ArrowRight className="w-3 h-3 ml-1.5" />
-          </Button>
-        </CardContent>
-      </Card>
-
+            <p className="text-slate-500 text-sm mb-3">
+              {t('home.card.dark_horse.subtitle')}
+            </p>
+            <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-[244px]">
+              {t('home.card.dark_horse.desc')}
+            </p>
+            <Button
+              onClick={() => onNavigate?.('academy')}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-6 rounded-lg shadow-md h-8"
+            >
+              {t('home.card.dark_horse.button')}
+              <ArrowRight className="w-3 h-3 ml-1.5" />
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* 四个功能卡片（长方形 2x2，所有屏幕保持两列） */}
         <div className="grid grid-cols-2 gap-4 mt-4">
@@ -426,8 +417,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               </AutoScaleBox>
             </CardContent>
           </Card>
-
-          
 
           <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
             <CardContent className="p-4 h-full">
@@ -493,30 +482,33 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </Card>
         </div>
 
-
-
         {/* 最近通知 */}
         <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
-              <CardContent className="p-4">
-                <h3 className="text-slate-800 font-semibold text-base mb-3">{t('ui.notifications.title')}</h3>
-                  <ul className="space-y-2">
-                  {recentNews.map((item) => (
-                  <li key={item.id} className="text-slate-700 text-sm flex items-center">
+          <CardContent className="p-4">
+            <h3 className="text-slate-800 font-semibold text-base mb-3">
+              {t('ui.notifications.title')}
+            </h3>
+            <ul className="space-y-2">
+              {recentNews.map((item) => (
+                <li
+                  key={item.id}
+                  className="text-slate-700 text-sm flex items-center"
+                >
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
                   <span className="truncate">{item.title}</span>
-                  </li>
-                ))}
-               </ul>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 mt-3"
-                            onClick={() => onNavigate?.('news')}
-                        >
-                            {t('ui.notifications.viewMore')}
-                            <ArrowRight className="w-4 h-4 ml-1" />
-                        </Button>
-                </CardContent>
+                </li>
+              ))}
+            </ul>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 mt-3"
+              onClick={() => onNavigate?.('news')}
+            >
+              {t('ui.notifications.viewMore')}
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </CardContent>
         </Card>
       </div>
     </div>

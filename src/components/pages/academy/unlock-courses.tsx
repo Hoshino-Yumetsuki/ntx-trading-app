@@ -226,8 +226,10 @@ export function UnlockCoursesPage({
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-slate-800 text-base">
-                      {g.group.description?.includes('Broker-specific group:') 
-                        ? g.group.description.split('Broker-specific group:')[1].trim()
+                      {g.group.description?.includes('Broker-specific group:')
+                        ? g.group.description
+                            .split('Broker-specific group:')[1]
+                            .trim()
                         : g.group.name}
                     </CardTitle>
                   </CardHeader>

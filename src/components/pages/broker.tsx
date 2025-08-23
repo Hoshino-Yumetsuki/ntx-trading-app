@@ -15,7 +15,6 @@ import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-re
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
-import { Lock, ExternalLink } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 export function BrokerPage() {
@@ -122,7 +121,7 @@ export function BrokerPage() {
           }}
         />
       </div>
-      
+
       {/* Markdown 资料入口 - 移动到下方 */}
       <div className="px-6 mt-6">
         <Card className="glass-card border-white/30 shadow-lg">
@@ -137,33 +136,31 @@ export function BrokerPage() {
             ) : error ? (
               <div className="text-center text-red-500 py-10">{error}</div>
             ) : (
-              <>
-                {featured && (
-                  <Card className="glass-card border-white/30 mb-4">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <div className="text-slate-400 text-xs mb-1">
-                            BROKER 信息
-                          </div>
-                          <div className="text-slate-800 font-semibold mb-1 line-clamp-1">
-                            {featured.name}
-                          </div>
-                          <div className="text-slate-600 text-sm line-clamp-2">
-                            {featured.description}
-                          </div>
+              featured && (
+                <Card className="glass-card border-white/30 mb-4">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="text-slate-400 text-xs mb-1">
+                          BROKER 信息
                         </div>
-                        <Button
-                          onClick={() => handleClick(featured)}
-                          className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          查看
-                        </Button>
+                        <div className="text-slate-800 font-semibold mb-1 line-clamp-1">
+                          {featured.name}
+                        </div>
+                        <div className="text-slate-600 text-sm line-clamp-2">
+                          {featured.description}
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </>
+                      <Button
+                        onClick={() => handleClick(featured)}
+                        className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        查看
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
             )}
           </CardContent>
         </Card>

@@ -304,11 +304,11 @@ export function AcademyPage() {
                       <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 mb-3">
                         {community.image ? (
                           <div className="relative w-full h-full rounded-lg overflow-hidden">
-                            <Image 
-                              src={community.image} 
-                              alt={community.name} 
-                              fill 
-                              className="object-cover" 
+                            <Image
+                              src={community.image}
+                              alt={community.name}
+                              fill
+                              className="object-cover"
                             />
                           </div>
                         ) : (

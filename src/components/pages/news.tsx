@@ -1,20 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
+import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
 import { Clock, Rss, Share2, ChevronLeft } from 'lucide-react'
-import DOMPurify from 'dompurify'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
-import MarkdownIt from 'markdown-it'
+import ReactMarkdown from 'react-markdown'
+import rehypeSanitize from 'rehype-sanitize'
 import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
@@ -260,14 +255,6 @@ export function NewsPage() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
-  // 初始化markdown-it实例
-  const md = new MarkdownIt({
-    html: true, // 允许HTML标签
-    linkify: true, // 自动识别链接
-    typographer: true, // 启用智能引号和其他排版功能
-    breaks: true // 将换行符转换为<br>
-  })
-
   // 渲染Markdown内容的函数
   const renderMarkdownContent = (content: string) => {
     if (!content) {
@@ -278,19 +265,16 @@ export function NewsPage() {
       )
     }
 
-    // 使用markdown-it渲染HTML
-    const htmlContent = md.render(content)
-
     return (
-      <div
-        className="markdown-content"
-        // biome-ignore lint: false positive
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
+      <div className="markdown-content">
+        <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+          {content}
+        </ReactMarkdown>
+      </div>
     )
   }
 
-if (viewingArticle && currentArticle) {
+  if (viewingArticle && currentArticle) {
     return (
       <div className="min-h-screen pb-6">
         {/* 顶部 Hero 区域，与学院页一致结构 */}
@@ -300,7 +284,7 @@ if (viewingArticle && currentArticle) {
               <Button
                 variant="ghost"
                 size="sm"
-          onClick={() => setViewingArticle(false)}
+                onClick={() => setViewingArticle(false)}
                 className="mr-3 text-slate-600 hover:text-slate-800"
               >
                 <ChevronLeft className="w-5 h-5 mr-2" />
@@ -357,12 +341,11 @@ if (viewingArticle && currentArticle) {
             <CardContent className="p-6">
               <div className="max-w-none">
                 {currentArticle.source === 'rss' ? (
-                  <div
-                    className="markdown-content"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(currentArticle.content || '')
-                    }}
-                  />
+                  <div className="markdown-content">
+                    <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                      {currentArticle.content || ''}
+                    </ReactMarkdown>
+                  </div>
                 ) : (
                   renderMarkdownContent(currentArticle.content || '')
                 )}
@@ -374,8 +357,10 @@ if (viewingArticle && currentArticle) {
     )
   }
 
-return (
-    <div className="min-h-screen bg-white pb-6"> {/* 更改背景为白色 */}
+  return (
+    <div className="min-h-screen bg-white pb-6">
+      {' '}
+      {/* 更改背景为白色 */}
       {/* 顶部 Hero 区域，保持不变 */}
       <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
@@ -407,9 +392,10 @@ return (
           </div>
         </div>
       </div>
-
       {/* --- 内容区域重构开始 --- */}
-      <div className="px-6"> {/* 原来这里是 mt-6 和 Card，现在简化 */}
+      <div className="px-6">
+        {' '}
+        {/* 原来这里是 mt-6 和 Card，现在简化 */}
         {loading ? (
           <div className="text-center py-8 text-slate-500">
             {t('news.loading') || '加载中...'}
@@ -417,22 +403,34 @@ return (
         ) : newsItems.length > 0 ? (
           // 蓝湖时间线布局容器
           <div className="relative">
-              {/* 蓝色竖线，贯穿始终 */}
-              <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
+            {/* 蓝色竖线，贯穿始终 */}
+            <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
 
-            <div className="flex flex-col gap-y-8"> {/* 控制每个新闻项的垂直间距 */}
+            <div className="flex flex-col gap-y-8">
+              {' '}
+              {/* 控制每个新闻项的垂直间距 */}
               {newsItems.map((item) => (
                 // 每个新闻项的容器
-                <div
+                <button
+                  type="button"
                   key={item.id}
-                  className="relative pl-6 cursor-pointer" // 左内边距给圆点和竖线留出空间
+                  className="relative pl-6 cursor-pointer text-left w-full" // 左内边距给圆点和竖线留出空间
                   onClick={() => fetchArticleContent(item.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      fetchArticleContent(item.id)
+                    }
+                  }}
+                  aria-label={`阅读文章: ${item.title}`}
                 >
                   {/* 蓝点 */}
                   <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
-                  
+
                   {/* 内容垂直堆叠 */}
-                  <div className="flex flex-col gap-y-2"> {/* 内容内部的间距 */}
+                  <div className="flex flex-col gap-y-2">
+                    {' '}
+                    {/* 内容内部的间距 */}
                     {/* 标题 - 对应 text_5, text_8 等 */}
                     <div className="flex justify-between items-start gap-2">
                       <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
@@ -443,14 +441,13 @@ return (
                         size="sm"
                         className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
                         onClick={(e) => {
-                          e.stopPropagation(); // 防止点击分享时触发进入详情页的事件
-                          handleShare(item);
+                          e.stopPropagation() // 防止点击分享时触发进入详情页的事件
+                          handleShare(item)
                         }}
                       >
                         <Share2 className="w-4 h-4" />
                       </Button>
                     </div>
-                    
                     {/* 日期和来源 - 对应 group_5, text_6 */}
                     <div className="flex items-center text-xs text-[#AAB7CF]">
                       <Clock className="w-3 h-3 mr-1.5" />
@@ -462,13 +459,12 @@ return (
                         </span>
                       )}
                     </div>
-
                     {/* 摘要 - 对应 text_7 */}
                     <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
                       {item.summary}
                     </p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -479,7 +475,6 @@ return (
         )}
       </div>
       {/* --- 内容区域重构结束 --- */}
-
       {/* 新闻分享模态框和图片生成器，保持不变 */}
       <UniversalShareModal
         isOpen={showShareModal}
