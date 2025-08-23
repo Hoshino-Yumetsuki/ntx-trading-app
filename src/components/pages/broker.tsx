@@ -113,6 +113,7 @@ export function BrokerPage() {
         <UnlockCoursesPage
           showHiddenOnly
           hideInfoCards
+          hideDescription
           onNavigateTab={(tabId) => {
             if (tabId === 'orders') {
               // 跳转到独立的订单页面
@@ -141,9 +142,6 @@ export function BrokerPage() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <div className="text-slate-400 text-xs mb-1">
-                          BROKER 信息
-                        </div>
                         <div className="text-slate-800 font-semibold mb-1 line-clamp-1">
                           {featured.name}
                         </div>

@@ -36,11 +36,13 @@ import { useRouter } from 'next/navigation'
 export function UnlockCoursesPage({
   onNavigateTab,
   showHiddenOnly = false,
-  hideInfoCards = false
+  hideInfoCards = false,
+  hideDescription = false
 }: {
   onNavigateTab?: (tabId: string) => void
   showHiddenOnly?: boolean
   hideInfoCards?: boolean
+  hideDescription?: boolean
 }) {
   const packagesSectionId = useId()
   const [groups, setGroups] = useState<PermissionGroupWithPackages[]>([])
@@ -249,11 +251,12 @@ export function UnlockCoursesPage({
                             <div className="text-sm text-slate-600">
                               价格：{p.price} {p.currency}
                             </div>
-                            {(p.description || g.group.description) && (
-                              <div className="text-xs text-slate-500 mt-1 whitespace-normal break-words">
-                                {p.description ?? g.group.description}
-                              </div>
-                            )}
+                            {!hideDescription &&
+                              (p.description || g.group.description) && (
+                                <div className="text-xs text-slate-500 mt-1 whitespace-normal break-words">
+                                  {p.description ?? g.group.description}
+                                </div>
+                              )}
                           </div>
                           <Button
                             className="min-w-[96px] shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
