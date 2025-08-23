@@ -9,6 +9,9 @@ import {
   CardHeader,
   CardTitle
 } from '@/src/components/ui/card'
+import ReactMarkdown from 'react-markdown'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 import {
   ArrowLeft,
   Users,
@@ -156,56 +159,55 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
           </CardHeader>
         </Card>
 
-        {/* Tutorial Sections - Unified Card */}
-        <Card className="glass-card border-white/50 overflow-hidden shadow-xl">
-          <CardContent className="py-6">
-            <div className="space-y-8">
-              {tutorialSections.map((section, index) => (
-                <div key={section.id}>
-                  {/* 如果不是第一个部分，则添加分隔线 */}
-                  {index > 0 && (
-                    <div className="border-t border-slate-200/70 my-8"></div>
-                  )}
-
-                  <div className="flex items-start">
-                    <div className="mr-4 flex-shrink-0 flex items-center justify-center">
-                      {section.icon}
-                    </div>
-                    <div className="flex-grow">
-                      <h3 className="text-lg font-semibold text-blue-600 mb-3">
-                        {section.title}
-                      </h3>
-                      <div className="text-slate-700 leading-relaxed whitespace-pre-line mb-4">
-                        {section.content}
-                      </div>
-
-                      {/* 图片部分 */}
-                      {section.images && (
-                        <div className="mt-6 space-y-4">
-                          {section.images.map((image, imageIndex) => (
-                            <div
-                              key={imageIndex}
-                              className="bg-white/30 p-2 rounded-lg shadow-sm"
-                            >
-                              <div className="relative w-full h-64">
-                                <Image
-                                  src={image}
-                                  alt={`${section.title} - 图${imageIndex + 1}`}
-                                  fill
-                                  className="object-contain rounded-lg"
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+        {/* Tutorial Sections - Each section as a separate Card with math support */}
+        <div className="grid gap-6">
+          {tutorialSections.map((section) => (
+            <Card
+              key={section.id}
+              className="glass-card border-white/50 overflow-hidden shadow-xl"
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0">{section.icon}</div>
+                  <CardTitle className="text-lg font-semibold text-blue-600">
+                    {section.title}
+                  </CardTitle>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </CardHeader>
+              <CardContent>
+                <div className="prose prose-slate max-w-none">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                  >
+                    {section.content}
+                  </ReactMarkdown>
+                </div>
+
+                {/* 图片部分 */}
+                {section.images && (
+                  <div className="mt-6 space-y-4">
+                    {section.images.map((image, imageIndex) => (
+                      <div
+                        key={imageIndex}
+                        className="bg-white/30 p-2 rounded-lg shadow-sm"
+                      >
+                        <div className="relative w-full h-64">
+                          <Image
+                            src={image}
+                            alt={`${section.title} - 图${imageIndex + 1}`}
+                            fill
+                            className="object-contain rounded-lg"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   )

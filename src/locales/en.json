@@ -155,7 +155,7 @@
     },
     "mining": {
       "title": "Mining Tutorial",
-      "content": "Learn how to earn mining rewards through trading."
+      "content": "Learn how to earn mining rewards through trading.\n\nMining calculation formula:\n\n$$\nM_a = \\left(\\frac{V_{0}}{V_{all}}\\right) \\times M \\times 0.9\n$$\n\nwhere M_a is the user's daily token reward, V_0 is the user's daily trading volume, V_{all} is the platform's total daily trading volume, and M is the platform's daily token output."
     },
     "rebate": {
       "title": "Rebate System",
