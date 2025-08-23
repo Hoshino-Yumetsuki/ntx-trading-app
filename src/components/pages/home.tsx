@@ -9,8 +9,13 @@ import Image from 'next/image'
 import useEmblaCarousel from 'embla-carousel-react'
 import { TutorialPage } from '@/src/components/pages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
-import { getRecentNews, newsItems } from '@/src/data/news-data'
 import { AutoScaleBox } from '@/src/components/ui/auto-scale-box'
+import { API_BASE_URL } from '@/src/services/config'
+
+interface NewsItem {
+  id: number
+  title: string
+}
 
 interface HomePageProps {
   onNavigate?: (page: string) => void
@@ -21,10 +26,26 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [showTutorialPage, setShowTutorialPage] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const { t } = useLanguage()
-  const recentNews = getRecentNews(3)
-  const [showAllNews, _setShowAllNews] = useState(false)
-  const _latestNews = showAllNews ? newsItems : getRecentNews(3)
-  // 首页交易所图标（用于横向无缝滚动）
+  const [recentNews, setRecentNews] = useState<NewsItem[]>([])
+
+  useEffect(() => {
+    const fetchApiNews = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/academy/articles`);
+        if (response.ok) {
+          const data = await response.json();
+          setRecentNews(data.slice(0, 3));
+        } else {
+          console.error("Failed to fetch API news");
+        }
+      } catch (error) {
+        console.error("Error fetching API news:", error);
+      }
+    };
+
+    fetchApiNews();
+  }, []);
+
   const exchanges = [
     {
       name: '1',

@@ -98,7 +98,7 @@
     "news": "资讯",
     "mining": "挖矿",
     "profile": "我的",
-    "academy": "教育研究院"
+    "academy": "黑马学院"
   },
   "auth": {
     "login": "登录",
@@ -266,7 +266,7 @@
         "button": "立即学习"
       },
       "dark_horse": {
-        "title": "教育研究院",
+        "title": "黑马学院",
         "subtitle": "专业技术教学",
         "desc": "学习专业技术策略，提升分析水平与交易能力",
         "button": "立即学习"
