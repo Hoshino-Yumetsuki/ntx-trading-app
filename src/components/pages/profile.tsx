@@ -12,6 +12,7 @@ import {
   ProfileHeader,
   InviteCodeCard,
   StatsCard,
+  UserInfoCard,
   QuickActionsCard,
   ContactCard,
   LogoutCard
@@ -88,6 +89,9 @@ export function ProfilePage() {
       <ProfileHeader userInfo={userInfo} />
 
       <div className="px-6 space-y-4 -mt-4">
+        {/* User Info Card - 新增的用户信息卡片 */}
+        <UserInfoCard userInfo={userInfo} />
+
         {/* Invite Code Card */}
         <InviteCodeCard userInfo={userInfo} />
 
