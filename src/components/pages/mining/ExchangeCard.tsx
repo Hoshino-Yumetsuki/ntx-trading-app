@@ -44,28 +44,24 @@ export function ExchangeCard({
   const [uid, setUid] = useState('')
   const [isBindDialogOpen, setIsBindDialogOpen] = useState(false)
 
-  // 获取交易所图标路径
-  const getExchangeIcon = (exchangeName: string) => {
-    const name = exchangeName.toLowerCase()
-    const iconMap: { [key: string]: string } = {
-      binance: '/exchange/binance.png',
-      bitget: '/exchange/bitget.png',
-      bybit: '/exchange/bybit.jpg',
-      htx: '/exchange/htx.jpg',
-      xt: '/exchange/xt.png'
+  // 解析官网链接和邀请链接
+  const getUrls = (cexUrl: string | undefined): { miningUrl: string; registerUrl: string } => {
+    if (!cexUrl) {
+      return { miningUrl: '#', registerUrl: '#' };
     }
-    return iconMap[name] || null
-  }
-
-  // 从cex_url中提取域名
-  const extractDomain = (url: string) => {
-    try {
-      const urlObj = new URL(url)
-      return urlObj.origin
-    } catch {
-      return url
+    // 根据 "官网链接:邀请链接" 的格式来解析
+    const lastHttpIndex = cexUrl.lastIndexOf('http');
+    if (lastHttpIndex > 0) {
+      const separatorIndex = lastHttpIndex - 1;
+      if (cexUrl[separatorIndex] === ':') {
+        const miningUrl = cexUrl.substring(0, separatorIndex);
+        const registerUrl = cexUrl.substring(lastHttpIndex);
+        return { miningUrl, registerUrl };
+      }
     }
-  }
+    // 兼容旧的单链接格式
+    return { miningUrl: cexUrl, registerUrl: cexUrl };
+  };
 
   const handleBindClick = (exchangeId: number) => {
     setBindingExchangeId(exchangeId)
@@ -126,6 +122,7 @@ export function ExchangeCard({
               const isUserBound = userExchanges.some(
                 (ue) => ue.id === exchange.id
               )
+              const { miningUrl, registerUrl } = getUrls(exchange.cex_url);
               return (
                 <div
                   key={exchange.id}
@@ -133,9 +130,9 @@ export function ExchangeCard({
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 rounded-xl overflow-hidden bg-white shadow-sm border border-gray-200 flex items-center justify-center">
-                      {getExchangeIcon(exchange.name) ? (
+                      {exchange.logo_url ? (
                         <Image
-                          src={getExchangeIcon(exchange.name) as string}
+                          src={exchange.logo_url}
                           alt={exchange.name}
                           width={48}
                           height={48}
@@ -164,7 +161,7 @@ export function ExchangeCard({
                           size="sm"
                           onClick={() =>
                             window.open(
-                              extractDomain(exchange.cex_url),
+                              miningUrl,
                               '_blank'
                             )
                           }
@@ -217,7 +214,8 @@ export function ExchangeCard({
           {bindingExchangeId &&
             (() => {
               const exchange = exchanges.find((e) => e.id === bindingExchangeId)
-              if (!exchange) return null
+              if (!exchange) return null;
+              const { registerUrl } = getUrls(exchange.cex_url);
 
               return (
                 <>
@@ -225,9 +223,9 @@ export function ExchangeCard({
                     <div className="flex flex-col items-center space-y-4">
                       {/* 交易所图标 */}
                       <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg border-2 border-gray-100 flex items-center justify-center">
-                        {getExchangeIcon(exchange.name) ? (
+                        {exchange.logo_url ? (
                           <Image
-                            src={getExchangeIcon(exchange.name) as string}
+                            src={exchange.logo_url}
                             alt={exchange.name}
                             width={64}
                             height={64}
@@ -299,7 +297,7 @@ export function ExchangeCard({
                         <Button
                           type="button"
                           onClick={() =>
-                            window.open(exchange.cex_url, '_blank')
+                            window.open(registerUrl, '_blank')
                           }
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                         >
