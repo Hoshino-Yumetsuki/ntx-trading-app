@@ -109,7 +109,21 @@ export function BrokerPage() {
         </div>
       </div>
 
-      {/* Markdown 资料入口 */}
+      {/* 购买经纪商套餐（只显示隐藏分组） */}
+      <div id={packagesAnchorId} className="px-6 mt-6">
+        <UnlockCoursesPage
+          showHiddenOnly
+          hideInfoCards
+          onNavigateTab={(tabId) => {
+            if (tabId === 'orders') {
+              // 跳转到独立的订单页面
+              router.push('/orders')
+            }
+          }}
+        />
+      </div>
+      
+      {/* Markdown 资料入口 - 移动到下方 */}
       <div className="px-6 mt-6">
         <Card className="glass-card border-white/30 shadow-lg">
           <CardHeader>
@@ -141,7 +155,7 @@ export function BrokerPage() {
                         </div>
                         <Button
                           onClick={() => handleClick(featured)}
-                          className="shrink-0"
+                          className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
                         >
                           查看
                         </Button>
@@ -149,72 +163,10 @@ export function BrokerPage() {
                     </CardContent>
                   </Card>
                 )}
-                <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                  {[...unlocked, ...locked].map((c) => {
-                    const lockedBadge = !c.isUnlocked
-                    return (
-                      <Card
-                        key={c.id}
-                        className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group relative"
-                        onClick={() => handleClick(c)}
-                      >
-                        <CardContent className="p-4 flex flex-col items-center justify-between text-center min-h-40">
-                          <div className="flex-1 flex flex-col items-center justify-center">
-                            <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-200 group-hover:from-indigo-200 group-hover:to-indigo-300 transition-all duration-200 mb-3">
-                              {lockedBadge ? (
-                                <Lock className="w-5 h-5 text-indigo-600" />
-                              ) : (
-                                <ExternalLink className="w-5 h-5 text-indigo-600" />
-                              )}
-                            </div>
-                            <div className="space-y-1">
-                              <h3 className="text-slate-800 font-medium text-sm group-hover:text-indigo-700 transition-colors line-clamp-2">
-                                {c.name}
-                              </h3>
-                              <p className="text-slate-600 text-xs line-clamp-2">
-                                {c.description}
-                              </p>
-                            </div>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="mt-3"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleClick(c)
-                            }}
-                          >
-                            查看
-                          </Button>
-                        </CardContent>
-                        {lockedBadge && (
-                          <div className="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
-                            未解锁
-                          </div>
-                        )}
-                      </Card>
-                    )
-                  })}
-                </div>
               </>
             )}
           </CardContent>
         </Card>
-      </div>
-
-      {/* 购买经纪商套餐（只显示隐藏分组） */}
-      <div id={packagesAnchorId} className="px-6 mt-6">
-        <UnlockCoursesPage
-          showHiddenOnly
-          hideInfoCards
-          onNavigateTab={(tabId) => {
-            if (tabId === 'orders') {
-              // 跳转到独立的订单页面
-              router.push('/orders')
-            }
-          }}
-        />
       </div>
     </div>
   )
