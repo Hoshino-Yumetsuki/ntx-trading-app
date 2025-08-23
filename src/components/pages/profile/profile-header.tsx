@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
 import type { UserInfo } from '@/src/types/user'
 import { useLanguage } from '@/src/contexts/language-context'
 import { useAuth } from '@/src/contexts/AuthContext'
+import Image from 'next/image'
 
 interface ProfileHeaderProps {
   userInfo: UserInfo | null
@@ -19,8 +20,26 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
         {t('profile.title') || '个人中心'}
       </h1>
 
-      {/* 用户信息卡片，使用蓝色背景 */}
-      <div className="bg-blue-600 text-white rounded-xl p-6 shadow-lg mb-4">
+      {/* 用户信息卡片，使用图片背景 */}
+      <div
+        className="text-white rounded-xl p-6 shadow-lg mb-4 relative"
+        style={{
+          backgroundImage: 'url(/Group72@3x.png)',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right center',
+          backgroundSize: 'cover',
+          aspectRatio: '1029 / 336'
+        }}
+      >
+        {/* 右上角装饰 */}
+        <Image
+          src="/Frame29@3x.png"
+          alt=""
+          width={444}
+          height={96}
+          className="absolute top-0 right-0 w-[222px] h-auto opacity-80 pointer-events-none select-none"
+          priority
+        />
         <div className="flex items-center mb-3">
           <Avatar className="w-16 h-16 border-4 border-white/30">
             <AvatarImage src="/placeholder.svg?height=80&width=80" />
