@@ -14,6 +14,7 @@ export interface UserInfo {
 }
 
 export interface TeamMember {
+  id?: number
   email: string
   nickname: string
   joined_at: string

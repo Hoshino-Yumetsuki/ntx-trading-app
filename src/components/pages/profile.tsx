@@ -9,6 +9,7 @@ import type { UserInfo } from '@/src/types/user'
 import { toast } from 'sonner'
 import { SecuritySettings } from '@/src/components/pages/profile/security-settings'
 import AssetsPage from '@/src/components/pages/profile/assets'
+import CommunityPage from '@/src/components/pages/profile/community'
 import {
   ProfileHeader,
   InviteCodeCard,
@@ -25,7 +26,7 @@ export function ProfilePage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState<
-    'profile' | 'security' | 'assets'
+    'profile' | 'security' | 'assets' | 'community'
   >('profile')
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export function ProfilePage() {
     }
   }
 
-  const handleNavigate = (page: 'assets' | 'security') => {
+  const handleNavigate = (page: 'assets' | 'security' | 'community') => {
     setCurrentPage(page)
   }
 
@@ -84,6 +85,11 @@ export function ProfilePage() {
     return <AssetsPage onBack={() => setCurrentPage('profile')} />
   }
 
+  // 如果当前页面是我的社区页面，渲染社区页面组件
+  if (currentPage === 'community') {
+    return <CommunityPage onBack={() => setCurrentPage('profile')} />
+  }
+
   return (
     <div className="min-h-screen pb-6">
       {/* Profile Header */}
@@ -94,7 +100,17 @@ export function ProfilePage() {
         <UserInfoCard userInfo={userInfo} />
 
         {/* 我的社区 图片卡片 */}
-        <div className="relative w-full rounded-[16pt] overflow-hidden">
+        <button
+          type="button"
+          className="relative w-full rounded-[16pt] overflow-hidden cursor-pointer select-none transition active:scale-[.99]"
+          onClick={() => handleNavigate('community')}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              handleNavigate('community')
+            }
+          }}
+        >
           {/* 1029:216 比例占位 */}
           <div className="pt-[21%]"></div>
           {/* 背景图 */}
@@ -114,7 +130,7 @@ export function ProfilePage() {
               </span>
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Invite Code Card */}
         <InviteCodeCard userInfo={userInfo} />

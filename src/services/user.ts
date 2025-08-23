@@ -31,7 +31,7 @@ export async function getUserInfo(): Promise<UserInfo> {
 }
 
 export async function getMyTeams(): Promise<TeamMember[]> {
-  const response = await fetch(`${API_BASE_URL}/user/get_my_teams`, {
+  const response = await fetch(`${API_BASE_URL}/user/my_teams`, {
     method: 'GET',
     headers: getAuthHeaders()
   })
