@@ -92,7 +92,8 @@ export function PlatformDailyDataCard({
             </span>
           </div>
 
-          {/* 佣金 */}
+          {/* 佣金 - 已隐藏 */}
+          {/*
           <div className="flex items-center justify-between py-4 px-4 border-b">
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.commission') || '佣金'}
@@ -103,8 +104,10 @@ export function PlatformDailyDataCard({
                 : '--'}
             </span>
           </div>
+          */}
 
-          {/* 交易量 */}
+          {/* 交易量 - 已隐藏 */}
+          {/*
           <div className="flex items-center justify-between py-4 px-4 border-b">
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.tradingVolume') || '交易量'}
@@ -115,6 +118,7 @@ export function PlatformDailyDataCard({
                 : '--'}
             </span>
           </div>
+          */}
 
           {/* 挖矿人数 */}
           <div className="flex items-center justify-between py-4 px-4">

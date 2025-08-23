@@ -355,7 +355,12 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               {t('home.card.tutorial.desc')}
             </p>
             <Button
-              onClick={() => window.open('https://gcnyd94jf9o6.feishu.cn/wiki/VPSwwv9nNiia7ikbMUNcbFkRnah', '_blank')}
+              onClick={() =>
+                window.open(
+                  'https://gcnyd94jf9o6.feishu.cn/wiki/VPSwwv9nNiia7ikbMUNcbFkRnah',
+                  '_blank'
+                )
+              }
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-6 rounded-lg shadow-md h-8"
             >
               {t('home.card.tutorial.button')}
