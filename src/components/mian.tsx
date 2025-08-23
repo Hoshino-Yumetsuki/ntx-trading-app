@@ -54,7 +54,7 @@ export function MainApp() {
     { id: 'news', label: t('nav.news'), icon: Newspaper, component: NewsPage },
     {
       id: 'academy',
-      label: '黑马学院',
+      label: t('nav.academy'),
       icon: BookOpen,
       component: AcademyPage
     },

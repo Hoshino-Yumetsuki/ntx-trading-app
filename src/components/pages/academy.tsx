@@ -224,7 +224,7 @@ export function AcademyPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="pb-6">
-            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+            <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
               {tabs
                 .filter((tab) => !['loop', 'orders'].includes(tab.id))
                 .map((tab) => {
@@ -232,12 +232,20 @@ export function AcademyPage() {
                   return (
                     <Card
                       key={tab.id}
-                      className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                      className="data-card p-4 rounded-xl text-left cursor-pointer transition-shadow hover:shadow-lg h-32 group"
+                      style={{
+                        border: 'none',
+                        backgroundImage: 'url(/Group69@3x.png)', // 应用参考范例的背景图
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right top',
+                        backgroundSize: '96px',
+                        backgroundColor: 'white' // 建议添加背景色
+                      }}
                       onClick={() => setActiveTab(tab.id)}
                     >
-                      <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center space-y-2">
+                      <CardContent className="p-4  flex flex-col items-center justify-center text-center space-y-2">
                         <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200">
-                          <Icon className="w-5 h-5 text-blue-600" />
+                          <Icon className="w-8 h-8 text-blue-600 mb-3" />
                         </div>
                         <h3 className="text-slate-800 font-medium text-sm group-hover:text-blue-700 transition-colors">
                           {tab.title}
@@ -289,10 +297,10 @@ export function AcademyPage() {
                 {communities.slice(0, 4).map((community) => (
                   <Card
                     key={community.id}
-                    className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                    className="glass-card rounded-2xl border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
                     onClick={() => handleCommunityClick(community)}
                   >
-                    <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center">
+                    <CardContent className="p-4  flex flex-col items-center justify-center text-center">
                       <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 mb-3">
                         <Users className="w-5 h-5 text-blue-600" />
                       </div>

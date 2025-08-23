@@ -97,7 +97,8 @@
     "home": "首页",
     "news": "资讯",
     "mining": "挖矿",
-    "profile": "我的"
+    "profile": "我的",
+    "academy": "黑马学院"
   },
   "auth": {
     "login": "登录",
