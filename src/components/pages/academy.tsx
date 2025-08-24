@@ -44,13 +44,13 @@ export function AcademyPage() {
       id: 'model',
       title: '黑马模型',
       icon: BookOpen,
-      component: BlackHorseModelPage
+      component: LearningResourcesPage
     },
     {
       id: 'learning',
       title: '学习资源',
       icon: TrendingUp,
-      component: LearningResourcesPage
+      component: BlackHorseModelPage
     },
     {
       id: 'signals',
