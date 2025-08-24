@@ -144,7 +144,7 @@ export function LearningResourcesPage({
                   className="bg-white/15 hover:bg-white/25 text-white border-white/30"
                   onClick={() =>
                     window.open(
-                      'https://space.bilibili.com/1992476317',
+                      'https://space.bilibili.com/694170164',
                       '_blank',
                       'noopener,noreferrer'
                     )
