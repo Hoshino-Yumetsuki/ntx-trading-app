@@ -115,7 +115,8 @@ export function InviteImageGenerator({
       ctx.fillText(userInfo.myInviteCode, canvas.width / 2, codeBoxY + 55)
 
       // 生成二维码
-      const inviteUrl = `https://ntx-dao.com/register?invite=${userInfo.myInviteCode}`
+      const origin = typeof window !== 'undefined' ? window.location.origin : ''
+      const inviteUrl = `${origin}/register?invite=${userInfo.myInviteCode}`
       const qrDataUrl = await QRCode.toDataURL(inviteUrl, {
         width: 200,
         margin: 2,
@@ -276,7 +277,11 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
       ctx.fillText(userInfo.myInviteCode, canvas.width / 2, codeBoxY + 55)
 
       // 二维码
-      const inviteUrl = `https://ntx-dao.com/register?invite=${userInfo.myInviteCode}`
+      const origin =
+        typeof window !== 'undefined'
+          ? window.location.origin
+          : ''
+      const inviteUrl = `${origin}/register?invite=${userInfo.myInviteCode}`
       const qrDataUrl = await QRCode.toDataURL(inviteUrl, {
         width: 200,
         margin: 2,
