@@ -31,20 +31,20 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   useEffect(() => {
     const fetchApiNews = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/user/academy/articles`);
+        const response = await fetch(`${API_BASE_URL}/user/academy/articles`)
         if (response.ok) {
-          const data = await response.json();
-          setRecentNews(data.slice(0, 3));
+          const data = await response.json()
+          setRecentNews(data.slice(0, 3))
         } else {
-          console.error("Failed to fetch API news");
+          console.error('Failed to fetch API news')
         }
       } catch (error) {
-        console.error("Error fetching API news:", error);
+        console.error('Error fetching API news:', error)
       }
-    };
+    }
 
-    fetchApiNews();
-  }, []);
+    fetchApiNews()
+  }, [])
 
   const exchanges = [
     {

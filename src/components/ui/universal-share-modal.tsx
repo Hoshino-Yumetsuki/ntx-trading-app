@@ -51,6 +51,8 @@ interface UniversalShareModalProps {
   showCopyLinkButton?: boolean
   // 当识别到上传二维码的内容时回调，用于覆盖二维码文本
   onQrOverride?: (text: string) => void
+  // 是否展示“自定义上传二维码”功能（默认不展示）
+  showCustomQrUpload?: boolean
 }
 
 export function UniversalShareModal({
@@ -63,7 +65,8 @@ export function UniversalShareModal({
   customActions = [],
   showDefaultShareButtons = true,
   showCopyLinkButton = true,
-  onQrOverride
+  onQrOverride,
+  showCustomQrUpload = true
 }: UniversalShareModalProps) {
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -329,43 +332,45 @@ export function UniversalShareModal({
             </div>
           )}
 
-          {/* 自定义二维码：上传并识别（移至预览下方，上下布局） */}
-          <div className="bg-gray-50 rounded-lg p-3">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            <div className="flex flex-col gap-2">
-              <Button
-                variant="outline"
-                onClick={triggerUpload}
-                className="w-full"
-              >
-                上传自定义二维码
-              </Button>
-              {onQrOverride && (
+          {/* 自定义二维码：上传并识别（可配置显示） */}
+          {showCustomQrUpload && (
+            <div className="bg-gray-50 rounded-lg p-3">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              <div className="flex flex-col gap-2">
                 <Button
-                  variant="ghost"
+                  variant="outline"
+                  onClick={triggerUpload}
                   className="w-full"
-                  onClick={() => {
-                    onQrOverride('')
-                    toast({ title: '已还原默认二维码' })
-                    if (showImagePreview && imageGenerator) {
-                      _generateImage()
-                    }
-                  }}
                 >
-                  还原默认
+                  上传自定义二维码
                 </Button>
-              )}
+                {onQrOverride && (
+                  <Button
+                    variant="ghost"
+                    className="w-full"
+                    onClick={() => {
+                      onQrOverride('')
+                      toast({ title: '已还原默认二维码' })
+                      if (showImagePreview && imageGenerator) {
+                        _generateImage()
+                      }
+                    }}
+                  >
+                    还原默认
+                  </Button>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。
+              </p>
             </div>
-            <p className="text-xs text-gray-500 mt-2">
-              提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。
-            </p>
-          </div>
+          )}
 
           {/* 操作按钮区域 */}
           <div className="space-y-3">

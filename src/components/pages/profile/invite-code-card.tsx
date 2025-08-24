@@ -106,6 +106,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         }}
         imageGenerator={generateImage}
         showImagePreview={true}
+        showCustomQrUpload={false}
         customActions={[
           {
             label: '复制邀请码',

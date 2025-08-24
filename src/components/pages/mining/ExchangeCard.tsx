@@ -45,23 +45,25 @@ export function ExchangeCard({
   const [isBindDialogOpen, setIsBindDialogOpen] = useState(false)
 
   // 解析官网链接和邀请链接
-  const getUrls = (cexUrl: string | undefined): { miningUrl: string; registerUrl: string } => {
+  const getUrls = (
+    cexUrl: string | undefined
+  ): { miningUrl: string; registerUrl: string } => {
     if (!cexUrl) {
-      return { miningUrl: '#', registerUrl: '#' };
+      return { miningUrl: '#', registerUrl: '#' }
     }
     // 根据 "官网链接:邀请链接" 的格式来解析
-    const lastHttpIndex = cexUrl.lastIndexOf('http');
+    const lastHttpIndex = cexUrl.lastIndexOf('http')
     if (lastHttpIndex > 0) {
-      const separatorIndex = lastHttpIndex - 1;
+      const separatorIndex = lastHttpIndex - 1
       if (cexUrl[separatorIndex] === ':') {
-        const miningUrl = cexUrl.substring(0, separatorIndex);
-        const registerUrl = cexUrl.substring(lastHttpIndex);
-        return { miningUrl, registerUrl };
+        const miningUrl = cexUrl.substring(0, separatorIndex)
+        const registerUrl = cexUrl.substring(lastHttpIndex)
+        return { miningUrl, registerUrl }
       }
     }
     // 兼容旧的单链接格式
-    return { miningUrl: cexUrl, registerUrl: cexUrl };
-  };
+    return { miningUrl: cexUrl, registerUrl: cexUrl }
+  }
 
   const handleBindClick = (exchangeId: number) => {
     setBindingExchangeId(exchangeId)
@@ -122,7 +124,7 @@ export function ExchangeCard({
               const isUserBound = userExchanges.some(
                 (ue) => ue.id === exchange.id
               )
-              const { miningUrl, registerUrl } = getUrls(exchange.cex_url);
+              const { miningUrl } = getUrls(exchange.cex_url)
               return (
                 <div
                   key={exchange.id}
@@ -159,12 +161,7 @@ export function ExchangeCard({
                       <>
                         <Button
                           size="sm"
-                          onClick={() =>
-                            window.open(
-                              miningUrl,
-                              '_blank'
-                            )
-                          }
+                          onClick={() => window.open(miningUrl, '_blank')}
                           className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2"
                         >
                           <ExternalLink className="w-4 h-4 mr-1" />
@@ -214,8 +211,8 @@ export function ExchangeCard({
           {bindingExchangeId &&
             (() => {
               const exchange = exchanges.find((e) => e.id === bindingExchangeId)
-              if (!exchange) return null;
-              const { registerUrl } = getUrls(exchange.cex_url);
+              if (!exchange) return null
+              const { registerUrl } = getUrls(exchange.cex_url)
 
               return (
                 <>
@@ -296,9 +293,7 @@ export function ExchangeCard({
                       <div className="ml-8 space-y-3">
                         <Button
                           type="button"
-                          onClick={() =>
-                            window.open(registerUrl, '_blank')
-                          }
+                          onClick={() => window.open(registerUrl, '_blank')}
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                         >
                           <ExternalLink className="w-4 h-4 mr-2" />
