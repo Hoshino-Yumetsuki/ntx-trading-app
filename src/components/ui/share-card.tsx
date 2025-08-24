@@ -116,9 +116,9 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           {/* Slogan - Bottom Right */}
           <div className="text-right">
             <div className="text-gray-700 font-medium text-sm leading-tight">
-              聪明的投资者
+              一站式服务
               <br />
-              绝不浪费每分本金
+              成就你的web3事业
             </div>
             <div className="text-gray-500 text-xs mt-1">NTX DAO</div>
           </div>
