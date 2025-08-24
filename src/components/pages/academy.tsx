@@ -41,16 +41,16 @@ export function AcademyPage() {
 
   const tabs = [
     {
-      id: 'learning',
-      title: '交易研究院',
-      icon: BookOpen,
-      component: LearningResourcesPage
-    },
-    {
       id: 'model',
       title: '黑马模型',
-      icon: TrendingUp,
+      icon: BookOpen,
       component: BlackHorseModelPage
+    },
+    {
+      id: 'learning',
+      title: '学习资源',
+      icon: TrendingUp,
+      component: LearningResourcesPage
     },
     {
       id: 'signals',
@@ -220,7 +220,7 @@ export function AcademyPage() {
         <Card className="glass-card border-white/30 shadow-lg">
           <CardHeader>
             <CardTitle className="text-slate-800 text-xl font-bold">
-              学习资源
+              交易研究院
             </CardTitle>
           </CardHeader>
           <CardContent className="pb-6">
