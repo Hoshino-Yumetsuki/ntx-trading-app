@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -22,8 +22,18 @@ interface InviteCodeCardProps {
 export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   const { t } = useLanguage()
   const [showShareModal, setShowShareModal] = useState(false)
+  const [isIOS, setIsIOS] = useState(false)
   const { generateImage, ImageGeneratorComponent } =
     useInviteImageGenerator(userInfo)
+    
+  // 检测是否为iOS设备
+  useEffect(() => {
+    const checkIsIOS = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase()
+      return /iphone|ipad|ipod/.test(userAgent)
+    }
+    setIsIOS(checkIsIOS())
+  }, [])
 
   const copyInviteCode = () => {
     if (userInfo?.myInviteCode) {
@@ -65,12 +75,12 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
           <div className="flex gap-2">
             <Button
               size="sm"
-              onClick={copyInviteCode}
+              onClick={copyInviteLink}
               className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
               disabled={!userInfo?.myInviteCode}
             >
               <Copy className="w-4 h-4 mr-1" />
-              {t('profile.copy.button')}
+              复制邀请链接
             </Button>
             <Button
               size="sm"
@@ -109,16 +119,16 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         showCustomQrUpload={false}
         customActions={[
           {
-            label: '复制邀请码',
+            label: '复制邀请链接',
             icon: Copy,
-            onClick: copyInviteCode,
+            onClick: copyInviteLink,
             variant: 'outline',
             className: 'w-full'
           },
           {
-            label: '复制邀请链接',
+            label: '复制邀请码',
             icon: Copy,
-            onClick: copyInviteLink,
+            onClick: copyInviteCode,
             variant: 'outline',
             className: 'w-full'
           }

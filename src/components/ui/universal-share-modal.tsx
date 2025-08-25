@@ -174,21 +174,90 @@ export function UniversalShareModal({
     }
   }, [imageGenerator])
 
+  // 检测是否为iOS设备
+  const [isIOS, setIsIOS] = useState(false)
+
+  useEffect(() => {
+    const checkIsIOS = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase()
+      return /iphone|ipad|ipod/.test(userAgent)
+    }
+    setIsIOS(checkIsIOS())
+  }, [])
+
   // 下载图片
   const downloadImage = () => {
     if (!generatedImage) return
 
-    const link = document.createElement('a')
-    link.href = generatedImage
-    link.download = `${shareData.title}.png`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    // iOS 设备特殊处理
+    if (isIOS) {
+      // 创建一个新窗口打开图片，用户可以长按保存
+      const newWindow = window.open()
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head>
+              <title>保存海报</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+              <style>
+                body {
+                  margin: 0;
+                  padding: 0;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 100vh;
+                  background-color: #f5f5f5;
+                  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                }
+                img {
+                  max-width: 100%;
+                  max-height: 80vh;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                  border-radius: 8px;
+                }
+                .instructions {
+                  margin-top: 20px;
+                  text-align: center;
+                  padding: 10px;
+                  background-color: #fff;
+                  border-radius: 8px;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                  width: 90%;
+                  max-width: 400px;
+                }
+              </style>
+            </head>
+            <body>
+              <img src="${generatedImage}" alt="邀请海报">
+              <div class="instructions">
+                <p><strong>请长按图片，选择"添加到照片"保存到相册</strong></p>
+              </div>
+            </body>
+          </html>
+        `)
+        newWindow.document.close()
+      }
+      
+      toast({
+        title: '请长按图片保存',
+        description: 'iOS设备请长按图片，然后选择"添加到照片"'
+      })
+    } else {
+      // 非iOS设备使用常规下载方式
+      const link = document.createElement('a')
+      link.href = generatedImage
+      link.download = `${shareData.title}.png`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
 
-    toast({
-      title: '下载成功',
-      description: '图片已保存到本地'
-    })
+      toast({
+        title: '下载成功',
+        description: '图片已保存到本地'
+      })
+    }
   }
 
   // 复制图片到剪贴板
