@@ -572,14 +572,14 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     aria-label={`查看文章 ${item.title}`}
                     className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     onClick={() => {
-                      router.push(`/?tab=news&news=${item.id}`)
-                      onNavigate?.('news')
+                      router.push(`/?tab=notifications&news=${item.id}`)
+                      onNavigate?.('notifications')
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
-                        router.push(`/?tab=news&news=${item.id}`)
-                        onNavigate?.('news')
+                        router.push(`/?tab=notifications&news=${item.id}`)
+                        onNavigate?.('notifications')
                       }
                     }}
                   >
@@ -592,7 +592,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               variant="ghost"
               size="sm"
               className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 mt-3"
-              onClick={() => onNavigate?.('news')}
+              onClick={() => onNavigate?.('notifications')}
             >
               {t('ui.notifications.viewMore')}
               <ArrowRight className="w-4 h-4 ml-1" />
