@@ -42,7 +42,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [hasBindedExchange, setHasBindedExchange] = useState<boolean | null>(
     null
   )
-  const [isCheckingBinding, setIsCheckingBinding] = useState(false)
   const [showBindDialog, setShowBindDialog] = useState(false)
 
   useEffect(() => {
@@ -72,14 +71,11 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
       }
 
       try {
-        setIsCheckingBinding(true)
         const userExchanges = await getUserExchanges(token)
         setHasBindedExchange(userExchanges && userExchanges.length > 0)
       } catch (error) {
         console.error('获取用户交易所绑定状态失败:', error)
         setHasBindedExchange(false)
-      } finally {
-        setIsCheckingBinding(false)
       }
     }
 
@@ -396,9 +392,8 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     onNavigate?.('mining')
                   }
                 }}
-                disabled={isCheckingBinding}
               >
-                {isCheckingBinding ? '检查绑定状态...' : '绑定交易所，立刻开赚'}
+                绑定交易所，立刻开赚
               </Button>
             </div>
           </div>
