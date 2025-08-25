@@ -154,7 +154,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
               欢迎来到 NexTrade DAO
             </CardTitle>
             <p className="text-slate-600 mt-2">
-              通过交易返利、质押分红和社区治理赚取 NTX 代币
+              全球首家一站式Web3返佣创业服务平台
             </p>
           </CardHeader>
         </Card>

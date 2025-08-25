@@ -42,7 +42,7 @@ export function BlackHorseModelPage({
         setLockedCourses(lockedCourses)
       } catch (err) {
         console.error('Failed to fetch courses:', err)
-        setError('获取黑马模型数据失败，请稍后再试')
+        setError('获取学习资源数据失败，请稍后再试')
       } finally {
         setLoading(false)
       }
@@ -72,14 +72,14 @@ export function BlackHorseModelPage({
             <div className="premium-icon w-8 h-8 rounded-lg mr-3">
               <TrendingUp className="w-4 h-4 text-blue-600" />
             </div>
-            黑马模型
+            学习资源
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <span className="ml-2 text-slate-600">加载黑马模型中...</span>
+              <span className="ml-2 text-slate-600">加载学习资源中...</span>
             </div>
           ) : error ? (
             <div className="text-center py-8">
@@ -88,7 +88,7 @@ export function BlackHorseModelPage({
             </div>
           ) : unlockedCourses.length === 0 && lockedCourses.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-slate-600">暂无黑马模型可显示</p>
+              <p className="text-slate-600">暂无学习资源可显示</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -97,7 +97,7 @@ export function BlackHorseModelPage({
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
                     <div className="w-1 h-6 bg-green-500 mr-3 rounded"></div>
-                    已解锁黑马模型
+                    已解锁学习资源
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     {unlockedCourses.map((course) => (
@@ -157,7 +157,7 @@ export function BlackHorseModelPage({
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
                     <div className="w-1 h-6 bg-slate-400 mr-3 rounded"></div>
-                    待解锁模型
+                    待解锁资源
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     {lockedCourses.map((course) => (

@@ -17,10 +17,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/src/components/ui/dialog'
-import { ExternalLink, UserX, UserPlus } from 'lucide-react'
+import { ExternalLink, UserX, UserPlus, Copy } from 'lucide-react'
 import type { Exchange, UserExchange } from '@/src/services/mining'
 import { useLanguage } from '@/src/contexts/language-context'
 import Image from 'next/image'
+import { toast } from 'sonner'
 
 interface ExchangeCardProps {
   exchanges: Exchange[]
@@ -44,25 +45,71 @@ export function ExchangeCard({
   const [uid, setUid] = useState('')
   const [isBindDialogOpen, setIsBindDialogOpen] = useState(false)
 
-  // 解析官网链接和邀请链接
+  // 解析官网链接、邀请链接和邀请码
   const getUrls = (
     cexUrl: string | undefined
-  ): { miningUrl: string; registerUrl: string } => {
+  ): { miningUrl: string; registerUrl: string; inviteCode: string } => {
     if (!cexUrl) {
-      return { miningUrl: '#', registerUrl: '#' }
+      return { miningUrl: '#', registerUrl: '#', inviteCode: '' }
     }
-    // 根据 "官网链接:邀请链接" 的格式来解析
-    const lastHttpIndex = cexUrl.lastIndexOf('http')
-    if (lastHttpIndex > 0) {
-      const separatorIndex = lastHttpIndex - 1
-      if (cexUrl[separatorIndex] === ':') {
-        const miningUrl = cexUrl.substring(0, separatorIndex)
-        const registerUrl = cexUrl.substring(lastHttpIndex)
-        return { miningUrl, registerUrl }
+    // 根据 "官网链接:邀请链接:邀请码" 的格式来解析
+    const parts = cexUrl.split(':')
+
+    if (parts.length >= 3) {
+      // 有明确的邀请码
+      const miningUrl = parts[0]
+      const registerUrl = parts[1].startsWith('http')
+        ? parts[1]
+        : `http${parts[1]}`
+      const inviteCode = parts[2]
+      return { miningUrl, registerUrl, inviteCode }
+    } else if (parts.length === 2) {
+      // 只有官网链接和注册链接，尝试从注册链接中提取邀请码
+      const miningUrl = parts[0]
+      const registerUrl = parts[1].startsWith('http')
+        ? parts[1]
+        : `http${parts[1]}`
+
+      // 尝试从链接中提取邀请码
+      let inviteCode = ''
+      try {
+        const url = new URL(registerUrl)
+        // 检查常见的邀请码参数名
+        const possibleParams = [
+          'code',
+          'invite',
+          'inviteCode',
+          'ref',
+          'referral'
+        ]
+        for (const param of possibleParams) {
+          const value = url.searchParams.get(param)
+          if (value) {
+            inviteCode = value
+            break
+          }
+        }
+
+        // 如果没有找到参数，尝试从路径中提取最后一段作为可能的邀请码
+        if (!inviteCode && url.pathname.length > 1) {
+          const pathParts = url.pathname.split('/')
+          if (pathParts.length > 0) {
+            const lastPart = pathParts[pathParts.length - 1]
+            if (lastPart && lastPart.length > 3) {
+              // 假设邀请码至少有4个字符
+              inviteCode = lastPart
+            }
+          }
+        }
+      } catch (_e) {
+        // URL 解析失败，忽略错误
       }
+
+      return { miningUrl, registerUrl, inviteCode }
     }
+
     // 兼容旧的单链接格式
-    return { miningUrl: cexUrl, registerUrl: cexUrl }
+    return { miningUrl: cexUrl, registerUrl: cexUrl, inviteCode: '' }
   }
 
   const handleBindClick = (exchangeId: number) => {
@@ -212,7 +259,7 @@ export function ExchangeCard({
             (() => {
               const exchange = exchanges.find((e) => e.id === bindingExchangeId)
               if (!exchange) return null
-              const { registerUrl } = getUrls(exchange.cex_url)
+              const { registerUrl, inviteCode } = getUrls(exchange.cex_url)
 
               return (
                 <>
@@ -299,6 +346,33 @@ export function ExchangeCard({
                           <ExternalLink className="w-4 h-4 mr-2" />
                           {t('mining.exchange.goRegister') || '去注册'}
                         </Button>
+
+                        {/* 显示邀请码 */}
+                        {inviteCode && (
+                          <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                            <div className="text-xs text-blue-700 font-medium mb-1">
+                              邀请码
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div className="font-mono font-medium text-blue-800">
+                                {inviteCode}
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(inviteCode)
+                                  toast.success('邀请码已复制')
+                                }}
+                                className="h-7 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-100"
+                              >
+                                <Copy className="w-3 h-3 mr-1" />
+                                复制
+                              </Button>
+                            </div>
+                          </div>
+                        )}
 
                         <p className="text-xs text-orange-600 flex items-start space-x-1">
                           <span>⚠️</span>

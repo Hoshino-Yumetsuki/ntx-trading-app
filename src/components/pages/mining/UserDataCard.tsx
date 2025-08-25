@@ -35,7 +35,7 @@ export function UserDataCard({
         </div>
       ) : (
         <>
-          <h3 className="text-lg font-medium text-slate-700 mb-3">
+          <h3 className="text-base font-medium text-slate-700 mb-3">
             {t('mining.user.title') || '我的数据'}
           </h3>
           <div className="grid grid-cols-2 gap-4 mb-4">
@@ -54,7 +54,7 @@ export function UserDataCard({
                 {t('mining.user.totalMining')}
               </p>
               <p
-                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+                className={`text-[14pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
               >
                 {userLoading
                   ? ''
@@ -78,7 +78,7 @@ export function UserDataCard({
                 {t('mining.user.totalTradingCost')}
               </p>
               <p
-                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+                className={`text-[14pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
               >
                 {userLoading
                   ? ''
@@ -104,7 +104,7 @@ export function UserDataCard({
                 {t('mining.user.dailyMining')}
               </p>
               <p
-                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
+                className={`text-[14pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
               >
                 {userLoading
                   ? ''
@@ -128,7 +128,7 @@ export function UserDataCard({
                 {t('mining.user.dailyTradingCost')}
               </p>
               <p
-                className={`text-[16pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
+                className={`text-[14pt] font-din-black text-[#4D576A] ${userLoading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
               >
                 {userLoading
                   ? ''

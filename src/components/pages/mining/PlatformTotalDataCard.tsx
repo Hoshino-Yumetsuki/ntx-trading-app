@@ -38,7 +38,7 @@ export function PlatformTotalDataCard({
             {t('mining.platform.totalMined') || '总挖矿量'}
           </p>
           <p
-            className={`text-[16pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+            className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
           >
             {loading
               ? ''
@@ -64,7 +64,7 @@ export function PlatformTotalDataCard({
             {t('mining.platform.totalBurned') || '总销毁量'}
           </p>
           <p
-            className={`text-[16pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+            className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
           >
             {loading
               ? ''
@@ -90,7 +90,7 @@ export function PlatformTotalDataCard({
             {t('mining.platform.totalUsers') || '平台用户'}
           </p>
           <p
-            className={`text-[16pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+            className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
           >
             {loading
               ? ''

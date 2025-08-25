@@ -257,10 +257,10 @@ export function MiningPage() {
       <div className="px-6 pt-8 pb-4">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-blue-600">
+            <h1 className="text-xl font-bold text-blue-600">
               {t('mining.title')}
             </h1>
-            <p className="text-slate-600 text-sm">{t('mining.subtitle')}</p>
+            <p className="text-slate-600 text-xs">{t('mining.subtitle')}</p>
           </div>
           <div className="flex items-center space-x-3">
             <div className="text-right">
@@ -323,7 +323,7 @@ export function MiningPage() {
         {/* 挖矿数据标签页 */}
         {activeTab === 'mining' && (
           <div>
-            <h2 className="text-lg font-medium text-slate-700 mb-3">
+            <h2 className="text-base font-medium text-slate-700 mb-3">
               {t('mining.data.title') || '挖矿数据'}
             </h2>
 
@@ -382,7 +382,7 @@ export function MiningPage() {
         {activeTab === 'exchange' && (
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-xl overflow-hidden">
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 {t('mining.exchangeList.title') || '交易所列表'}
               </h2>
@@ -390,7 +390,7 @@ export function MiningPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* 交易所绑定组件 */}
                 <div>
-                  <h3 className="text-lg font-medium text-slate-700 mb-4">
+                  <h3 className="text-base font-medium text-slate-700 mb-3">
                     {t('mining.bindExchanges.title') || '绑定交易所'}
                   </h3>
                   <ExchangeCard
@@ -404,7 +404,7 @@ export function MiningPage() {
 
                 {/* 挖矿排行榜组件 */}
                 <div>
-                  <h3 className="text-lg font-medium text-slate-700 mb-4">
+                  <h3 className="text-base font-medium text-slate-700 mb-3">
                     {t('mining.leaderboard.title') || '挖矿排行榜'}
                   </h3>
                   <LeaderboardCard

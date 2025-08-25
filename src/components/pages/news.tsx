@@ -374,7 +374,9 @@ export function NewsPage() {
                 priority
               />
             </div>
-            <p className="text-slate-800 text-xl font-medium">交易即挖矿</p>
+            <p className="text-slate-800 text-xl font-medium">
+              WEB3 一站式服务
+            </p>
           </div>
           <LanguageSwitcher />
         </div>

@@ -11,6 +11,17 @@ import { TutorialPage } from '@/src/components/pages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
 import { AutoScaleBox } from '@/src/components/ui/auto-scale-box'
 import { API_BASE_URL } from '@/src/services/config'
+import { useAuth } from '@/src/contexts/AuthContext'
+import { getUserExchanges } from '@/src/services/mining'
+import { toast } from 'sonner'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/src/components/ui/dialog'
 
 interface NewsItem {
   id: number
@@ -26,7 +37,13 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [showTutorialPage, setShowTutorialPage] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const { t } = useLanguage()
+  const { token, isAuthenticated } = useAuth()
   const [recentNews, setRecentNews] = useState<NewsItem[]>([])
+  const [hasBindedExchange, setHasBindedExchange] = useState<boolean | null>(
+    null
+  )
+  const [isCheckingBinding, setIsCheckingBinding] = useState(false)
+  const [showBindDialog, setShowBindDialog] = useState(false)
 
   useEffect(() => {
     const fetchApiNews = async () => {
@@ -45,6 +62,29 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
 
     fetchApiNews()
   }, [])
+
+  // 检查用户是否已绑定交易所
+  useEffect(() => {
+    const checkUserExchanges = async () => {
+      if (!token || !isAuthenticated) {
+        setHasBindedExchange(false)
+        return
+      }
+
+      try {
+        setIsCheckingBinding(true)
+        const userExchanges = await getUserExchanges(token)
+        setHasBindedExchange(userExchanges && userExchanges.length > 0)
+      } catch (error) {
+        console.error('获取用户交易所绑定状态失败:', error)
+        setHasBindedExchange(false)
+      } finally {
+        setIsCheckingBinding(false)
+      }
+    }
+
+    checkUserExchanges()
+  }, [token, isAuthenticated])
 
   const exchanges = [
     {
@@ -344,9 +384,21 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <div className="mt-5 text-center">
               <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md"
-                onClick={() => onNavigate?.('mining')}
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    toast.error('请先登录')
+                    return
+                  }
+
+                  if (hasBindedExchange === false) {
+                    setShowBindDialog(true)
+                  } else {
+                    onNavigate?.('mining')
+                  }
+                }}
+                disabled={isCheckingBinding}
               >
-                绑定交易所，立刻开赚
+                {isCheckingBinding ? '检查绑定状态...' : '绑定交易所，立刻开赚'}
               </Button>
             </div>
           </div>
@@ -395,7 +447,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <div className="flex items-center justify-center gap-x-2 mb-3">
               <Image
                 src="/dh.png"
-                alt="黑马模型图标"
+                alt="学习资源图标"
                 width={15}
                 height={15}
                 className="w-[15px] h-[15px]"
@@ -537,6 +589,32 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </CardContent>
         </Card>
       </div>
+
+      {/* 未绑定交易所提示对话框 */}
+      <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle>需要绑定交易所</DialogTitle>
+            <DialogDescription>
+              您需要先绑定交易所 UID 才能开始挖矿。请前往挖矿页面完成绑定。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowBindDialog(false)}>
+              稍后再说
+            </Button>
+            <Button
+              onClick={() => {
+                setShowBindDialog(false)
+                onNavigate?.('mining')
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              前往绑定
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

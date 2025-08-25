@@ -208,7 +208,7 @@ export function AcademyPage() {
         >
           <div className="flex items-center h-full">
             <div>
-              <div className="text-2xl font-bold mb-1">黑马学院</div>
+              <div className="text-2xl font-bold mb-1">学习资源</div>
               <div className="opacity-90">掌握机构交易思维</div>
             </div>
           </div>

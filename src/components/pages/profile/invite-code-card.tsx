@@ -22,10 +22,10 @@ interface InviteCodeCardProps {
 export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   const { t } = useLanguage()
   const [showShareModal, setShowShareModal] = useState(false)
-  const [isIOS, setIsIOS] = useState(false)
+  const [_isIOS, setIsIOS] = useState(false)
   const { generateImage, ImageGeneratorComponent } =
     useInviteImageGenerator(userInfo)
-    
+
   // 检测是否为iOS设备
   useEffect(() => {
     const checkIsIOS = () => {

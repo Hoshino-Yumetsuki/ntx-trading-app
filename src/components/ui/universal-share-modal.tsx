@@ -239,7 +239,7 @@ export function UniversalShareModal({
         `)
         newWindow.document.close()
       }
-      
+
       toast({
         title: '请长按图片保存',
         description: 'iOS设备请长按图片，然后选择"添加到照片"'

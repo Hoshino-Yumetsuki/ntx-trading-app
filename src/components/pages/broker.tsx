@@ -16,6 +16,7 @@ import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { useRouter } from 'next/navigation'
+import { ChevronLeft } from 'lucide-react'
 
 export function BrokerPage() {
   const router = useRouter()
@@ -77,14 +78,25 @@ export function BrokerPage() {
     <div className="min-h-screen pb-6">
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
-          <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
-            <Image
-              src="/Frame17@3x.png"
-              alt="NTX Logo"
-              fill
-              className="object-contain"
-              priority
-            />
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
+              className="mr-3 text-slate-600 hover:text-slate-800"
+            >
+              <ChevronLeft className="w-5 h-5 mr-2" />
+              返回
+            </Button>
+            <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
+              <Image
+                src="/Frame17@3x.png"
+                alt="NTX Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
           <LanguageSwitcher />
         </div>

@@ -73,7 +73,7 @@ export function PlatformDailyDataCard({
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.miningOutput') || '挖矿产出'}
             </span>
-            <span className="text-base text-slate-800">
+            <span className="text-sm text-slate-800">
               {dailyData && dailyData.mining_output !== undefined
                 ? formatCurrency(dailyData.mining_output, 'NTX')
                 : '--'}
@@ -85,7 +85,7 @@ export function PlatformDailyDataCard({
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.burned') || '销毁量'}
             </span>
-            <span className="text-base text-slate-800">
+            <span className="text-sm text-slate-800">
               {dailyData && dailyData.burned !== undefined
                 ? formatCurrency(dailyData.burned, 'NTX')
                 : '--'}
@@ -98,7 +98,7 @@ export function PlatformDailyDataCard({
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.commission') || '佣金'}
             </span>
-            <span className="text-base text-slate-800">
+            <span className="text-sm text-slate-800">
               {dailyData && dailyData.commission !== undefined
                 ? formatCurrency(dailyData.commission, 'USDT')
                 : '--'}
@@ -112,7 +112,7 @@ export function PlatformDailyDataCard({
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.tradingVolume') || '交易量'}
             </span>
-            <span className="text-base text-slate-800">
+            <span className="text-sm text-slate-800">
               {dailyData && dailyData.trading_volume !== undefined
                 ? formatCurrency(dailyData.trading_volume, 'USDT')
                 : '--'}
@@ -125,7 +125,7 @@ export function PlatformDailyDataCard({
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.miners') || '挖矿人数'}
             </span>
-            <span className="text-base text-slate-800">
+            <span className="text-sm text-slate-800">
               {dailyData && dailyData.miners !== undefined
                 ? formatNumber(dailyData.miners)
                 : '--'}

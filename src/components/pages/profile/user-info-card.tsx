@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle
 } from '@/src/components/ui/card'
-import { Award } from 'lucide-react'
 import type { UserInfo } from '@/src/types/user'
 import Image from 'next/image'
 
@@ -62,13 +61,7 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
 
         {/* 经验和用户组 */}
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
-          <div className="flex text-sm text-slate-700 mb-1">
-            <div className="flex items-center">
-              <Award className="w-4 h-4 mr-1 text-blue-600" />
-              <span>EXP: {userInfo?.exp || 0}</span>
-            </div>
-          </div>
-          {/* EXP 进度条已移除，仅保留成为经纪商进度 */}
+          {/* 经验值显示已移除 */}
 
           {/* 距离成为经纪商 */}
           <div className="mt-4">

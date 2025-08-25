@@ -29,7 +29,7 @@ export function PlatformDataCard({
     <div className="space-y-8">
       {/* 平台总数据区域 */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-slate-700 mb-3">
+        <h3 className="text-base font-medium text-slate-700 mb-3">
           {t('mining.platform.totalDataTitle') || '平台总数据'}
         </h3>
         <PlatformTotalDataCard platformData={platformData} loading={loading} />
@@ -38,7 +38,7 @@ export function PlatformDataCard({
       {/* 平台日数据区域 */}
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-lg font-medium text-slate-700">
+          <h3 className="text-base font-medium text-slate-700">
             {t('mining.platform.dailyDataTitle') || '平台日数据'}
           </h3>
           <div className="flex items-center gap-2">
