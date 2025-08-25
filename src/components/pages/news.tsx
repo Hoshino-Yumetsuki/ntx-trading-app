@@ -412,7 +412,7 @@ export function NewsPage() {
               {' '}
               {/* 控制每个新闻项的垂直间距 */}
               {newsItems.map((item) => (
-                // 每个新闻项的容器
+                // 每个新闻项的容器（语义化 button，配合内层 asChild 避免嵌套 button）
                 <button
                   type="button"
                   key={item.id}
@@ -439,6 +439,7 @@ export function NewsPage() {
                         {item.title}
                       </h3>
                       <Button
+                        asChild
                         variant="ghost"
                         size="sm"
                         className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
@@ -447,7 +448,9 @@ export function NewsPage() {
                           handleShare(item)
                         }}
                       >
-                        <Share2 className="w-4 h-4" />
+                        <span>
+                          <Share2 className="w-4 h-4" />
+                        </span>
                       </Button>
                     </div>
                     {/* 日期和来源 - 对应 group_5, text_6 */}
