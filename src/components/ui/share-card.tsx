@@ -41,6 +41,12 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
     const contentInnerRef = useRef<HTMLDivElement>(null)
     const footerRef = useRef<HTMLDivElement>(null)
     const [contentFontSize, setContentFontSize] = useState(18)
+    // 允许根据内容动态增长的整体高度
+    const BASE_HEIGHT = 1068
+    // 尽可能从中间对半分开：上下切片各占一半原图高度
+    const TOP_SLICE = Math.floor(BASE_HEIGHT / 2)
+    const BOTTOM_SLICE = BASE_HEIGHT - TOP_SLICE
+    const [cardHeight, setCardHeight] = useState(BASE_HEIGHT)
 
     useEffect(() => {
       const fitContent = () => {
@@ -57,12 +63,16 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         inner.style.lineHeight = '1.9'
         inner.style.textIndent = '2em'
         let guard = 0
-        while (inner.scrollHeight > available && font > 12 && guard < 24) {
+        while (inner.scrollHeight > available && font > 14 && guard < 24) {
           font -= 1
           inner.style.fontSize = `${font}px`
           guard++
         }
         setContentFontSize(font)
+
+        // 若仍溢出，则拉长卡片高度：保留头尾装饰，中间用 #fefefe 延展
+        const overflow = Math.max(0, inner.scrollHeight - available)
+        setCardHeight(BASE_HEIGHT + overflow)
       }
 
       // 等待一帧，确保 DOM 布局完成后再测量
@@ -100,16 +110,47 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         style={{
           fontFamily: 'system-ui, sans-serif',
           width: '600px',
-          height: '1068px',
+          height: `${cardHeight}px`,
           margin: '0 auto',
-          backgroundImage: 'url(/Frame35.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundColor: '#ffffff',
+          borderRadius: '24px',
+          boxShadow: '0 10px 30px rgba(2, 6, 23, 0.08)'
         }}
       >
+        {/* 背景切片：上、下固定装饰，中间 #fefefe 可延展 */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 z-0"
+          style={{
+            height: `${TOP_SLICE}px`,
+            backgroundImage: 'url(/Frame35.png)',
+            backgroundSize: '600px 1068px',
+            backgroundPosition: 'top center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 z-0"
+          style={{
+            height: `${BOTTOM_SLICE}px`,
+            backgroundImage: 'url(/Frame35.png)',
+            backgroundSize: '600px 1068px',
+            backgroundPosition: 'bottom center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute left-0 right-0 z-0"
+          style={{
+            top: `${TOP_SLICE}px`,
+            bottom: `${BOTTOM_SLICE}px`,
+            background: '#fefefe'
+          }}
+        />
         {/* Header: absolute logo top-left, compact title on the right */}
-        <div className="absolute top-6 left-6 pointer-events-none select-none z-0">
+        <div className="absolute top-6 left-6 pointer-events-none select-none z-10">
           <Image
             src="/Frame17@3x.png"
             alt="NTX Logo"
