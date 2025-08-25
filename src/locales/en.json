@@ -331,7 +331,9 @@
       "uidPlaceholder": "Enter exchange UID",
       "uidWarning": "Only bind exchange UIDs registered via this link, other UIDs cannot participate in mining",
       "noExchanges": "No exchanges available",
-      "tryLater": "Please try again later"
+      "tryLater": "Please try again later",
+      "bindRequired": "Exchange Binding Required",
+      "bindRequiredDesc": "You need to bind your exchange account first to start mining"
     },
     "exchangelist": {
       "title": "Exchange List"

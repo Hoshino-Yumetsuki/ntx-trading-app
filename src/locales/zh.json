@@ -348,7 +348,9 @@
       "uidPlaceholder": "请输入交易所UID",
       "uidWarning": "仅绑定通过本链接注册的交易所UID，其他UID无法参与挖矿",
       "noExchanges": "暂无可用交易所",
-      "tryLater": "请稍后再试"
+      "tryLater": "请稍后再试",
+      "bindRequired": "需要绑定交易所",
+      "bindRequiredDesc": "您需要先绑定交易所账户才能开始挖矿"
     },
     "exchangeList": {
       "title": "交易所列表"

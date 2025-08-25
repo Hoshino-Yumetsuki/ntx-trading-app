@@ -390,9 +390,6 @@ export function MiningPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* 交易所绑定组件 */}
                 <div>
-                  <h3 className="text-base font-medium text-slate-700 mb-3">
-                    {t('mining.bindExchanges.title') || '绑定交易所'}
-                  </h3>
                   <ExchangeCard
                     exchanges={exchanges}
                     userExchanges={userExchanges}
