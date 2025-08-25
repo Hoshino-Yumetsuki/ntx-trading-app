@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Home, Coins, User, Newspaper, BookOpen } from 'lucide-react'
 import { HomePage } from '@/src/components/pages/home'
 import { MiningPage } from '@/src/components/pages/mining'
@@ -20,6 +20,7 @@ export function MainApp() {
   const { t } = useLanguage()
   const { isAuthenticated } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // 从 localStorage 恢复页面状态
   useEffect(() => {
@@ -29,6 +30,20 @@ export function MainApp() {
     }
     setIsInitialized(true)
   }, [])
+
+  // 从 URL 查询参数恢复页面状态（优先级高于 localStorage 的默认）
+  useEffect(() => {
+    if (!searchParams) return
+    const tab = searchParams.get('tab') || ''
+    const newsId = searchParams.get('news')
+    const validTabs = ['home', 'news', 'academy', 'mining', 'profile', 'broker']
+    if (tab && validTabs.includes(tab)) {
+      setActiveTab(tab)
+    } else if (newsId) {
+      setActiveTab('news')
+    }
+    // 当查询参数变化时自动同步
+  }, [searchParams])
 
   // 保存页面状态到 localStorage
   useEffect(() => {

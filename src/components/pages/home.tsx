@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/src/components/ui/card'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import { TrendingUp, ArrowRight, Target, Award, Brain } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import useEmblaCarousel from 'embla-carousel-react'
 import { TutorialPage } from '@/src/components/pages/tutorial'
 import { useLanguage } from '@/src/contexts/language-context'
@@ -38,6 +39,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [isInitialized, setIsInitialized] = useState(false)
   const { t } = useLanguage()
   const { token, isAuthenticated } = useAuth()
+  const router = useRouter()
   const [recentNews, setRecentNews] = useState<NewsItem[]>([])
   const [hasBindedExchange, setHasBindedExchange] = useState<boolean | null>(
     null
@@ -563,12 +565,26 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </h3>
             <ul className="space-y-2">
               {recentNews.map((item) => (
-                <li
-                  key={item.id}
-                  className="text-slate-700 text-sm flex items-center"
-                >
+                <li key={item.id} className="flex items-center">
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
-                  <span className="truncate">{item.title}</span>
+                  <button
+                    type="button"
+                    aria-label={`查看文章 ${item.title}`}
+                    className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+                    onClick={() => {
+                      router.push(`/?tab=news&news=${item.id}`)
+                      onNavigate?.('news')
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        router.push(`/?tab=news&news=${item.id}`)
+                        onNavigate?.('news')
+                      }
+                    }}
+                  >
+                    {item.title}
+                  </button>
                 </li>
               ))}
             </ul>

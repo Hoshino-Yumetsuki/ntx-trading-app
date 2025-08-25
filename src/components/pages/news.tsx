@@ -15,6 +15,7 @@ import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
 import { API_BASE_URL } from '@/src/services/config'
 import '@/src/styles/markdown.css'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 interface NewsItem {
   id: number
@@ -36,6 +37,9 @@ export function NewsPage() {
   const [viewingArticle, setViewingArticle] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [shareNewsItem, setShareNewsItem] = useState<NewsItem | null>(null)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [consumedNewsId, setConsumedNewsId] = useState<number | null>(null)
   const getShareUrl = useCallback(
     (item: NewsItem | null) =>
       item ? `${window.location.origin}/?tab=news&news=${item.id}` : '',
@@ -200,45 +204,76 @@ export function NewsPage() {
     return () => clearTimeout(timeoutId)
   }, [fetchRssNews, mergeAndSortNews])
 
-  // 获取新闻详情
-  const fetchArticleContent = async (id: number) => {
-    try {
-      // 如果是RSS文章(负数ID)，直接从现有数据中获取
-      if (id < 0) {
-        const rssArticle = newsItems.find((item) => item.id === id)
-        if (rssArticle) {
-          setCurrentArticle(rssArticle)
+  // 获取新闻详情（稳定引用）
+  const fetchArticleContent = useCallback(
+    async (id: number) => {
+      try {
+        // 如果是RSS文章(负数ID)，直接从现有数据中获取
+        if (id < 0) {
+          const rssArticle = newsItems.find((item) => item.id === id)
+          if (rssArticle) {
+            setCurrentArticle(rssArticle)
+            setViewingArticle(true)
+          } else {
+            throw new Error('找不到对应的RSS文章')
+          }
+          return
+        }
+
+        // 如果是API文章，从服务器获取详情
+        const response = await fetch(
+          `${API_BASE_URL}/user/academy/articles/${id}`
+        )
+        if (response.ok) {
+          const data = await response.json()
+          setCurrentArticle({ ...data, source: 'api' })
           setViewingArticle(true)
         } else {
-          throw new Error('找不到对应的RSS文章')
+          toast({
+            title: '获取文章详情失败',
+            description: '请稍后再试',
+            variant: 'destructive'
+          })
         }
-        return
-      }
-
-      // 如果是API文章，从服务器获取详情
-      const response = await fetch(
-        `${API_BASE_URL}/user/academy/articles/${id}`
-      )
-      if (response.ok) {
-        const data = await response.json()
-        setCurrentArticle({ ...data, source: 'api' })
-        setViewingArticle(true)
-      } else {
+      } catch (error) {
+        console.error('获取文章出错:', error)
         toast({
           title: '获取文章详情失败',
-          description: '请稍后再试',
+          description: '请检查您的网络连接',
           variant: 'destructive'
         })
       }
-    } catch (error) {
-      console.error('获取文章出错:', error)
-      toast({
-        title: '获取文章详情失败',
-        description: '请检查您的网络连接',
-        variant: 'destructive'
-      })
+    },
+    [newsItems]
+  )
+
+  // 根据 URL 中的 ?news=ID 自动打开文章（API：直接拉取；RSS：等待列表就绪）
+  useEffect(() => {
+    const idStr = searchParams?.get('news')
+    if (!idStr) return
+    const id = Number(idStr)
+    if (Number.isNaN(id)) return
+    if (consumedNewsId === id) return
+    setConsumedNewsId(id)
+
+    if (id >= 0) {
+      // API 文章：直接请求详情
+      fetchArticleContent(id)
     }
-  }
+  }, [searchParams, consumedNewsId, fetchArticleContent])
+
+  // 当等待中的 RSS 文章出现在列表中时再打开
+  useEffect(() => {
+    if (consumedNewsId !== null && consumedNewsId < 0 && !viewingArticle) {
+      const rssArticle = newsItems.find((n) => n.id === consumedNewsId)
+      if (rssArticle) {
+        setCurrentArticle(rssArticle)
+        setViewingArticle(true)
+      }
+    }
+  }, [newsItems, consumedNewsId, viewingArticle])
+
+  // 获取新闻详情 - 已上移并使用 useCallback 包裹
 
   const handleShare = (newsItem: NewsItem) => {
     setShareNewsItem(newsItem)
@@ -284,7 +319,19 @@ export function NewsPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setViewingArticle(false)}
+                onClick={() => {
+                  setViewingArticle(false)
+                  try {
+                    const params = new URLSearchParams(window.location.search)
+                    if (params.has('news')) {
+                      params.delete('news')
+                      const qs = params.toString()
+                      // 保持停留在新闻页
+                      const url = qs ? `?${qs}` : '?tab=news'
+                      router.replace(url)
+                    }
+                  } catch {}
+                }}
                 className="mr-3 text-slate-600 hover:text-slate-800"
               >
                 <ChevronLeft className="w-5 h-5 mr-2" />
