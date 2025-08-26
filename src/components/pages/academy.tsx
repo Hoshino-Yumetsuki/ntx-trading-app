@@ -232,7 +232,7 @@ export function AcademyPage() {
                   return (
                     <Card
                       key={tab.id}
-                      className="data-card p-4 rounded-xl text-left cursor-pointer transition-shadow hover:shadow-lg h-32 group"
+                      className="data-card p-4 rounded-xl text-left cursor-pointer transition-shadow hover:shadow-lg h-28 group"
                       style={{
                         border: 'none',
                         backgroundImage: 'url(/Group69@3x.png)', // 应用参考范例的背景图
