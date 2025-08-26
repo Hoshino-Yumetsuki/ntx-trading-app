@@ -2,10 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
-import {
-  Card,
-  CardContent,
-} from '@/src/components/ui/card'
+import { Card, CardContent } from '@/src/components/ui/card'
 import {
   BookOpen,
   TrendingUp,
