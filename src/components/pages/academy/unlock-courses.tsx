@@ -24,12 +24,9 @@ import {
   BookOpen,
   BadgeCheck
 } from 'lucide-react'
-import { getPermissionGroups } from '@/src/services/courseService'
+import { getPermissionGroups, getAllCourses } from '@/src/services/courseService'
 import { createOrder } from '@/src/services/payment'
-import type {
-  PermissionGroupWithPackages,
-  CreateOrderResponse
-} from '@/src/types/course'
+import type { CoursePackage, CreateOrderResponse } from '@/src/types/course'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 
@@ -45,7 +42,16 @@ export function UnlockCoursesPage({
   hideDescription?: boolean
 }) {
   const packagesSectionId = useId()
-  const [groups, setGroups] = useState<PermissionGroupWithPackages[]>([])
+  // 由课程 required_groups 反查得到的展示分组；permission_groups 仅用于查询套餐，不参与显示判断
+  const [derivedGroups, setDerivedGroups] = useState<
+    Array<{
+      key: string
+      groupId?: number
+      groupName: string
+      groupDescription?: string
+      packages: CoursePackage[]
+    }>
+  >([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [creatingOrder, setCreatingOrder] = useState<number | null>(null)
@@ -63,10 +69,45 @@ export function UnlockCoursesPage({
       try {
         setLoading(true)
         setError('')
-        const data = await getPermissionGroups()
-        setGroups(data)
+        // 并行请求：课程列表和权限组/套餐
+        const [courses, allGroups] = await Promise.all([
+          getAllCourses(),
+          getPermissionGroups()
+        ])
+
+        // 仅依据“未解锁且非 broker 课程”的 required_groups 决定需要展示哪些权限组
+        const byKey = new Map<
+          string,
+          { key: string; groupId?: number; groupName: string; groupDescription?: string; packages: CoursePackage[] }
+        >()
+        for (const c of courses) {
+          if (c?.course_type === 'broker') continue
+          // 仅处理“未解锁”的课程
+          if (c?.isUnlocked || !Array.isArray(c?.required_groups)) continue
+          for (const rg of c.required_groups) {
+            const hasId = typeof rg?.id === 'number'
+            const key = hasId ? `id:${rg!.id}` : rg?.name ? `name:${rg!.name}` : ''
+            if (!key) continue
+            if (!byKey.has(key)) {
+              // 查找该组对应的套餐（如果存在），permission_groups 仅做查询用途
+              const matched = allGroups.find((g) =>
+                hasId ? g.group.id === rg!.id : g.group.name === rg!.name
+              )
+              byKey.set(key, {
+                key,
+                groupId: hasId ? rg!.id : undefined,
+                groupName: rg!.name || `权限组 ${hasId ? rg!.id : ''}`,
+                groupDescription: matched?.group?.description,
+                packages: matched?.packages ?? []
+              })
+            }
+          }
+        }
+
+        // 仅展示有可购买套餐的权限组
+        setDerivedGroups(Array.from(byKey.values()).filter((x) => x.packages.length > 0))
       } catch (e: any) {
-        setError(e.message || '获取套餐失败')
+        setError(e.message || '加载课程与套餐失败')
       } finally {
         setLoading(false)
       }
@@ -98,10 +139,7 @@ export function UnlockCoursesPage({
     } catch (_) {}
   }
 
-  // 过滤分组：普通模式显示未隐藏，经纪商模式只显示隐藏
-  const visibleGroups = groups.filter((g) =>
-    showHiddenOnly ? !!g.group.hidden : !g.group.hidden
-  )
+  // 不再依据 permission_groups 的 hidden 参与显示；完全由课程反查而来
 
   return (
     <div className="space-y-6">
@@ -215,29 +253,23 @@ export function UnlockCoursesPage({
             <div className="text-center py-6">
               <p className="text-red-500">{error}</p>
             </div>
-          ) : visibleGroups.length === 0 ? (
+          ) : derivedGroups.length === 0 ? (
             <div className="text-center py-6">
               <p className="text-slate-600">暂无可购买的套餐</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {visibleGroups.map((g) => (
+              {derivedGroups.map((g) => (
                 <Card
-                  key={g.group.id}
+                  key={g.key}
                   className="glass-card border-white/30 overflow-hidden"
                 >
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-slate-800 text-base">
-                      {g.group.description?.includes('Broker-specific group:')
-                        ? g.group.description
-                            .split('Broker-specific group:')[1]
-                            .trim()
-                        : g.group.name}
-                    </CardTitle>
+                    <CardTitle className="text-slate-800 text-base">{g.groupName}</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="grid grid-cols-1 gap-3">
-                      {g.packages.map((p) => (
+                      {g.packages.map((p: CoursePackage) => (
                         <div
                           key={p.id}
                           className="p-4 rounded-lg border border-white/40 bg-white/60 backdrop-blur-sm flex items-center justify-between gap-4"
@@ -251,18 +283,18 @@ export function UnlockCoursesPage({
                             <div className="text-sm text-slate-600">
                               价格：{p.price} {p.currency}
                             </div>
-                            {!hideDescription &&
-                              (p.description || g.group.description) && (
+                            {!hideDescription && (p.description || g.groupDescription) && (
                                 <div className="text-xs text-slate-500 mt-1 whitespace-normal break-words">
-                                  {p.description ?? g.group.description}
+                                  {p.description ?? g.groupDescription}
                                 </div>
-                              )}
+                            )}
                           </div>
                           <Button
                             className="min-w-[96px] shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
                             onClick={() => handleBuy(p.id)}
                             disabled={creatingOrder === p.id}
                           >
+
                             {creatingOrder === p.id ? (
                               <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
