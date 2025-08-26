@@ -12,12 +12,25 @@ import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 // import { UnlockCoursesPage } from '@/src/components/pages/academy/unlock-courses'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
-import type { Course, CoursePackage, CreateOrderResponse } from '@/src/types/course'
-import { getAllCourses, getPermissionGroups } from '@/src/services/courseService'
+import type {
+  Course,
+  CoursePackage,
+  CreateOrderResponse
+} from '@/src/types/course'
+import {
+  getAllCourses,
+  getPermissionGroups
+} from '@/src/services/courseService'
 import { createOrder } from '@/src/services/payment'
 import { processCourses } from '@/src/utils/courseUtils'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, Loader2, ShoppingCart, ExternalLink, Copy } from 'lucide-react'
+import {
+  ChevronLeft,
+  Loader2,
+  ShoppingCart,
+  ExternalLink,
+  Copy
+} from 'lucide-react'
 import { useAuth } from '@/src/contexts/AuthContext'
 import {
   Dialog,
@@ -105,11 +118,12 @@ export function BrokerPage() {
           for (const rg of c.required_groups) {
             const hasId = typeof rg?.id === 'number'
             const matched = allGroups.find((g) =>
-              hasId ? g.group.id === rg!.id : g.group.name === rg!.name
+              hasId ? g.group.id === rg?.id : g.group.name === rg?.name
             )
             if (!matched) continue
             // 不再过滤 hidden 组；但不显示组名，仅展示课程名
-            if (!desc && matched.group?.description) desc = matched.group.description
+            if (!desc && matched.group?.description)
+              desc = matched.group.description
             for (const p of matched.packages ?? []) {
               pkgMap.set(p.id, p)
             }
@@ -264,9 +278,14 @@ export function BrokerPage() {
             ) : (
               <div className="space-y-4">
                 {derivedGroups.map((g) => (
-                  <Card key={g.key} className="glass-card border-white/30 overflow-hidden">
+                  <Card
+                    key={g.key}
+                    className="glass-card border-white/30 overflow-hidden"
+                  >
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-slate-800 text-base">{g.groupName}</CardTitle>
+                      <CardTitle className="text-slate-800 text-base">
+                        {g.groupName}
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="grid grid-cols-1 gap-3">
@@ -277,7 +296,9 @@ export function BrokerPage() {
                           >
                             <div className="min-w-0 flex-1">
                               <div className="text-slate-800 font-medium">
-                                {p.duration_days > 10000 ? '永久' : `${p.duration_days} 天`}
+                                {p.duration_days > 10000
+                                  ? '永久'
+                                  : `${p.duration_days} 天`}
                               </div>
                               <div className="text-sm text-slate-600">
                                 价格：{p.price} {p.currency}
@@ -312,9 +333,9 @@ export function BrokerPage() {
                 ))}
               </div>
             )}
-            </CardContent>
-          </Card>
-        </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Markdown 资料入口 - 移动到下方 */}
       <div className="px-6 mt-6">
@@ -410,9 +431,13 @@ export function BrokerPage() {
               </div>
 
               <div className="text-xs text-slate-600 space-y-1">
-                <p>• 金额为系统分配的唯一识别值，请勿修改，否则无法自动识别。</p>
+                <p>
+                  • 金额为系统分配的唯一识别值，请勿修改，否则无法自动识别。
+                </p>
                 <p>• 支付完成后，后台需要时间确认，请耐心等待。</p>
-                <p>• 如有问题，请联系管理员并提供订单号：{paymentInfo.orderId}</p>
+                <p>
+                  • 如有问题，请联系管理员并提供订单号：{paymentInfo.orderId}
+                </p>
               </div>
 
               <div className="flex gap-2 pt-2">
