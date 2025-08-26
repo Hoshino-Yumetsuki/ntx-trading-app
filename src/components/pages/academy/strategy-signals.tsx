@@ -9,16 +9,18 @@ import {
 } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { Badge } from '@/src/components/ui/badge'
-import { Target, ExternalLink, Loader2 } from 'lucide-react'
+import { Target, ExternalLink, Loader2, Lock } from 'lucide-react'
 import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 
 export function StrategySignalsPage({
-  onReadingChange
+  onReadingChange,
+  onNavigateTab
 }: {
   onReadingChange?: (reading: boolean) => void
+  onNavigateTab?: (tabId: string) => void
 }) {
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
@@ -211,11 +213,11 @@ export function StrategySignalsPage({
                           <div className="ml-4">
                             <Button
                               size="sm"
-                              className="bg-gray-300 text-gray-600 cursor-not-allowed border-0"
-                              disabled
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                              onClick={() => onNavigateTab?.('unlock')}
                             >
-                              <ExternalLink className="w-4 h-4 mr-1" />
-                              查看
+                              <Lock className="w-4 h-4 mr-1" />
+                              去解锁
                             </Button>
                           </div>
                         </CardContent>
