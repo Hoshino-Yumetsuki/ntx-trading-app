@@ -80,7 +80,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
               disabled={!userInfo?.myInviteCode}
             >
               <Copy className="w-4 h-4 mr-1" />
-              复制邀请链接
+              复制链接
             </Button>
             <Button
               size="sm"

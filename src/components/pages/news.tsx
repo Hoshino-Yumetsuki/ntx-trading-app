@@ -490,13 +490,17 @@ export function NewsPage() {
           <LanguageSwitcher />
         </div>
 
-        {/* 顶部 Banner，保持不变 */}
-        <div className="relative mb-6 rounded-2xl overflow-hidden">
-          <div
-            className="h-32 w-full bg-cover bg-center"
-            style={{ backgroundImage: 'url(/Group35@3x.png)' }}
-          />
-          <div className="absolute left-6 top-8 md:left-8 md:top-10 z-10">
+        {/* 顶部 Banner，参考学院页面的实现方式 */}
+        <div
+          className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
+          style={{
+            backgroundImage: "url('/Group35@3x.png')",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
+          }}
+        >
+          <div className="flex items-center h-full">
             <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md">
               {t('news.title') || '最新资讯'}
             </h2>
