@@ -574,14 +574,22 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     aria-label={`查看文章 ${item.title}`}
                     className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     onClick={() => {
-                      router.push(`/?tab=notifications&news=${item.id}`)
+                      // 先切换到通知页面，再更新URL参数，避免闪烁
                       onNavigate?.('notifications')
+                      // 使用setTimeout确保页面切换完成后再更新URL参数
+                      setTimeout(() => {
+                        router.replace(`/?tab=notifications&news=${item.id}`)
+                      }, 50)
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
-                        router.push(`/?tab=notifications&news=${item.id}`)
+                        // 先切换到通知页面，再更新URL参数，避免闪烁
                         onNavigate?.('notifications')
+                        // 使用setTimeout确保页面切换完成后再更新URL参数
+                        setTimeout(() => {
+                          router.replace(`/?tab=notifications&news=${item.id}`)
+                        }, 50)
                       }
                     }}
                   >
