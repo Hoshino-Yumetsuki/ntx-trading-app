@@ -6,11 +6,13 @@ import type { UserInfo } from '@/src/types/user'
 import Image from 'next/image'
 
 interface StakeCardProps {
+  // userInfo 可能为 null (在父组件数据加载时)
   userInfo: UserInfo | null
   onNavigate?: (page: 'assets' | 'security' | 'community' | 'broker') => void
 }
 
-export function StakeCard({ userInfo: _userInfo, onNavigate }: StakeCardProps) {
+// 为了代码清晰，我将 _userInfo 改回了 userInfo
+export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
   const router = useRouter()
 
   const handleBroker = () => {
@@ -21,25 +23,48 @@ export function StakeCard({ userInfo: _userInfo, onNavigate }: StakeCardProps) {
     router.push('/broker')
   }
 
+  // 1. 添加加载状态：如果 userInfo 还没传进来，显示一个骨架屏 (Skeleton)
+  if (!userInfo) {
+    return (
+      <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
+        <div className="p-5 md:p-6 animate-pulse">
+          <div className="h-6 w-1/3 bg-slate-200 rounded mb-5"></div>
+          <div className="flex justify-between items-center mb-6">
+            <div className="h-12 w-32 bg-slate-200 rounded-md"></div>
+            <div className="h-12 w-12 bg-slate-200 rounded-md"></div>
+            <div className="h-12 w-32 bg-slate-200 rounded-md"></div>
+          </div>
+          <div className="h-8 w-[240px] bg-slate-200 rounded-[8pt] mx-auto"></div>
+        </div>
+      </Card>
+    )
+  }
+
+  // 2. 格式化余额数字，让其更易读
+  const ntxDisplayBalance = userInfo.ntxBalance?.toLocaleString('en-US', {
+    maximumFractionDigits: 2, // 最多保留两位小数
+  }) ?? '0'
+
+  const gntxDisplayBalance = userInfo.gntxBalance?.toLocaleString('en-US', {
+    maximumFractionDigits: 0,
+  }) ?? '0'
+
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
       <div className="p-5 md:p-6">
-        <h3 className="text-slate-900 font-semibold mb-5">我的资产</h3>
+        <h3 className="text-slate-900 font-semibold mb-5">我的质押</h3>
 
         <div className="flex justify-between items-center mb-6">
+          {/* NTX Section */}
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
-              <Image
-                src="/image42@3x.png"
-                alt="NTX"
-                fill
-                className="object-contain"
-              />
+              <Image src="/image42@3x.png" alt="NTX" fill className="object-contain" />
             </div>
             <div>
               <p className="text-slate-900 font-semibold">NTX</p>
               <p className="text-[#2F5BFF] text-2xl md:text-3xl font-extrabold leading-tight">
-                1000
+                {/* 3. 使用格式化后的 ntxBalance */}
+                {ntxDisplayBalance}
               </p>
             </div>
           </div>
@@ -51,19 +76,16 @@ export function StakeCard({ userInfo: _userInfo, onNavigate }: StakeCardProps) {
             </div>
           </div>
 
+          {/* GNTX Section */}
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
-              <Image
-                src="/image43@3x.png"
-                alt="GNTX"
-                fill
-                className="object-contain"
-              />
+              <Image src="/image43@3x.png" alt="GNTX" fill className="object-contain" />
             </div>
             <div>
               <p className="text-slate-900 font-semibold">GNTX</p>
               <p className="text-[#2F5BFF] text-2xl md:text-3xl font-extrabold leading-tight">
-                1
+                {/* 3. 使用格式化后的 gntxBalance */}
+                {gntxDisplayBalance}
               </p>
             </div>
           </div>
@@ -74,7 +96,7 @@ export function StakeCard({ userInfo: _userInfo, onNavigate }: StakeCardProps) {
           className="w-[240px] h-[32px] bg-[#2F5BFF] hover:bg-[#2a52e6] text-white rounded-[8pt] flex items-center justify-center font-semibold transition-colors mx-auto text-sm"
           style={{
             fontFamily:
-              '"PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
+              '"PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
           }}
           onClick={handleBroker}
         >
