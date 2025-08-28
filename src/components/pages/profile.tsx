@@ -10,14 +10,16 @@ import { toast } from 'sonner'
 import { SecuritySettings } from '@/src/components/pages/profile/security-settings'
 import AssetsPage from '@/src/components/pages/profile/assets'
 import CommunityPage from '@/src/components/pages/profile/community'
+import { BrokerPage } from '@/src/components/pages/broker'
 import {
   ProfileHeader,
   InviteCodeCard,
-  StatsCard,
   UserInfoCard,
   QuickActionsCard,
   ContactCard,
-  LogoutCard
+  LogoutCard,
+  RewardsCard,
+  StakeCard
 } from '@/src/components/pages/profile/index'
 
 export function ProfilePage() {
@@ -26,7 +28,7 @@ export function ProfilePage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState<
-    'profile' | 'security' | 'assets' | 'community'
+    'profile' | 'security' | 'assets' | 'community' | 'broker'
   >('profile')
 
   useEffect(() => {
@@ -60,7 +62,9 @@ export function ProfilePage() {
     }
   }
 
-  const handleNavigate = (page: 'assets' | 'security' | 'community') => {
+  const handleNavigate = (
+    page: 'assets' | 'security' | 'community' | 'broker'
+  ) => {
     setCurrentPage(page)
   }
 
@@ -88,6 +92,11 @@ export function ProfilePage() {
   // 如果当前页面是我的社区页面，渲染社区页面组件
   if (currentPage === 'community') {
     return <CommunityPage onBack={() => setCurrentPage('profile')} />
+  }
+
+  // 如果当前页面是经纪商页面，渲染经纪商页面组件（CSR 内切换）
+  if (currentPage === 'broker') {
+    return <BrokerPage onBack={() => setCurrentPage('profile')} />
   }
 
   return (
@@ -135,8 +144,11 @@ export function ProfilePage() {
         {/* Invite Code Card */}
         <InviteCodeCard userInfo={userInfo} />
 
-        {/* Stats Card */}
-        <StatsCard userInfo={userInfo} />
+        {/* Rewards Card */}
+        <RewardsCard userInfo={userInfo} onNavigate={handleNavigate} />
+
+        {/* Stake Card */}
+        <StakeCard userInfo={userInfo} onNavigate={handleNavigate} />
 
         {/* Quick Actions Card */}
         <QuickActionsCard onNavigate={handleNavigate} />
@@ -146,11 +158,6 @@ export function ProfilePage() {
 
         {/* Logout Card */}
         <LogoutCard onLogout={handleLogout} />
-      </div>
-
-      <div className="text-center text-slate-500 text-sm">
-        <p>NTX v1.0.0</p>
-        <p> 2024 NTX Trading Platform</p>
       </div>
     </div>
   )

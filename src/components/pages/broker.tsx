@@ -40,7 +40,7 @@ import {
   DialogTitle
 } from '@/src/components/ui/dialog'
 
-export function BrokerPage() {
+export function BrokerPage({ onBack }: { onBack?: () => void }) {
   const router = useRouter()
   const packagesAnchorId = useId()
   const [unlocked, setUnlocked] = useState<Course[]>([])
@@ -207,7 +207,7 @@ export function BrokerPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.back()}
+              onClick={() => (onBack ? onBack() : router.back())}
               className="mr-3 text-slate-600 hover:text-slate-800"
             >
               <ChevronLeft className="w-5 h-5 mr-2" />

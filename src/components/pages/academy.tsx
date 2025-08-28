@@ -126,7 +126,7 @@ export function AcademyPage() {
     return (
       <div className="min-h-screen pb-6">
         {!isReading && (
-          <div className="px-6 pt-12 pb-8 relative z-10">
+          <div className="px-4 pt-12 pb-8 relative z-10">
             <div className="flex flex-col mb-6">
               <div className="flex items-center">
                 <Button
@@ -159,7 +159,7 @@ export function AcademyPage() {
           </div>
         )}
 
-        <div className="px-6 mt-6">
+        <div className="px-4 mt-6">
           {(() => {
             const Comp: any = ActiveComponent
             return (
@@ -177,7 +177,7 @@ export function AcademyPage() {
   // 主页面：显示四个正方形按钮
   return (
     <div className="min-h-screen pb-6">
-      <div className="px-6 pt-8 pb-6">
+      <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
           <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
             <Image
@@ -211,7 +211,7 @@ export function AcademyPage() {
       </div>
 
       {/* 学习资源入口（标题+四宫格） */}
-      <div className="px-6 mt-6">
+      <div className="px-4 mt-6">
         <h2 className="text-slate-800 text-xl font-bold mb-3">交易研究院</h2>
         <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
           {tabs
@@ -257,7 +257,7 @@ export function AcademyPage() {
       </div>
 
       {/* LOOP 社区 */}
-      <div className="px-6 mt-6">
+      <div className="px-4 mt-6">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-slate-800 text-xl font-bold">LOOP 社区</h2>
