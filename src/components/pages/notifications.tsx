@@ -214,9 +214,14 @@ export function NotificationsPage() {
                     sizes="100vw"
                     priority
                     onError={(e) => {
+                      // 图片加载失败时，不隐藏整个容器，而是显示一个占位图
                       const target = e.target as HTMLImageElement
-                      const parent = target.parentElement?.parentElement
-                      if (parent) parent.style.display = 'none'
+                      // 设置为透明度0，保持布局不变
+                      target.style.opacity = '0'
+                      // 添加一个背景色，避免空白
+                      if (target.parentElement) {
+                        target.parentElement.style.backgroundColor = '#f0f4f8'
+                      }
                     }}
                   />
                 </div>

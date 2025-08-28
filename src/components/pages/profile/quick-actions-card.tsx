@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
+import { Card } from '@/src/components/ui/card'
 import { Shield, ChevronRight, DollarSign } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 
@@ -32,25 +27,29 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
   ]
 
   return (
-    <Card className="glass-card border-white/30 rounded-[16pt]">
-      <CardHeader>
-        <CardTitle className="text-slate-800">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-slate-800 font-medium">
           {t('profile.quickActions')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
+        </h3>
+      </div>
+
+      <Card
+        className="glass-card border-white/30 rounded-[16pt] overflow-hidden"
+        style={{ aspectRatio: '343/149' }}
+      >
         {menuItems.map((item, index) => {
           const Icon = item.icon
           return (
             <button
-              key={index}
               type="button"
-              className="flex items-center justify-between p-4 glass-card rounded-[16pt] hover:bg-white/40 transition-all cursor-pointer w-full text-left"
+              key={index}
+              className={`flex items-center justify-between p-3 hover:bg-white/40 transition-all w-full text-left ${index < menuItems.length - 1 ? 'border-b border-white/20' : ''}`}
               onClick={item.onClick}
             >
               <div className="flex items-center space-x-3">
-                <div className="premium-icon w-10 h-10 rounded-[16pt]">
-                  <Icon className="w-5 h-5 text-slate-600" />
+                <div className="premium-icon w-8 h-8 rounded-[12pt] bg-blue-100/50">
+                  <Icon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
                   <p className="text-slate-800 font-medium">{item.label}</p>
@@ -61,7 +60,7 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
             </button>
           )
         })}
-      </CardContent>
-    </Card>
+      </Card>
+    </div>
   )
 }

@@ -8,12 +8,13 @@ import Image from 'next/image'
 import { Clock, Rss, Share2, ChevronLeft } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
+import { UserService } from '@/src/services/user'
+import { API_BASE_URL } from '@/src/services/config'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
 import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
-import { API_BASE_URL } from '@/src/services/config'
 import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -40,11 +41,40 @@ export function NewsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [consumedNewsId, setConsumedNewsId] = useState<number | null>(null)
+  const [userInviteCode, setUserInviteCode] = useState<string>('')
+
+  // 获取用户邀请码
+  useEffect(() => {
+    const fetchUserInviteCode = async () => {
+      try {
+        const userInfo = await UserService.getUserInfo()
+        if (userInfo?.myInviteCode) {
+          setUserInviteCode(userInfo.myInviteCode)
+        }
+      } catch (error) {
+        console.error('获取用户邀请码失败:', error)
+      }
+    }
+
+    fetchUserInviteCode()
+  }, [])
+
+  // 生成分享链接，优先使用带邀请码的个人资料页分享链接
   const getShareUrl = useCallback(
-    (item: NewsItem | null) =>
-      item ? `${window.location.origin}/?tab=news&news=${item.id}` : '',
-    []
+    (item: NewsItem | null) => {
+      if (!item) return ''
+
+      // 如果有邀请码，使用带邀请码的个人资料页分享链接
+      if (userInviteCode) {
+        return `${window.location.origin}/register?invite=${userInviteCode}`
+      }
+
+      // 否则使用原来的新闻分享链接
+      return `${window.location.origin}/?tab=news&news=${item.id}`
+    },
+    [userInviteCode]
   )
+
   const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
     useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
@@ -315,37 +345,47 @@ export function NewsPage() {
         {/* 顶部 Hero 区域，与学院页一致结构 */}
         <div className="px-6 pt-12 pb-8 relative z-10">
           <div className="flex flex-col mb-6">
-            <div className="flex items-center">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setViewingArticle(false)
+                    try {
+                      const params = new URLSearchParams(window.location.search)
+                      if (params.has('news')) {
+                        params.delete('news')
+                        const qs = params.toString()
+                        // 保持停留在新闻页
+                        const url = qs ? `?${qs}` : '?tab=news'
+                        router.replace(url)
+                      }
+                    } catch {}
+                  }}
+                  className="mr-3 text-slate-600 hover:text-slate-800"
+                >
+                  <ChevronLeft className="w-5 h-5 mr-2" />
+                  {t('news.back') || '返回'}
+                </Button>
+                <div className="relative w-28 h-9 md:w-32 md:h-10">
+                  <Image
+                    src="/Frame17@3x.png"
+                    alt="NTX Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  setViewingArticle(false)
-                  try {
-                    const params = new URLSearchParams(window.location.search)
-                    if (params.has('news')) {
-                      params.delete('news')
-                      const qs = params.toString()
-                      // 保持停留在新闻页
-                      const url = qs ? `?${qs}` : '?tab=news'
-                      router.replace(url)
-                    }
-                  } catch {}
-                }}
-                className="mr-3 text-slate-600 hover:text-slate-800"
+                onClick={() => handleShare(currentArticle)}
+                className="text-slate-600 hover:text-blue-600 hover:bg-blue-50/50"
               >
-                <ChevronLeft className="w-5 h-5 mr-2" />
-                {t('news.back') || '返回'}
+                <Share2 className="w-5 h-5" />
               </Button>
-              <div className="relative w-28 h-9 md:w-32 md:h-10">
-                <Image
-                  src="/Frame17@3x.png"
-                  alt="NTX Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
             </div>
             <h1 className="text-2xl font-bold text-slate-800 mt-3">
               {currentArticle.title}
@@ -400,6 +440,28 @@ export function NewsPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* 分享模态框 - 在阅读界面也需要包含 */}
+        <UniversalShareModal
+          isOpen={showShareModal}
+          onClose={() => {
+            setShowShareModal(false)
+            setOverrideQrText?.('')
+          }}
+          title="分享文章"
+          shareData={{
+            title: shareNewsItem?.title || '',
+            text: shareNewsItem?.summary || '',
+            url: getShareUrl(shareNewsItem)
+          }}
+          imageGenerator={generateImage}
+          showImagePreview={true}
+          showDefaultShareButtons={true}
+          onQrOverride={(text) => {
+            setOverrideQrText?.(text)
+          }}
+        />
+        <ImageGeneratorComponent />
       </div>
     )
   }
@@ -428,13 +490,17 @@ export function NewsPage() {
           <LanguageSwitcher />
         </div>
 
-        {/* 顶部 Banner，保持不变 */}
-        <div className="relative mb-6 rounded-2xl overflow-hidden">
-          <div
-            className="h-32 w-full bg-cover bg-center"
-            style={{ backgroundImage: 'url(/Group35@3x.png)' }}
-          />
-          <div className="absolute left-6 top-8 md:left-8 md:top-10 z-10">
+        {/* 顶部 Banner，参考学院页面的实现方式 */}
+        <div
+          className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
+          style={{
+            backgroundImage: "url('/Group35@3x.png')",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
+          }}
+        >
+          <div className="flex items-center h-full">
             <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md">
               {t('news.title') || '最新资讯'}
             </h2>

@@ -215,7 +215,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
       />
       <div className="px-6 pt-8 pb-6">
         <div className="relative">
-          <div className="flex items-center justify-between mb-6 relative z-10">
+          <div className="flex items-center justify-between mb-6 relative z-20">
             <div className="flex flex-col">
               <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
                 <Image
@@ -230,7 +230,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 Web3 一站式服务
               </p>
             </div>
-            <LanguageSwitcher />
+            <div className="relative z-30">
+              <LanguageSwitcher />
+            </div>
           </div>
           {/* 大横幅（可滚动，整图点击） */}
           <div className="relative z-10">
@@ -580,14 +582,22 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     aria-label={`查看文章 ${item.title}`}
                     className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     onClick={() => {
-                      router.push(`/?tab=notifications&news=${item.id}`)
+                      // 先切换到通知页面，再更新URL参数，避免闪烁
                       onNavigate?.('notifications')
+                      // 使用setTimeout确保页面切换完成后再更新URL参数
+                      setTimeout(() => {
+                        router.replace(`/?tab=notifications&news=${item.id}`)
+                      }, 50)
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
-                        router.push(`/?tab=notifications&news=${item.id}`)
+                        // 先切换到通知页面，再更新URL参数，避免闪烁
                         onNavigate?.('notifications')
+                        // 使用setTimeout确保页面切换完成后再更新URL参数
+                        setTimeout(() => {
+                          router.replace(`/?tab=notifications&news=${item.id}`)
+                        }, 50)
                       }
                     }}
                   >
