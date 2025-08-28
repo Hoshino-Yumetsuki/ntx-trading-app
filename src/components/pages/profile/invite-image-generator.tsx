@@ -29,12 +29,29 @@ export function InviteImageGenerator({
       canvas.width = 600
       canvas.height = 800
 
-      // 背景渐变
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
-      gradient.addColorStop(0, '#dbeafe') // from-blue-100
-      gradient.addColorStop(1, '#c7d2fe') // to-indigo-200
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // 背景图（cover 绘制）
+      try {
+        const bgImg = new window.Image()
+        bgImg.crossOrigin = 'anonymous'
+        await new Promise((resolve, reject) => {
+          bgImg.onload = resolve
+          bgImg.onerror = reject
+          bgImg.src = '/分享-bg.png'
+        })
+        const scale = Math.max(
+          canvas.width / bgImg.width,
+          canvas.height / bgImg.height
+        )
+        const dw = bgImg.width * scale
+        const dh = bgImg.height * scale
+        const dx = (canvas.width - dw) / 2
+        const dy = (canvas.height - dh) / 2
+        ctx.drawImage(bgImg, dx, dy, dw, dh)
+      } catch (_bgErr) {
+        // 兜底为纯白背景
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+      }
 
       // 加载并绘制顶部圆角方形 logo
       try {
@@ -121,18 +138,15 @@ export function InviteImageGenerator({
         ctx.fillText('NTX', canvas.width / 2, 150)
       }
 
-      // 主副标题
+      // 主副标题（参照设计稿：两行主标题 + 一行副标题）
       ctx.fillStyle = '#111827'
-      ctx.font = 'bold 22px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText(
-        '注册 NTX DAO, Web3 金融聚合返佣工具, 快来参与交易挖矿! ',
-        canvas.width / 2,
-        260
-      )
+      ctx.font = 'bold 28px Arial'
+      ctx.fillText('注册 NTX DAO，连接用户聚合资源，', canvas.width / 2, 250)
+      ctx.fillText('挖掘你的 Web3 机会', canvas.width / 2, 284)
       ctx.fillStyle = '#374151'
       ctx.font = '16px Arial'
-      ctx.fillText('享受高达50%手续费返佣和交易挖矿', canvas.width / 2, 290)
+      ctx.fillText('享受高达60%手续费返佣和挖矿交易', canvas.width / 2, 320)
 
       // 中部图案：Frame48@3x.png（不降级）
       try {
@@ -158,15 +172,6 @@ export function InviteImageGenerator({
         const drawY = bannerY + (bannerH - drawH) / 2
         ctx.drawImage(bannerImg, drawX, drawY, drawW, drawH)
       } catch (_e) {}
-
-      // 中部品牌标题与口号
-      ctx.textAlign = 'center'
-      ctx.fillStyle = '#ffffff'
-      ctx.font = 'bold 22px Arial'
-      ctx.fillText('NTX TRADE DAO', canvas.width / 2, 480)
-      ctx.fillStyle = '#1e40af'
-      ctx.font = '28px Arial'
-      ctx.fillText('专业投资社区 为 Web3 交易而生', canvas.width / 2, 510)
 
       // 底部蓝色信息卡片（圆角）
       const cardX = 30
@@ -234,8 +239,6 @@ export function InviteImageGenerator({
       ctx.fillRect(qrX, qrY, qrSize + qrPadding * 2, qrSize + qrPadding * 2)
       ctx.drawImage(qrImg, qrX + qrPadding, qrY + qrPadding, qrSize, qrSize)
 
-      // 卡片外不再绘制重复文案/品牌
-
       const imageDataUrl = canvas.toDataURL('image/png', 0.9)
       onImageGenerated?.(imageDataUrl)
       return imageDataUrl
@@ -270,18 +273,33 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
       canvas.width = 600
       canvas.height = 800
 
-      // 背景渐变
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
-      gradient.addColorStop(0, '#dbeafe')
-      gradient.addColorStop(1, '#c7d2fe')
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // 背景图（cover 绘制）
+      try {
+        const bgImg = new window.Image()
+        bgImg.crossOrigin = 'anonymous'
+        await new Promise((resolve, reject) => {
+          bgImg.onload = resolve
+          bgImg.onerror = reject
+          bgImg.src = '/分享-bg.png'
+        })
+        const scale = Math.max(
+          canvas.width / bgImg.width,
+          canvas.height / bgImg.height
+        )
+        const dw = bgImg.width * scale
+        const dh = bgImg.height * scale
+        const dx = (canvas.width - dw) / 2
+        const dy = (canvas.height - dh) / 2
+        ctx.drawImage(bgImg, dx, dy, dw, dh)
+      } catch (_bgErr) {
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+      }
 
       // 加载并绘制顶部圆角方形 logo
       try {
         const logoImg = new window.Image()
         logoImg.crossOrigin = 'anonymous'
-
         await new Promise((resolve, reject) => {
           logoImg.onload = resolve
           logoImg.onerror = reject
@@ -361,18 +379,15 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
         ctx.fillText('NTX', canvas.width / 2, 150)
       }
 
-      // 主副标题
+      // 主副标题（与组件版本保持一致：两行主标题 + 一行副标题）
       ctx.fillStyle = '#111827'
-      ctx.font = 'bold 22px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText(
-        '注册 NTX DAO, Web3 金融聚合返佣工具, 快来参与交易挖矿! ',
-        canvas.width / 2,
-        260
-      )
+      ctx.font = 'bold 28px Arial'
+      ctx.fillText('注册 NTX DAO，连接用户聚合资源，', canvas.width / 2, 250)
+      ctx.fillText('挖掘你的 Web3 机会', canvas.width / 2, 284)
       ctx.fillStyle = '#374151'
       ctx.font = '16px Arial'
-      ctx.fillText('享受高达50%手续费返佣和交易挖矿', canvas.width / 2, 290)
+      ctx.fillText('享受高达60%手续费返佣和挖矿交易', canvas.width / 2, 320)
 
       // 中部图案：Frame48@3x.png（不降级）
       try {
@@ -399,14 +414,7 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
         ctx.drawImage(bannerImg, drawX, drawY, drawW, drawH)
       } catch (_e) {}
 
-      // 中部品牌标题与口号
-      ctx.textAlign = 'center'
-      ctx.fillStyle = '#ffffff'
-      ctx.font = 'bold 22px Arial'
-      ctx.fillText('NTX TRADE DAO', canvas.width / 2, 480)
-      ctx.fillStyle = '#1e40af'
-      ctx.font = '28px Arial'
-      ctx.fillText('专业投资社区 为 Web3 交易而生', canvas.width / 2, 510)
+      // 设计稿无中部品牌口号，此处不额外绘制文字
       // 旧降级代码移除，保持与参考稿一致
 
       // 底部蓝色信息卡片（圆角）
