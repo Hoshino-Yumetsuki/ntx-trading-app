@@ -1,8 +1,9 @@
 'use client'
 
 import { Card } from '@/src/components/ui/card'
-import { Shield, ChevronRight, DollarSign } from 'lucide-react'
+import { Shield, ChevronRight, DollarSign, FileText } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
+import { useRouter } from 'next/navigation'
 
 interface QuickActionsCardProps {
   onNavigate: (page: 'assets' | 'security') => void
@@ -10,6 +11,7 @@ interface QuickActionsCardProps {
 
 export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
   const { t } = useLanguage()
+  const router = useRouter()
 
   const menuItems = [
     {
@@ -23,6 +25,13 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
       label: t('profile.menu.security.title'),
       description: t('profile.menu.security.description'),
       onClick: () => onNavigate('security')
+    },
+    {
+      icon: FileText,
+      label: t('profile.menu.orders.title') || '我的订单',
+      description:
+        t('profile.menu.orders.description') || '查看购买记录与支付状态',
+      onClick: () => router.push('/orders')
     }
   ]
 
@@ -34,10 +43,7 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
         </h3>
       </div>
 
-      <Card
-        className="glass-card border-white/30 rounded-[16pt] overflow-hidden"
-        style={{ aspectRatio: '343/149' }}
-      >
+      <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
         {menuItems.map((item, index) => {
           const Icon = item.icon
           return (

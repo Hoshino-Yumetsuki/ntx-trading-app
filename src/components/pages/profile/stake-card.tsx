@@ -29,7 +29,12 @@ export function StakeCard({ userInfo: _userInfo, onNavigate }: StakeCardProps) {
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
-              <Image src="/N.png" alt="NTX" fill className="object-contain" />
+              <Image
+                src="/image42@3x.png"
+                alt="NTX"
+                fill
+                className="object-contain"
+              />
             </div>
             <div>
               <p className="text-slate-900 font-semibold">NTX</p>
@@ -48,7 +53,12 @@ export function StakeCard({ userInfo: _userInfo, onNavigate }: StakeCardProps) {
 
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
-              <Image src="/G.png" alt="GNTX" fill className="object-contain" />
+              <Image
+                src="/image43@3x.png"
+                alt="GNTX"
+                fill
+                className="object-contain"
+              />
             </div>
             <div>
               <p className="text-slate-900 font-semibold">GNTX</p>

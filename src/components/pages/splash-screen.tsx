@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { TrendingUp } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import Image from 'next/image'
 
@@ -14,47 +14,54 @@ export function SplashScreen() {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+      style={{
+        backgroundImage: "url('/加载页-bg.png')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       <div
         className={`text-center transition-all duration-1000 ${animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
         <div className="mb-8 relative">
-          <div className="w-24 h-24 mx-auto glass-card-strong rounded-2xl flex items-center justify-center mb-4">
+          <div className="relative w-72 h-72 mx-auto flex items-center justify-center mb-6">
             <Image
-              src="/ntx_1_1.jpg"
-              alt="NTX Logo"
-              width={96}
-              height={96}
-              className="object-contain rounded-xl"
+              src="/Frame68@3x.png"
+              alt="Loading Illustration"
+              fill
+              className="object-contain p-2"
               priority
             />
           </div>
         </div>
 
-        <h1 className="text-4xl font-bold mb-4 gradient-text">
-          {t('splash.title')}
-        </h1>
+        <div className="mb-4 flex items-center justify-center">
+          <div className="relative w-28 h-9 md:w-32 md:h-10">
+            <Image
+              src="/Frame17@3x.png"
+              alt="NTX Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
 
-        <div className="space-y-3 mb-8">
-          <p className="text-xl font-semibold text-slate-700">
-            {t('splash.subtitle')}
+        <div className="space-y-3 mb-10">
+          <p className="text-lg md:text-xl font-medium text-slate-800">
+            {t('splash.subtitle') || '一站式服务'}
           </p>
-          <p className="text-2xl md:text-3xl font-bold text-blue-700 max-w-xs mx-auto leading-relaxed animate-pulse">
-            {t('splash.description')}
+          <p className="text-xl md:text-2xl font-bold text-[#1C55FF] max-w-xs mx-auto leading-relaxed">
+            {t('splash.description') || '成就你的Web3事业'}
           </p>
         </div>
 
         <div className="flex items-center justify-center space-x-2 text-slate-600">
-          <TrendingUp className="w-5 h-5 animate-bounce" />
-          <span className="text-sm">{t('splash.loading')}</span>
-        </div>
-      </div>
-
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
-        <div className="flex space-x-2">
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-100"></div>
-          <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce delay-200"></div>
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span className="text-sm">{t('splash.loading') || '加载中...'}</span>
         </div>
       </div>
     </div>

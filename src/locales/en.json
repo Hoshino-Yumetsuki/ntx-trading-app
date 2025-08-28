@@ -218,6 +218,10 @@
       "security": {
         "title": "Security Settings",
         "description": "Change password and security settings"
+      },
+      "orders": {
+        "title": "My Orders",
+        "description": "View purchase history and payment status"
       }
     },
     "wallet": {

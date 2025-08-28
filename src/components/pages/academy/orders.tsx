@@ -91,10 +91,6 @@ export function OrdersPage() {
 
   return (
     <div className="space-y-4">
-      {/* 顶部说明与刷新 */}
-      <div className="text-slate-600 text-sm -mt-2 mb-2">
-        查看课程购买与支付状态
-      </div>
       <div className="flex justify-end">
         <Button
           variant="outline"
