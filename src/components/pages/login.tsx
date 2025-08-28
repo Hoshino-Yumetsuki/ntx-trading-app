@@ -128,12 +128,13 @@ export function LoginPage({
   const onRegisterSubmit = async (data: RegisterFormData) => {
     try {
       setError(null)
+      const inviteCode = (data.invite_code ?? '').trim() || 'ABCDEFGH'
       await registerUser({
         email: data.email,
         nickname: data.nickname,
         verification_code: data.verification_code,
         password: data.password,
-        invite_code: data.invite_code
+        invite_code: inviteCode
       })
       toast.success(t('login.success.registerSuccess'))
       setIsRegisterMode(false)
