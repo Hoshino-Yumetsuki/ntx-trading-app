@@ -78,7 +78,7 @@ export function OrdersPage() {
   }, [groups])
 
   // 仅待支付订单
-  const pendingOrders = useMemo(
+  const _pendingOrders = useMemo(
     () => orders.filter((o) => o.status === 'pending'),
     [orders]
   )
@@ -170,13 +170,13 @@ export function OrdersPage() {
               <div className="text-center py-6">
                 <p className="text-red-500">{error}</p>
               </div>
-            ) : pendingOrders.length === 0 ? (
+            ) : orders.length === 0 ? (
               <div className="text-center py-6">
-                <p className="text-slate-600">暂无待支付订单</p>
+                <p className="text-slate-600">暂无订单</p>
               </div>
             ) : (
               <div className="space-y-3">
-                {pendingOrders.map((o) => (
+                {orders.map((o) => (
                   <div
                     key={o.id}
                     className="p-4 rounded-lg border border-white/40 bg-white/60 backdrop-blur-sm flex items-center justify-between"
@@ -188,6 +188,13 @@ export function OrdersPage() {
                         <span className="ml-2 text-xs text-slate-500">
                           套餐名称 {packageNameMap[o.package_id] ?? '-'}
                         </span>
+                        <span className="ml-2 text-xs px-1.5 py-0.5 rounded border border-white/40 bg-white/60 text-slate-600">
+                          {o.status === 'pending'
+                            ? '待支付'
+                            : o.status === 'confirmed'
+                              ? '已完成'
+                              : '已关闭'}
+                        </span>
                       </div>
                       <div className="text-sm text-slate-600">
                         套餐金额 {o.amount} {o.currency} · 实付金额{' '}
@@ -198,20 +205,27 @@ export function OrdersPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      {typeof o.remainingTimeSeconds === 'number' && (
-                        <div className="flex items-center text-xs text-slate-600 bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">
-                          <Clock className="w-3 h-3 mr-1" />
-                          剩余时间{' '}
-                          {formatTime(Math.max(0, o.remainingTimeSeconds))}
+                      {o.status === 'pending' &&
+                        typeof o.remainingTimeSeconds === 'number' && (
+                          <div className="flex items-center text-xs text-slate-600 bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">
+                            <Clock className="w-3 h-3 mr-1" />
+                            剩余时间{' '}
+                            {formatTime(Math.max(0, o.remainingTimeSeconds))}
+                          </div>
+                        )}
+                      {o.status === 'pending' ? (
+                        <Button
+                          size="sm"
+                          className="diffused-button"
+                          onClick={() => openPayDialog(o)}
+                        >
+                          去支付
+                        </Button>
+                      ) : (
+                        <div className="text-xs text-slate-500">
+                          {o.status === 'confirmed' ? '已完成' : '已关闭'}
                         </div>
                       )}
-                      <Button
-                        size="sm"
-                        className="diffused-button"
-                        onClick={() => openPayDialog(o)}
-                      >
-                        去支付
-                      </Button>
                     </div>
                   </div>
                 ))}

@@ -220,6 +220,10 @@
       "security": {
         "title": "安全设置",
         "description": "修改密码和安全设置"
+      },
+      "orders": {
+        "title": "我的订单",
+        "description": "查看购买记录与支付状态"
       }
     },
     "wallet": {
