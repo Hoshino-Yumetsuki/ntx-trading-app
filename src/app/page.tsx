@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { SplashScreen } from '@/src/components/pages/splash-screen'
-import { MainApp } from '@/src/components/mian'
+import { MainApp } from '@/src/components/main'
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext'
 import { LanguageProvider } from '@/src/contexts/language-context'
 import { Loader2 } from 'lucide-react'

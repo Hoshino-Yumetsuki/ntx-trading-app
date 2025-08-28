@@ -107,7 +107,7 @@ export function NotificationsPage() {
     }
   }, [])
 
-  // 根据 URL 中的 ?news=ID 自动打开文章（仅 API）
+  // 根据 URL 中的 ?news=ID 自动打开文章
   useEffect(() => {
     const idStr = searchParams?.get('news')
     if (!idStr) return
@@ -123,20 +123,37 @@ export function NotificationsPage() {
     setShowShareModal(true)
   }
 
+  const handleBackToList = () => {
+    setViewingArticle(false)
+    // 清理URL中的news参数，返回列表视图
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('news')) {
+      params.delete('news')
+      const queryString = params.toString()
+      const newUrl = queryString
+        ? `?${queryString}`
+        : window.location.pathname + '?tab=notifications'
+      router.replace(newUrl)
+    }
+  }
+
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString()
+    if (!dateString) return ''
+    return new Date(dateString).toLocaleDateString()
   }
 
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    if (!dateString) return ''
+    return new Date(dateString).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   const renderMarkdownContent = (content: string) => {
     if (!content) {
       return (
-        <div className="text-slate-500 text-center py-8">
+        <div className="text-slate-500 text-center py-10">
           {t('news.no.content') || '文章内容为空'}
         </div>
       )
@@ -151,34 +168,32 @@ export function NotificationsPage() {
     )
   }
 
+  // ====================================================================
+  // 	UI 微调后的文章详情页视图
+  // ====================================================================
   if (viewingArticle && currentArticle) {
     return (
-      <div className="min-h-screen pb-6">
-        {/* 顶部 Hero 区域 */}
-        <div className="px-6 pt-12 pb-8 relative z-10">
-          <div className="flex flex-col mb-6">
+      <div className="min-h-screen bg-white pb-12">
+        {/* 顶部导航区域 */}
+        <div className="px-4 pt-12 pb-4">
+          <div className="flex justify-between items-center mb-6">
             <div className="flex items-center">
+              {/* 返回按钮 */}
               <Button
                 variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setViewingArticle(false)
-                  try {
-                    const params = new URLSearchParams(window.location.search)
-                    if (params.has('news')) {
-                      params.delete('news')
-                      const qs = params.toString()
-                      const url = qs ? `?${qs}` : '?tab=notifications'
-                      router.replace(url)
-                    }
-                  } catch {}
-                }}
-                className="mr-3 text-slate-600 hover:text-slate-800"
+                size="icon" // 使用 'icon' 尺寸，更适合单个图标按钮
+                onClick={handleBackToList}
+                className="mr-2" // 移除颜色相关的类名，让图片保持原样
               >
-                <ChevronLeft className="w-5 h-5 mr-2" />
-                {t('news.back') || '返回'}
+                <Image
+                  src="/back.png" // 图片路径 (请确保 back.png 文件在 public 目录下)
+                  alt="返回"
+                  width={20} // 设置宽度为 20px
+                  height={20} // 设置高度为 20px
+                />
               </Button>
-              <div className="relative w-28 h-9 md:w-32 md:h-10">
+              {/* Logo */}
+              <div className="relative w-24 h-8 md:w-28 md:h-9">
                 <Image
                   src="/Frame17@3x.png"
                   alt="NTX Logo"
@@ -188,10 +203,37 @@ export function NotificationsPage() {
                 />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-slate-800 mt-3">
+            
+            {/* ==================== 代码修改开始 ==================== */}
+            {/* 参照蓝湖UI修改了顶部分享按钮 */}
+            <Button
+              variant="ghost"
+              onClick={() => handleShare(currentArticle)}
+              // 移除了 size="icon"，使用自定义样式
+              className="h-auto p-1.5 rounded-md hover:bg-blue-50/50"
+            >
+              <div className="flex items-center gap-x-1">
+                <span className="text-xs font-medium text-[#1C55FF]">
+                  分享
+                </span>
+                <Image
+                  src="/share.png"
+                  alt="分享"
+                  width={16}
+                  height={13}
+                />
+              </div>
+            </Button>
+            {/* ==================== 代码修改结束 ==================== */}
+
+          </div>
+
+          {/* 文章标题和日期 */}
+          <div className="px-2">
+            <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
               {currentArticle.title}
             </h1>
-            <div className="flex items-center text-slate-500 text-xs mt-2">
+            <div className="flex items-center text-slate-500 text-xs mt-3">
               <span>{formatDate(currentArticle.publishDate)}</span>
               <span className="mx-2">•</span>
               <span>{formatTime(currentArticle.publishDate)}</span>
@@ -199,44 +241,53 @@ export function NotificationsPage() {
           </div>
         </div>
 
-        {/* 内容区域卡片 */}
-        <div className="px-6 mt-6">
-          <Card className="glass-card border-white/30 shadow-lg rounded-3xl overflow-hidden">
-            {currentArticle.imageUrl &&
-              currentArticle.imageUrl !== '/placeholder.png' &&
-              currentArticle.imageUrl.trim() !== '' && (
-                <div className="w-full h-48 overflow-hidden relative">
-                  <Image
-                    src={currentArticle.imageUrl}
-                    alt={currentArticle.title}
-                    className="object-cover"
-                    fill
-                    sizes="100vw"
-                    priority
-                    onError={(e) => {
-                      // 图片加载失败时，不隐藏整个容器，而是显示一个占位图
-                      const target = e.target as HTMLImageElement
-                      // 设置为透明度0，保持布局不变
-                      target.style.opacity = '0'
-                      // 添加一个背景色，避免空白
-                      if (target.parentElement) {
-                        target.parentElement.style.backgroundColor = '#f0f4f8'
-                      }
-                    }}
-                  />
-                </div>
-              )}
-            <CardContent className="p-6">
-              <div className="max-w-none">
-                {renderMarkdownContent(currentArticle.content || '')}
+        {/* 内容区域 (移除了Card包裹) */}
+        <div className="px-4 mt-4">
+          {/* 文章图片 */}
+          {currentArticle.imageUrl &&
+            currentArticle.imageUrl !== '/placeholder.png' &&
+            currentArticle.imageUrl.trim() !== '' && (
+              <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
+                <Image
+                  src={currentArticle.imageUrl}
+                  alt={currentArticle.title}
+                  className="object-cover"
+                  fill
+                  sizes="100vw"
+                  priority
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    if (target.parentElement) {
+                      target.parentElement.style.display = 'none'
+                    }
+                  }}
+                />
               </div>
-            </CardContent>
-          </Card>
+            )}
+
+          {/* Markdown 正文内容 */}
+          <div className="px-2 max-w-none">
+            {renderMarkdownContent(currentArticle.content || '')}
+          </div>
+          
+          {/* 新增的底部自分享按钮 */}
+          <div className="mt-10 flex justify-center">
+             <Button
+               className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
+               onClick={() => handleShare(currentArticle)}
+             >
+               <span className="mr-2 font-semibold">分享</span>
+               <Share2 className="w-4 h-4" />
+             </Button>
+          </div>
         </div>
       </div>
     )
   }
 
+  // ====================================================================
+  // 	新闻列表页视图 (保持不变)
+  // ====================================================================
   return (
     <div className="min-h-screen bg-white pb-6">
       {/* 顶部 Hero 区域 */}

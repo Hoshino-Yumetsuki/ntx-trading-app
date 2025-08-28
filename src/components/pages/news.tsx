@@ -59,17 +59,13 @@ export function NewsPage() {
     fetchUserInviteCode()
   }, [])
 
-  // 生成分享链接，优先使用带邀请码的个人资料页分享链接
+  // 生成分享链接
   const getShareUrl = useCallback(
     (item: NewsItem | null) => {
       if (!item) return ''
-
-      // 如果有邀请码，使用带邀请码的个人资料页分享链接
       if (userInviteCode) {
         return `${window.location.origin}/register?invite=${userInviteCode}`
       }
-
-      // 否则使用原来的新闻分享链接
       return `${window.location.origin}/?tab=news&news=${item.id}`
     },
     [userInviteCode]
@@ -81,28 +77,22 @@ export function NewsPage() {
   // 从RSS获取新闻
   const fetchRssNews = useCallback(async () => {
     try {
-      // 由于浏览器的跨域限制，使用代理或CORS友好的API
       const response = await fetch('https://rss.ntxdao.com/rss/clist')
-
       if (response.ok) {
-        // 直接获取XML内容而不是尝试解析为JSON
         const xmlText = await response.text()
         const parser = new Parser()
         const feed = await parser.parseString(xmlText)
-
-        // 将RSS项转换为NewsItem格式
         const rssItems: NewsItem[] = feed.items.map((item, index) => ({
-          id: -1000 - index, // 使用负数ID避免与API文章ID冲突
+          id: -1000 - index,
           title: item.title || '',
           summary: item.contentSnippet || '',
-          imageUrl: item.enclosure?.url || '/placeholder.png', // 使用文章图片或占位图
+          imageUrl: item.enclosure?.url || '/placeholder.png',
           publishDate: item.pubDate || new Date().toISOString(),
           modifyDate: item.isoDate || new Date().toISOString(),
           isDisplayed: true,
           content: item.content || '',
           source: 'rss'
         }))
-
         return rssItems
       }
       return []
@@ -129,11 +119,8 @@ export function NewsPage() {
     let rssNewsFetched = false
     let apiNews: NewsItem[] = []
     let rssNews: NewsItem[] = []
-
-    // 显示加载状态
     setLoading(true)
 
-    // 异步获取API文章
     async function fetchApiNews() {
       try {
         const response = await fetch(`${API_BASE_URL}/user/academy/articles`)
@@ -141,25 +128,19 @@ export function NewsPage() {
           const data = await response.json()
           apiNews = data.map((item: NewsItem) => ({ ...item, source: 'api' }))
           apiNewsFetched = true
-
-          // 如果RSS文章也已获取，则合并和排序
           if (rssNewsFetched) {
             setNewsItems(mergeAndSortNews(apiNews, rssNews))
             setLoading(false)
           } else {
-            // 仅显示API文章（如果有）
             setNewsItems(apiNews)
-            // 保持加载状态，因为RSS还在加载
           }
         } else {
           console.error('获取API新闻失败:', response.statusText)
           apiNewsFetched = true
           if (rssNewsFetched) {
-            // 如果RSS已获取，至少显示RSS内容
             setNewsItems(rssNews)
             setLoading(false)
           }
-
           toast({
             title: '获取部分新闻失败',
             description: 'API新闻获取失败，仍在尝试获取RSS文章',
@@ -170,48 +151,38 @@ export function NewsPage() {
         console.error('获取API新闻出错:', error)
         apiNewsFetched = true
         if (rssNewsFetched) {
-          // 如果RSS已获取，至少显示RSS内容
           setNewsItems(rssNews)
           setLoading(false)
         }
       }
     }
 
-    // 异步获取RSS文章
     async function fetchRssNewsAndUpdate() {
       try {
         const fetchedRssNews = await fetchRssNews()
         rssNews = fetchedRssNews
         rssNewsFetched = true
-
-        // 如果API文章已获取，则合并和排序
         if (apiNewsFetched) {
           setNewsItems(mergeAndSortNews(apiNews, rssNews))
           setLoading(false)
         } else {
-          // 仅显示RSS文章（如果有）
           setNewsItems(rssNews)
-          // 保持加载状态，因为API还在加载
         }
       } catch (error) {
         console.error('获取RSS新闻出错:', error)
         rssNewsFetched = true
         if (apiNewsFetched) {
-          // 如果API已获取，至少显示API内容
           setNewsItems(apiNews)
           setLoading(false)
         }
       }
     }
 
-    // 并行启动两个获取过程
     fetchApiNews()
     fetchRssNewsAndUpdate()
 
-    // 设置超时，确保即使有一个源未响应，UI也会更新
     const timeoutId = setTimeout(() => {
       if (!apiNewsFetched && !rssNewsFetched) {
-        // 两个源都未响应
         setLoading(false)
         toast({
           title: '获取新闻超时',
@@ -219,26 +190,21 @@ export function NewsPage() {
           variant: 'destructive'
         })
       } else if (!apiNewsFetched && rssNewsFetched) {
-        // 只有RSS响应了
         setNewsItems(rssNews)
         setLoading(false)
       } else if (apiNewsFetched && !rssNewsFetched) {
-        // 只有API响应了
         setNewsItems(apiNews)
         setLoading(false)
       }
-      // 如果两者都响应了，那么在各自的获取函数中已处理
-    }, 10000) // 10秒超时
+    }, 10000)
 
-    // 清理函数
     return () => clearTimeout(timeoutId)
   }, [fetchRssNews, mergeAndSortNews])
 
-  // 获取新闻详情（稳定引用）
+  // 获取新闻详情
   const fetchArticleContent = useCallback(
     async (id: number) => {
       try {
-        // 如果是RSS文章(负数ID)，直接从现有数据中获取
         if (id < 0) {
           const rssArticle = newsItems.find((item) => item.id === id)
           if (rssArticle) {
@@ -249,8 +215,6 @@ export function NewsPage() {
           }
           return
         }
-
-        // 如果是API文章，从服务器获取详情
         const response = await fetch(
           `${API_BASE_URL}/user/academy/articles/${id}`
         )
@@ -277,22 +241,18 @@ export function NewsPage() {
     [newsItems]
   )
 
-  // 根据 URL 中的 ?news=ID 自动打开文章（API：直接拉取；RSS：等待列表就绪）
+  // URL参数处理
   useEffect(() => {
     const idStr = searchParams?.get('news')
     if (!idStr) return
     const id = Number(idStr)
-    if (Number.isNaN(id)) return
-    if (consumedNewsId === id) return
+    if (Number.isNaN(id) || consumedNewsId === id) return
     setConsumedNewsId(id)
-
     if (id >= 0) {
-      // API 文章：直接请求详情
       fetchArticleContent(id)
     }
   }, [searchParams, consumedNewsId, fetchArticleContent])
 
-  // 当等待中的 RSS 文章出现在列表中时再打开
   useEffect(() => {
     if (consumedNewsId !== null && consumedNewsId < 0 && !viewingArticle) {
       const rssArticle = newsItems.find((n) => n.id === consumedNewsId)
@@ -303,12 +263,24 @@ export function NewsPage() {
     }
   }, [newsItems, consumedNewsId, viewingArticle])
 
-  // 获取新闻详情 - 已上移并使用 useCallback 包裹
-
   const handleShare = (newsItem: NewsItem) => {
     setShareNewsItem(newsItem)
     setShowShareModal(true)
   }
+  
+  // 新增的返回列表处理函数
+  const handleBackToList = useCallback(() => {
+    setViewingArticle(false)
+    try {
+      const params = new URLSearchParams(window.location.search)
+      if (params.has('news')) {
+        params.delete('news')
+        const qs = params.toString()
+        const url = qs ? `?${qs}` : '?tab=news' // 保持在 news tab
+        router.replace(url)
+      }
+    } catch {}
+  }, [router])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -320,7 +292,6 @@ export function NewsPage() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
-  // 渲染Markdown内容的函数
   const renderMarkdownContent = (content: string) => {
     if (!content) {
       return (
@@ -329,46 +300,43 @@ export function NewsPage() {
         </div>
       )
     }
-
+    const contentToRender = currentArticle?.source === 'rss' ? (currentArticle.content || '') : content
     return (
       <div className="markdown-content">
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-          {content}
+          {contentToRender}
         </ReactMarkdown>
       </div>
     )
   }
-
+  
+  // ====================================================================
+  // 	文章详情页视图 (已按要求重构)
+  // ====================================================================
   if (viewingArticle && currentArticle) {
     return (
-      <div className="min-h-screen pb-6">
-        {/* 顶部 Hero 区域，与学院页一致结构 */}
-        <div className="px-6 pt-12 pb-8 relative z-10">
-          <div className="flex flex-col mb-6">
-            <div className="flex items-center justify-between w-full">
+      <>
+        <div className="min-h-screen bg-white pb-12">
+          {/* 顶部导航区域 */}
+          <div className="px-4 pt-12 pb-4">
+            <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
+                {/* 返回按钮 (样式修改) */}
                 <Button
                   variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setViewingArticle(false)
-                    try {
-                      const params = new URLSearchParams(window.location.search)
-                      if (params.has('news')) {
-                        params.delete('news')
-                        const qs = params.toString()
-                        // 保持停留在新闻页
-                        const url = qs ? `?${qs}` : '?tab=news'
-                        router.replace(url)
-                      }
-                    } catch {}
-                  }}
-                  className="mr-3 text-slate-600 hover:text-slate-800"
+                  size="icon"
+                  onClick={handleBackToList}
+                  className="mr-2"
                 >
-                  <ChevronLeft className="w-5 h-5 mr-2" />
-                  {t('news.back') || '返回'}
+                  <Image
+                    src="/back.png"
+                    alt="返回"
+                    width={20}
+                    height={20}
+                  />
                 </Button>
-                <div className="relative w-28 h-9 md:w-32 md:h-10">
+                {/* Logo */}
+                <div className="relative w-24 h-8 md:w-28 md:h-9">
                   <Image
                     src="/Frame17@3x.png"
                     alt="NTX Logo"
@@ -378,38 +346,52 @@ export function NewsPage() {
                   />
                 </div>
               </div>
+
+              {/* 分享按钮 (样式修改) */}
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={() => handleShare(currentArticle)}
-                className="text-slate-600 hover:text-blue-600 hover:bg-blue-50/50"
+                className="h-auto p-1.5 rounded-md hover:bg-blue-50/50"
               >
-                <Share2 className="w-5 h-5" />
+                <div className="flex items-center gap-x-1">
+                  <span className="text-xs font-medium text-[#1C55FF]">
+                    分享
+                  </span>
+                  <Image
+                    src="/share.png"
+                    alt="分享"
+                    width={16}
+                    height={13}
+                  />
+                </div>
               </Button>
             </div>
-            <h1 className="text-2xl font-bold text-slate-800 mt-3">
-              {currentArticle.title}
-            </h1>
-            <div className="flex items-center text-slate-500 text-xs mt-2">
-              <span>{formatDate(currentArticle.publishDate)}</span>
-              <span className="mx-2">•</span>
-              <span>{formatTime(currentArticle.publishDate)}</span>
-              {currentArticle.source === 'rss' && (
-                <span className="flex items-center ml-2 text-blue-500">
-                  <Rss className="w-3 h-3 mr-1" /> RSS
-                </span>
-              )}
+
+            {/* 文章标题和日期 */}
+            <div className="px-2">
+              <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
+                {currentArticle.title}
+              </h1>
+              <div className="flex items-center text-slate-500 text-xs mt-3">
+                <span>{formatDate(currentArticle.publishDate)}</span>
+                <span className="mx-2">•</span>
+                <span>{formatTime(currentArticle.publishDate)}</span>
+                {currentArticle.source === 'rss' && (
+                  <span className="flex items-center ml-2 text-blue-500">
+                    <Rss className="w-3 h-3 mr-1" /> RSS
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* 内容区域卡片 */}
-        <div className="px-6 mt-6">
-          <Card className="glass-card border-white/30 shadow-lg rounded-3xl overflow-hidden">
+          {/* 内容区域 (移除了Card包裹) */}
+          <div className="px-4 mt-4">
+            {/* 文章图片 */}
             {currentArticle.imageUrl &&
               currentArticle.imageUrl !== '/placeholder.png' &&
               currentArticle.imageUrl.trim() !== '' && (
-                <div className="w-full h-48 overflow-hidden relative">
+                <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
                   <Image
                     src={currentArticle.imageUrl}
                     alt={currentArticle.title}
@@ -419,29 +401,33 @@ export function NewsPage() {
                     priority
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      const parent = target.parentElement?.parentElement
-                      if (parent) parent.style.display = 'none'
+                      if (target.parentElement) {
+                        target.parentElement.style.display = 'none'
+                      }
                     }}
                   />
                 </div>
               )}
-            <CardContent className="p-6">
-              <div className="max-w-none">
-                {currentArticle.source === 'rss' ? (
-                  <div className="markdown-content">
-                    <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-                      {currentArticle.content || ''}
-                    </ReactMarkdown>
-                  </div>
-                ) : (
-                  renderMarkdownContent(currentArticle.content || '')
-                )}
-              </div>
-            </CardContent>
-          </Card>
+
+            {/* Markdown 正文内容 */}
+            <div className="px-2 max-w-none">
+              {renderMarkdownContent(currentArticle.content || '')}
+            </div>
+
+            {/* 新增的底部自分享按钮 */}
+            <div className="mt-10 flex justify-center">
+              <Button
+                className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
+                onClick={() => handleShare(currentArticle)}
+              >
+                <span className="mr-2 font-semibold">分享</span>
+                <Share2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         </div>
 
-        {/* 分享模态框 - 在阅读界面也需要包含 */}
+        {/* 分享模态框保持不变 */}
         <UniversalShareModal
           isOpen={showShareModal}
           onClose={() => {
@@ -462,15 +448,15 @@ export function NewsPage() {
           }}
         />
         <ImageGeneratorComponent />
-      </div>
+      </>
     )
   }
 
+  // ====================================================================
+  // 	新闻列表页视图 (保持不变)
+  // ====================================================================
   return (
     <div className="min-h-screen bg-white pb-6">
-      {' '}
-      {/* 更改背景为白色 */}
-      {/* 顶部 Hero 区域，保持不变 */}
       <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
@@ -489,8 +475,6 @@ export function NewsPage() {
           </div>
           <LanguageSwitcher />
         </div>
-
-        {/* 顶部 Banner，参考学院页面的实现方式 */}
         <div
           className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
           style={{
@@ -507,29 +491,20 @@ export function NewsPage() {
           </div>
         </div>
       </div>
-      {/* --- 内容区域重构开始 --- */}
       <div className="px-6">
-        {' '}
-        {/* 原来这里是 mt-6 和 Card，现在简化 */}
         {loading ? (
           <div className="text-center py-8 text-slate-500">
             {t('news.loading') || '加载中...'}
           </div>
         ) : newsItems.length > 0 ? (
-          // 蓝湖时间线布局容器
           <div className="relative">
-            {/* 蓝色竖线，贯穿始终 */}
             <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
-
             <div className="flex flex-col gap-y-8">
-              {' '}
-              {/* 控制每个新闻项的垂直间距 */}
               {newsItems.map((item) => (
-                // 每个新闻项的容器（语义化 button，配合内层 asChild 避免嵌套 button）
                 <button
                   type="button"
                   key={item.id}
-                  className="relative pl-6 cursor-pointer text-left w-full" // 左内边距给圆点和竖线留出空间
+                  className="relative pl-6 cursor-pointer text-left w-full"
                   onClick={() => fetchArticleContent(item.id)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -539,14 +514,8 @@ export function NewsPage() {
                   }}
                   aria-label={`阅读文章: ${item.title}`}
                 >
-                  {/* 蓝点 */}
                   <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
-
-                  {/* 内容垂直堆叠 */}
                   <div className="flex flex-col gap-y-2">
-                    {' '}
-                    {/* 内容内部的间距 */}
-                    {/* 标题 - 对应 text_5, text_8 等 */}
                     <div className="flex justify-between items-start gap-2">
                       <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
                         {item.title}
@@ -557,7 +526,7 @@ export function NewsPage() {
                         size="sm"
                         className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
                         onClick={(e) => {
-                          e.stopPropagation() // 防止点击分享时触发进入详情页的事件
+                          e.stopPropagation()
                           handleShare(item)
                         }}
                       >
@@ -566,7 +535,6 @@ export function NewsPage() {
                         </span>
                       </Button>
                     </div>
-                    {/* 日期和来源 - 对应 group_5, text_6 */}
                     <div className="flex items-center text-xs text-[#AAB7CF]">
                       <Clock className="w-3 h-3 mr-1.5" />
                       <span>{formatDate(item.publishDate)}</span>
@@ -577,7 +545,6 @@ export function NewsPage() {
                         </span>
                       )}
                     </div>
-                    {/* 摘要 - 对应 text_7 */}
                     <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
                       {item.summary}
                     </p>
@@ -592,8 +559,6 @@ export function NewsPage() {
           </div>
         )}
       </div>
-      {/* --- 内容区域重构结束 --- */}
-      {/* 新闻分享模态框和图片生成器，保持不变 */}
       <UniversalShareModal
         isOpen={showShareModal}
         onClose={() => {

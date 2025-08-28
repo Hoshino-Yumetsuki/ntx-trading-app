@@ -25,7 +25,7 @@ export function GntxCard({ userInfo }: GntxCardProps) {
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-slate-800 flex items-center">
           <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
-          {t('profile.gntx.title') || 'GNTX 资产'}
+          {t('profile.gntx.title')}
         </CardTitle>
       </CardHeader>
 
