@@ -5,7 +5,6 @@ import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import {
   BookOpen,
-  TrendingUp,
   Target,
   Lock,
   ArrowLeft,
@@ -14,9 +13,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { LearningResourcesPage } from './academy/learning-resources'
-import { BlackHorseModelPage } from './academy/black-horse-model'
 import { StrategySignalsPage } from './academy/strategy-signals'
-import { UnlockCoursesPage } from './academy/unlock-courses'
 import { OrdersPage } from './academy/orders'
 import { LoopCommunitiesPage } from './academy/loop-communities'
 import type { Course } from '@/src/types/course'
@@ -330,7 +327,9 @@ export function AcademyPage() {
           )}
         </div>
         {/* 直播外跳提示 */}
-        <p className="mt-2 text-right text-[11px] italic text-slate-500">*直播社区将要跳转到第三方平台</p>
+        <p className="mt-2 text-right text-[11px] italic text-slate-500">
+          *直播社区将要跳转到第三方平台
+        </p>
       </div>
     </div>
   )

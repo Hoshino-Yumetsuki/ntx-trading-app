@@ -24,6 +24,24 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
 
   const formatBalance = (balance: number | undefined) => {
     if (balance === undefined || balance === null) return '0.00'
+
+    // 对于非常大的数值，使用简化显示
+    if (balance >= 1000000) {
+      return (
+        `${(balance / 1000000).toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}M`
+      )
+    } else if (balance >= 1000) {
+      return (
+        `${(balance / 1000).toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}K`
+      )
+    }
+
     return balance.toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6
@@ -72,7 +90,15 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
           </CardHeader>
           <CardContent>
             <div className="text-right">
-              <p className="text-2xl font-bold text-slate-800">
+              <p
+                className="font-bold text-slate-800 truncate"
+                style={{
+                  fontSize: 'clamp(1rem, 5vw, 1.5rem)',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {formatBalance(userInfo.usdtBalance)}
               </p>
               <p className="text-sm text-slate-600">
@@ -107,7 +133,15 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
           </CardHeader>
           <CardContent>
             <div className="text-right">
-              <p className="text-2xl font-bold text-slate-800">
+              <p
+                className="font-bold text-slate-800 truncate"
+                style={{
+                  fontSize: 'clamp(1rem, 5vw, 1.5rem)',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {formatBalance(userInfo.ntxBalance)}
               </p>
               <p className="text-sm text-slate-600">

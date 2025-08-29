@@ -41,15 +41,33 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
   }
 
   // 2. 格式化余额数字，让其更易读
-  const ntxDisplayBalance =
-    userInfo.ntxBalance?.toLocaleString('en-US', {
-      maximumFractionDigits: 2 // 最多保留两位小数
-    }) ?? '0'
+  const formatBalance = (balance: number | undefined) => {
+    if (balance === undefined || balance === null) return '0'
 
-  const gntxDisplayBalance =
-    userInfo.gntxBalance?.toLocaleString('en-US', {
-      maximumFractionDigits: 0
-    }) ?? '0'
+    // 对于非常大的数值，使用简化显示
+    if (balance >= 1000000) {
+      return (
+        `${(balance / 1000000).toLocaleString('en-US', {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1
+        })}M`
+      )
+    } else if (balance >= 1000) {
+      return (
+        `${(balance / 1000).toLocaleString('en-US', {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1
+        })}K`
+      )
+    }
+
+    return balance.toLocaleString('en-US', {
+      maximumFractionDigits: 2
+    })
+  }
+
+  const ntxDisplayBalance = formatBalance(userInfo.ntxBalance)
+  const gntxDisplayBalance = formatBalance(userInfo.gntxBalance)
 
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
@@ -69,7 +87,15 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
             </div>
             <div>
               <p className="text-slate-900 font-semibold">NTX</p>
-              <p className="text-[#2F5BFF] text-2xl md:text-3xl font-extrabold leading-tight">
+              <p
+                className="text-[#2F5BFF] font-extrabold leading-tight truncate"
+                style={{
+                  fontSize: 'clamp(1rem, 4vw, 1.875rem)',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {/* 3. 使用格式化后的 ntxBalance */}
                 {ntxDisplayBalance}
               </p>
@@ -95,7 +121,15 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
             </div>
             <div>
               <p className="text-slate-900 font-semibold">GNTX</p>
-              <p className="text-[#2F5BFF] text-2xl md:text-3xl font-extrabold leading-tight">
+              <p
+                className="text-[#2F5BFF] font-extrabold leading-tight truncate"
+                style={{
+                  fontSize: 'clamp(1rem, 4vw, 1.875rem)',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {/* 3. 使用格式化后的 gntxBalance */}
                 {gntxDisplayBalance}
               </p>

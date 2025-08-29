@@ -174,105 +174,107 @@ export function NotificationsPage() {
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-        {/* 顶部导航区域 */}
-        <div className="px-4 pt-12 pb-4">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center">
-              {/* 返回按钮 */}
+          {/* 顶部导航区域 */}
+          <div className="px-4 pt-12 pb-4">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center">
+                {/* 返回按钮 */}
+                <Button
+                  variant="ghost"
+                  size="icon" // 使用 'icon' 尺寸，更适合单个图标按钮
+                  onClick={handleBackToList}
+                  className="mr-2" // 移除颜色相关的类名，让图片保持原样
+                >
+                  <Image
+                    src="/back.png" // 图片路径 (请确保 back.png 文件在 public 目录下)
+                    alt="返回"
+                    width={20} // 设置宽度为 20px
+                    height={20} // 设置高度为 20px
+                  />
+                </Button>
+                {/* Logo */}
+                <div className="relative w-24 h-8 md:w-28 md:h-9">
+                  <Image
+                    src="/Frame17@3x.png"
+                    alt="NTX Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </div>
+
+              {/* ==================== 代码修改开始 ==================== */}
+              {/* 参照蓝湖UI修改了顶部分享按钮 */}
               <Button
                 variant="ghost"
-                size="icon" // 使用 'icon' 尺寸，更适合单个图标按钮
-                onClick={handleBackToList}
-                className="mr-2" // 移除颜色相关的类名，让图片保持原样
+                onClick={() => handleShare(currentArticle)}
+                // 移除了 size="icon"，使用自定义样式
+                className="h-auto p-1.5 rounded-md hover:bg-blue-50/50"
               >
-                <Image
-                  src="/back.png" // 图片路径 (请确保 back.png 文件在 public 目录下)
-                  alt="返回"
-                  width={20} // 设置宽度为 20px
-                  height={20} // 设置高度为 20px
-                />
+                <div className="flex items-center gap-x-1">
+                  <span className="text-xs font-medium text-[#1C55FF]">
+                    分享
+                  </span>
+                  <Image src="/share.png" alt="分享" width={16} height={13} />
+                </div>
               </Button>
-              {/* Logo */}
-              <div className="relative w-24 h-8 md:w-28 md:h-9">
-                <Image
-                  src="/Frame17@3x.png"
-                  alt="NTX Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
+              {/* ==================== 代码修改结束 ==================== */}
             </div>
 
-            {/* ==================== 代码修改开始 ==================== */}
-            {/* 参照蓝湖UI修改了顶部分享按钮 */}
-            <Button
-              variant="ghost"
-              onClick={() => handleShare(currentArticle)}
-              // 移除了 size="icon"，使用自定义样式
-              className="h-auto p-1.5 rounded-md hover:bg-blue-50/50"
-            >
-              <div className="flex items-center gap-x-1">
-                <span className="text-xs font-medium text-[#1C55FF]">分享</span>
-                <Image src="/share.png" alt="分享" width={16} height={13} />
+            {/* 文章标题和日期 */}
+            <div className="px-2">
+              <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
+                {currentArticle.title}
+              </h1>
+              <div className="flex items-center text-slate-500 text-xs mt-3">
+                <span>{formatDate(currentArticle.publishDate)}</span>
+                <span className="mx-2">•</span>
+                <span>{formatTime(currentArticle.publishDate)}</span>
               </div>
-            </Button>
-            {/* ==================== 代码修改结束 ==================== */}
-          </div>
-
-          {/* 文章标题和日期 */}
-          <div className="px-2">
-            <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
-              {currentArticle.title}
-            </h1>
-            <div className="flex items-center text-slate-500 text-xs mt-3">
-              <span>{formatDate(currentArticle.publishDate)}</span>
-              <span className="mx-2">•</span>
-              <span>{formatTime(currentArticle.publishDate)}</span>
             </div>
           </div>
-        </div>
 
-        {/* 内容区域 (移除了Card包裹) */}
-        <div className="px-4 mt-4">
-          {/* 文章图片 */}
-          {currentArticle.imageUrl &&
-            currentArticle.imageUrl !== '/placeholder.png' &&
-            currentArticle.imageUrl.trim() !== '' && (
-              <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
-                <Image
-                  src={currentArticle.imageUrl}
-                  alt={currentArticle.title}
-                  className="object-cover"
-                  fill
-                  sizes="100vw"
-                  priority
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    if (target.parentElement) {
-                      target.parentElement.style.display = 'none'
-                    }
-                  }}
-                />
-              </div>
-            )}
+          {/* 内容区域 (移除了Card包裹) */}
+          <div className="px-4 mt-4">
+            {/* 文章图片 */}
+            {currentArticle.imageUrl &&
+              currentArticle.imageUrl !== '/placeholder.png' &&
+              currentArticle.imageUrl.trim() !== '' && (
+                <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
+                  <Image
+                    src={currentArticle.imageUrl}
+                    alt={currentArticle.title}
+                    className="object-cover"
+                    fill
+                    sizes="100vw"
+                    priority
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      if (target.parentElement) {
+                        target.parentElement.style.display = 'none'
+                      }
+                    }}
+                  />
+                </div>
+              )}
 
-          {/* Markdown 正文内容 */}
-          <div className="px-2 max-w-none">
-            {renderMarkdownContent(currentArticle.content || '')}
+            {/* Markdown 正文内容 */}
+            <div className="px-2 max-w-none">
+              {renderMarkdownContent(currentArticle.content || '')}
+            </div>
+
+            {/* 新增的底部自分享按钮 */}
+            <div className="mt-10 flex justify-center">
+              <Button
+                className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
+                onClick={() => handleShare(currentArticle)}
+              >
+                <span className="mr-2 font-semibold">分享</span>
+                <Share2 className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-
-          {/* 新增的底部自分享按钮 */}
-          <div className="mt-10 flex justify-center">
-            <Button
-              className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
-              onClick={() => handleShare(currentArticle)}
-            >
-              <span className="mr-2 font-semibold">分享</span>
-              <Share2 className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
         </div>
         {/* 分享模态框（阅读页内挂载） */}
         <UniversalShareModal
