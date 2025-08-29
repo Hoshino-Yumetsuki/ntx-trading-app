@@ -4,6 +4,7 @@ import { Card } from '@/src/components/ui/card'
 import { useRouter } from 'next/navigation'
 import type { UserInfo } from '@/src/types/user'
 import Image from 'next/image'
+import { toast } from 'sonner'
 
 interface StakeCardProps {
   // userInfo 可能为 null (在父组件数据加载时)
@@ -12,15 +13,22 @@ interface StakeCardProps {
 }
 
 // 为了代码清晰，我将 _userInfo 改回了 userInfo
-export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
-  const router = useRouter()
+export function StakeCard({ userInfo }: StakeCardProps) {
+  const _router = useRouter()
 
   const handleBroker = () => {
-    if (onNavigate) {
-      onNavigate('broker')
-      return
-    }
-    router.push('/broker')
+    // 显示"暂未开放"提示
+    toast.info('质押/释放功能暂未开放', {
+      position: 'top-center',
+      duration: 2000
+    })
+
+    // 注释掉原有的导航逻辑
+    // if (onNavigate) {
+    //   onNavigate('broker')
+    //   return
+    // }
+    // router.push('/broker')
   }
 
   // 1. 添加加载状态：如果 userInfo 还没传进来，显示一个骨架屏 (Skeleton)
@@ -46,19 +54,15 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
 
     // 对于非常大的数值，使用简化显示
     if (balance >= 1000000) {
-      return (
-        `${(balance / 1000000).toLocaleString('en-US', {
-          minimumFractionDigits: 1,
-          maximumFractionDigits: 1
-        })}M`
-      )
+      return `${(balance / 1000000).toLocaleString('en-US', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      })}M`
     } else if (balance >= 1000) {
-      return (
-        `${(balance / 1000).toLocaleString('en-US', {
-          minimumFractionDigits: 1,
-          maximumFractionDigits: 1
-        })}K`
-      )
+      return `${(balance / 1000).toLocaleString('en-US', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      })}K`
     }
 
     return balance.toLocaleString('en-US', {

@@ -27,19 +27,15 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
 
     // 对于非常大的数值，使用简化显示
     if (balance >= 1000000) {
-      return (
-        `${(balance / 1000000).toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}M`
-      )
+      return `${(balance / 1000000).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}M`
     } else if (balance >= 1000) {
-      return (
-        `${(balance / 1000).toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}K`
-      )
+      return `${(balance / 1000).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}K`
     }
 
     return balance.toLocaleString('en-US', {
