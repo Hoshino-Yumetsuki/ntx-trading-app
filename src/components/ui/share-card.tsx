@@ -199,15 +199,11 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         >
           {/* 左侧文案区 */}
           <div className="text-left w-[280px] flex flex-col justify-center h-[170px]">
-            <div className="flex justify-between text-[#1C55FF] font-extralight text-[32px] leading-tight">
-              <span>交</span>
-              <span>易</span>
-              <span>即</span>
-              <span>挖</span>
-              <span>矿</span>
+            <div className="flex justify-between text-[#1C55FF] font-bold text-[32px] leading-tight">
+              <span>连接用户聚合资源</span>
             </div>
-            <div className="text-gray-600 text-[14px] mt-2 leading-tight w-full">
-              加入NTX，开启Web3世界的大门
+            <div className="text-gray-600 text-[20px] mt-2 leading-tight w-full">
+              挖掘你的 Web3 机会
             </div>
           </div>
 

@@ -4,6 +4,10 @@ import { useRef, useCallback } from 'react'
 import QRCode from 'qrcode'
 import type { UserInfo } from '@/src/types/user'
 
+// 资源缓存，避免重复加载与重复生成
+const imageCache = new Map<string, Promise<HTMLImageElement>>()
+const qrImageCache = new Map<string, Promise<HTMLImageElement>>()
+
 // --- 步骤 1: 提取独立的辅助函数，减少重复代码 ---
 
 /**
@@ -42,13 +46,56 @@ function createRoundedRectPath(
  * @returns Promise<HTMLImageElement>
  */
 const loadImage = (src: string): Promise<HTMLImageElement> => {
-  return new Promise((resolve, reject) => {
+  const cached = imageCache.get(src)
+  if (cached) return cached
+
+  const p = new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new window.Image()
     img.crossOrigin = 'anonymous'
+    // 提示浏览器异步解码以减少主线程阻塞
+    // 这两个属性在多数现代浏览器中受支持
+    ;(img as HTMLImageElement).decoding = 'async'
+    ;(img as HTMLImageElement).loading = 'eager'
     img.onload = () => resolve(img)
-    img.onerror = reject
+    img.onerror = (e) => reject(e)
     img.src = src
+  }).catch((err) => {
+    imageCache.delete(src)
+    throw err
   })
+
+  imageCache.set(src, p)
+  return p
+}
+
+// 生成（并缓存）二维码对应的图片，避免每次重复编码
+async function getQrImage(
+  inviteUrl: string,
+  options: {
+    width: number
+    margin: number
+    colorDark: string
+    colorLight: string
+  }
+): Promise<HTMLImageElement> {
+  const key = `${inviteUrl}|w=${options.width}|m=${options.margin}|cd=${options.colorDark}|cl=${options.colorLight}`
+  const existing = qrImageCache.get(key)
+  if (existing) return existing
+
+  const task = (async () => {
+    const dataUrl = await QRCode.toDataURL(inviteUrl, {
+      width: options.width,
+      margin: options.margin,
+      color: { dark: options.colorDark, light: options.colorLight }
+    })
+    return await loadImage(dataUrl)
+  })().catch((err) => {
+    qrImageCache.delete(key)
+    throw err
+  })
+
+  qrImageCache.set(key, task)
+  return task
 }
 
 // --- 步骤 2: 将所有绘制逻辑封装到一个核心函数中 ---
@@ -71,9 +118,24 @@ async function drawInviteImageOnCanvas(
   canvas.width = 600
   canvas.height = 800
 
+  // 预先计算 URL 与并行启动资源加载，减少总等待时间
+  const baseUrl =
+    window.location.origin || process.env.NEXT_PUBLIC_BASE_URL || ''
+  const inviteUrl = `${baseUrl}/register?invite=${userInfo.myInviteCode}`
+  const bgPromise = loadImage('/分享-bg.png')
+  const logoPromise = loadImage('/ntx_1_1.jpg')
+  const bannerPromise = loadImage('/share_p1.png')
+  // 将二维码生成尺寸与实际绘制尺寸对齐，避免多余编码开销
+  const qrPromise = getQrImage(inviteUrl, {
+    width: 120,
+    margin: 2,
+    colorDark: '#1e40af',
+    colorLight: '#ffffff'
+  })
+
   // 2. 绘制背景
   try {
-    const bgImg = await loadImage('/分享-bg.png')
+    const bgImg = await bgPromise
     const scale = Math.max(
       canvas.width / bgImg.width,
       canvas.height / bgImg.height
@@ -95,7 +157,7 @@ async function drawInviteImageOnCanvas(
 
   // 3. 绘制 Logo
   try {
-    const logoImg = await loadImage('/ntx_1_1.jpg')
+    const logoImg = await logoPromise
     const logoSize = 84
     const logoX = (canvas.width - logoSize) / 2
     const logoY = 60
@@ -132,7 +194,7 @@ async function drawInviteImageOnCanvas(
 
   // 5. 绘制中部 Banner (使用 Hook 版本中的新图)
   try {
-    const bannerImg = await loadImage('/share_p1.png') // 统一使用新版图片
+    const bannerImg = await bannerPromise // 统一使用新版图片
     const bannerW = 243
     const bannerH = 244
     const bannerX = (canvas.width - bannerW) / 2
@@ -172,16 +234,8 @@ async function drawInviteImageOnCanvas(
     cardY + 120
   )
 
-  // 7. 生成并绘制二维码
-  const baseUrl =
-    window.location.origin || process.env.NEXT_PUBLIC_BASE_URL || ''
-  const inviteUrl = `${baseUrl}/register?invite=${userInfo.myInviteCode}`
-  const qrDataUrl = await QRCode.toDataURL(inviteUrl, {
-    width: 200,
-    margin: 2,
-    color: { dark: '#1e40af', light: '#ffffff' }
-  })
-  const qrImg = await loadImage(qrDataUrl)
+  // 7. 生成并绘制二维码（走缓存，尺寸匹配绘制尺寸）
+  const qrImg = await qrPromise
 
   const qrSize = 120
   const qrPadding = 6
