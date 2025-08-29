@@ -436,7 +436,13 @@ export function UniversalShareModal({
                     onClick={shareToTelegram}
                     className="flex items-center justify-center"
                   >
-                    <Share2 className="w-4 h-4 mr-2" />
+                    <NextImage
+                      src="/telegram-蓝1@3x.png"
+                      alt="Telegram"
+                      width={16}
+                      height={16}
+                      className="mr-2"
+                    />
                     Telegram
                   </Button>
                   <Button
@@ -444,7 +450,14 @@ export function UniversalShareModal({
                     onClick={shareToTwitter}
                     className="flex items-center justify-center"
                   >
-                    <Share2 className="w-4 h-4 mr-2" />X
+                    <NextImage
+                      src="/twitter.3.png"
+                      alt="X"
+                      width={16}
+                      height={16}
+                      className="mr-2"
+                    />
+                    X
                   </Button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
