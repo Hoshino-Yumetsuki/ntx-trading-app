@@ -41,12 +41,12 @@ export function AcademyPage() {
       icon: BookOpen,
       component: LearningResourcesPage
     },
-    {
-      id: 'learning',
-      title: '学习资源',
-      icon: TrendingUp,
-      component: BlackHorseModelPage
-    },
+    // {
+    //   id: 'learning',
+    //   title: '学习资源',
+    //   icon: TrendingUp,
+    //   component: BlackHorseModelPage
+    // },
     {
       id: 'signals',
       title: '策略信号',
@@ -59,12 +59,12 @@ export function AcademyPage() {
       icon: Users,
       component: LoopCommunitiesPage
     },
-    {
-      id: 'unlock',
-      title: '解锁课程',
-      icon: Lock,
-      component: UnlockCoursesPage
-    },
+    // {
+    //   id: 'unlock',
+    //   title: '解锁课程',
+    //   icon: Lock,
+    //   component: UnlockCoursesPage
+    // },
     {
       id: 'orders',
       title: '我的订单',
