@@ -172,7 +172,8 @@ export function NotificationsPage() {
   // ====================================================================
   if (viewingArticle && currentArticle) {
     return (
-      <div className="min-h-screen bg-white pb-12">
+      <>
+        <div className="min-h-screen bg-white pb-12">
         {/* 顶部导航区域 */}
         <div className="px-4 pt-12 pb-4">
           <div className="flex justify-between items-center mb-6">
@@ -272,7 +273,29 @@ export function NotificationsPage() {
             </Button>
           </div>
         </div>
-      </div>
+        </div>
+        {/* 分享模态框（阅读页内挂载） */}
+        <UniversalShareModal
+          isOpen={showShareModal}
+          onClose={() => {
+            setShowShareModal(false)
+            setOverrideQrText?.('')
+          }}
+          title="分享文章"
+          shareData={{
+            title: shareNewsItem?.title || '',
+            text: shareNewsItem?.summary || '',
+            url: getShareUrl(shareNewsItem)
+          }}
+          imageGenerator={generateImage}
+          showImagePreview={true}
+          showDefaultShareButtons={true}
+          onQrOverride={(text) => {
+            setOverrideQrText?.(text)
+          }}
+        />
+        <ImageGeneratorComponent />
+      </>
     )
   }
 
