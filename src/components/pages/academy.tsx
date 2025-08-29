@@ -55,7 +55,7 @@ export function AcademyPage() {
     },
     {
       id: 'loop',
-      title: 'LOOP 社区',
+      title: '直播',
       icon: Users,
       component: LoopCommunitiesPage
     },
@@ -256,11 +256,11 @@ export function AcademyPage() {
         </div>
       </div>
 
-      {/* LOOP 社区 */}
+      {/* 直播（原 LOOP 社区） */}
       <div className="px-4 mt-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-slate-800 text-xl font-bold">LOOP 社区</h2>
+            <h2 className="text-slate-800 text-xl font-bold">直播</h2>
             <p className="text-slate-600 text-sm mt-1">
               加入社区，一起讨论学习
             </p>
@@ -329,6 +329,8 @@ export function AcademyPage() {
             </div>
           )}
         </div>
+        {/* 直播外跳提示 */}
+        <p className="mt-2 text-right text-[11px] italic text-slate-500">*直播社区将要跳转到第三方平台</p>
       </div>
     </div>
   )
