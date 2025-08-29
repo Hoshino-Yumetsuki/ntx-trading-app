@@ -41,13 +41,15 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
   }
 
   // 2. 格式化余额数字，让其更易读
-  const ntxDisplayBalance = userInfo.ntxBalance?.toLocaleString('en-US', {
-    maximumFractionDigits: 2, // 最多保留两位小数
-  }) ?? '0'
+  const ntxDisplayBalance =
+    userInfo.ntxBalance?.toLocaleString('en-US', {
+      maximumFractionDigits: 2 // 最多保留两位小数
+    }) ?? '0'
 
-  const gntxDisplayBalance = userInfo.gntxBalance?.toLocaleString('en-US', {
-    maximumFractionDigits: 0,
-  }) ?? '0'
+  const gntxDisplayBalance =
+    userInfo.gntxBalance?.toLocaleString('en-US', {
+      maximumFractionDigits: 0
+    }) ?? '0'
 
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
@@ -58,7 +60,12 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
           {/* NTX Section */}
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
-              <Image src="/image42@3x.png" alt="NTX" fill className="object-contain" />
+              <Image
+                src="/image42@3x.png"
+                alt="NTX"
+                fill
+                className="object-contain"
+              />
             </div>
             <div>
               <p className="text-slate-900 font-semibold">NTX</p>
@@ -79,7 +86,12 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
           {/* GNTX Section */}
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
-              <Image src="/image43@3x.png" alt="GNTX" fill className="object-contain" />
+              <Image
+                src="/image43@3x.png"
+                alt="GNTX"
+                fill
+                className="object-contain"
+              />
             </div>
             <div>
               <p className="text-slate-900 font-semibold">GNTX</p>
@@ -96,7 +108,7 @@ export function StakeCard({ userInfo, onNavigate }: StakeCardProps) {
           className="w-[240px] h-[32px] bg-[#2F5BFF] hover:bg-[#2a52e6] text-white rounded-[8pt] flex items-center justify-center font-semibold transition-colors mx-auto text-sm"
           style={{
             fontFamily:
-              '"PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+              '"PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
           }}
           onClick={handleBroker}
         >

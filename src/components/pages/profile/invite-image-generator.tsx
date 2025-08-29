@@ -74,10 +74,19 @@ async function drawInviteImageOnCanvas(
   // 2. 绘制背景
   try {
     const bgImg = await loadImage('/分享-bg.png')
-    const scale = Math.max(canvas.width / bgImg.width, canvas.height / bgImg.height)
+    const scale = Math.max(
+      canvas.width / bgImg.width,
+      canvas.height / bgImg.height
+    )
     const dw = bgImg.width * scale
     const dh = bgImg.height * scale
-    ctx.drawImage(bgImg, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh)
+    ctx.drawImage(
+      bgImg,
+      (canvas.width - dw) / 2,
+      (canvas.height - dh) / 2,
+      dw,
+      dh
+    )
   } catch (err) {
     console.error('背景图加载失败，使用纯色背景', err)
     ctx.fillStyle = '#ffffff'
@@ -120,7 +129,7 @@ async function drawInviteImageOnCanvas(
   ctx.fillStyle = '#374151'
   ctx.font = '16px Arial'
   ctx.fillText('享受高达60%手续费返佣和挖矿交易', canvas.width / 2, 280)
-  
+
   // 5. 绘制中部 Banner (使用 Hook 版本中的新图)
   try {
     const bannerImg = await loadImage('/share_p1.png') // 统一使用新版图片
@@ -128,13 +137,16 @@ async function drawInviteImageOnCanvas(
     const bannerH = 244
     const bannerX = (canvas.width - bannerW) / 2
     const bannerY = 320
-    const scale = Math.min(bannerW / bannerImg.width, bannerH / bannerImg.height)
+    const scale = Math.min(
+      bannerW / bannerImg.width,
+      bannerH / bannerImg.height
+    )
     const drawW = bannerImg.width * scale
     const drawH = bannerImg.height * scale
     const drawX = bannerX + (bannerW - drawW) / 2
     const drawY = bannerY + (bannerH - drawH) / 2
     ctx.drawImage(bannerImg, drawX, drawY, drawW, drawH)
-  } catch(err) {
+  } catch (err) {
     console.error('中部 Banner 加载失败', err)
   }
 
@@ -147,7 +159,7 @@ async function drawInviteImageOnCanvas(
   ctx.fillStyle = '#2563eb'
   createRoundedRectPath(ctx, cardX, cardY, cardW, cardH, cardR)
   ctx.fill()
-  
+
   // 绘制卡片内文字
   ctx.fillStyle = '#ffffff'
   ctx.textAlign = 'left'
@@ -161,7 +173,8 @@ async function drawInviteImageOnCanvas(
   )
 
   // 7. 生成并绘制二维码
-  const baseUrl = window.location.origin || process.env.NEXT_PUBLIC_BASE_URL || ''
+  const baseUrl =
+    window.location.origin || process.env.NEXT_PUBLIC_BASE_URL || ''
   const inviteUrl = `${baseUrl}/register?invite=${userInfo.myInviteCode}`
   const qrDataUrl = await QRCode.toDataURL(inviteUrl, {
     width: 200,
@@ -205,19 +218,21 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
       return null // 也可以向上抛出错误，让调用者处理
     }
   }, [userInfo])
-  
+
   // 返回一个需要被渲染的、隐藏的 Canvas 组件
   const InviteCanvas = useCallback(() => {
     // 如果没有用户信息，则无需渲染 canvas，以节省资源
-    if (!userInfo) return null;
-    
+    if (!userInfo) return null
+
     return (
-      <div className="fixed -top-[9999px] left-0 pointer-events-none" aria-hidden="true">
+      <div
+        className="fixed -top-[9999px] left-0 pointer-events-none"
+        aria-hidden="true"
+      >
         <canvas ref={canvasRef} />
       </div>
-    );
-  }, [userInfo]);
-
+    )
+  }, [userInfo])
 
   return { generateImage, InviteCanvas }
 }

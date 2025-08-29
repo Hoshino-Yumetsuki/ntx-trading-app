@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
-import { Clock, Rss, Share2, ChevronLeft } from 'lucide-react'
+import { Clock, Rss, Share2, } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
 import { UserService } from '@/src/services/user'
@@ -267,7 +266,7 @@ export function NewsPage() {
     setShareNewsItem(newsItem)
     setShowShareModal(true)
   }
-  
+
   // 新增的返回列表处理函数
   const handleBackToList = useCallback(() => {
     setViewingArticle(false)
@@ -300,7 +299,8 @@ export function NewsPage() {
         </div>
       )
     }
-    const contentToRender = currentArticle?.source === 'rss' ? (currentArticle.content || '') : content
+    const contentToRender =
+      currentArticle?.source === 'rss' ? currentArticle.content || '' : content
     return (
       <div className="markdown-content">
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
@@ -309,7 +309,7 @@ export function NewsPage() {
       </div>
     )
   }
-  
+
   // ====================================================================
   // 	文章详情页视图 (已按要求重构)
   // ====================================================================
@@ -328,12 +328,7 @@ export function NewsPage() {
                   onClick={handleBackToList}
                   className="mr-2"
                 >
-                  <Image
-                    src="/back.png"
-                    alt="返回"
-                    width={20}
-                    height={20}
-                  />
+                  <Image src="/back.png" alt="返回" width={20} height={20} />
                 </Button>
                 {/* Logo */}
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
@@ -357,12 +352,7 @@ export function NewsPage() {
                   <span className="text-xs font-medium text-[#1C55FF]">
                     分享
                   </span>
-                  <Image
-                    src="/share.png"
-                    alt="分享"
-                    width={16}
-                    height={13}
-                  />
+                  <Image src="/share.png" alt="分享" width={16} height={13} />
                 </div>
               </Button>
             </div>

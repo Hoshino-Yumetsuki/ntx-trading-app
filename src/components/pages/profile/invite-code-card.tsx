@@ -23,8 +23,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   const { t } = useLanguage()
   const [showShareModal, setShowShareModal] = useState(false)
   const [_isIOS, setIsIOS] = useState(false)
-  const { generateImage, InviteCanvas } = useInviteImageGenerator(userInfo);
-
+  const { generateImage, InviteCanvas } = useInviteImageGenerator(userInfo)
 
   // 检测是否为iOS设备
   useEffect(() => {
@@ -138,7 +137,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
       />
 
       {/* 图片生成器组件 */}
-      <InviteCanvas  />
+      <InviteCanvas />
     </Card>
   )
 }

@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
-import { Clock, Share2, ChevronLeft } from 'lucide-react'
+import { Clock, Share2, } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
 import ReactMarkdown from 'react-markdown'
@@ -132,7 +131,7 @@ export function NotificationsPage() {
       const queryString = params.toString()
       const newUrl = queryString
         ? `?${queryString}`
-        : window.location.pathname + '?tab=notifications'
+        : `${window.location.pathname}?tab=notifications`
       router.replace(newUrl)
     }
   }
@@ -203,7 +202,7 @@ export function NotificationsPage() {
                 />
               </div>
             </div>
-            
+
             {/* ==================== 代码修改开始 ==================== */}
             {/* 参照蓝湖UI修改了顶部分享按钮 */}
             <Button
@@ -213,19 +212,11 @@ export function NotificationsPage() {
               className="h-auto p-1.5 rounded-md hover:bg-blue-50/50"
             >
               <div className="flex items-center gap-x-1">
-                <span className="text-xs font-medium text-[#1C55FF]">
-                  分享
-                </span>
-                <Image
-                  src="/share.png"
-                  alt="分享"
-                  width={16}
-                  height={13}
-                />
+                <span className="text-xs font-medium text-[#1C55FF]">分享</span>
+                <Image src="/share.png" alt="分享" width={16} height={13} />
               </div>
             </Button>
             {/* ==================== 代码修改结束 ==================== */}
-
           </div>
 
           {/* 文章标题和日期 */}
@@ -269,16 +260,16 @@ export function NotificationsPage() {
           <div className="px-2 max-w-none">
             {renderMarkdownContent(currentArticle.content || '')}
           </div>
-          
+
           {/* 新增的底部自分享按钮 */}
           <div className="mt-10 flex justify-center">
-             <Button
-               className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
-               onClick={() => handleShare(currentArticle)}
-             >
-               <span className="mr-2 font-semibold">分享</span>
-               <Share2 className="w-4 h-4" />
-             </Button>
+            <Button
+              className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
+              onClick={() => handleShare(currentArticle)}
+            >
+              <span className="mr-2 font-semibold">分享</span>
+              <Share2 className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </div>

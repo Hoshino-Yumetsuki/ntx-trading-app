@@ -13,28 +13,41 @@ interface RewardsCardProps {
 
 // 1. 将数字格式化函数直接放在本文件中
 // 这个函数用于将大数字缩写 (例如 1000 -> 1k)
-function formatLargeNumber(num: number | string | null | undefined, digits = 1) {
+function formatLargeNumber(
+  num: number | string | null | undefined,
+  digits = 1
+) {
   if (num === null || num === undefined) return '0'
-  const numericValue = Number(num);
-  if (isNaN(numericValue)) return '0';
+  const numericValue = Number(num)
+  if (Number.isNaN(numericValue)) return '0'
 
   const si = [
     { value: 1, symbol: '' },
     { value: 1e3, symbol: 'K' },
     { value: 1e6, symbol: 'M' },
-    { value: 1e9, symbol: 'G' },
+    { value: 1e9, symbol: 'G' }
   ]
 
   const rx = /\.0+$|(\.[0-9]*[1-9])0+$/
-  const item = si.slice().reverse().find(item => numericValue >= item.value)
-  
+  const item = si
+    .slice()
+    .reverse()
+    .find((item) => numericValue >= item.value)
+
   return item
-    ? (numericValue / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+    ? (numericValue / item.value).toFixed(digits).replace(rx, '$1') +
+        item.symbol
     : numericValue.toString()
 }
 
 // 2. 创建一个可自适应字体大小的内部组件
-function AdaptiveBalance({ balance, currency }: { balance: number | string | null | undefined; currency: string }) {
+function AdaptiveBalance({
+  balance,
+  currency
+}: {
+  balance: number | string | null | undefined
+  currency: string
+}) {
   const pRef = useRef<HTMLParagraphElement>(null)
   // 默认使用最大的字体class
   const defaultFontSizeClasses = 'text-3xl md:text-4xl'
@@ -54,9 +67,9 @@ function AdaptiveBalance({ balance, currency }: { balance: number | string | nul
         setFontSizeClasses(defaultFontSizeClasses)
       }
     }
-  }, [balance]) // 依赖项是 balance，每次余额变化时重新计算
+  }, []) // 依赖项是 balance，每次余额变化时重新计算
 
-  const formattedBalance = formatLargeNumber(balance);
+  const formattedBalance = formatLargeNumber(balance)
 
   return (
     <div className="text-center">
@@ -99,7 +112,7 @@ export function RewardsCard({ userInfo, onNavigate }: RewardsCardProps) {
           className="w-[240px] h-[32px] bg-[#2F5BFF] hover:bg-[#2a52e6] text-white rounded-[8pt] flex items-center justify-center font-semibold transition-colors mx-auto text-sm"
           style={{
             fontFamily:
-              '"PingFang SC Semibold", "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+              '"PingFang SC Semibold", "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
           }}
           onClick={handleWithdraw}
         >
