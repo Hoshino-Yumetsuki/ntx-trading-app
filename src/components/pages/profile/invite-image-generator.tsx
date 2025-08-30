@@ -316,14 +316,21 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
       // 确保图片（含二维码）都已加载完成
       await waitForImages(node)
 
+      // ==================== 代码修改开始 ====================
       // 使用 html-to-image 直接对 DOM 节点导出 PNG
       const dataUrl = await toPng(node, {
         backgroundColor: '#ffffff',
         cacheBust: true,
         pixelRatio: 2,
+        // 修正属性名：fetchRequest -> fetchRequestInit
+        fetchRequestInit: {
+          mode: 'cors',
+          credentials: 'omit'
+        },
         width: node.scrollWidth,
         height: node.scrollHeight
       })
+      // ==================== 代码修改结束 ====================
       return dataUrl
     } catch (error) {
       console.error('生成邀请分享图片失败:', error)

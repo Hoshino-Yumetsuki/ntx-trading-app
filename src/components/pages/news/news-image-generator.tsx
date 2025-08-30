@@ -154,13 +154,20 @@ export function useNewsImageGenerator(
 
       if (shareCardRef.current) {
         const node = shareCardRef.current
+        // ==================== 代码修改开始 ====================
         const dataUrl = await toPng(node, {
           backgroundColor: '#ffffff',
           cacheBust: true,
           pixelRatio: 2,
+          // 修正属性名：fetchRequest -> fetchRequestInit
+          fetchRequestInit: {
+            mode: 'cors',
+            credentials: 'omit'
+          },
           width: node.scrollWidth,
           height: node.scrollHeight
         })
+        // ==================== 代码修改结束 ====================
         return dataUrl
       }
     } catch (error) {
