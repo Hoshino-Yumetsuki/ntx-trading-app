@@ -20,61 +20,8 @@ interface NewsImageGeneratorProps {
   onImageGenerated?: (imageUrl: string) => void
 }
 
-export function NewsImageGenerator({
-  newsItem,
-  onImageGenerated
-}: NewsImageGeneratorProps) {
+export function NewsImageGenerator({ newsItem }: NewsImageGeneratorProps) {
   const shareCardRef = useRef<HTMLDivElement>(null)
-
-  const _generateNewsShareImage = useCallback(async (): Promise<
-    string | null
-  > => {
-    if (!shareCardRef.current || !newsItem) return null
-
-    try {
-      // 生成二维码
-      const articleUrl = `${window.location.origin}/news/${newsItem.id}`
-      const qrCodeDataUrl = await QRCode.toDataURL(articleUrl, {
-        width: 120,
-        margin: 2,
-        color: {
-          dark: '#1e40af',
-          light: '#ffffff'
-        }
-      })
-
-      // 更新ShareCard中的二维码
-      const shareCardElement = shareCardRef.current.querySelector(
-        '[data-qr-placeholder]'
-      ) as HTMLImageElement
-      if (shareCardElement) {
-        shareCardElement.src = qrCodeDataUrl
-      }
-
-      // 等待DOM更新
-      await new Promise((resolve) => setTimeout(resolve, 100))
-
-      if (shareCardRef.current) {
-        const canvas = await html2canvas(shareCardRef.current, {
-          backgroundColor: '#ffffff',
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          height: shareCardRef.current.scrollHeight,
-          width: shareCardRef.current.scrollWidth
-        })
-
-        const imageDataUrl = canvas.toDataURL('image/png', 0.9)
-        onImageGenerated?.(imageDataUrl)
-        return imageDataUrl
-      }
-    } catch (error) {
-      console.error('生成新闻分享图片失败:', error)
-      throw error
-    }
-
-    return null
-  }, [newsItem, onImageGenerated])
 
   if (!newsItem) return null
 
