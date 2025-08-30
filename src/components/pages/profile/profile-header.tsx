@@ -42,7 +42,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
         />
         <div className="flex items-center mb-3">
           <Avatar className="w-16 h-16 border-4 border-white/30">
-            <AvatarImage src="/placeholder.svg?height=80&width=80" />
+            {/* <AvatarImage src="/placeholder.svg?height=80&width=80" /> */}
             <AvatarFallback className="bg-blue-700 text-white text-xl font-bold">
               {(userInfo?.nickname || user?.nickname || 'U')
                 .charAt(0)
