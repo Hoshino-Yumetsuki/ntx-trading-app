@@ -11,6 +11,7 @@ import { UserService } from '@/src/services/user'
 import { API_BASE_URL } from '@/src/services/config'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
+import DOMPurify from 'dompurify'
 import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
@@ -79,19 +80,50 @@ export function NewsPage() {
       const response = await fetch('https://rss.ntxdao.com/rss/clist')
       if (response.ok) {
         const xmlText = await response.text()
-        const parser = new Parser()
+        const parser = new Parser({
+          // 将 content:encoded 等自定义字段映射出来
+          customFields: {
+            item: [
+              ['content:encoded', 'contentEncoded'],
+              ['media:content', 'mediaContent'],
+              ['media:thumbnail', 'mediaThumbnail']
+            ]
+          }
+        })
         const feed = await parser.parseString(xmlText)
-        const rssItems: NewsItem[] = feed.items.map((item, index) => ({
-          id: -1000 - index,
-          title: item.title || '',
-          summary: item.contentSnippet || '',
-          imageUrl: item.enclosure?.url || '/placeholder.png',
-          publishDate: item.pubDate || new Date().toISOString(),
-          modifyDate: item.isoDate || new Date().toISOString(),
-          isDisplayed: true,
-          content: item.content || '',
-          source: 'rss'
-        }))
+
+        const extractFirstImageSrc = (html: string): string | null => {
+          if (!html) return null
+          const match = html.match(/<img[^>]+src=["']?([^"'>\s]+)["']?[^>]*>/i)
+          return match ? match[1] : null
+        }
+
+        const rssItems: NewsItem[] = feed.items.map(
+          (item: any, index: number) => {
+            const contentEncoded: string =
+              item?.contentEncoded || item?.['content:encoded'] || ''
+            const firstImg = extractFirstImageSrc(contentEncoded)
+            const imageUrl =
+              item?.enclosure?.url ||
+              item?.mediaContent?.url ||
+              item?.mediaThumbnail?.url ||
+              firstImg ||
+              '/placeholder.png'
+
+            return {
+              id: -1000 - index,
+              title: item?.title || '',
+              summary: item?.contentSnippet || '',
+              imageUrl,
+              publishDate: item?.pubDate || new Date().toISOString(),
+              modifyDate: item?.isoDate || new Date().toISOString(),
+              isDisplayed: true,
+              // 正文优先使用 content:encoded，退化到 content/description
+              content: contentEncoded || item?.content || '',
+              source: 'rss'
+            }
+          }
+        )
         return rssItems
       }
       return []
@@ -299,12 +331,25 @@ export function NewsPage() {
         </div>
       )
     }
-    const contentToRender =
-      currentArticle?.source === 'rss' ? currentArticle.content || '' : content
+    // RSS 文章通常是 HTML：使用 DOMPurify 清洗后以 HTML 渲染
+    if (currentArticle?.source === 'rss') {
+      const html = currentArticle.content || ''
+      const safe = DOMPurify.sanitize(html)
+      return (
+        <div
+          className="markdown-content"
+          // 安全地注入已清洗的 HTML
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: RSS HTML 已通过 DOMPurify 清洗
+          dangerouslySetInnerHTML={{ __html: safe }}
+        />
+      )
+    }
+
+    // API 文章维持 Markdown 渲染
     return (
       <div className="markdown-content">
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-          {contentToRender}
+          {content}
         </ReactMarkdown>
       </div>
     )
