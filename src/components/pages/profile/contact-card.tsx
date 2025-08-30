@@ -61,7 +61,7 @@ export function ContactCard() {
           <div className="flex items-center space-x-3">
             <div className="premium-icon w-8 h-8 rounded-[12pt] relative overflow-hidden">
               <Image
-                src="/telegram-蓝1@3x.png"
+                src="/telegram.png"
                 alt="Telegram Icon"
                 fill
                 className="object-cover"
