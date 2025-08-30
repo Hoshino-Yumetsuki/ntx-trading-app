@@ -1,6 +1,8 @@
 'use client'
 
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect, useState } from 'react'
+import { toPng } from 'html-to-image'
+import Image from 'next/image'
 import QRCode from 'qrcode'
 import type { UserInfo } from '@/src/types/user'
 
@@ -9,6 +11,33 @@ const imageCache = new Map<string, Promise<HTMLImageElement>>()
 const qrImageCache = new Map<string, Promise<HTMLImageElement>>()
 
 // --- 步骤 1: 提取独立的辅助函数，减少重复代码 ---
+
+// 基于窗口或环境变量获取基地址
+function getBaseUrl(): string {
+  if (typeof window !== 'undefined' && window.location.origin)
+    return window.location.origin
+  return process.env.NEXT_PUBLIC_BASE_URL || ''
+}
+
+// 等待节点内的所有图片加载完毕，确保导出内容完整
+async function waitForImages(node: HTMLElement) {
+  const imgs = Array.from(node.querySelectorAll('img'))
+  await Promise.all(
+    imgs.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          const el = img as HTMLImageElement
+          if (el.complete && el.naturalWidth > 0) {
+            resolve()
+          } else {
+            const done = () => resolve()
+            el.addEventListener('load', done, { once: true })
+            el.addEventListener('error', done, { once: true })
+          }
+        })
+    )
+  )
+}
 
 /**
  * 在 Canvas 2D 上下文中绘制一个圆角矩形路径
@@ -105,7 +134,7 @@ async function getQrImage(
  * @param canvas - HTMLCanvasElement
  * @param userInfo - 用户信息
  */
-async function drawInviteImageOnCanvas(
+async function _drawInviteImageOnCanvas(
   canvas: HTMLCanvasElement,
   userInfo: UserInfo
 ): Promise<string> {
@@ -257,36 +286,164 @@ async function drawInviteImageOnCanvas(
  * @param userInfo - 用户信息
  */
 export function useInviteImageGenerator(userInfo: UserInfo | null) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const posterRef = useRef<HTMLDivElement>(null)
+  const [qrDataUrl, setQrDataUrl] = useState<string>('')
+
+  // 生成二维码 DataURL，供 DOM <img> 使用
+  useEffect(() => {
+    if (!userInfo?.myInviteCode) {
+      setQrDataUrl('')
+      return
+    }
+    const inviteUrl = `${getBaseUrl()}/register?invite=${userInfo.myInviteCode}`
+    QRCode.toDataURL(inviteUrl, {
+      width: 120,
+      margin: 2,
+      color: { dark: '#1e40af', light: '#ffffff' }
+    })
+      .then((url) => setQrDataUrl(url))
+      .catch(() => setQrDataUrl(''))
+  }, [userInfo?.myInviteCode])
 
   const generateImage = useCallback(async (): Promise<string | null> => {
-    if (!canvasRef.current || !userInfo?.myInviteCode) {
-      console.error('生成图片的前置条件不足：Canvas 未渲染或用户信息不完整')
+    const node = posterRef.current
+    if (!node || !userInfo?.myInviteCode) {
+      console.error('生成图片的前置条件不足：DOM 未渲染或用户信息不完整')
       return null
     }
 
     try {
-      return await drawInviteImageOnCanvas(canvasRef.current, userInfo)
+      // 确保图片（含二维码）都已加载完成
+      await waitForImages(node)
+
+      // 使用 html-to-image 直接对 DOM 节点导出 PNG
+      const dataUrl = await toPng(node, {
+        backgroundColor: '#ffffff',
+        cacheBust: true,
+        pixelRatio: 2,
+        width: node.scrollWidth,
+        height: node.scrollHeight
+      })
+      return dataUrl
     } catch (error) {
       console.error('生成邀请分享图片失败:', error)
       return null // 也可以向上抛出错误，让调用者处理
     }
   }, [userInfo])
 
-  // 返回一个需要被渲染的、隐藏的 Canvas 组件
+  // 返回一个需要被渲染的、隐藏的 DOM 海报组件
   const InviteCanvas = useCallback(() => {
     // 如果没有用户信息，则无需渲染 canvas，以节省资源
     if (!userInfo) return null
+
+    const code = String(userInfo.myInviteCode || '').toUpperCase()
 
     return (
       <div
         className="fixed -top-[9999px] left-0 pointer-events-none"
         aria-hidden="true"
       >
-        <canvas ref={canvasRef} />
+        <div
+          ref={posterRef}
+          className="relative bg-white overflow-hidden"
+          style={{ width: 600, height: 800 }}
+        >
+          {/* 背景图 */}
+          <Image
+            src="/分享-bg.png"
+            alt=""
+            fill
+            priority
+            sizes="600px"
+            className="object-cover"
+          />
+
+          {/* 内容容器 */}
+          <div className="relative w-full h-full flex flex-col items-center">
+            {/* Logo */}
+            <div className="mt-14 rounded-2xl overflow-hidden outline outline-4 outline-white">
+              <Image
+                src="/ntx_1_1.jpg"
+                alt="NTX"
+                width={84}
+                height={84}
+                className="block"
+                priority
+              />
+            </div>
+
+            {/* 标题 */}
+            <div
+              className="mt-6 text-center text-gray-900 font-bold"
+              style={{ fontSize: 28, lineHeight: '36px' }}
+            >
+              <div>注册 NTX DAO，连接用户聚合资源，</div>
+              <div>挖掘你的 Web3 机会</div>
+            </div>
+            <div
+              className="mt-2 text-center text-gray-600"
+              style={{ fontSize: 16 }}
+            >
+              享受高达60%手续费返佣和挖矿交易
+            </div>
+
+            {/* 中部 Banner */}
+            <div
+              className="mt-8 flex items-center justify-center"
+              style={{ width: 243, height: 244 }}
+            >
+              <Image
+                src="/share_p1.png"
+                alt=""
+                width={243}
+                height={244}
+                className="object-contain"
+                priority
+              />
+            </div>
+
+            {/* 底部卡片 */}
+            <div
+              className="mt-auto mb-8 mx-8 rounded-2xl bg-blue-600 text-white relative"
+              style={{ height: 190 }}
+            >
+              <div className="relative h-full flex">
+                <div className="flex-1 pl-14 pr-4 flex flex-col justify-center">
+                  <div className="text-white" style={{ fontSize: 20 }}>
+                    扫描二维码, 注册 NTX DAO
+                  </div>
+                  <div className="mt-2 font-bold" style={{ fontSize: 30 }}>
+                    邀请码： {code}
+                  </div>
+                </div>
+                <div className="w-[168px] flex items-center justify-center pr-6">
+                  <div className="bg-white p-1.5">
+                    {qrDataUrl ? (
+                      <Image
+                        src={qrDataUrl}
+                        alt="QR"
+                        width={120}
+                        height={120}
+                        unoptimized
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 120,
+                          height: 120,
+                          background: '#f3f4f6'
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
-  }, [userInfo])
+  }, [userInfo, qrDataUrl])
 
   return { generateImage, InviteCanvas }
 }

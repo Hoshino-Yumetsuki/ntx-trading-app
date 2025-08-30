@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useCallback, useState, useEffect } from 'react'
-import html2canvas from 'html2canvas'
+import { toPng } from 'html-to-image'
 import QRCode from 'qrcode'
 import { ShareCard } from '@/src/components/ui/share-card'
 import { API_BASE_URL } from '@/src/services/config'
@@ -153,16 +153,15 @@ export function useNewsImageGenerator(
       }
 
       if (shareCardRef.current) {
-        const canvas = await html2canvas(shareCardRef.current, {
+        const node = shareCardRef.current
+        const dataUrl = await toPng(node, {
           backgroundColor: '#ffffff',
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          height: shareCardRef.current.scrollHeight,
-          width: shareCardRef.current.scrollWidth
+          cacheBust: true,
+          pixelRatio: 2,
+          width: node.scrollWidth,
+          height: node.scrollHeight
         })
-
-        return canvas.toDataURL('image/png', 0.9)
+        return dataUrl
       }
     } catch (error) {
       console.error('生成新闻分享图片失败:', error)
