@@ -35,3 +35,6 @@ next-env.d.ts
 .DS_Store
 
 .VSCodeCounter
+
+yarn.lock
+package-lock.json
