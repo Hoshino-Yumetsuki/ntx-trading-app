@@ -437,7 +437,7 @@ export function UniversalShareModal({
                     className="flex items-center justify-center"
                   >
                     <NextImage
-                      src="/telegram-蓝1@3x.png"
+                      src="/telegram.png"
                       alt="Telegram"
                       width={16}
                       height={16}
@@ -451,7 +451,7 @@ export function UniversalShareModal({
                     className="flex items-center justify-center"
                   >
                     <NextImage
-                      src="/twitter.3.png"
+                      src="/twitter.png"
                       alt="X"
                       width={16}
                       height={16}
