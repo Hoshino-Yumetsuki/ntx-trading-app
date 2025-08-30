@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
 import type { UserInfo } from '@/src/types/user'
 import { useLanguage } from '@/src/contexts/language-context'
 import { useAuth } from '@/src/contexts/AuthContext'
