@@ -10,7 +10,8 @@ import {
   ArrowLeft,
   Users,
   ChevronRight,
-  Loader2
+  Loader2,
+  TrendingUp
 } from 'lucide-react'
 import { LearningResourcesPage } from './academy/learning-resources'
 import { StrategySignalsPage } from './academy/strategy-signals'
@@ -22,6 +23,8 @@ import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import Image from 'next/image'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
+import { UnlockCoursesPage } from './academy/unlock-courses'
+import { BlackHorseModelPage } from './academy/black-horse-model'
 
 export function AcademyPage() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
@@ -38,12 +41,12 @@ export function AcademyPage() {
       icon: BookOpen,
       component: LearningResourcesPage
     },
-    // {
-    //   id: 'learning',
-    //   title: '学习资源',
-    //   icon: TrendingUp,
-    //   component: BlackHorseModelPage
-    // },
+    {
+      id: 'learning',
+      title: '学习资源',
+      icon: TrendingUp,
+      component: BlackHorseModelPage
+    },
     {
       id: 'signals',
       title: '策略信号',
@@ -56,12 +59,12 @@ export function AcademyPage() {
       icon: Users,
       component: LoopCommunitiesPage
     },
-    // {
-    //   id: 'unlock',
-    //   title: '解锁课程',
-    //   icon: Lock,
-    //   component: UnlockCoursesPage
-    // },
+    {
+      id: 'unlock',
+      title: '解锁课程',
+      icon: Lock,
+      component: UnlockCoursesPage
+    },
     {
       id: 'orders',
       title: '我的订单',
@@ -212,7 +215,10 @@ export function AcademyPage() {
         <h2 className="text-slate-800 text-xl font-bold mb-3">交易研究院</h2>
         <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
           {tabs
-            .filter((tab) => !['loop', 'orders'].includes(tab.id))
+            .filter(
+              (tab) =>
+                !['loop', 'orders', 'unlock', 'learning'].includes(tab.id)
+            )
             .map((tab) => {
               const Icon = tab.icon
               return (
