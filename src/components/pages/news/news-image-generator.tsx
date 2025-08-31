@@ -5,6 +5,7 @@ import { toPng } from 'html-to-image'
 import QRCode from 'qrcode'
 import { ShareCard } from '@/src/components/ui/share-card'
 import { API_BASE_URL } from '@/src/services/config'
+import { preloadImages } from '@/src/utils/image' // 导入预加载函数
 
 interface NewsItem {
   id: number
@@ -14,31 +15,28 @@ interface NewsItem {
   publishDate: string
   source?: string
 }
-
 interface NewsImageGeneratorProps {
-  newsItem: NewsItem | null
-  onImageGenerated?: (imageUrl: string) => void
+  newsItem: NewsItem | null;
+  onImageGenerated?: (imageUrl: string) => void;
 }
 
+// ... NewsImageGenerator component remains the same ...
 export function NewsImageGenerator({ newsItem }: NewsImageGeneratorProps) {
-  const shareCardRef = useRef<HTMLDivElement>(null)
-
   if (!newsItem) return null
-
   return (
     <div className="fixed -top-[9999px] left-0 opacity-0 pointer-events-none">
       <ShareCard
-        ref={shareCardRef}
         title={newsItem.title}
         content={newsItem.content || ''}
         summary={newsItem.summary}
         publishDate={newsItem.publishDate}
-        qrCodeDataUrl="" // 会在生成时动态生成
+        qrCodeDataUrl=""
         source={newsItem.source}
       />
     </div>
   )
 }
+
 
 // Hook to use the news image generator
 export function useNewsImageGenerator(
@@ -54,32 +52,26 @@ export function useNewsImageGenerator(
   // 获取完整文章内容
   const fetchFullContent = useCallback(async () => {
     if (!newsItem || newsItem.source === 'rss') {
-      // RSS文章直接使用现有内容，API文章需要获取完整内容
-      setFullContent(newsItem?.content || '')
-      return newsItem?.content || ''
+      const content = newsItem?.content || '';
+      setFullContent(content);
+      return content;
     }
-
     setIsLoadingContent(true)
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/user/academy/articles/${newsItem.id}`
-      )
+      const response = await fetch(`${API_BASE_URL}/user/academy/articles/${newsItem.id}`)
       if (response.ok) {
         const articleData = await response.json()
-        const content = articleData.content || newsItem.content || ''
-        setFullContent(content)
-        return content
-      } else {
-        console.error('获取文章详情失败:', response.statusText)
-        // 失败时使用现有内容
-        setFullContent(newsItem.content || '')
-        return newsItem.content || ''
+        const content = articleData.content || newsItem.content || '';
+        setFullContent(content);
+        return content;
       }
+      const content = newsItem.content || '';
+      setFullContent(content);
+      return content;
     } catch (error) {
-      console.error('获取文章详情出错:', error)
-      // 出错时使用现有内容
-      setFullContent(newsItem.content || '')
-      return newsItem.content || ''
+      const content = newsItem.content || '';
+      setFullContent(content);
+      return content;
     } finally {
       setIsLoadingContent(false)
     }
@@ -88,19 +80,12 @@ export function useNewsImageGenerator(
   // 生成二维码
   const generateQRCode = useCallback(async () => {
     if (!newsItem) return ''
-
     try {
-      const textToEncode =
-        overrideQrText ||
-        shareUrl ||
-        `${window.location.origin}/news/${newsItem.id}`
+      const textToEncode = overrideQrText || shareUrl || `${window.location.origin}/news/${newsItem.id}`
       const qrDataUrl = await QRCode.toDataURL(textToEncode, {
         width: 120,
         margin: 2,
-        color: {
-          dark: '#1e40af',
-          light: '#ffffff'
-        }
+        color: { dark: '#1e40af', light: '#ffffff' }
       })
       setQrCodeDataUrl(qrDataUrl)
       return qrDataUrl
@@ -110,91 +95,61 @@ export function useNewsImageGenerator(
     }
   }, [newsItem, overrideQrText, shareUrl])
 
-  // 等待卡片内图片加载完毕，避免截断，确保高度自适应
-  const waitForImages = useCallback(async (root: HTMLElement) => {
-    const imgs = Array.from(root.querySelectorAll('img')) as HTMLImageElement[]
-    if (imgs.length === 0) return
-
-    const imgPromises = imgs.map(
-      (img) =>
-        new Promise<void>((resolve) => {
-          if (img.complete) return resolve()
-          const onDone = () => {
-            img.removeEventListener('load', onDone)
-            img.removeEventListener('error', onDone)
-            resolve()
-          }
-          img.addEventListener('load', onDone)
-          img.addEventListener('error', onDone)
-        })
-    )
-
-    // 全局超时，避免个别资源阻塞
-    const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2500))
-    await Promise.race([Promise.all(imgPromises), timeout])
-  }, [])
 
   const generateImage = useCallback(async (): Promise<string | null> => {
-    if (!shareCardRef.current || !newsItem) return null
+    if (!shareCardRef.current || !newsItem) {
+        console.error('生成图片的前置条件不足');
+        return null;
+    }
 
     try {
-      // 获取完整文章内容
-      await fetchFullContent()
+      // 步骤 1: 获取所有动态数据（文章内容和二维码URL）
+      await Promise.all([fetchFullContent(), generateQRCode()]);
 
-      // 生成二维码
-      await generateQRCode()
+      // 步骤 2: 等待 React 将最新的 state (fullContent, qrCodeDataUrl) 更新到 DOM
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      
+      const node = shareCardRef.current;
+      if (!node) return null;
 
-      // 等待DOM更新（包括内容加载）
-      await new Promise((resolve) => setTimeout(resolve, 300))
+      // 步骤 3: 从更新后的 DOM 中收集所有图片 URL
+      const imageUrls = Array.from(node.querySelectorAll('img')).map(img => img.src);
+      
+      // 步骤 4: 【核心】执行预加载
+      await preloadImages(imageUrls);
 
-      // 等待图片加载，确保高度自适应且不截断
-      if (shareCardRef.current) {
-        await waitForImages(shareCardRef.current)
-      }
+      // 步骤 5: 再次等待一帧，确保浏览器绘制从缓存中读取的图片
+      await new Promise((resolve) => requestAnimationFrame(resolve));
 
-      if (shareCardRef.current) {
-        const node = shareCardRef.current
-        // ==================== 代码修改开始 ====================
-        const dataUrl = await toPng(node, {
-          backgroundColor: '#ffffff',
-          cacheBust: true,
-          pixelRatio: 2,
-          // 修正属性名：fetchRequest -> fetchRequestInit
-          fetchRequestInit: {
-            mode: 'cors',
-            credentials: 'omit'
-          },
-          width: node.scrollWidth,
-          height: node.scrollHeight
-        })
-        // ==================== 代码修改结束 ====================
-        return dataUrl
-      }
+      // 步骤 6: 执行截图
+      const dataUrl = await toPng(node, {
+        backgroundColor: '#ffffff',
+        cacheBust: false,
+        pixelRatio: 2,
+        fetchRequestInit: {
+          mode: 'cors',
+          credentials: 'omit'
+        },
+        width: node.scrollWidth,
+        height: node.scrollHeight
+      });
+
+      return dataUrl;
     } catch (error) {
-      console.error('生成新闻分享图片失败:', error)
-      throw error
+      console.error('生成新闻分享图片失败:', error);
+      throw error;
     }
+  }, [newsItem, fetchFullContent, generateQRCode]);
 
-    return null
-  }, [newsItem, fetchFullContent, generateQRCode, waitForImages])
-
-  // 当newsItem变化时获取完整内容
   useEffect(() => {
     if (newsItem) {
-      fetchFullContent()
+      fetchFullContent();
+      generateQRCode();
     }
-  }, [newsItem, fetchFullContent])
-
-  // 当newsItem变化时生成二维码
-  useEffect(() => {
-    if (newsItem) {
-      generateQRCode()
-    }
-  }, [newsItem, generateQRCode])
+  }, [newsItem, fetchFullContent, generateQRCode]);
 
   const ImageGeneratorComponent = () => {
-    if (!newsItem) return null
-
+    if (!newsItem) return null;
     return (
       <div className="fixed -top-[9999px] left-0 opacity-0 pointer-events-none">
         <ShareCard
@@ -207,8 +162,8 @@ export function useNewsImageGenerator(
           source={newsItem.source}
         />
       </div>
-    )
-  }
+    );
+  };
 
-  return { generateImage, ImageGeneratorComponent, setOverrideQrText }
+  return { generateImage, ImageGeneratorComponent, setOverrideQrText };
 }
