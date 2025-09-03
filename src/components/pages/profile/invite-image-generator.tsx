@@ -8,8 +8,8 @@ import type { UserInfo } from '@/src/types/user'
 import { preloadImages } from '@/src/utils/image' // 导入预加载函数
 
 // 资源缓存，避免重复加载与重复生成
-const imageCache = new Map<string, Promise<HTMLImageElement>>()
-const qrImageCache = new Map<string, Promise<HTMLImageElement>>()
+const _imageCache = new Map<string, Promise<HTMLImageElement>>()
+const _qrImageCache = new Map<string, Promise<HTMLImageElement>>()
 
 // --- 辅助函数 (保持不变) ---
 
@@ -20,7 +20,6 @@ function getBaseUrl(): string {
 }
 
 // ... createRoundedRectPath, loadImage, getQrImage 等其他辅助函数保持不变 ...
-
 
 // --- 核心 Hook ---
 
@@ -62,11 +61,7 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
 
     try {
       // 步骤 1: 定义所有需要加载的图片资源
-      const staticImageUrls = [
-        '/分享-bg.png',
-        '/ntx_1_1.jpg',
-        '/share_p1.png'
-      ]
+      const staticImageUrls = ['/分享-bg.png', '/ntx_1_1.jpg', '/share_p1.png']
       const allImageUrls = [...staticImageUrls, qrDataUrl]
 
       // 步骤 2: 【核心】执行预加载，等待所有图片下载到浏览器缓存中
@@ -87,7 +82,7 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
         width: node.scrollWidth,
         height: node.scrollHeight
       })
-      
+
       return dataUrl
     } catch (error) {
       console.error('生成邀请分享图片失败:', error)
