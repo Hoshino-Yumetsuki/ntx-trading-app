@@ -28,14 +28,22 @@ export function ContactCard() {
         <div
           className="flex items-center justify-between p-3 hover:bg-white/40 transition-all border-b border-white/20 cursor-pointer"
           onClick={() =>
-            window.open('https://twitter.com/NexTradeDao', '_blank', 'noopener,noreferrer')
+            window.open(
+              'https://twitter.com/NexTradeDao',
+              '_blank',
+              'noopener,noreferrer'
+            )
           }
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
-              window.open('https://twitter.com/NexTradeDao', '_blank', 'noopener,noreferrer')
+              window.open(
+                'https://twitter.com/NexTradeDao',
+                '_blank',
+                'noopener,noreferrer'
+              )
             }
           }}
         >
@@ -76,14 +84,22 @@ export function ContactCard() {
         <div
           className="flex items-center justify-between p-3 hover:bg-white/40 transition-all cursor-pointer"
           onClick={() =>
-            window.open('https://t.me/NexTradeDao', '_blank', 'noopener,noreferrer')
+            window.open(
+              'https://t.me/NexTradeDao',
+              '_blank',
+              'noopener,noreferrer'
+            )
           }
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
-              window.open('https://t.me/NexTradeDao', '_blank', 'noopener,noreferrer')
+              window.open(
+                'https://t.me/NexTradeDao',
+                '_blank',
+                'noopener,noreferrer'
+              )
             }
           }}
         >

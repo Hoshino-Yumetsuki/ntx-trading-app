@@ -61,49 +61,31 @@ export function CommissionHistory({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {records.map((record) => (
         <Card key={record.id} className="bg-white shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <Wallet className="w-4 h-4 text-green-600" />
+                <div className="w-7 h-7 bg-green-100 rounded-full flex items-center justify-center">
+                  <Wallet className="w-3.5 h-3.5 text-green-600" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-800">
+                  <h4 className="text-sm font-medium text-slate-800">
                     {t('assets.inviteCommission')}
                   </h4>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-xs text-slate-600">
                     {formatDate(record.created_at)}
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-lg font-bold text-green-600">
+                <span className="text-base font-bold text-green-600">
                   +{formatBalance(record.amount)} USDT
                 </span>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">
-                  {t('assets.invitee')}:
-                </span>
-                <span className="text-sm text-slate-700">
-                  {record.invitee_nickname}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">
-                  {t('assets.email')}:
-                </span>
-                <span className="text-sm font-mono text-slate-700">
-                  {record.invitee_email}
-                </span>
-              </div>
-            </div>
+            {/* 邀请人与邮箱信息已隐藏，仅保留时间显示 */}
           </CardContent>
         </Card>
       ))}
