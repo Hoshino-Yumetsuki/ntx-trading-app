@@ -14,13 +14,10 @@ interface UserInfoCardProps {
 }
 
 export function UserInfoCard({ userInfo }: UserInfoCardProps) {
-  const gntx = userInfo?.gntxBalance ?? 0
   const invites = userInfo?.invitedUserCount ?? 0
-  const gProgress = Math.min(gntx / 1, 1)
-  const iProgress = Math.min(invites / 100, 1)
-  const brokerProgress = Math.min(gProgress, iProgress)
+  // 经纪商进度：仅根据邀请人数计算，目标100人
+  const brokerProgress = Math.min(invites / 100, 1)
   const brokerPercent = Math.floor(brokerProgress * 100)
-  const remainingGntx = Math.max(0, 1 - gntx)
   const remainingInvites = Math.max(0, 100 - invites)
 
   return (
@@ -76,22 +73,11 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
               {brokerPercent}% 完成
             </div>
             <div className="text-xs text-slate-600 mt-1 text-right">
-              <div>
-                还需要{' '}
-                <span className="text-blue-600">
-                  {remainingGntx.toLocaleString(undefined, {
-                    maximumFractionDigits: 4
-                  })}
-                </span>{' '}
-                GNTX
-              </div>
-              <div>
-                还需要邀请{' '}
-                <span className="text-blue-600">
-                  {remainingInvites.toLocaleString()}
-                </span>{' '}
-                人
-              </div>
+              还需要邀请{' '}
+              <span className="text-blue-600">
+                {remainingInvites.toLocaleString()}
+              </span>{' '}
+              人
             </div>
           </div>
         </div>
