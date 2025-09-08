@@ -61,7 +61,7 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
 
     try {
       // 步骤 1: 定义所有需要加载的图片资源
-      const staticImageUrls = ['/分享-bg.png', '/NTX-LOGO优化-7', '/share_p1.png']
+      const staticImageUrls = ['/分享-bg.png', '/NTX-LOGO优化-7.jpg', '/share_p1.png']
       const allImageUrls = [...staticImageUrls, qrDataUrl]
 
       // 步骤 2: 【核心】执行预加载，等待所有图片下载到浏览器缓存中
@@ -122,7 +122,7 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
             {/* Logo */}
             <div className="mt-14 rounded-2xl overflow-hidden outline outline-4 outline-white">
               <Image
-                src="/NTX-LOGO优化-7"
+                src="/NTX-LOGO优化-7.jpg"
                 alt="NTX"
                 width={84}
                 height={84}

@@ -92,13 +92,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
             </Button>
           </div>
         </div>
-        {userInfo?.invitedBy && (
-          <div className="mt-3 text-sm text-gray-600">
-            <p>
-              {t('profile.inviteCode.invitedBy')}：{userInfo.invitedBy}
-            </p>
-          </div>
-        )}
+        {/* 邀请人邮箱已隐藏 */}
       </CardContent>
 
       {/* 分享海报模态框 */}
