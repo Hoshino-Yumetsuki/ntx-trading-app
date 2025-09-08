@@ -11,34 +11,7 @@ interface RewardsCardProps {
   onNavigate?: (page: 'assets' | 'security' | 'community' | 'broker') => void
 }
 
-// 1. 将数字格式化函数直接放在本文件中
-// 这个函数用于将大数字缩写 (例如 1000 -> 1k)
-function formatLargeNumber(
-  num: number | string | null | undefined,
-  digits = 1
-) {
-  if (num === null || num === undefined) return '0'
-  const numericValue = Number(num)
-  if (Number.isNaN(numericValue)) return '0'
-
-  const si = [
-    { value: 1, symbol: '' },
-    { value: 1e3, symbol: 'K' },
-    { value: 1e6, symbol: 'M' },
-    { value: 1e9, symbol: 'G' }
-  ]
-
-  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/
-  const item = si
-    .slice()
-    .reverse()
-    .find((item) => numericValue >= item.value)
-
-  return item
-    ? (numericValue / item.value).toFixed(digits).replace(rx, '$1') +
-        item.symbol
-    : numericValue.toString()
-}
+// 移除大数字缩写逻辑，改为完整数字显示（两位小数），并在需要时按比例缩放
 
 // 2. 创建一个可自适应字体大小的内部组件
 function AdaptiveBalance({
@@ -49,36 +22,48 @@ function AdaptiveBalance({
   currency: string
 }) {
   const pRef = useRef<HTMLParagraphElement>(null)
-  // 默认使用最大的字体class
-  const defaultFontSizeClasses = 'text-3xl md:text-4xl'
-  const [fontSizeClasses, setFontSizeClasses] = useState(defaultFontSizeClasses)
+  const [scale, setScale] = useState(1)
 
-  // 使用 useLayoutEffect 可以在浏览器绘制前同步执行，避免闪烁
+  // 在布局阶段计算是否需要缩放，避免闪烁
   useLayoutEffect(() => {
     const pElement = pRef.current
     const container = pElement?.parentElement
     if (pElement && container) {
-      // 检查文本内容的实际宽度是否大于容器的可见宽度
-      if (pElement.scrollWidth > container.clientWidth) {
-        // 如果超出了，就换用小一号的字体
-        setFontSizeClasses('text-2xl md:text-3xl')
+      // 重置缩放再测量真实宽度
+      pElement.style.transform = 'scale(1)'
+      const textWidth = pElement.scrollWidth
+      const containerWidth = container.clientWidth
+      if (textWidth > 0 && containerWidth > 0) {
+        const nextScale = Math.min(1, containerWidth / textWidth)
+        setScale(nextScale)
       } else {
-        // 否则，恢复默认字体大小
-        setFontSizeClasses(defaultFontSizeClasses)
+        setScale(1)
       }
+    } else {
+      setScale(1)
     }
-  }, []) // 依赖项是 balance，每次余额变化时重新计算
+  }, [])
 
-  const formattedBalance = formatLargeNumber(balance)
+  const numericValue = Number(balance ?? 0)
+  const formatted = Number.isFinite(numericValue)
+    ? numericValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+    : '0.00'
 
   return (
     <div className="text-center">
       <p
         ref={pRef}
-        className={`text-[#2F5BFF] font-extrabold leading-tight transition-all duration-200 ${fontSizeClasses}`}
-        title={Number(balance).toLocaleString()} // title 属性显示完整数字
+        className="text-[#2F5BFF] font-extrabold leading-tight transition-transform duration-150 inline-block whitespace-nowrap text-3xl md:text-4xl"
+        style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}
+        title={numericValue.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}
       >
-        {formattedBalance || '0'}
+        {formatted}
       </p>
       <p className="text-slate-400 mt-1 text-sm">{currency}</p>
     </div>
