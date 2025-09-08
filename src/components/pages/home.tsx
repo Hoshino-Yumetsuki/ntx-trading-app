@@ -119,8 +119,8 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     }
   ]
   const half = Math.ceil(exchanges.length / 2)
-  const topRow = exchanges.slice(0, half)
-  const bottomRow = exchanges.slice(half)
+  const _topRow = exchanges.slice(0, half)
+  const _bottomRow = exchanges.slice(half)
 
   // 从 localStorage 恢复教程页面状态
   useEffect(() => {
@@ -290,101 +290,26 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               <h3 className="text-lg font-semibold text-slate-800">已接入</h3>
             </div>
 
-            {/* 交易所图标横向无缝滚动 */}
-            <div className="marquee h-[7.5rem] md:h-[8.5rem]">
-              <div
-                className="marquee-track gap-0"
-                style={{ animationDuration: '18s' }}
-              >
-                {/* 第1组：上下两行 */}
-                <div className="flex flex-col gap-1 flex-none">
-                  <div className="flex items-center gap-1">
-                    {[...topRow, ...topRow, ...topRow].map((exchange, idx) => (
-                      <div
-                        key={`g1-top-${exchange.name}-${idx}`}
-                        className="w-[3.25rem] h-[3.25rem] md:w-[3.5rem] md:h-[3.5rem] shrink-0"
-                      >
-                        <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-1 w-full h-full">
-                          <div className="relative w-full h-full">
-                            <Image
-                              src={exchange.image}
-                              alt={exchange.name}
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
-                        </div>
+            {/* 交易所图标静态网格显示 */}
+            <div className="h-auto py-2">
+              <div className="grid grid-cols-4 gap-2">
+                {exchanges.map((exchange, idx) => (
+                  <div
+                    key={`exchange-${exchange.name}-${idx}`}
+                    className="w-full aspect-square"
+                  >
+                    <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-1 w-full h-full">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={exchange.image}
+                          alt={exchange.name}
+                          fill
+                          className="object-contain"
+                        />
                       </div>
-                    ))}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {[...bottomRow, ...bottomRow, ...bottomRow].map(
-                      (exchange, idx) => (
-                        <div
-                          key={`g1-bottom-${exchange.name}-${idx}`}
-                          className="w-[3.25rem] h-[3.25rem] md:w-[3.5rem] md:h-[3.5rem] shrink-0"
-                        >
-                          <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-1 w-full h-full">
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={exchange.image}
-                                alt={exchange.name}
-                                fill
-                                className="object-contain"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-                {/* 第2组：镜像用于无缝循环 */}
-                <div
-                  className="flex flex-col gap-1 flex-none"
-                  aria-hidden="true"
-                >
-                  <div className="flex items-center gap-1">
-                    {[...topRow, ...topRow, ...topRow].map((exchange, idx) => (
-                      <div
-                        key={`g2-top-${exchange.name}-${idx}`}
-                        className="w-[3.25rem] h-[3.25rem] md:w-[3.5rem] md:h-[3.5rem] shrink-0"
-                      >
-                        <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-1 w-full h-full">
-                          <div className="relative w-full h-full">
-                            <Image
-                              src={exchange.image}
-                              alt={exchange.name}
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {[...bottomRow, ...bottomRow, ...bottomRow].map(
-                      (exchange, idx) => (
-                        <div
-                          key={`g2-bottom-${exchange.name}-${idx}`}
-                          className="w-[3.25rem] h-[3.25rem] md:w-[3.5rem] md:h-[3.5rem] shrink-0"
-                        >
-                          <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-1 w-full h-full">
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={exchange.image}
-                                alt={exchange.name}
-                                fill
-                                className="object-contain"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
