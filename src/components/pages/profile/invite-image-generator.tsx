@@ -63,7 +63,7 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
       // 步骤 1: 定义所有需要加载的图片资源
       const staticImageUrls = [
         '/分享-bg.png',
-        '/NTX-LOGO优化-7.jpg',
+        '/NTX-LOGO优化-7.png',
         '/share_p1.png'
       ]
       const allImageUrls = [...staticImageUrls, qrDataUrl]
@@ -126,7 +126,7 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
             {/* Logo */}
             <div className="mt-14 rounded-2xl overflow-hidden outline outline-4 outline-white">
               <Image
-                src="/NTX-LOGO优化-7.jpg"
+                src="/NTX-LOGO优化-7.png"
                 alt="NTX"
                 width={84}
                 height={84}

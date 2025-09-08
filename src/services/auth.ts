@@ -4,7 +4,11 @@ import type {
   RegisterRequest,
   RegisterResponse,
   SendVerificationCodeRequest,
-  SendVerificationCodeResponse
+  SendVerificationCodeResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse
 } from '@/src/types/auth'
 import { API_BASE_URL } from './config'
 
@@ -20,6 +24,43 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   if (!response.ok) {
     const errorData = await response.json()
     throw new Error(errorData.error || '登录失败')
+  }
+  return response.json()
+}
+
+export async function forgotPassword(
+  data: ForgotPasswordRequest
+): Promise<ForgotPasswordResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot_password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || '发送重置码失败')
+  }
+
+  return response.json()
+}
+
+export async function resetPassword(
+  data: ResetPasswordRequest
+): Promise<ResetPasswordResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/reset_password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || '重置密码失败')
   }
 
   return response.json()
@@ -95,6 +136,8 @@ export const AuthService = {
   login,
   register,
   sendVerificationCode,
+  forgotPassword,
+  resetPassword,
   setToken,
   getToken,
   removeToken,

@@ -25,29 +25,13 @@ export function ContactCard() {
         style={{ aspectRatio: '343/149' }}
       >
         {/* Twitter */}
-        <div
-          className="flex items-center justify-between p-3 hover:bg-white/40 transition-all border-b border-white/20 cursor-pointer"
-          onClick={() =>
-            window.open(
-              'https://twitter.com/NexTradeDao',
-              '_blank',
-              'noopener,noreferrer'
-            )
-          }
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              window.open(
-                'https://twitter.com/NexTradeDao',
-                '_blank',
-                'noopener,noreferrer'
-              )
-            }
-          }}
-        >
-          <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between p-3 hover:bg-white/40 transition-all border-b border-white/20">
+          <a
+            href="https://twitter.com/NexTradeDao"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-3"
+          >
             <div className="premium-icon w-8 h-8 rounded-[12pt] relative overflow-hidden">
               <Image
                 src="/Frame32@3x.png"
@@ -64,15 +48,12 @@ export function ContactCard() {
                 {t('profile.contact.twitter.description')}
               </p>
             </div>
-          </div>
+          </a>
           <div className="flex items-center space-x-2">
             <span className="text-slate-600 text-sm">@NexTradeDao</span>
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                copyToClipboard('@NexTradeDao', '已复制到剪贴板')
-              }}
+              onClick={() => copyToClipboard('@NexTradeDao', '已复制到剪贴板')}
               className="p-1 hover:bg-white/50 rounded transition-colors"
             >
               <Copy className="w-4 h-4 text-slate-500" />
@@ -81,29 +62,13 @@ export function ContactCard() {
         </div>
 
         {/* Telegram */}
-        <div
-          className="flex items-center justify-between p-3 hover:bg-white/40 transition-all cursor-pointer"
-          onClick={() =>
-            window.open(
-              'https://t.me/NexTradeDao',
-              '_blank',
-              'noopener,noreferrer'
-            )
-          }
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              window.open(
-                'https://t.me/NexTradeDao',
-                '_blank',
-                'noopener,noreferrer'
-              )
-            }
-          }}
-        >
-          <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between p-3 hover:bg-white/40 transition-all">
+          <a
+            href="https://t.me/NexTradeDao"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-3"
+          >
             <div className="premium-icon w-8 h-8 rounded-[12pt] relative overflow-hidden">
               <Image
                 src="/telegram.png"
@@ -120,15 +85,12 @@ export function ContactCard() {
                 {t('profile.contact.telegram.description')}
               </p>
             </div>
-          </div>
+          </a>
           <div className="flex items-center space-x-2">
             <span className="text-slate-600 text-sm">@NexTradeDao</span>
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                copyToClipboard('@NexTradeDao', '已复制到剪贴板')
-              }}
+              onClick={() => copyToClipboard('@NexTradeDao', '已复制到剪贴板')}
               className="p-1 hover:bg-white/50 rounded transition-colors"
             >
               <Copy className="w-4 h-4 text-slate-500" />

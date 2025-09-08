@@ -9,10 +9,18 @@ import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/src/contexts/AuthContext'
 import {
   register as registerUser,
-  sendVerificationCode
+  sendVerificationCode,
+  forgotPassword,
+  resetPassword
 } from '@/src/services/auth'
 import { toast } from 'sonner'
 import { TermsModal } from '@/src/components/ui/terms-modal'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from '@/src/components/ui/dialog'
 import { useLanguage } from '@/src/contexts/language-context'
 import Image from 'next/image'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
@@ -82,6 +90,15 @@ export function LoginPage({
   const [termsModalType, setTermsModalType] = useState<'terms' | 'privacy'>(
     'terms'
   )
+  // 忘记密码对话框状态
+  const [showForgotDialog, setShowForgotDialog] = useState(false)
+  const [fpEmail, setFpEmail] = useState('')
+  const [fpSending, setFpSending] = useState(false)
+  const [rpEmail, setRpEmail] = useState('')
+  const [resetCode, setResetCode] = useState('')
+  const [newPwd, setNewPwd] = useState('')
+  const [newPwd2, setNewPwd2] = useState('')
+  const [rpSubmitting, setRpSubmitting] = useState(false)
   const { login, isLoading } = useAuth()
   const { t } = useLanguage()
   const router = useRouter()
@@ -184,6 +201,60 @@ export function LoginPage({
     setVerificationSent(false)
     loginForm.reset()
     registerForm.reset()
+  }
+
+  // 打开找回密码弹窗
+  const openForgotDialog = () => {
+    const loginEmail = loginForm.getValues('email')
+    setFpEmail(loginEmail || '')
+    setRpEmail(loginEmail || '')
+    setShowForgotDialog(true)
+  }
+
+  // 发送重置码
+  const handleSendResetCode = async () => {
+    const email = fpEmail.trim()
+    if (!email) {
+      toast.error('请输入邮箱')
+      return
+    }
+    try {
+      setFpSending(true)
+      await forgotPassword({ email })
+      toast.success('重置码已发送，请检查邮箱')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : '发送重置码失败')
+    } finally {
+      setFpSending(false)
+    }
+  }
+
+  // 提交重置密码
+  const handleSubmitReset = async () => {
+    const email = rpEmail.trim()
+    if (!email) return toast.error('请输入邮箱')
+    if (!resetCode.trim()) return toast.error('请输入重置码')
+    if (!newPwd) return toast.error('请输入新密码')
+    if (newPwd.length < 8) return toast.error('新密码至少8位')
+    if (newPwd !== newPwd2) return toast.error('两次输入的密码不一致')
+    try {
+      setRpSubmitting(true)
+      await resetPassword({
+        email,
+        reset_code: resetCode.trim(),
+        new_password: newPwd
+      })
+      toast.success('密码重置成功，请使用新密码登录')
+      setShowForgotDialog(false)
+      // 清空字段
+      setResetCode('')
+      setNewPwd('')
+      setNewPwd2('')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : '重置密码失败')
+    } finally {
+      setRpSubmitting(false)
+    }
   }
 
   return (
@@ -350,6 +421,16 @@ export function LoginPage({
               {error && (
                 <div className="text-red-600 text-sm text-center">{error}</div>
               )}
+
+              <div className="text-right -mt-2">
+                <button
+                  type="button"
+                  onClick={openForgotDialog}
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  忘记密码？
+                </button>
+              </div>
 
               <div>
                 <button
@@ -691,6 +772,102 @@ export function LoginPage({
           )}
         </div>
       </div>
+
+      {/* 找回密码弹窗 */}
+      <Dialog open={showForgotDialog} onOpenChange={setShowForgotDialog}>
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle>找回密码</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5">
+            {/* 步骤一：发送重置码 */}
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-gray-700">邮箱</div>
+              <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
+                <input
+                  value={fpEmail}
+                  onChange={(e) => setFpEmail(e.target.value)}
+                  type="email"
+                  className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                  placeholder="请输入注册邮箱"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleSendResetCode}
+                disabled={fpSending}
+                className="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {fpSending ? (
+                  <Loader2 className="h-4 w-4 animate-spin inline mr-1" />
+                ) : null}
+                发送重置码
+              </button>
+            </div>
+
+            {/* 步骤二：提交重置 */}
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-gray-700">邮箱</div>
+              <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
+                <input
+                  value={rpEmail}
+                  onChange={(e) => setRpEmail(e.target.value)}
+                  type="email"
+                  className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                  placeholder="请输入注册邮箱"
+                />
+              </div>
+
+              <div className="text-sm font-medium text-gray-700">重置码</div>
+              <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
+                <input
+                  value={resetCode}
+                  onChange={(e) => setResetCode(e.target.value)}
+                  type="text"
+                  className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                  placeholder="请输入邮箱收到的重置码"
+                />
+              </div>
+
+              <div className="text-sm font-medium text-gray-700">新密码</div>
+              <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
+                <input
+                  value={newPwd}
+                  onChange={(e) => setNewPwd(e.target.value)}
+                  type="password"
+                  className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                  placeholder="请输入新密码（至少8位）"
+                />
+              </div>
+
+              <div className="text-sm font-medium text-gray-700">
+                确认新密码
+              </div>
+              <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
+                <input
+                  value={newPwd2}
+                  onChange={(e) => setNewPwd2(e.target.value)}
+                  type="password"
+                  className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
+                  placeholder="请再次输入新密码"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleSubmitReset}
+                disabled={rpSubmitting}
+                className="w-full h-10 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+              >
+                {rpSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin inline mr-1" />
+                ) : null}
+                提交重置
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* 服务条款和隐私政策模态框 */}
       <TermsModal
