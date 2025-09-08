@@ -25,7 +25,20 @@ export function ContactCard() {
         style={{ aspectRatio: '343/149' }}
       >
         {/* Twitter */}
-        <div className="flex items-center justify-between p-3 hover:bg-white/40 transition-all border-b border-white/20">
+        <div
+          className="flex items-center justify-between p-3 hover:bg-white/40 transition-all border-b border-white/20 cursor-pointer"
+          onClick={() =>
+            window.open('https://twitter.com/NexTradeDao', '_blank', 'noopener,noreferrer')
+          }
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              window.open('https://twitter.com/NexTradeDao', '_blank', 'noopener,noreferrer')
+            }
+          }}
+        >
           <div className="flex items-center space-x-3">
             <div className="premium-icon w-8 h-8 rounded-[12pt] relative overflow-hidden">
               <Image
@@ -48,7 +61,10 @@ export function ContactCard() {
             <span className="text-slate-600 text-sm">@NexTradeDao</span>
             <button
               type="button"
-              onClick={() => copyToClipboard('@NexTradeDao', '已复制到剪贴板')}
+              onClick={(e) => {
+                e.stopPropagation()
+                copyToClipboard('@NexTradeDao', '已复制到剪贴板')
+              }}
               className="p-1 hover:bg-white/50 rounded transition-colors"
             >
               <Copy className="w-4 h-4 text-slate-500" />
@@ -57,7 +73,20 @@ export function ContactCard() {
         </div>
 
         {/* Telegram */}
-        <div className="flex items-center justify-between p-3 hover:bg-white/40 transition-all">
+        <div
+          className="flex items-center justify-between p-3 hover:bg-white/40 transition-all cursor-pointer"
+          onClick={() =>
+            window.open('https://t.me/NexTradeDao', '_blank', 'noopener,noreferrer')
+          }
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              window.open('https://t.me/NexTradeDao', '_blank', 'noopener,noreferrer')
+            }
+          }}
+        >
           <div className="flex items-center space-x-3">
             <div className="premium-icon w-8 h-8 rounded-[12pt] relative overflow-hidden">
               <Image
@@ -80,7 +109,10 @@ export function ContactCard() {
             <span className="text-slate-600 text-sm">@NexTradeDao</span>
             <button
               type="button"
-              onClick={() => copyToClipboard('@NexTradeDao', '已复制到剪贴板')}
+              onClick={(e) => {
+                e.stopPropagation()
+                copyToClipboard('@NexTradeDao', '已复制到剪贴板')
+              }}
               className="p-1 hover:bg-white/50 rounded transition-colors"
             >
               <Copy className="w-4 h-4 text-slate-500" />
