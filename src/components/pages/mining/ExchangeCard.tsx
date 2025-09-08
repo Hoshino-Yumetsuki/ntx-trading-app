@@ -172,16 +172,16 @@ export function ExchangeCard({
             return (
               <div
                 key={exchange.id}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 data-card rounded-xl"
+                className="flex items-center justify-between gap-3 p-4 data-card rounded-xl"
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-white shadow-sm border border-gray-200 flex items-center justify-center">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200 flex items-center justify-center">
                     {exchange.logo_url ? (
                       <Image
                         src={exchange.logo_url}
                         alt={exchange.name}
-                        width={48}
-                        height={48}
+                        width={40}
+                        height={40}
                         className="w-full h-full object-contain"
                       />
                     ) : (
@@ -191,16 +191,16 @@ export function ExchangeCard({
                     )}
                   </div>
                   <div>
-                    <p className="text-slate-800 font-semibold text-lg">
+                    <p className="text-slate-800 font-semibold">
                       {exchange.name}
                     </p>
-                    <p className="text-slate-600 text-sm">
+                    <p className="text-slate-600 text-xs">
                       {t('mining.exchange.efficiency')}:{' '}
                       {exchange.mining_efficiency.toFixed(1)}%
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                <div className="flex items-center gap-2">
                   <Button
                     size="sm"
                     onClick={() => {
@@ -211,9 +211,9 @@ export function ExchangeCard({
                         setIsBindRequiredDialogOpen(true)
                       }
                     }}
-                    className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2"
+                    className="bg-green-500 hover:bg-green-600 text-white h-8 px-3"
                   >
-                    <ExternalLink className="w-4 h-4 mr-1" />
+                    <ExternalLink className="w-3.5 h-3.5 mr-1" />
                     {t('mining.exchange.goMining') || '去挖矿'}
                   </Button>
 
@@ -222,18 +222,18 @@ export function ExchangeCard({
                       size="sm"
                       variant="destructive"
                       onClick={() => handleUnbind(exchange.id)}
-                      className="w-full sm:w-auto px-4 py-2"
+                      className="h-8 px-3"
                     >
-                      <UserX className="w-4 h-4 mr-1" />
+                      <UserX className="w-3.5 h-3.5 mr-1" />
                       {t('mining.exchange.unbind') || '解绑'}
                     </Button>
                   ) : (
                     <Button
                       size="sm"
                       onClick={() => handleBindClick(exchange.id)}
-                      className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white border-0 px-4 py-2"
+                      className="bg-blue-600 hover:bg-blue-700 text-white border-0 h-8 px-3"
                     >
-                      <UserPlus className="w-4 h-4 mr-1" />
+                      <UserPlus className="w-3.5 h-3.5 mr-1" />
                       {t('mining.exchange.bind') || '绑定'}
                     </Button>
                   )}

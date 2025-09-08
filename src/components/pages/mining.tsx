@@ -63,7 +63,7 @@ export function MiningPage() {
   )
   const [bindingUid, setBindingUid] = useState('')
   const [showBindDialog, setShowBindDialog] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [_lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   // 获取平台数据
   const fetchPlatformData = useCallback(async () => {
@@ -262,18 +262,7 @@ export function MiningPage() {
             </h1>
             <p className="text-slate-600 text-xs">{t('mining.subtitle')}</p>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="text-right">
-              <p className="text-slate-500 text-xs">最后更新</p>
-              <p className="text-slate-700 text-sm font-medium">
-                {lastUpdated
-                  ? lastUpdated.toLocaleTimeString('zh-CN', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })
-                  : '--:--'}
-              </p>
-            </div>
+          <div>
             <Button
               variant="ghost"
               size="sm"
