@@ -135,25 +135,7 @@ const useImageActions = (generatedImage: string, title: string) => {
     }
   }, [generatedImage, title, isIOS])
 
-  const copyImage = useCallback(async () => {
-    if (!generatedImage) return
-    try {
-      const blob = await (await fetch(generatedImage)).blob()
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ])
-      toast({ title: '复制成功', description: '图片已复制到剪贴板' })
-    } catch (error) {
-      console.error('复制失败:', error)
-      toast({
-        title: '复制失败',
-        description: '无法复制图片到剪贴板',
-        variant: 'destructive'
-      })
-    }
-  }, [generatedImage])
-
-  return { downloadImage, copyImage }
+  return { downloadImage }
 }
 
 /**
@@ -269,10 +251,7 @@ export function UniversalShareModal({
   }
 
   // --- 调用内部 Hooks (Using Internal Hooks) ---
-  const { downloadImage, copyImage } = useImageActions(
-    generatedImage,
-    shareData.title
-  )
+  const { downloadImage } = useImageActions(generatedImage, shareData.title)
   const { fileInputRef, triggerUpload, handleFileChange } =
     useQrCodeScanner(onQrScanSuccess)
 
@@ -379,22 +358,14 @@ export function UniversalShareModal({
 
           <div className="space-y-3">
             {showImagePreview && generatedImage && (
-              <div className="grid grid-cols-2 gap-3">
+              <div>
                 <Button
                   onClick={downloadImage}
                   variant="outline"
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center w-full"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   保存图片
-                </Button>
-                <Button
-                  onClick={copyImage}
-                  variant="outline"
-                  className="flex items-center justify-center"
-                >
-                  <Copy className="w-4 h-4 mr-2" />
-                  复制图片
                 </Button>
               </div>
             )}
