@@ -146,12 +146,78 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     setShowTutorialPage(false)
   }
 
-  // 双横幅（仅图片，可滚动）
+  // 双横幅（仅图片，可滚动）+ 后端自定义 banners
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
   const goBroker = () => onNavigate?.('broker')
-  const banners = [
-    { src: '/p01.png', alt: '新手教程', onClick: () => openTutorial() },
-    { src: '/p00.png', alt: '成为经济商', onClick: goBroker }
+
+  // 内置本地 banner
+  const builtInBanners = [
+    {
+      type: 'internal' as const,
+      src: '/p01.png',
+      alt: '新手教程',
+      onClick: () => openTutorial()
+    },
+    {
+      type: 'internal' as const,
+      src: '/p00.png',
+      alt: '成为经济商',
+      onClick: goBroker
+    }
+  ]
+
+  // 自定义 banner 类型与数据
+  interface CustomBanner {
+    id: number
+    image_url: string
+    link_url?: string
+    created_at: string
+  }
+  const [customBanners, setCustomBanners] = useState<CustomBanner[]>([])
+
+  // 规范化链接，补全协议
+  const normalizeHref = (href?: string) => {
+    if (!href) return ''
+    if (/^https?:\/\//i.test(href)) return href
+    return `https://${href}`
+  }
+
+  // 拉取自定义 banners
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/mining/banners`)
+        if (!res.ok) return
+        const data: CustomBanner[] = await res.json()
+        setCustomBanners(Array.isArray(data) ? data : [])
+      } catch (e) {
+        console.error('获取自定义 banners 失败:', e)
+      }
+    }
+    fetchBanners()
+  }, [])
+
+  type InternalBanner = {
+    type: 'internal'
+    src: string
+    alt: string
+    onClick: () => void
+  }
+  type ExternalBanner = {
+    type: 'external'
+    src: string
+    alt: string
+    href: string
+  }
+
+  const combinedBanners: Array<InternalBanner | ExternalBanner> = [
+    ...builtInBanners,
+    ...customBanners.map((b) => ({
+      type: 'external' as const,
+      src: b.image_url,
+      alt: '自定义横幅',
+      href: normalizeHref(b.link_url)
+    }))
   ]
 
   // 指示点与自动轮播
@@ -244,28 +310,61 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               onPointerLeave={() => setPaused(false)}
             >
               <div className="flex">
-                {banners.map((b, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={b.onClick}
-                    className="relative flex-[0_0_100%] min-w-0 w-full rounded-2xl overflow-hidden"
-                    style={{ aspectRatio: '702 / 350' }}
-                  >
-                    <Image
-                      src={b.src}
-                      alt={b.alt}
-                      fill
-                      className="object-contain"
-                      priority={i === 0}
-                    />
-                  </button>
-                ))}
+                {combinedBanners.map((b, i) =>
+                  b.type === 'internal' ? (
+                    <button
+                      key={`bi-${i}`}
+                      type="button"
+                      onClick={b.onClick}
+                      className="relative flex-[0_0_100%] min-w-0 w-full rounded-2xl overflow-hidden"
+                      style={{ aspectRatio: '702 / 350' }}
+                    >
+                      <Image
+                        src={b.src}
+                        alt={b.alt}
+                        fill
+                        className="object-contain"
+                        priority={i === 0}
+                      />
+                    </button>
+                  ) : b.href ? (
+                    <a
+                      key={`be-${i}`}
+                      href={b.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="relative flex-[0_0_100%] min-w-0 w-full rounded-2xl overflow-hidden"
+                      style={{ aspectRatio: '702 / 350' }}
+                    >
+                      <Image
+                        src={b.src}
+                        alt={b.alt}
+                        fill
+                        className="object-contain"
+                        priority={i === 0}
+                      />
+                    </a>
+                  ) : (
+                    <div
+                      key={`bnl-${i}`}
+                      className="relative flex-[0_0_100%] min-w-0 w-full rounded-2xl overflow-hidden"
+                      style={{ aspectRatio: '702 / 350' }}
+                    >
+                      <Image
+                        src={b.src}
+                        alt={b.alt}
+                        fill
+                        className="object-contain"
+                        priority={i === 0}
+                      />
+                    </div>
+                  )
+                )}
               </div>
             </section>
             {/* 指示点 */}
             <div className="flex items-center justify-center gap-2 mt-2">
-              {banners.map((_, i) => (
+              {combinedBanners.map((_, i) => (
                 <button
                   key={i}
                   type="button"
