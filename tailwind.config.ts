@@ -14,6 +14,22 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          'AlibabaPuHuiTi',
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'Roboto',
+          'Noto Sans',
+          'Ubuntu',
+          'Cantarell',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif'
+        ]
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

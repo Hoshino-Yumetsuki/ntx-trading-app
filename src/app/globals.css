@@ -1,10 +1,46 @@
-@import url("https://fonts.googleapis.com/css2?family=Tektur:wght@600&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+/* Alibaba PuHuiTi font faces */
+@font-face {
+  font-family: "AlibabaPuHuiTi";
+  src:
+    url("/fonts/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.woff2")
+    format("woff2"),
+    url("/fonts/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.woff")
+    format("woff"),
+    url("/fonts/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.ttf")
+    format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "AlibabaPuHuiTi";
+  src:
+    url("/fonts/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2")
+    format("woff2"),
+    url("/fonts/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff")
+    format("woff"),
+    url("/fonts/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.ttf")
+    format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "AlibabaPuHuiTi";
+  src:
+    url("/fonts/AlibabaPuHuiTi-3-45-Light/AlibabaPuHuiTi-3-45-Light.woff2")
+    format("woff2"),
+    url("/fonts/AlibabaPuHuiTi-3-45-Light/AlibabaPuHuiTi-3-45-Light.woff")
+    format("woff"),
+    url("/fonts/AlibabaPuHuiTi-3-45-Light/AlibabaPuHuiTi-3-45-Light.ttf")
+    format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 @layer utilities {
@@ -37,15 +73,15 @@ body {
     word-break: break-word;
   }
 
-  /* Tektur SemiBold utility */
-  .font-tektur-semibold {
-    font-family: "Tektur", Arial, Helvetica, sans-serif;
-    font-weight: 600;
+  /* Alibaba PuHuiTi utilities */
+  .font-alibaba-bold {
+    font-weight: 700;
   }
-  /* DIN Black utility */
-  .font-din-black {
-    font-family: "DIN Black-Regular", "DIN Alternate", "DIN", Arial, sans-serif;
-    font-weight: 900;
+  .font-alibaba-medium {
+    font-weight: 500;
+  }
+  .font-alibaba-light {
+    font-weight: 300;
   }
   /* 横向无缝滚动工具类 */
   .marquee {
@@ -140,7 +176,13 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-weight: 500; /* 默认正文使用 Medium */
+  }
+  h1,
+  h2,
+  h3 {
+    font-weight: 700; /* 大标题使用 Bold */
   }
 }
 
