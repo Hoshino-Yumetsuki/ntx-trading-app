@@ -61,7 +61,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         let font = 18
         inner.style.fontSize = `${font}px`
         inner.style.lineHeight = '1.9'
-        inner.style.textIndent = '2em'
         let guard = 0
         while (inner.scrollHeight > available && font > 14 && guard < 24) {
           font -= 1
@@ -160,6 +159,17 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             loading="eager"
             unoptimized
           />
+          {/* Scoped styles for markdown content spacing */}
+          <style jsx>{`
+          .content :global(p) {
+            margin: 0 0 1em 0; /* 段与段之间空一行 */
+            text-indent: 0; /* 移除首行缩进 */
+          }
+          .content :global(ul),
+          .content :global(ol) {
+            margin: 0 0 1em 1.25em;
+          }
+        `}</style>
         </div>
 
         <div
@@ -179,17 +189,17 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="relative z-10 px-8 pb-[220px]"
           style={{ marginTop: Math.max(160, titleHeight + 120) }}
         >
-          <div
-            ref={contentInnerRef}
-            className="text-slate-700"
-            // biome-ignore lint: false
-            dangerouslySetInnerHTML={renderMarkdown(content)}
-            style={{
-              fontSize: contentFontSize,
-              lineHeight: '1.9',
-              textIndent: '2em'
-            }}
-          />
+          <div className="content text-slate-700">
+            <div
+              ref={contentInnerRef}
+              // biome-ignore lint: false
+              dangerouslySetInnerHTML={renderMarkdown(content)}
+              style={{
+                fontSize: contentFontSize,
+                lineHeight: '1.9'
+              }}
+            />
+          </div>
         </div>
 
         {/* Bottom overlay: Left slogan, Right QR */}
@@ -200,7 +210,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           {/* 左侧文案区 */}
           <div className="text-left w-[280px] flex flex-col justify-center h-[170px]">
             <div className="flex justify-between text-[#1C55FF] font-bold text-[32px] leading-tight">
-              <span>连接用户聚合资源</span>
+              <span>连接用户 聚合资源</span>
             </div>
             <div className="text-gray-600 text-[20px] mt-2 leading-tight w-full">
               挖掘你的 Web3 机会
@@ -208,16 +218,19 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
 
           {/* 右侧二维码区（更大） */}
-          <div className="bg-white p-2 rounded-xl border border-[#E2E8F0] shadow-sm">
-            <Image
-              src={qrSrc}
-              alt="二维码"
-              width={150}
-              height={150}
-              className="w-[150px] h-[150px]"
-              unoptimized
-              priority
-            />
+          <div className="flex flex-col items-center gap-2">
+            <div className="bg-white p-2 rounded-xl border border-[#E2E8F0] shadow-sm">
+              <Image
+                src={qrSrc}
+                alt="二维码"
+                width={150}
+                height={150}
+                className="w-[150px] h-[150px]"
+                unoptimized
+                priority
+              />
+            </div>
+            <div className="text-slate-700 text-base font-medium">扫码注册</div>
           </div>
         </div>
       </div>
