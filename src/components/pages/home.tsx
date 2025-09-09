@@ -512,7 +512,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 <div className="flex flex-row items-center text-left h-full gap-2">
                   <div className="flex-1">
                     <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-blue-600 -ml-0.5" />
+                      <TrendingUp className="w-4 h-4 text-blue-600" />
                       {t('home.card.mining.title')}
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
@@ -533,7 +533,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 <div className="flex flex-row items-center text-left h-full gap-2">
                   <div className="flex-1">
                     <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
-                      <Target className="w-4 h-4 text-blue-600 -ml-0.5" />
+                      <Target className="w-4 h-4 text-blue-600" />
                       {t('home.card.yinliu.title')}
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
@@ -554,7 +554,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 <div className="flex flex-row items-center text-left h-full gap-2">
                   <div className="flex-1">
                     <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
-                      <Award className="w-4 h-4 text-blue-600 -ml-0.5" />
+                      <Award className="w-4 h-4 text-blue-600" />
                       {t('home.card.huibao.title')}
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
@@ -575,7 +575,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 <div className="flex flex-row items-center text-left h-full gap-2">
                   <div className="flex-1">
                     <h3 className="text-slate-800 font-semibold text-lg mb-1 flex items-center gap-2">
-                      <Brain className="w-4 h-4 text-blue-600 -ml-0.5" />
+                      <Brain className="w-4 h-4 text-blue-600" />
                       {t('home.card.ai.title')}
                     </h3>
                     <p className="text-slate-600 text-xs break-words">
