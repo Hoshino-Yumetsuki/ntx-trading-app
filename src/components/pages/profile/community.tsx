@@ -64,19 +64,10 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
           <div className="flex flex-row gap-4 bg-blue-50 rounded-[16pt] p-5 items-center justify-around border border-blue-100">
             <div className="flex flex-col items-center justify-center">
               <span className="text-gray-700 text-sm font-medium">
-                社区用户
+                邀请用户
               </span>
               <div className="text-blue-600 text-2xl leading-6 font-bold mt-1">
                 {totalCommunityUsers.toLocaleString()}
-              </div>
-            </div>
-            <div className="h-12 w-px bg-blue-200" />
-            <div className="flex flex-col items-center justify-center">
-              <span className="text-gray-700 text-sm font-medium">
-                交易用户
-              </span>
-              <div className="text-blue-600 text-2xl leading-6 font-bold mt-1">
-                {totalTradingUsers.toLocaleString()}
               </div>
             </div>
           </div>
