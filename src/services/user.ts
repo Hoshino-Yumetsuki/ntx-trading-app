@@ -23,6 +23,10 @@ export async function getUserInfo(): Promise<UserInfo> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json()
     throw new Error(errorData.error || '获取用户信息失败')
   }
@@ -37,6 +41,10 @@ export async function getMyTeams(): Promise<TeamMember[]> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json()
     throw new Error(errorData.error || '获取团队信息失败')
   }
@@ -52,6 +60,10 @@ export async function withdrawUsdt(request: WithdrawRequest): Promise<void> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json()
     throw new Error(errorData.error || 'USDT提现申请失败')
   }
@@ -65,6 +77,10 @@ export async function withdrawNtx(request: WithdrawRequest): Promise<void> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json()
     throw new Error(errorData.error || 'NTX提现申请失败')
   }
@@ -84,6 +100,10 @@ export async function updatePassword(
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json()
     throw new Error(errorData.error || '密码更新失败')
   }
@@ -99,6 +119,10 @@ export async function updateNickname(nickname: string): Promise<void> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json()
     throw new Error(errorData.error || '昵称更新失败')
   }
@@ -112,6 +136,10 @@ export async function bindBscAddress(bscAddress: string): Promise<void> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json()
     throw new Error(errorData.error || 'BSC地址绑定失败')
   }
@@ -132,6 +160,10 @@ export async function getWithdrawalRecords(): Promise<WithdrawalRecord[]> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json().catch(() => ({}))
     throw new Error(errorData.message || '获取提现记录失败')
   }
@@ -154,6 +186,10 @@ export async function getCommissionRecords(): Promise<CommissionRecord[]> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json().catch(() => ({}))
     throw new Error(errorData.message || '获取佣金记录失败')
   }

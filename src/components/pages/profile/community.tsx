@@ -17,7 +17,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
 
   const totalCommunityUsers = invitedUsers.length
   // 后端暂无交易用户数量，按 Vue 逻辑与社区用户一致（或根据业务改为 0）
-  const totalTradingUsers = invitedUsers.length
+  const _totalTradingUsers = invitedUsers.length
 
   useEffect(() => {
     const fetchData = async () => {

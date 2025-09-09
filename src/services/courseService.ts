@@ -26,6 +26,10 @@ export async function getAllCourses(): Promise<Course[]> {
     })
 
     if (!response.ok) {
+      if (response.status === 401) {
+        AuthService.removeToken()
+        AuthService.removeUser()
+      }
       throw new Error(`Failed to fetch courses: ${response.status}`)
     }
 
@@ -65,6 +69,10 @@ export async function getUnlockedCourses(): Promise<Course[]> {
     })
 
     if (!response.ok) {
+      if (response.status === 401) {
+        AuthService.removeToken()
+        AuthService.removeUser()
+      }
       throw new Error(`Failed to fetch unlocked courses: ${response.status}`)
     }
 
@@ -90,6 +98,10 @@ export async function getPermissionGroups(): Promise<
     })
 
     if (!response.ok) {
+      if (response.status === 401) {
+        AuthService.removeToken()
+        AuthService.removeUser()
+      }
       throw new Error(`Failed to fetch permission groups: ${response.status}`)
     }
 

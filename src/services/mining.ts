@@ -1,4 +1,5 @@
 import { API_BASE_URL } from './config'
+import { AuthService } from '@/src/services/auth'
 
 // 平台数据接口
 export interface PlatformData {
@@ -64,6 +65,10 @@ export async function getPlatformData(): Promise<PlatformData> {
   const response = await fetch(`${API_BASE_URL}/mining/platform_data`)
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('获取平台数据失败')
   }
 
@@ -81,6 +86,10 @@ export async function getDailyPlatformData(
   )
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('获取平台日数据失败')
   }
 
@@ -97,6 +106,10 @@ export async function getUserData(token: string): Promise<UserData> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('获取用户数据失败')
   }
 
@@ -121,6 +134,10 @@ export async function getDailyUserData(
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('获取用户每日数据失败')
   }
 
@@ -132,6 +149,10 @@ export async function getMiningLeaderboard(): Promise<LeaderboardItem[]> {
   const response = await fetch(`${API_BASE_URL}/mining/mining_leaderboard`)
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('获取挖矿排行榜失败')
   }
 
@@ -166,6 +187,10 @@ export async function getExchanges(): Promise<Exchange[]> {
   const response = await fetch(`${API_BASE_URL}/mining/get_exchanges`)
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('获取交易所列表失败')
   }
 
@@ -187,6 +212,10 @@ export async function bindExchange(
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('绑定交易所失败')
   }
 
@@ -211,6 +240,10 @@ export async function unbindExchange(
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('解绑交易所失败')
   }
 
@@ -227,6 +260,10 @@ export async function getUserExchanges(token: string): Promise<UserExchange[]> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     throw new Error('获取用户交易所失败')
   }
 

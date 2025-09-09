@@ -25,6 +25,10 @@ export async function createOrder(
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json().catch(() => ({}))
     throw new Error(errorData.error || '创建订单失败')
   }
@@ -44,6 +48,10 @@ export async function getMyOrders(): Promise<Order[]> {
   })
 
   if (!response.ok) {
+    if (response.status === 401) {
+      AuthService.removeToken()
+      AuthService.removeUser()
+    }
     const errorData = await response.json().catch(() => ({}))
     throw new Error(errorData.error || '获取订单失败')
   }
