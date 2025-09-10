@@ -583,37 +583,14 @@
                         </div>
                         <div class="card">
                             <h3>总交易量 (USDT)</h3>
-                            <p class="value" id="total-trading-volume-dashboard">...</p> <!-- Changed ID to avoid conflict -->
+                            <p class="value" id="total-trading-volume-dashboard">...</p>
                             <p class="description">平台累计交易量</p>
                         </div>
                         <div class="card">
                             <h3>平台总用户数</h3>
-                            <p class="value" id="platform-users">...</p> <!-- New ID for platformUsers -->
+                            <p class="value" id="platform-users">...</p>
                             <p class="description">平台注册用户总数</p>
                         </div>
-                        <!-- Original cards that might not be used or need remapping -->
-                        <!--
-                        <div class="card">
-                            <h3>总用户数 (Original)</h3>
-                            <p class="value" id="total-users">...</p>
-                            <p class="description">注册用户总数</p>
-                        </div>
-                        <div class="card">
-                            <h3>今日活跃用户 (Original)</h3>
-                            <p class="value" id="today-active-users">...</p>
-                            <p class="description">当日活跃挖矿用户</p>
-                         </div>
-                         <div class="card">
-                            <h3>今日 NTX 销毁量 (Original)</h3>
-                            <p class="value" id="today-ntx-burned">...</p>
-                            <p class="description">当日NTX销毁总量</p>
-                        </div>
-                        <div class="card">
-                            <h3>今日 USDT 返佣 (Original)</h3>
-                            <p class="value" id="today-usdt-rebate">...</p>
-                            <p class="description">当日用户总USDT返佣</p>
-                        </div>
-                        -->
                     </div>
                 </div>
             </section>
@@ -636,7 +613,6 @@
                                 <th>邀请人</th>
                                 <th>USDT余额</th>
                                 <th>NTX余额</th>
-                                <!-- <th>身份</th> -->
                                 <th>状态</th>
                                 <th>操作</th>
                             </tr>
@@ -732,6 +708,24 @@
                             <button type="submit" class="btn btn-primary">添加交易数据</button>
                         </div>
                     </form>
+                </div>
+                <div class="section">
+                    <h2>交易数据添加日志</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>操作员</th>
+                                <th>操作时间</th>
+                                <th>目标用户</th>
+                                <th>交易所</th>
+                                <th>交易量 (USDT)</th>
+                                <th>手续费 (USDT)</th>
+                                <th>交易日期</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manual-trade-log-body">
+                            </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -870,15 +864,9 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>拍卖轮次</th>
                                 <th>收款地址</th>
                                 <th>开始时间</th>
                                 <th>结束时间</th>
-                                <th>总投票数</th>
-                                <th>总 NTX 参与</th>
-                                <th>赢家 ID</th>
-                                <th>赢家 NTX</th>
-                                <th>赢家 ETH 地址</th>
                                 <th>状态</th>
                             </tr>
                         </thead>
@@ -1396,6 +1384,7 @@
         let allCoursePackages = [];
         let allCourses = [];
         let allCourseOrders = [];
+        let allManualTradeLogs = [];
         // ====================================================================
         // Helper Functions
         // ====================================================================
@@ -1869,6 +1858,36 @@
         // Trade Data Functionality (New Section)
         // ====================================================================
 
+        function renderManualTradeLogs(logs) {
+            const tbody = document.getElementById('manual-trade-log-body');
+            tbody.innerHTML = '';
+            if (!logs || logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">暂无历史记录</td></tr>';
+                return;
+            }
+            logs.forEach(log => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${escapeHtml(log.admin_user_email)}</td>
+                    <td>${formatDateTime(log.created_at)}</td>
+                    <td>${escapeHtml(log.target_user_email)}</td>
+                    <td>${escapeHtml(log.exchange_name)}</td>
+                    <td>${log.trade_volume_usdt.toFixed(2)}</td>
+                    <td>${log.fee_usdt.toFixed(4)}</td>
+                    <td>${formatDate(log.trade_date)}</td>
+                `;
+            });
+        }
+
+        // 新增：加载手动添加交易数据的日志
+        async function loadManualTradeLogs() {
+            const logs = await fetchData('/manual_trade_data_log');
+            if (logs) {
+                allManualTradeLogs = logs;
+                renderManualTradeLogs(allManualTradeLogs);
+            }
+        }
+
         // Populate User and Exchange dropdowns
         async function populateTradeDataDropdowns() {
             // Load users
@@ -1938,6 +1957,7 @@
                 // Re-set today's date after reset
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('trade-date').value = today;
+                loadManualTradeLogs(); // 新增：刷新日志
             }
         });
 
@@ -2975,6 +2995,7 @@
                             break;
                         case 'trade-data':
                             populateTradeDataDropdowns();
+                            loadManualTradeLogs();
                             break;
                         case 'article-management':
                             loadArticles();
