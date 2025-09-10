@@ -1,9 +1,9 @@
 import type {
   UserInfo,
-  TeamMember,
   WithdrawRequest,
   WithdrawalRecord,
-  CommissionRecord
+  CommissionRecord,
+  CommunityResponse
 } from '@/src/types/user'
 import { AuthService } from './auth'
 import { API_BASE_URL } from './config'
@@ -34,7 +34,7 @@ export async function getUserInfo(): Promise<UserInfo> {
   return response.json()
 }
 
-export async function getMyTeams(): Promise<TeamMember[]> {
+export async function getMyTeams(): Promise<CommunityResponse> {
   const response = await fetch(`${API_BASE_URL}/user/my_teams`, {
     method: 'GET',
     headers: getAuthHeaders()

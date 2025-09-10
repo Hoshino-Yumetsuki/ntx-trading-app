@@ -14,10 +14,17 @@ export interface UserInfo {
 }
 
 export interface TeamMember {
-  id?: number
+  id: number
   email: string
   nickname: string
-  joined_at: string
+  isDirectInvite: boolean
+  joined_at?: string
+}
+
+export interface CommunityResponse {
+  communityUserCount: number
+  directInviteCount: number
+  communityUsers: TeamMember[]
 }
 
 export interface WithdrawRequest {

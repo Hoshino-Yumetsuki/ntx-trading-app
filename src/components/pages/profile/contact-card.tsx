@@ -20,19 +20,16 @@ export function ContactCard() {
         <h3 className="text-slate-800 font-medium">{t('profile.contactus')}</h3>
       </div>
 
-      <Card
-        className="glass-card border-white/30 rounded-[16pt] overflow-hidden"
-        style={{ aspectRatio: '343/149' }}
-      >
+      <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
         {/* Twitter */}
-        <div className="flex items-center justify-between p-3 hover:bg-white/40 transition-all border-b border-white/20">
+        <div className="flex items-center justify-between p-4 hover:bg-white/40 transition-all border-b border-white/20">
           <a
             href="https://twitter.com/NexTradeDao"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-4"
           >
-            <div className="premium-icon w-8 h-8 rounded-[12pt] relative overflow-hidden">
+            <div className="premium-icon w-10 h-10 rounded-[12pt] relative overflow-hidden">
               <Image
                 src="/Frame32@3x.png"
                 alt="Twitter Icon"
@@ -62,14 +59,14 @@ export function ContactCard() {
         </div>
 
         {/* Telegram */}
-        <div className="flex items-center justify-between p-3 hover:bg-white/40 transition-all">
+        <div className="flex items-center justify-between p-4 hover:bg-white/40 transition-all">
           <a
             href="https://t.me/NexTradeDao"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-4"
           >
-            <div className="premium-icon w-8 h-8 rounded-[12pt] relative overflow-hidden">
+            <div className="premium-icon w-10 h-10 rounded-[12pt] relative overflow-hidden">
               <Image
                 src="/telegram.png"
                 alt="Telegram Icon"
