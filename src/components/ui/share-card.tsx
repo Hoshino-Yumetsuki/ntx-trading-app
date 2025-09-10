@@ -102,6 +102,15 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         ? qrCodeDataUrl
         : `data:image/svg+xml;utf8,${encodeURIComponent(qrPlaceholderSvg)}`
 
+    // 当前日期（年月日）
+    const formatDateYMD = (d: Date) => {
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}年${m}月${day}日`
+    }
+    const todayLabel = formatDateYMD(new Date())
+
     return (
       <div
         ref={ref}
@@ -232,6 +241,11 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             </div>
             <div className="text-slate-700 text-base font-medium">扫码注册</div>
           </div>
+        </div>
+
+        {/* 左下角日期标签 */}
+        <div className="absolute left-8 bottom-4 z-30 text-slate-400 text-xs select-none">
+          {todayLabel}
         </div>
       </div>
     )

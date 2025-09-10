@@ -174,75 +174,73 @@ export function ExchangeCard({
                 key={exchange.id}
                 className="origin-left scale-[0.94] sm:scale-100"
               >
-                <div
-                  className="flex items-center justify-between gap-3 py-4 pr-4 pl-6 sm:pl-8 data-card rounded-xl overflow-visible"
-                >
-                <div className="flex items-center space-x-3 flex-1 min-w-0">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-visible bg-transparent shadow-none flex items-center justify-center -ml-4 sm:-ml-6">
-                    {exchange.logo_url ? (
-                      <Image
-                        src={exchange.logo_url}
-                        alt={exchange.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-contain"
-                      />
+                <div className="flex items-center justify-between gap-3 py-4 pr-4 pl-6 sm:pl-8 data-card rounded-xl overflow-visible">
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-visible bg-transparent shadow-none flex items-center justify-center -ml-4 sm:-ml-6">
+                      {exchange.logo_url ? (
+                        <Image
+                          src={exchange.logo_url}
+                          alt={exchange.name}
+                          width={64}
+                          height={64}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <span className="text-slate-700 text-sm font-bold">
+                          {exchange.name.substring(0, 2).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-slate-800 font-semibold leading-tight break-words whitespace-normal">
+                        {exchange.name}
+                      </p>
+                      <p className="text-slate-600 text-xs">
+                        {t('mining.exchange.efficiency')}:{' '}
+                        {exchange.mining_efficiency.toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0 flex-wrap justify-end">
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        if (isUserBound) {
+                          window.open(miningUrl, '_blank')
+                        } else {
+                          setBindingExchangeId(exchange.id)
+                          setIsBindRequiredDialogOpen(true)
+                        }
+                      }}
+                      className="bg-green-500 hover:bg-green-600 text-white h-8 px-3 whitespace-nowrap"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 mr-1" />
+                      {t('mining.exchange.goMining') || '去挖矿'}
+                    </Button>
+
+                    {isUserBound ? (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleUnbind(exchange.id)}
+                        className="h-8 px-3 whitespace-nowrap"
+                      >
+                        <UserX className="w-3.5 h-3.5 mr-1" />
+                        {t('mining.exchange.unbind') || '解绑'}
+                      </Button>
                     ) : (
-                      <span className="text-slate-700 text-sm font-bold">
-                        {exchange.name.substring(0, 2).toUpperCase()}
-                      </span>
+                      <Button
+                        size="sm"
+                        onClick={() => handleBindClick(exchange.id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white border-0 h-8 px-3 whitespace-nowrap"
+                      >
+                        <UserPlus className="w-3.5 h-3.5 mr-1" />
+                        {t('mining.exchange.bind') || '绑定'}
+                      </Button>
                     )}
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-slate-800 font-semibold leading-tight break-words whitespace-normal">
-                      {exchange.name}
-                    </p>
-                    <p className="text-slate-600 text-xs">
-                      {t('mining.exchange.efficiency')}: {' '}
-                      {exchange.mining_efficiency.toFixed(1)}%
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0 flex-wrap justify-end">
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      if (isUserBound) {
-                        window.open(miningUrl, '_blank')
-                      } else {
-                        setBindingExchangeId(exchange.id)
-                        setIsBindRequiredDialogOpen(true)
-                      }
-                    }}
-                    className="bg-green-500 hover:bg-green-600 text-white h-8 px-3 whitespace-nowrap"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 mr-1" />
-                    {t('mining.exchange.goMining') || '去挖矿'}
-                  </Button>
-
-                  {isUserBound ? (
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleUnbind(exchange.id)}
-                      className="h-8 px-3 whitespace-nowrap"
-                    >
-                      <UserX className="w-3.5 h-3.5 mr-1" />
-                      {t('mining.exchange.unbind') || '解绑'}
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      onClick={() => handleBindClick(exchange.id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white border-0 h-8 px-3 whitespace-nowrap"
-                    >
-                      <UserPlus className="w-3.5 h-3.5 mr-1" />
-                      {t('mining.exchange.bind') || '绑定'}
-                    </Button>
-                  )}
                 </div>
               </div>
-            </div>
             )
           })
         ) : (
