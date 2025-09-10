@@ -555,7 +555,6 @@
                 <div class="section">
                     <h2>平台总览</h2>
                     <div class="card-grid" id="dashboard-summary">
-                        <!-- New cards for the provided backend data -->
                         <div class="card">
                             <h3>待处理提现</h3>
                             <p class="value" id="pending-withdrawals">...</p>
@@ -675,7 +674,6 @@
                     </table>
                 </div>
             </section>
-            <!-- New Section: Trade Data -->
             <section id="trade-data" class="content-area">
                 <div class="section">
                     <h2>手动添加交易数据</h2>
@@ -683,14 +681,12 @@
                         <div class="form-group">
                             <label for="trade-user-select">选择用户:</label>
                             <select id="trade-user-select" required>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
+                                </select>
                         </div>
                         <div class="form-group">
                             <label for="trade-exchange-select">选择交易所:</label>
                             <select id="trade-exchange-select" required>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
+                                </select>
                         </div>
                         <div class="form-group">
                             <label for="trade-volume">交易量 (USDT):</label>
@@ -881,9 +877,6 @@
                 </div>
             </section>
 
-            <!-- ==================================================================== -->
-            <!-- KOL Management Section -->
-            <!-- ==================================================================== -->
             <section id="kol-management" class="content-area">
                 <div class="section">
                     <h2>KOL管理</h2>
@@ -902,8 +895,7 @@
                             </tr>
                         </thead>
                         <tbody id="kol-list-body">
-                            <!-- KOL数据将通过JS动态加载 -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </section>
@@ -1025,7 +1017,6 @@
                     <h2>用户详情 / 编辑</h2>
                     <form id="user-detail-form">
                         <input type="hidden" id="user-id">
-                        <!-- Add a hidden input to store myInviteCode -->
                         <input type="hidden" id="user-my-invite-code"> 
                         <div class="form-group">
                             <label>邮箱:</label>
@@ -1065,8 +1056,7 @@
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn btn-primary" id="update-user-profile-btn">更新用户资料</button>
-                            <!-- <button type="button" class="btn btn-danger" id="delete-user-btn">删除用户</button> -->
-                        </div>
+                            </div>
                     </form>
                 </div>
             </div>
@@ -1189,15 +1179,11 @@
                 </div>
             </div>
 
-            <!-- ==================================================================== -->
-            <!-- KOL Add/Edit Modal -->
-            <!-- ==================================================================== -->
             <div id="kol-modal" class="modal">
                 <div class="modal-content">
                     <span class="close-button" data-modal="kol-modal">&times;</span>
                     <h2 id="kol-modal-title">添加新KOL</h2>
                     <form id="kol-form">
-                        <!-- 在编辑模式下，这个字段将不可用 -->
                         <div class="form-group">
                             <label for="kol-user-id">用户ID:</label>
                             <input type="number" id="kol-user-id" class="form-control" required>
@@ -2898,6 +2884,73 @@
                 Swal.fire('成功', `NTX 控制百分比已更新为 ${percentage}%！`, 'success');
             }
         });
+        
+        // ====================================================================
+        // Banner Management Functionality (FIXED)
+        // ====================================================================
+
+        function renderBannerList(banners) {
+            const tbody = document.getElementById('banner-list-body');
+            tbody.innerHTML = '';
+            if (!banners || banners.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">暂无Banner数据</td></tr>';
+                return;
+            }
+            banners.forEach(banner => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${banner.id}</td>
+                    <td><a href="${banner.image_url}" target="_blank"><img src="${banner.image_url}" alt="Banner Preview" style="width: 150px; height: auto; object-fit: cover; border-radius: 4px;"></a></td>
+                    <td><a href="${banner.link_url}" target="_blank">${banner.link_url}</a></td>
+                    <td>${formatDateTime(banner.created_at)}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="openBannerModal(${banner.id}, '${escapeHtml(banner.image_url)}', '${escapeHtml(banner.link_url)}')">编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteBanner(${banner.id})">删除</button>
+                    </td>
+                `;
+            });
+        }
+
+        async function loadBanners() {
+            const banners = await fetchData('/banners/all');
+            if (banners) {
+                allBanners = banners;
+                renderBannerList(allBanners);
+            }
+        }
+
+        function openBannerModal(id = null, imageUrl = '', linkUrl = '') {
+            const form = document.getElementById('banner-form');
+            form.reset();
+            const modalTitle = document.getElementById('banner-modal-title');
+            
+            document.getElementById('banner-id').value = id || '';
+            document.getElementById('banner-image-url').value = imageUrl;
+            document.getElementById('banner-link-url').value = linkUrl;
+
+            modalTitle.textContent = id ? '编辑Banner' : '添加新Banner';
+            document.getElementById('banner-modal').style.display = 'flex';
+        }
+
+        async function deleteBanner(bannerId) {
+            Swal.fire({
+                title: '确认删除?',
+                text: "您确定要永久删除这个Banner吗？",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: '是的，删除它!',
+                cancelButtonText: '取消'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const response = await fetchData(`/banners/${bannerId}`, 'DELETE');
+                    if (response) {
+                        Swal.fire('已删除!', 'Banner已被成功删除。', 'success');
+                        loadBanners();
+                    }
+                }
+            });
+        }
 
         // ====================================================================
         // Event Listeners and Initialization
@@ -3014,7 +3067,7 @@
                         case 'kol-management':
                             loadKols();
                             break;
-                        case 'banner-management': // New case
+                        case 'banner-management':
                             loadBanners();
                             break;
                         case 'course-payment-management':
@@ -3055,198 +3108,133 @@
                 document.getElementById('create-user-modal').style.display = 'flex';
             });
             
+            // 为“用户绑定查询”的查询按钮添加事件监听
+            document.getElementById('search-bindings-btn').addEventListener('click', async () => {
+                const exchangeId = document.getElementById('binding-exchange-filter').value;
+                const tbody = document.getElementById('binding-list-body');
+
+                if (!exchangeId) {
+                    Swal.fire('提示', '请先选择一个交易所', 'info');
+                    return;
+                }
+                
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">正在查询...</td></tr>';
+
+                // 调用新的API接口
+                const bindings = await triggerfetchData(`/exchanges/${exchangeId}/users`);
+                renderBindingList(bindings); // 使用新函数渲染结果
+            });
+
+            // KOL创建按钮
+            document.getElementById('create-kol-btn').addEventListener('click', () => {
+                openKolModal();
+            });
+
+            // Banner 创建/编辑/删除的事件监听
             document.getElementById('create-banner-btn').addEventListener('click', () => {
                 openBannerModal();
             });
             
-            // 为“用户绑定查询”的查询按钮添加事件监听
-            document.getElementById('search-bindings-btn').addEventListener('click', async () => {
-            const exchangeId = document.getElementById('binding-exchange-filter').value;
-            const tbody = document.getElementById('binding-list-body');
+            document.getElementById('banner-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                
+                const id = document.getElementById('banner-id').value;
+                const payload = {
+                    image_url: document.getElementById('banner-image-url').value,
+                    link_url: document.getElementById('banner-link-url').value,
+                };
 
-            if (!exchangeId) {
-                Swal.fire('提示', '请先选择一个交易所', 'info');
-                return;
-            }
-            
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">正在查询...</td></tr>';
+                const endpoint = id ? `/banners/${id}` : '/banners';
+                const method = id ? 'PUT' : 'POST';
 
-            // 调用新的API接口
-            const bindings = await triggerfetchData(`/exchanges/${exchangeId}/users`);
-            renderBindingList(bindings); // 使用新函数渲染结果
-        });
-
-        // KOL创建按钮
-        document.getElementById('create-kol-btn').addEventListener('click', () => {
-            openKolModal();
-        });
-        
-function renderBannerList(banners) {
-            const tbody = document.getElementById('banner-list-body');
-            tbody.innerHTML = '';
-            if (!banners || banners.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">暂无Banner数据</td></tr>';
-                return;
-            }
-            banners.forEach(banner => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${banner.id}</td>
-                    <td><a href="${banner.image_url}" target="_blank"><img src="${banner.image_url}" alt="Banner Preview" style="width: 150px; height: auto; object-fit: cover; border-radius: 4px;"></a></td>
-                    <td><a href="${banner.link_url}" target="_blank">${banner.link_url}</a></td>
-                    <td>${formatDateTime(banner.created_at)}</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" onclick="openBannerModal(${banner.id}, '${escapeHtml(banner.image_url)}', '${escapeHtml(banner.link_url)}')">编辑</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteBanner(${banner.id})">删除</button>
-                    </td>
-                `;
-            });
-        }
-
-        async function loadBanners() {
-            // Note: The admin endpoint for getting banners is /banners/all
-            const banners = await fetchData('/banners/all');
-            if (banners) {
-                allBanners = banners;
-                renderBannerList(allBanners);
-            }
-        }
-
-        function openBannerModal(id = null, imageUrl = '', linkUrl = '') {
-            const form = document.getElementById('banner-form');
-            form.reset();
-            const modalTitle = document.getElementById('banner-modal-title');
-            
-            document.getElementById('banner-id').value = id || '';
-            document.getElementById('banner-image-url').value = imageUrl;
-            document.getElementById('banner-link-url').value = linkUrl;
-
-            modalTitle.textContent = id ? '编辑Banner' : '添加新Banner';
-            document.getElementById('banner-modal').style.display = 'flex';
-        }
-
-        document.getElementById('banner-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            
-            const id = document.getElementById('banner-id').value;
-            const payload = {
-                image_url: document.getElementById('banner-image-url').value,
-                link_url: document.getElementById('banner-link-url').value,
-            };
-
-            const endpoint = id ? `/banners/${id}` : '/banners';
-            const method = id ? 'PUT' : 'POST';
-
-            const result = await fetchData(endpoint, method, payload);
-            if (result) {
-                Swal.fire('成功', `Banner已成功${id ? '更新' : '创建'}！`, 'success');
-                document.getElementById('banner-modal').style.display = 'none';
-                loadBanners();
-            }
-        });
-
-        async function deleteBanner(bannerId) {
-            Swal.fire({
-                title: '确认删除?',
-                text: "您确定要永久删除这个Banner吗？",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: '是的，删除它!',
-                cancelButtonText: '取消'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    const response = await fetchData(`/banners/${bannerId}`, 'DELETE');
-                    if (response) {
-                        Swal.fire('已删除!', 'Banner已被成功删除。', 'success');
-                        loadBanners();
-                    }
+                const result = await fetchData(endpoint, method, payload);
+                if (result) {
+                    Swal.fire('成功', `Banner已成功${id ? '更新' : '创建'}！`, 'success');
+                    document.getElementById('banner-modal').style.display = 'none';
+                    loadBanners();
                 }
             });
-        }
 
 
-// --- 课程与支付管理事件监听 ---
-document.getElementById('filter-course-orders-btn').addEventListener('click', loadCourseOrders);
-document.getElementById('create-permission-group-btn').addEventListener('click', () => openPermissionGroupModal());
-document.getElementById('create-course-package-btn').addEventListener('click', () => openCoursePackageModal());
-document.getElementById('create-course-btn').addEventListener('click', () => openCourseModal());
+            // --- 课程与支付管理事件监听 ---
+            document.getElementById('filter-course-orders-btn').addEventListener('click', loadCourseOrders);
+            document.getElementById('create-permission-group-btn').addEventListener('click', () => openPermissionGroupModal());
+            document.getElementById('create-course-package-btn').addEventListener('click', () => openCoursePackageModal());
+            document.getElementById('create-course-btn').addEventListener('click', () => openCourseModal());
 
-document.getElementById('permission-group-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = document.getElementById('permission-group-id').value;
-    const payload = { 
-        name: document.getElementById('permission-group-name').value,
-        description: document.getElementById('permission-group-description').value
-    };
-    const endpoint = id ? `/permission_groups/${id}` : '/permission_groups';
-    const method = id ? 'PUT' : 'POST';
-    
-    const result = await fetchData(endpoint, method, payload);
-    if (result) {
-        Swal.fire('成功', '权限组已保存', 'success');
-        document.getElementById('permission-group-modal').style.display = 'none';
-        loadPermissionGroups();
-    }
-});
+            document.getElementById('permission-group-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('permission-group-id').value;
+                const payload = { 
+                    name: document.getElementById('permission-group-name').value,
+                    description: document.getElementById('permission-group-description').value
+                };
+                const endpoint = id ? `/permission_groups/${id}` : '/permission_groups';
+                const method = id ? 'PUT' : 'POST';
+                
+                const result = await fetchData(endpoint, method, payload);
+                if (result) {
+                    Swal.fire('成功', '权限组已保存', 'success');
+                    document.getElementById('permission-group-modal').style.display = 'none';
+                    loadPermissionGroups();
+                }
+            });
 
-document.getElementById('course-package-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = document.getElementById('course-package-id').value;
-    const payload = {
-        group_id: parseInt(document.getElementById('package-group-id').value),
-        duration_days: parseInt(document.getElementById('package-duration-days').value),
-        price: parseFloat(document.getElementById('package-price').value),
-        currency: document.getElementById('package-currency').value
-    };
-    const endpoint = id ? `/course_packages/${id}` : '/course_packages';
-    const method = id ? 'PUT' : 'POST';
+            document.getElementById('course-package-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('course-package-id').value;
+                const payload = {
+                    group_id: parseInt(document.getElementById('package-group-id').value),
+                    duration_days: parseInt(document.getElementById('package-duration-days').value),
+                    price: parseFloat(document.getElementById('package-price').value),
+                    currency: document.getElementById('package-currency').value
+                };
+                const endpoint = id ? `/course_packages/${id}` : '/course_packages';
+                const method = id ? 'PUT' : 'POST';
 
-    const result = await fetchData(endpoint, method, payload);
-    if (result) {
-        Swal.fire('成功', '课程套餐已保存', 'success');
-        document.getElementById('course-package-modal').style.display = 'none';
-        loadCoursePackages();
-    }
-});
+                const result = await fetchData(endpoint, method, payload);
+                if (result) {
+                    Swal.fire('成功', '课程套餐已保存', 'success');
+                    document.getElementById('course-package-modal').style.display = 'none';
+                    loadCoursePackages();
+                }
+            });
 
-document.getElementById('course-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = document.getElementById('course-id').value;
-    const payload = {
-        course_type: document.getElementById('course-type').value,
-        name: document.getElementById('course-name').value,
-        description: document.getElementById('course-description').value,
-        content: document.getElementById('course-content').value,
-        image: document.getElementById('course-image').value || null,
-        link: document.getElementById('course-link').value || null
-    };
-    const endpoint = id ? `/courses/${id}` : '/courses';
-    const method = id ? 'PUT' : 'POST';
+            document.getElementById('course-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('course-id').value;
+                const payload = {
+                    course_type: document.getElementById('course-type').value,
+                    name: document.getElementById('course-name').value,
+                    description: document.getElementById('course-description').value,
+                    content: document.getElementById('course-content').value,
+                    image: document.getElementById('course-image').value || null,
+                    link: document.getElementById('course-link').value || null
+                };
+                const endpoint = id ? `/courses/${id}` : '/courses';
+                const method = id ? 'PUT' : 'POST';
 
-    // 先保存课程的基本信息
-    const result = await fetchData(endpoint, method, payload);
+                // 先保存课程的基本信息
+                const result = await fetchData(endpoint, method, payload);
 
-    if (result) {
-        // 无论创建还是更新，都获取课程ID
-        const courseId = id || result.id;
-        
-        // 获取所有被勾选的权限组ID
-        const groupCheckboxes = document.querySelectorAll('input[name="course-permission-group"]:checked');
-        const selectedGroupIds = Array.from(groupCheckboxes).map(cb => parseInt(cb.value));
+                if (result) {
+                    // 无论创建还是更新，都获取课程ID
+                    const courseId = id || result.id;
+                    
+                    // 获取所有被勾选的权限组ID
+                    const groupCheckboxes = document.querySelectorAll('input[name="course-permission-group"]:checked');
+                    const selectedGroupIds = Array.from(groupCheckboxes).map(cb => parseInt(cb.value));
 
-        // 调用新的后端接口来更新权限组关联
-        await fetchData(`/courses/${courseId}/groups`, 'PUT', selectedGroupIds);
-        
-        // 显示成功信息
-        Swal.fire('成功', `课程已${id ? '更新' : '保存'}`, 'success');
-        document.getElementById('course-modal').style.display = 'none';
-        loadCourses();
-    }
-});
-
-
-     });
+                    // 调用新的后端接口来更新权限组关联
+                    await fetchData(`/courses/${courseId}/groups`, 'PUT', selectedGroupIds);
+                    
+                    // 显示成功信息
+                    Swal.fire('成功', `课程已${id ? '更新' : '保存'}`, 'success');
+                    document.getElementById('course-modal').style.display = 'none';
+                    loadCourses();
+                }
+            });
+        });
     </script>
 </body>
 </html>
