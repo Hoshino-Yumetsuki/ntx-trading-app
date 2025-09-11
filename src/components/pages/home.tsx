@@ -382,22 +382,22 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         </div>
 
         {/* 立刻开赚交易所卡片 */}
-        <div className="mt-6 mb-6 bg-white rounded-xl shadow-sm">
-          <div className="p-4">
+        <div className="mt-4 mb-4 bg-white rounded-xl shadow-sm">
+          <div className="p-3">
             {/* 居中显示的标题 */}
-            <div className="text-center mb-2">
-              <h3 className="text-lg font-semibold text-slate-800">已接入</h3>
+            <div className="text-center mb-1">
+              <h3 className="text-base font-semibold text-slate-800">已接入</h3>
             </div>
 
             {/* 交易所图标静态网格显示 */}
-            <div className="h-auto py-2">
-              <div className="grid grid-cols-4 gap-2">
+            <div className="h-auto py-1">
+              <div className="grid grid-cols-4 gap-1.5">
                 {exchanges.map((exchange, idx) => (
                   <div
                     key={`exchange-${exchange.name}-${idx}`}
                     className="w-full aspect-square"
                   >
-                    <div className="bg-white/40 rounded-lg shadow-sm flex items-center justify-center p-1 w-full h-full">
+                    <div className="bg-white/40 rounded-md shadow-sm flex items-center justify-center p-0.5 w-full h-full">
                       <div className="relative w-full h-full">
                         <Image
                           src={exchange.image}
@@ -413,9 +413,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </div>
 
             {/* 添加蓝色按钮 */}
-            <div className="mt-5 text-center">
+            <div className="mt-3 text-center">
               <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-md shadow-sm text-sm"
                 onClick={() => {
                   if (!isAuthenticated) {
                     toast.error('请先登录')
