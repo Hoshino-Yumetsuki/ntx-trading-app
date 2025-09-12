@@ -179,7 +179,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans h-full;
     font-weight: 500; /* 默认正文使用 Medium */
     background-color: #F0F8FF; /* 全局背景色 */
   }

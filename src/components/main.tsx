@@ -81,8 +81,7 @@ export function MainApp() {
   }
 
   return (
-    // 核心修改：重构为 Flex 布局，分离内容区和导航栏
-    <div className="relative h-screen flex flex-col overflow-hidden">
+    <div className="relative flex flex-1 flex-col overflow-hidden">
       <AppBackground />
 
       {/* 1. 可滚动的内容区域 */}
