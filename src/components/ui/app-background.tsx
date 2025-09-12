@@ -17,10 +17,10 @@ export function AppBackground() {
           />
         </div>
       </div>
-      {/* 添加浅蓝色背景元素 */}
+      {/* 添加统一背景色 #F4F6F9 */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 -z-20 bg-gradient-to-b from-blue-50/30 to-transparent"
+        className="pointer-events-none fixed inset-0 -z-20 bg-[#F4F6F9]"
       />
     </>
   )
