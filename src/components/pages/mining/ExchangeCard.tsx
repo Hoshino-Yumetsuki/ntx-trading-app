@@ -174,9 +174,9 @@ export function ExchangeCard({
                 key={exchange.id}
                 className="origin-left scale-[0.94] sm:scale-100"
               >
-                <div className="flex items-center justify-between gap-2 py-3 pr-3 pl-5 sm:pl-6 data-card rounded-xl overflow-visible">
+                <div className="flex items-center justify-between gap-2 py-3 pr-2 pl-5 sm:pl-6 data-card rounded-xl overflow-visible">
                   <div className="flex items-center space-x-2 flex-1 min-w-0">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-visible bg-transparent shadow-none flex items-center justify-center -ml-2 sm:-ml-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-visible bg-transparent shadow-none flex items-center justify-center -ml-1 sm:-ml-2">
                       {exchange.logo_url ? (
                         <Image
                           src={exchange.logo_url}
@@ -203,7 +203,7 @@ export function ExchangeCard({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 flex-shrink-0 flex-wrap justify-end">
+                  <div className="flex items-center gap-1 flex-shrink-0 flex-wrap justify-end">
                     <Button
                       size="sm"
                       onClick={() => {
