@@ -321,7 +321,17 @@ export function NewsPage() {
         </div>
 
         {isLoading ? (
-          <div className="space-y-8 animate-pulse">{/* ... */}</div>
+          <div className="space-y-8 animate-pulse">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="relative pl-6">
+                <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-gray-300"></div>
+                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/4 mb-3"></div>
+                <div className="h-3 bg-gray-200 rounded w-full"></div>
+                <div className="h-3 bg-gray-200 rounded w-full mt-1"></div>
+              </div>
+            ))}
+          </div>
         ) : isError ? (
           <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4">{/* ... */}</div>
         ) : filteredNewsItems.length > 0 ? (
@@ -335,7 +345,6 @@ export function NewsPage() {
                   className="relative pl-6 cursor-pointer text-left w-full"
                   onClick={() => viewArticleDetail(item)}
                 >
-                  {/* ... item 内部渲染 */}
                   <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
                   <div className="flex flex-col gap-y-2">
                     <div className="flex justify-between items-start gap-2">
