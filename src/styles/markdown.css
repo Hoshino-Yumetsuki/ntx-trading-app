@@ -41,6 +41,7 @@
   color: rgb(51 65 85);
   margin-bottom: 1rem;
   line-height: 1.625;
+  text-align: justify;
 }
 
 .markdown-content ul,

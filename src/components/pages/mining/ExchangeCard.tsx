@@ -196,8 +196,10 @@ export function ExchangeCard({
                         {exchange.name}
                       </p>
                       <p className="text-slate-600 text-xs mt-0.5">
-                        {t('mining.exchange.efficiency')}:{' '}
-                        {exchange.mining_efficiency.toFixed(1)}%
+                        <span className="inline-block whitespace-nowrap">
+                          {t('mining.exchange.efficiency')}
+                        </span>
+                        : {exchange.mining_efficiency.toFixed(1)}%
                       </p>
                     </div>
                   </div>

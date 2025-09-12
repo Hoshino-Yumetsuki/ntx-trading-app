@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, User } from 'lucide-react'
 import { UserService } from '@/src/services/user'
 import { AuthService } from '@/src/services/auth'
-import type { CommunityResponse } from '@/src/types/user'
+import type { CommunityResponse, UserInfo } from '@/src/types/user'
 
 interface CommunityPageProps {
   onBack: () => void
@@ -13,6 +13,8 @@ interface CommunityPageProps {
 
 export default function CommunityPage({ onBack }: CommunityPageProps) {
   const [loading, setLoading] = useState(true)
+  const [userInfoLoading, setUserInfoLoading] = useState(true)
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [communityData, setCommunityData] = useState<CommunityResponse>({
     communityUserCount: 0,
     directInviteCount: 0,
@@ -46,6 +48,25 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
     fetchData()
   }, [])
 
+  // 获取用户信息，包括邀请人信息
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        setUserInfoLoading(true)
+        const token = AuthService.getToken()
+        if (!token) return
+
+        const data = await UserService.getUserInfo()
+        setUserInfo(data)
+      } catch (err: any) {
+        console.error('获取用户信息失败:', err)
+      } finally {
+        setUserInfoLoading(false)
+      }
+    }
+    fetchUserInfo()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center font-inter antialiased">
       {/* 顶部应用栏 */}
@@ -61,7 +82,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         <div className="w-6" />
       </div>
 
-      {/* 社区总览 + 社区用户 */}
+      {/* 社区总览 + 我的邀请人 + 社区用户 */}
       <div className="max-w-4xl w-full space-y-8 bg-transparent mt-8 mb-8 px-4 sm:px-6 lg:px-8">
         {/* 社区总览 */}
         <div className="flex flex-col space-y-3 bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
@@ -83,6 +104,37 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* 我的邀请人 */}
+        <div className="bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
+          <div className="flex flex-row justify-between items-center mb-4 border-b pb-3 border-gray-100">
+            <span className="text-gray-900 text-xl font-bold">我的邀请人</span>
+          </div>
+
+          {userInfoLoading ? (
+            <div className="text-center text-gray-500 text-base py-6">
+              加载中...
+            </div>
+          ) : userInfo?.invitedBy ? (
+            <div className="flex items-center p-4 bg-gray-50 rounded-[16pt] border border-gray-100 shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                <User className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-gray-800 font-semibold">
+                  {userInfo.invitedBy}
+                </p>
+                <p className="text-gray-600 text-sm">
+                  邀请码: {userInfo.myInviteCode}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center text-gray-500 text-base py-6">
+              暂无邀请人信息
+            </div>
+          )}
         </div>
 
         {/* 社区用户 */}

@@ -44,7 +44,7 @@ export function NewsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [consumedNewsId, setConsumedNewsId] = useState<number | null>(null)
-  const [userInviteCode, setUserInviteCode] = useState<string>('')
+  const [_userInviteCode, setUserInviteCode] = useState<string>('')
 
   // 获取用户邀请码
   useEffect(() => {
@@ -63,16 +63,11 @@ export function NewsPage() {
   }, [])
 
   // 生成分享链接
-  const getShareUrl = useCallback(
-    (item: NewsItem | null) => {
-      if (!item) return ''
-      if (userInviteCode) {
-        return `${window.location.origin}/register?invite=${userInviteCode}`
-      }
-      return `${window.location.origin}/?tab=news&news=${item.id}`
-    },
-    [userInviteCode]
-  )
+  const getShareUrl = useCallback((item: NewsItem | null) => {
+    if (!item) return ''
+    // 始终跳转到新闻页面而非注册页面
+    return `${window.location.origin}/?tab=news&news=${item.id}`
+  }, [])
 
   const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
     useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
@@ -284,6 +279,10 @@ export function NewsPage() {
 
   // URL参数处理
   useEffect(() => {
+    // 检查当前页面是否为资讯页面
+    const currentTab = searchParams?.get('tab')
+    if (currentTab !== 'news' && currentTab !== null) return
+
     const idStr = searchParams?.get('news')
     if (!idStr) return
     const id = Number(idStr)
@@ -543,19 +542,20 @@ export function NewsPage() {
           <LanguageSwitcher />
         </div>
         <div
-          className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
+          className="relative overflow-hidden rounded-2xl h-32 flex items-center"
           style={{
             backgroundImage: "url('/Group35@3x.png')",
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
-            backgroundSize: 'cover'
+            backgroundSize: 'cover',
+            backgroundColor: '#1C55FF',
+            borderRadius: '16px',
+            padding: '0 24px'
           }}
         >
-          <div className="flex items-center h-full">
-            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md">
-              {t('news.title') || '最新资讯'}
-            </h2>
-          </div>
+          <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
+            {t('news.title') || '最新资讯'}
+          </h2>
         </div>
       </div>
       <div className="px-6">
@@ -607,14 +607,26 @@ export function NewsPage() {
                   <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
                   <div className="flex flex-col gap-y-2">
                     <div className="flex justify-between items-start gap-2">
-                      <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
-                        {item.title}
-                      </h3>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
+                          {item.title}
+                        </h3>
+                        <div className="flex items-center text-xs text-[#AAB7CF] mt-1">
+                          <Clock className="w-3 h-3 mr-1.5" />
+                          <span>{formatDate(item.publishDate)}</span>
+                          {item.source === 'rss' && (
+                            <span className="flex items-center ml-2 text-blue-500">
+                              <Rss className="w-3 h-3 mr-1" />
+                              <span>RSS</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
                       <Button
                         asChild
                         variant="ghost"
                         size="sm"
-                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
+                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0 mt-1"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleShare(item)
@@ -624,16 +636,6 @@ export function NewsPage() {
                           <Share2 className="w-4 h-4" />
                         </span>
                       </Button>
-                    </div>
-                    <div className="flex items-center text-xs text-[#AAB7CF]">
-                      <Clock className="w-3 h-3 mr-1.5" />
-                      <span>{formatDate(item.publishDate)}</span>
-                      {item.source === 'rss' && (
-                        <span className="flex items-center ml-2 text-blue-500">
-                          <Rss className="w-3 h-3 mr-1" />
-                          <span>RSS</span>
-                        </span>
-                      )}
                     </div>
                     <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
                       {item.summary}

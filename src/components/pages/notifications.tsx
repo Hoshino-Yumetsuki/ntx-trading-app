@@ -108,6 +108,10 @@ export function NotificationsPage() {
 
   // 根据 URL 中的 ?news=ID 自动打开文章
   useEffect(() => {
+    // 检查当前页面是否为通知页面
+    const currentTab = searchParams?.get('tab')
+    if (currentTab !== 'notifications' && currentTab !== null) return
+
     const idStr = searchParams?.get('news')
     if (!idStr) return
     const id = Number(idStr)
@@ -329,11 +333,15 @@ export function NotificationsPage() {
         {/* 顶部 Banner */}
         <div className="relative mb-6 rounded-2xl overflow-hidden">
           <div
-            className="h-32 w-full bg-cover bg-center"
-            style={{ backgroundImage: 'url(/Group35@3x.png)' }}
-          />
-          <div className="absolute left-6 top-8 md:left-8 md:top-10 z-10">
-            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md">
+            className="h-32 w-full bg-cover bg-center flex items-center"
+            style={{
+              backgroundImage: 'url(/Group35@3x.png)',
+              backgroundColor: '#0262f4',
+              borderRadius: '16px',
+              padding: '0 24px'
+            }}
+          >
+            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
               {t('ui.notifications.title') || '最新通知'}
             </h2>
           </div>

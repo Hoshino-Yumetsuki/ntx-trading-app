@@ -299,8 +299,16 @@ export function AcademyPage() {
               {communities.slice(0, 4).map((community) => (
                 <Card
                   key={community.id}
-                  className="glass-card rounded-2xl border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
-                  style={{ aspectRatio: '6 / 7' }}
+                  className="data-card rounded-2xl hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                  style={{
+                    aspectRatio: '6 / 7',
+                    border: 'none',
+                    backgroundImage: 'url(/Group69@3x.png)',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right top',
+                    backgroundSize: '40%',
+                    backgroundColor: 'white'
+                  }}
                   onClick={() => handleCommunityClick(community)}
                 >
                   <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center">

@@ -33,7 +33,6 @@ import {
 import {
   PlatformDataCard,
   UserDataCard,
-  LeaderboardCard,
   ExchangeCard
 } from '@/src/components/pages/mining/index'
 import { toast } from 'sonner'
@@ -48,7 +47,7 @@ export function MiningPage() {
   const [platformData, setPlatformData] = useState<PlatformData | null>(null)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [dailyData, setDailyData] = useState<DailyUserData | null>(null)
-  const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([])
+  const [_leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([])
   const [exchanges, setExchanges] = useState<Exchange[]>([])
 
   const [userExchanges, setUserExchanges] = useState<UserExchange[]>([])
@@ -254,13 +253,15 @@ export function MiningPage() {
 
   return (
     <div className="min-h-screen pb-6">
-      <div className="px-6 pt-8 pb-4">
-        <div className="flex items-center justify-between mb-6">
+      <div className="px-6 pt-6 pb-3">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-xl font-bold text-blue-600">
+            <h1 className="text-lg font-bold text-blue-600">
               {t('mining.title')}
             </h1>
-            <p className="text-slate-600 text-xs">{t('mining.subtitle')}</p>
+            <p className="text-slate-600 text-xs mt-0.5">
+              {t('mining.subtitle')}
+            </p>
           </div>
           <div>
             <Button
@@ -281,7 +282,7 @@ export function MiningPage() {
       </div>
 
       {/* 标签页切换按钮 */}
-      <div className="px-6 mt-6">
+      <div className="px-6 mt-4">
         <div className="flex space-x-1 bg-white/50 backdrop-blur-sm p-1 rounded-xl border border-white/30">
           <button
             type="button"
@@ -308,7 +309,7 @@ export function MiningPage() {
         </div>
       </div>
 
-      <div className="px-6 mt-6">
+      <div className="px-6 mt-4">
         {/* 挖矿数据标签页 */}
         {activeTab === 'mining' && (
           <div>
@@ -376,7 +377,7 @@ export function MiningPage() {
                 {t('mining.exchangeList.title') || '交易所列表'}
               </h2>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 {/* 交易所绑定组件 */}
                 <div>
                   <ExchangeCard
@@ -388,8 +389,8 @@ export function MiningPage() {
                   />
                 </div>
 
-                {/* 挖矿排行榜组件 */}
-                <div>
+                {/* 挖矿排行榜组件 - 已隐藏 */}
+                {/* <div>
                   <h3 className="text-base font-medium text-slate-700 mb-3">
                     {t('mining.leaderboard.title') || '挖矿排行榜'}
                   </h3>
@@ -397,7 +398,7 @@ export function MiningPage() {
                     leaderboard={leaderboard}
                     leaderboardLoading={leaderboardLoading}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

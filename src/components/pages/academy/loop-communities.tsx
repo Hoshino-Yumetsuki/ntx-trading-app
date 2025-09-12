@@ -92,7 +92,15 @@ export function LoopCommunitiesPage({
       {communities.map((community) => (
         <Card
           key={community.id}
-          className="glass-card border-white/30 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+          className="data-card hover:shadow-lg transition-all duration-200 cursor-pointer group"
+          style={{
+            border: 'none',
+            backgroundImage: 'url(/Group69@3x.png)',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right top',
+            backgroundSize: '40%',
+            backgroundColor: 'white'
+          }}
           onClick={() => handleCommunityClick(community)}
         >
           <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center">

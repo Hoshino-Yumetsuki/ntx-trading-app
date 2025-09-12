@@ -157,11 +157,11 @@ export function MainApp() {
                 }`}
               >
                 <div
-                  className={`premium-icon w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
+                  className={`premium-icon w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
                     isActive ? 'text-blue-600' : 'text-slate-600'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-medium">{tab.label}</span>
               </button>
