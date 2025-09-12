@@ -312,7 +312,7 @@ export function AcademyPage() {
                   onClick={() => handleCommunityClick(community)}
                 >
                   <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center">
-                    <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 mb-3">
+                    <div className="premium-icon w-14 h-14 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 mb-3">
                       {community.image ? (
                         <div className="relative w-full h-full rounded-lg overflow-hidden">
                           <Image
@@ -323,7 +323,7 @@ export function AcademyPage() {
                           />
                         </div>
                       ) : (
-                        <Users className="w-5 h-5 text-blue-600" />
+                        <Users className="w-7 h-7 text-blue-600" />
                       )}
                     </div>
                     <div className="space-y-1">
