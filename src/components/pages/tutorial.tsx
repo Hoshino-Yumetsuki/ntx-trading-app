@@ -9,9 +9,12 @@ import {
   CardHeader,
   CardTitle
 } from '@/src/components/ui/card'
-import ReactMarkdown from 'react-markdown'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
+import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
+import texmath from 'markdown-it-texmath'
+import katex from 'katex'
+import DOMPurify from 'dompurify'
+import 'katex/dist/katex.min.css'
 import {
   ArrowLeft,
   Users,
@@ -176,12 +179,34 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
               </CardHeader>
               <CardContent>
                 <div className="prose prose-slate max-w-none">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                  >
-                    {section.content}
-                  </ReactMarkdown>
+                  {(() => {
+                    const md = new MarkdownIt({
+                      html: true,
+                      linkify: true,
+                      typographer: true,
+                      breaks: true
+                    })
+                      .use(multimdTable, {
+                        multiline: true,
+                        rowspan: true,
+                        headerless: true
+                      })
+                      .use(texmath, {
+                        engine: katex,
+                        delimiters: ['dollars', 'bracks'],
+                        katexOptions: { macros: { '\\RR': '\\mathbb{R}' } }
+                      })
+
+                    const html = md.render(section.content || '')
+                    const safe = DOMPurify.sanitize(html)
+
+                    return (
+                      <div
+                        // biome-ignore lint/security/noDangerouslySetInnerHtml: 已通过 DOMPurify 清洗
+                        dangerouslySetInnerHTML={{ __html: safe }}
+                      />
+                    )
+                  })()}
                 </div>
 
                 {/* 图片部分 */}

@@ -10,9 +10,8 @@ import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
 import { UserService } from '@/src/services/user'
 import { API_BASE_URL } from '@/src/services/config'
-import ReactMarkdown from 'react-markdown'
-import rehypeSanitize from 'rehype-sanitize'
-import remarkGfm from 'remark-gfm'
+import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
 import DOMPurify from 'dompurify'
 import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
@@ -377,16 +376,27 @@ export function NewsPage() {
       )
     }
 
-    // API 文章维持 Markdown 渲染
+    // API 文章使用 markdown-it 渲染
+    const md = new MarkdownIt({
+      html: true,
+      linkify: true,
+      typographer: true,
+      breaks: true
+    }).use(multimdTable, {
+      multiline: true,
+      rowspan: true,
+      headerless: true
+    })
+
+    const html = md.render(content || '')
+    const safe = DOMPurify.sanitize(html)
+
     return (
-      <div className="markdown-content">
-        <ReactMarkdown
-          rehypePlugins={[rehypeSanitize]}
-          remarkPlugins={[remarkGfm]}
-        >
-          {content}
-        </ReactMarkdown>
-      </div>
+      <div
+        className="markdown-content"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: 已通过 DOMPurify 清洗
+        dangerouslySetInnerHTML={{ __html: safe }}
+      />
     )
   }
 

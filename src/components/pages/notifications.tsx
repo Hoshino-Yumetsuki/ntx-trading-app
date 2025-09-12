@@ -7,8 +7,9 @@ import Image from 'next/image'
 import { Clock, Share2 } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
-import ReactMarkdown from 'react-markdown'
-import rehypeSanitize from 'rehype-sanitize'
+import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
+import DOMPurify from 'dompurify'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from '@/src/components/pages/news/news-image-generator'
 import { API_BASE_URL } from '@/src/services/config'
@@ -162,12 +163,26 @@ export function NotificationsPage() {
       )
     }
 
+    const md = new MarkdownIt({
+      html: true,
+      linkify: true,
+      typographer: true,
+      breaks: true
+    }).use(multimdTable, {
+      multiline: true,
+      rowspan: true,
+      headerless: true
+    })
+
+    const html = md.render(content)
+    const safe = DOMPurify.sanitize(html)
+
     return (
-      <div className="markdown-content">
-        <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-          {content}
-        </ReactMarkdown>
-      </div>
+      <div
+        className="markdown-content"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: 已通过 DOMPurify 清洗
+        dangerouslySetInnerHTML={{ __html: safe }}
+      />
     )
   }
 
