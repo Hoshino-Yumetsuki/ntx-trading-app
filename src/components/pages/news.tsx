@@ -12,6 +12,7 @@ import { UserService } from '@/src/services/user'
 import { API_BASE_URL } from '@/src/services/config'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
+import remarkGfm from 'remark-gfm'
 import DOMPurify from 'dompurify'
 import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
@@ -379,7 +380,10 @@ export function NewsPage() {
     // API 文章维持 Markdown 渲染
     return (
       <div className="markdown-content">
-        <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+        <ReactMarkdown
+          rehypePlugins={[rehypeSanitize]}
+          remarkPlugins={[remarkGfm]}
+        >
           {content}
         </ReactMarkdown>
       </div>

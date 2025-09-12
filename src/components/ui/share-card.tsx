@@ -2,6 +2,7 @@
 
 import { forwardRef, useEffect, useRef, useState } from 'react'
 import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
 import Image from 'next/image'
 
 interface ShareCardProps {
@@ -19,6 +20,10 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
       html: true,
       linkify: true,
       typographer: true
+    }).use(multimdTable, {
+      multiline: true,
+      rowspan: true,
+      headerless: true
     })
 
     // 标题高度测量（用于推开正文），允许换行
@@ -178,6 +183,21 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           .content :global(ol) {
             margin: 0 0 1em 1.25em;
           }
+          .content :global(table) {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+          }
+          .content :global(th),
+          .content :global(td) {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            text-align: left;
+          }
+          .content :global(th) {
+            background-color: #f8fafc;
+            font-weight: bold;
+          }
         `}</style>
         </div>
 
@@ -243,8 +263,8 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
         </div>
 
-        {/* 左下角日期标签 */}
-        <div className="absolute left-8 bottom-4 z-30 text-slate-400 text-xs select-none">
+        {/* 右上角日期标签 */}
+        <div className="absolute right-8 top-6 z-30 text-slate-700 text-base select-none">
           {todayLabel}
         </div>
       </div>

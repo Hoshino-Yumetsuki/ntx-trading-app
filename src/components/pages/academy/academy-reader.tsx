@@ -4,6 +4,7 @@ import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import { ChevronLeft } from 'lucide-react'
 import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
 import DOMPurify from 'dompurify'
 import '@/src/styles/markdown.css'
 
@@ -23,6 +24,10 @@ export function AcademyMarkdownReader({
     linkify: true,
     typographer: true,
     breaks: true
+  }).use(multimdTable, {
+    multiline: true,
+    rowspan: true,
+    headerless: true
   })
 
   const html = md.render(content || '')
