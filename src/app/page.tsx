@@ -6,6 +6,10 @@ import { MainApp } from '@/src/components/main'
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext'
 import { LanguageProvider } from '@/src/contexts/language-context'
 import { Loader2 } from 'lucide-react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+// 创建一个 client
+const queryClient = new QueryClient()
 
 function AppContent() {
   const [showSplash, setShowSplash] = useState(true)
@@ -39,10 +43,13 @@ function AppContent() {
 
 export default function HomePage() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </LanguageProvider>
+    // 在这里包裹 QueryClientProvider
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </LanguageProvider>
+    </QueryClientProvider>
   )
 }

@@ -49,7 +49,7 @@ export function NotificationsPage() {
   const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
     useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
-  // 获取 API 新闻列表
+  // 只获取 API 新闻列表
   useEffect(() => {
     let cancelled = false
     async function fetchApiNews() {
@@ -59,7 +59,9 @@ export function NotificationsPage() {
         if (response.ok) {
           const data = await response.json()
           if (!cancelled) {
-            setNewsItems(data)
+            // 按日期倒序排序
+            const sortedData = data.sort((a: NewsItem, b: NewsItem) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+            setNewsItems(sortedData)
           }
         } else {
           toast({
@@ -80,7 +82,6 @@ export function NotificationsPage() {
     }
   }, [])
 
-  // 稳定的文章详情获取
   const fetchArticleContent = useCallback(async (id: number) => {
     try {
       const response = await fetch(
@@ -107,20 +108,22 @@ export function NotificationsPage() {
     }
   }, [])
 
-  // 根据 URL 中的 ?news=ID 自动打开文章
+  // URL 跳转逻辑
   useEffect(() => {
-    // 检查当前页面是否为通知页面
     const currentTab = searchParams?.get('tab')
     if (currentTab !== 'notifications' && currentTab !== null) return
 
     const idStr = searchParams?.get('news')
     if (!idStr) return
     const id = Number(idStr)
-    if (Number.isNaN(id)) return
-    if (consumedNewsId === id) return
-    setConsumedNewsId(id)
-    fetchArticleContent(id)
-  }, [searchParams, consumedNewsId, fetchArticleContent])
+    if (Number.isNaN(id) || consumedNewsId === id) return;
+    
+    // 等待列表加载完成
+    if (newsItems.length > 0) {
+      setConsumedNewsId(id)
+      fetchArticleContent(id)
+    }
+  }, [searchParams, consumedNewsId, fetchArticleContent, newsItems])
 
   const handleShare = (newsItem: NewsItem) => {
     setShareNewsItem(newsItem)
@@ -128,30 +131,13 @@ export function NotificationsPage() {
   }
 
   const handleBackToList = useCallback(() => {
-    // 先将视图状态设置为列表模式
     setViewingArticle(false)
     setCurrentArticle(null)
-
-    // 然后清理 URL 参数
-    try {
-      const params = new URLSearchParams(window.location.search)
-
-      // 删除直达相关的参数
-      if (params.has('news')) params.delete('news')
-      if (params.has('direct')) params.delete('direct')
-
-      // 确保保持在 notifications tab
-      params.set('tab', 'notifications')
-
-      const url = `?${params.toString()}`
-
-      // 使用 setTimeout 确保视图先更新，再更新 URL
-      setTimeout(() => {
-        router.replace(url, { scroll: false })
-      }, 0)
-    } catch (error) {
-      console.error('处理返回操作时出错:', error)
-    }
+    const params = new URLSearchParams(window.location.search)
+    params.delete('news')
+    params.delete('direct')
+    params.set('tab', 'notifications')
+    router.replace(`?${params.toString()}`, { scroll: false })
   }, [router])
 
   const formatDate = (dateString: string) => {
@@ -193,72 +179,35 @@ export function NotificationsPage() {
     return (
       <div
         className="markdown-content"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: 已通过 DOMPurify 清洗
         dangerouslySetInnerHTML={{ __html: safe }}
       />
     )
   }
-
-  // ====================================================================
-  // 	UI 微调后的文章详情页视图
-  // ====================================================================
+  
+  // 文章详情页视图
   if (viewingArticle && currentArticle) {
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-          {/* 顶部导航区域 */}
           <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
-                {/* 返回按钮 */}
-                <Button
-                  variant="ghost"
-                  size="icon" // 使用 'icon' 尺寸，更适合单个图标按钮
-                  onClick={handleBackToList}
-                  className="mr-2" // 移除颜色相关的类名，让图片保持原样
-                >
-                  <Image
-                    src="/back.png" // 图片路径 (请确保 back.png 文件在 public 目录下)
-                    alt="返回"
-                    width={20} // 设置宽度为 20px
-                    height={20} // 设置高度为 20px
-                  />
+                <Button variant="ghost" size="icon" onClick={handleBackToList} className="mr-2">
+                  <Image src="/back.png" alt="返回" width={20} height={20} />
                 </Button>
-                {/* Logo */}
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
-                  <Image
-                    src="/Frame17@3x.png"
-                    alt="NTX Logo"
-                    fill
-                    className="object-contain"
-                    priority
-                  />
+                  <Image src="/Frame17@3x.png" alt="NTX Logo" fill className="object-contain" priority />
                 </div>
               </div>
-
-              {/* ==================== 代码修改开始 ==================== */}
-              {/* 参照蓝湖UI修改了顶部分享按钮 */}
-              <Button
-                variant="ghost"
-                onClick={() => handleShare(currentArticle)}
-                // 移除了 size="icon"，使用自定义样式
-                className="h-auto p-1.5 rounded-md hover:bg-blue-50/50"
-              >
+              <Button variant="ghost" onClick={() => handleShare(currentArticle)} className="h-auto p-1.5 rounded-md hover:bg-blue-50/50">
                 <div className="flex items-center gap-x-1">
-                  <span className="text-xs font-medium text-[#1C55FF]">
-                    分享
-                  </span>
+                  <span className="text-xs font-medium text-[#1C55FF]">分享</span>
                   <Image src="/share.png" alt="分享" width={16} height={13} />
                 </div>
               </Button>
-              {/* ==================== 代码修改结束 ==================== */}
             </div>
-
-            {/* 文章标题和日期 */}
             <div className="px-2">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
-                {currentArticle.title}
-              </h1>
+              <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">{currentArticle.title}</h1>
               <div className="flex items-center text-slate-500 text-xs mt-3">
                 <span>{formatDate(currentArticle.publishDate)}</span>
                 <span className="mx-2">•</span>
@@ -266,55 +215,26 @@ export function NotificationsPage() {
               </div>
             </div>
           </div>
-
-          {/* 内容区域 (移除了Card包裹) */}
           <div className="px-4 mt-4">
-            {/* 文章图片 */}
-            {currentArticle.imageUrl &&
-              currentArticle.imageUrl !== '/placeholder.png' &&
-              currentArticle.imageUrl.trim() !== '' && (
+            {currentArticle.imageUrl && currentArticle.imageUrl !== '/placeholder.png' && (
                 <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
-                  <Image
-                    src={currentArticle.imageUrl}
-                    alt={currentArticle.title}
-                    className="object-cover"
-                    fill
-                    sizes="100vw"
-                    priority
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      if (target.parentElement) {
-                        target.parentElement.style.display = 'none'
-                      }
-                    }}
-                  />
+                  <Image src={currentArticle.imageUrl} alt={currentArticle.title} className="object-cover" fill sizes="100vw" priority onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 </div>
               )}
-
-            {/* Markdown 正文内容 */}
             <div className="px-2 max-w-none">
               {renderMarkdownContent(currentArticle.content || '')}
             </div>
-
-            {/* 新增的底部自分享按钮 */}
             <div className="mt-10 flex justify-center">
-              <Button
-                className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
-                onClick={() => handleShare(currentArticle)}
-              >
+              <Button className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3" onClick={() => handleShare(currentArticle)}>
                 <span className="mr-2 font-semibold">分享</span>
                 <Share2 className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </div>
-        {/* 分享模态框（阅读页内挂载） */}
         <UniversalShareModal
           isOpen={showShareModal}
-          onClose={() => {
-            setShowShareModal(false)
-            setOverrideQrText?.('')
-          }}
+          onClose={() => { setShowShareModal(false); setOverrideQrText?.('') }}
           title="分享文章"
           shareData={{
             title: shareNewsItem?.title || '',
@@ -324,64 +244,35 @@ export function NotificationsPage() {
           imageGenerator={generateImage}
           showImagePreview={true}
           showDefaultShareButtons={true}
-          onQrOverride={(text) => {
-            setOverrideQrText?.(text)
-          }}
+          onQrOverride={(text) => setOverrideQrText?.(text)}
         />
         <ImageGeneratorComponent />
       </>
     )
   }
 
-  // ====================================================================
-  // 	新闻列表页视图 (保持不变)
-  // ====================================================================
+  // 通知列表页视图
   return (
     <div className="min-h-screen bg-white pb-6">
-      {/* 顶部 Hero 区域 */}
       <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
-              <Image
-                src="/Frame17@3x.png"
-                alt="NTX Logo"
-                fill
-                className="object-contain"
-                priority
-              />
+              <Image src="/Frame17@3x.png" alt="NTX Logo" fill className="object-contain" priority />
             </div>
-            <p className="text-slate-800 text-xl font-medium">
-              WEB3 一站式服务
-            </p>
+            <p className="text-slate-800 text-xl font-medium">WEB3 一站式服务</p>
           </div>
           <LanguageSwitcher />
         </div>
-
-        {/* 顶部 Banner */}
         <div className="relative mb-6 rounded-2xl overflow-hidden">
-          <div
-            className="h-32 w-full bg-cover bg-center flex items-center"
-            style={{
-              backgroundImage: 'url(/Group35@3x.png)',
-              backgroundColor: '#0262f4',
-              borderRadius: '16px',
-              padding: '0 24px'
-            }}
-          >
-            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
-              {t('ui.notifications.title') || '最新通知'}
-            </h2>
+          <div className="h-32 w-full bg-cover bg-center flex items-center p-6" style={{ backgroundImage: 'url(/Group35@3x.png)', backgroundColor: '#0262f4', borderRadius: '16px' }}>
+            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">{t('ui.notifications.title') || '最新通知'}</h2>
           </div>
         </div>
       </div>
-
-      {/* 列表 */}
       <div className="px-6">
         {loading ? (
-          <div className="text-center py-8 text-slate-500">
-            {t('news.loading') || '加载中...'}
-          </div>
+          <div className="text-center py-8 text-slate-500">{t('news.loading') || '加载中...'}</div>
         ) : newsItems.length > 0 ? (
           <div className="relative">
             <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
@@ -392,61 +283,32 @@ export function NotificationsPage() {
                   key={item.id}
                   className="relative pl-6 cursor-pointer text-left w-full"
                   onClick={() => fetchArticleContent(item.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      fetchArticleContent(item.id)
-                    }
-                  }}
-                  aria-label={`阅读文章: ${item.title}`}
                 >
                   <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
                   <div className="flex flex-col gap-y-2">
                     <div className="flex justify-between items-start gap-2">
-                      <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
-                        {item.title}
-                      </h3>
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleShare(item)
-                        }}
-                      >
-                        <span>
-                          <Share2 className="w-4 h-4" />
-                        </span>
+                      <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">{item.title}</h3>
+                      <Button asChild variant="ghost" size="sm" className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0" onClick={(e) => { e.stopPropagation(); handleShare(item); }}>
+                        <span><Share2 className="w-4 h-4" /></span>
                       </Button>
                     </div>
                     <div className="flex items-center text-xs text-[#AAB7CF]">
                       <Clock className="w-3 h-3 mr-1.5" />
                       <span>{formatDate(item.publishDate)}</span>
                     </div>
-                    <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
-                      {item.summary}
-                    </p>
+                    <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">{item.summary}</p>
                   </div>
                 </button>
               ))}
             </div>
           </div>
         ) : (
-          <div className="text-center py-8 text-slate-500">
-            {t('news.empty') || '暂无通知'}
-          </div>
+          <div className="text-center py-8 text-slate-500">{t('news.empty') || '暂无通知'}</div>
         )}
       </div>
-
-      {/* 分享模态框 */}
       <UniversalShareModal
         isOpen={showShareModal}
-        onClose={() => {
-          setShowShareModal(false)
-          setOverrideQrText?.('')
-        }}
+        onClose={() => { setShowShareModal(false); setOverrideQrText?.('') }}
         title="分享文章"
         shareData={{
           title: shareNewsItem?.title || '',
@@ -456,9 +318,7 @@ export function NotificationsPage() {
         imageGenerator={generateImage}
         showImagePreview={true}
         showDefaultShareButtons={true}
-        onQrOverride={(text) => {
-          setOverrideQrText?.(text)
-        }}
+        onQrOverride={(text) => setOverrideQrText?.(text)}
       />
       <ImageGeneratorComponent />
     </div>
