@@ -140,9 +140,9 @@ export function ExchangeCard({
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-2">
         {exchangesLoading ? (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {[...Array(3)].map((_, index) => (
               <div
                 key={index}
