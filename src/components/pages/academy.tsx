@@ -239,16 +239,16 @@ export function AcademyPage() {
                   <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center space-y-2">
                     <div
                       className="premium-icon rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 flex items-center justify-center"
-                      style={{ width: '30%', aspectRatio: '1 / 1' }}
+                      style={{ width: '40%', aspectRatio: '1 / 1' }}
                     >
                       <Icon
                         className="text-blue-600"
-                        style={{ width: '70%', height: '70%' }}
+                        style={{ width: '75%', height: '75%' }}
                       />
                     </div>
                     <h3
                       className="text-slate-800 font-medium group-hover:text-blue-700 transition-colors"
-                      style={{ fontSize: 'clamp(12px, 3.2vw, 14px)' }}
+                      style={{ fontSize: 'clamp(14px, 3.5vw, 16px)' }}
                     >
                       {tab.title}
                     </h3>
