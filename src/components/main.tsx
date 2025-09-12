@@ -84,19 +84,17 @@ export function MainApp() {
     <div className="relative flex flex-1 flex-col overflow-hidden">
       <AppBackground />
 
-      {/* 1. 可滚动的内容区域 */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar">
-        <div className="scalable-content-area">
-          {activeTab === 'home' ? (
-            <HomePage onNavigate={setActiveTab} />
-          ) : (
-            <ActiveComponent />
-          )}
-        </div>
+      {/* 1. 可滚动的内容区域，并增加 pb-24 (padding-bottom) 为导航栏留出空间 */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar pb-24">
+        {activeTab === 'home' ? (
+          <HomePage onNavigate={setActiveTab} />
+        ) : (
+          <ActiveComponent />
+        )}
       </main>
 
-      {/* 3. 底部导航栏（现在与内容区分离，不再受缩放影响） */}
-      <footer className="shrink-0 glass-card border-t-0 rounded-t-3xl">
+      {/* 2. 底部导航栏，使用 fixed 定位 */}
+      <footer className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl md:left-1/2 md:-translate-x-1/2 md:max-w-md w-full">
         <div className="flex items-center justify-around py-3">
           {tabs.map((tab) => {
             const Icon = tab.icon

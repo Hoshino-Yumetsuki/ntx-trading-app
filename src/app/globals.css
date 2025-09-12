@@ -381,21 +381,19 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-/* --- 精确视口缩放方案 --- */
-/* 仅在移动端竖屏应用 */
-@media (max-width: 639px) {
-  .scalable-content-area {
-  --scale-ratio: calc(100vw / var(--design-width));
 
-  width: calc(1px * var(--design-width));
-  transform: scale(var(--scale-ratio));
-  
-  /* --- 新增和修改的行 --- */
-  margin-left: auto;      /* 新增：自动计算左边距 */
-  margin-right: auto;     /* 新增：自动计算右边距 */
-  transform-origin: top center; /* 修改：将缩放基点从左侧改为顶部中心 */
-}
-}
+/* @media (max-width: 639px) {
+  .scalable-content-area {
+    --scale-ratio: calc(100vw / var(--design-width));
+
+    width: calc(1px * var(--design-width));
+    transform: scale(var(--scale-ratio));
+    
+    margin-left: auto;  
+    margin-right: auto;
+    transform-origin: top center;
+  }
+} */
 
 @media (min-width: 768px) {
   body {
