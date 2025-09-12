@@ -140,31 +140,27 @@ export function ExchangeCard({
 
   return (
     <>
-      <div className="space-y-2">
+      <div className="flex flex-col">
         {exchangesLoading ? (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {[...Array(3)].map((_, index) => (
               <div
                 key={index}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 data-card rounded-xl"
+                className="flex items-center justify-between p-4 bg-gray-100 rounded-xl animate-pulse"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-xl animate-pulse" />
+                  <div className="w-10 h-10 bg-gray-200 rounded-full" />
                   <div className="space-y-2">
-                    <div className="h-5 bg-gray-200 rounded w-24 animate-pulse" />
-                    <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded w-20" />
+                    <div className="h-3 bg-gray-200 rounded w-24" />
                   </div>
                 </div>
-                <div className="text-right mr-4">
-                  <div className="h-5 bg-gray-200 rounded w-12 animate-pulse mb-1" />
-                  <div className="h-3 bg-gray-200 rounded w-16 animate-pulse" />
-                </div>
-                <div className="h-8 bg-gray-200 rounded w-16 animate-pulse" />
+                <div className="h-8 bg-gray-200 rounded w-36" />
               </div>
             ))}
           </div>
         ) : exchanges.length > 0 ? (
-          exchanges.map((exchange, _index) => {
+          exchanges.map((exchange) => {
             const isUserBound = userExchanges.some(
               (ue) => ue.id === exchange.id
             )
@@ -172,75 +168,73 @@ export function ExchangeCard({
             return (
               <div
                 key={exchange.id}
-                className="origin-left scale-[0.94] sm:scale-100"
+                className="flex items-center justify-between gap-3 py-4 border-b border-gray-100 last:border-b-0"
               >
-                <div className="flex items-center justify-between gap-2 py-3 pr-2 pl-5 sm:pl-6 data-card rounded-xl overflow-visible">
-                  <div className="flex items-center space-x-2 flex-1 min-w-0">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-visible bg-transparent shadow-none flex items-center justify-center -ml-1 sm:-ml-2">
-                      {exchange.logo_url ? (
-                        <Image
-                          src={exchange.logo_url}
-                          alt={exchange.name}
-                          width={40}
-                          height={40}
-                          className="w-full h-full object-contain"
-                        />
-                      ) : (
-                        <span className="text-slate-700 text-sm font-bold">
-                          {exchange.name.substring(0, 2).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-                    <div className="overflow-visible">
-                      <p className="text-slate-800 font-semibold text-sm leading-tight whitespace-nowrap overflow-visible">
-                        {exchange.name}
-                      </p>
-                      <p className="text-slate-600 text-xs mt-0.5">
-                        <span className="inline-block whitespace-nowrap">
-                          {t('mining.exchange.efficiency')}
-                        </span>
-                        : {exchange.mining_efficiency.toFixed(1)}%
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 flex-shrink-0 flex-wrap justify-end">
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        if (isUserBound) {
-                          window.open(miningUrl, '_blank')
-                        } else {
-                          setBindingExchangeId(exchange.id)
-                          setIsBindRequiredDialogOpen(true)
-                        }
-                      }}
-                      className="bg-green-500 hover:bg-green-600 text-white h-7 px-2 text-xs whitespace-nowrap"
-                    >
-                      <ExternalLink className="w-3 h-3 mr-0.5" />
-                      {t('mining.exchange.goMining') || '去挖矿'}
-                    </Button>
-
-                    {isUserBound ? (
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleUnbind(exchange.id)}
-                        className="h-7 px-2 text-xs whitespace-nowrap"
-                      >
-                        <UserX className="w-3 h-3 mr-0.5" />
-                        {t('mining.exchange.unbind') || '解绑'}
-                      </Button>
+                <div className="flex items-center space-x-4 flex-1 min-w-0">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                    {exchange.logo_url ? (
+                      <Image
+                        src={exchange.logo_url}
+                        alt={exchange.name}
+                        width={40}
+                        height={40}
+                        className="w-full h-full object-contain rounded-full"
+                      />
                     ) : (
-                      <Button
-                        size="sm"
-                        onClick={() => handleBindClick(exchange.id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white border-0 h-7 px-2 text-xs whitespace-nowrap"
-                      >
-                        <UserPlus className="w-3 h-3 mr-0.5" />
-                        {t('mining.exchange.bind') || '绑定'}
-                      </Button>
+                      <span className="text-slate-700 text-sm font-bold">
+                        {exchange.name.substring(0, 2).toUpperCase()}
+                      </span>
                     )}
                   </div>
+                  <div className="overflow-hidden">
+                    <p className="text-slate-800 font-semibold text-base truncate">
+                      {exchange.name}
+                    </p>
+                    <p className="text-slate-500 text-xs mt-0.5">
+                      {t('mining.exchange.efficiency')}:{' '}
+                      {exchange.mining_efficiency.toFixed(1)}%
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      if (isUserBound) {
+                        window.open(miningUrl, '_blank')
+                      } else {
+                        setBindingExchangeId(exchange.id)
+                        setIsBindRequiredDialogOpen(true)
+                      }
+                    }}
+                    className="h-8 px-3 text-xs bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:text-green-800"
+                  >
+                    <ExternalLink className="w-3 h-3 mr-1" />
+                    {t('mining.exchange.goMining')}
+                  </Button>
+
+                  {isUserBound ? (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleUnbind(exchange.id)}
+                      className="h-8 px-3 text-xs"
+                    >
+                      <UserX className="w-3 h-3 mr-1" />
+                      {t('mining.exchange.unbind')}
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      onClick={() => handleBindClick(exchange.id)}
+                      className="h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <UserPlus className="w-3 h-3 mr-1" />
+                      {t('mining.exchange.bind')}
+                    </Button>
+                  )}
                 </div>
               </div>
             )
@@ -258,7 +252,7 @@ export function ExchangeCard({
         )}
       </div>
 
-      {/* 绑定对话框 */}
+      {/* 绑定对话框 (保持不变) */}
       <Dialog open={isBindDialogOpen} onOpenChange={setIsBindDialogOpen}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[480px] max-h-[80vh] overflow-y-auto">
           {bindingExchangeId &&
@@ -448,7 +442,7 @@ export function ExchangeCard({
         </DialogContent>
       </Dialog>
 
-      {/* 未绑定提示对话框 */}
+      {/* 未绑定提示对话框 (保持不变) */}
       <Dialog
         open={isBindRequiredDialogOpen}
         onOpenChange={setIsBindRequiredDialogOpen}

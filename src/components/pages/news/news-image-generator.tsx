@@ -5,7 +5,7 @@ import { toPng } from 'html-to-image'
 import QRCode from 'qrcode'
 import { ShareCard } from '@/src/components/ui/share-card'
 import { API_BASE_URL } from '@/src/services/config'
-import { preloadImages } from '@/src/utils/image' // 导入预加载函数
+import { preloadImages } from '@/src/utils/image'
 
 interface NewsItem {
   id: number
@@ -14,27 +14,6 @@ interface NewsItem {
   summary: string
   publishDate: string
   source?: string
-}
-interface NewsImageGeneratorProps {
-  newsItem: NewsItem | null
-  onImageGenerated?: (imageUrl: string) => void
-}
-
-// ... NewsImageGenerator component remains the same ...
-export function NewsImageGenerator({ newsItem }: NewsImageGeneratorProps) {
-  if (!newsItem) return null
-  return (
-    <div className="fixed -top-[9999px] left-0 opacity-0 pointer-events-none">
-      <ShareCard
-        title={newsItem.title}
-        content={newsItem.content || ''}
-        summary={newsItem.summary}
-        publishDate={newsItem.publishDate}
-        qrCodeDataUrl=""
-        source={newsItem.source}
-      />
-    </div>
-  )
 }
 
 // Hook to use the news image generator
@@ -50,6 +29,7 @@ export function useNewsImageGenerator(
 
   // 获取完整文章内容
   const fetchFullContent = useCallback(async () => {
+    // ... (此函数保持不变)
     if (!newsItem || newsItem.source === 'rss') {
       const content = newsItem?.content || ''
       setFullContent(content)
@@ -80,6 +60,7 @@ export function useNewsImageGenerator(
 
   // 生成二维码
   const generateQRCode = useCallback(async () => {
+    // ... (此函数保持不变)
     if (!newsItem) return ''
     try {
       const textToEncode =
@@ -106,25 +87,28 @@ export function useNewsImageGenerator(
     }
 
     try {
-      // 步骤 1: 获取所有动态数据（文章内容和二维码URL）
+      // 步骤 1: 获取动态数据
       await Promise.all([fetchFullContent(), generateQRCode()])
 
-      // 步骤 2: 等待 React 将最新的 state (fullContent, qrCodeDataUrl) 更新到 DOM
+      // 步骤 2: 等待React更新DOM
       await new Promise((resolve) => requestAnimationFrame(resolve))
 
       const node = shareCardRef.current
       if (!node) return null
 
-      // 步骤 3: 从更新后的 DOM 中收集所有图片 URL
+      // 步骤 3: 从更新后的DOM中收集所有图片URL
       const imageUrls = Array.from(node.querySelectorAll('img')).map(
         (img) => img.src
       )
 
-      // 步骤 4: 【核心】执行预加载
+      // 步骤 4: 执行预加载
       await preloadImages(imageUrls)
 
-      // 步骤 5: 再次等待一帧，确保浏览器绘制从缓存中读取的图片
+      // 步骤 5: 再次等待帧绘制
       await new Promise((resolve) => requestAnimationFrame(resolve))
+      
+      // 额外增加一个小的延时，作为iOS Safari的最后保障
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       // 步骤 6: 执行截图
       const dataUrl = await toPng(node, {
@@ -155,8 +139,10 @@ export function useNewsImageGenerator(
 
   const ImageGeneratorComponent = () => {
     if (!newsItem) return null
+    //  ======= 核心修改点 =======
+    //  将 -top-[9999px] 修改为 opacity-0
     return (
-      <div className="fixed -top-[9999px] left-0 opacity-0 pointer-events-none">
+      <div className="fixed top-0 left-0 opacity-0 pointer-events-none -z-10">
         <ShareCard
           ref={shareCardRef}
           title={newsItem.title}

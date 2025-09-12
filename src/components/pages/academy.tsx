@@ -295,7 +295,7 @@ export function AcademyPage() {
               <p className="text-slate-600">暂无社区可显示</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+            <div className="grid grid-cols-2 gap-4 max-w-screen-sm mx-auto">
               {communities.slice(0, 4).map((community) => (
                 <Card
                   key={community.id}

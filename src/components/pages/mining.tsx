@@ -1,3 +1,5 @@
+// src/components/pages/mining.tsx
+
 'use client'
 
 import { useState, useEffect, useCallback, useId } from 'react'
@@ -283,14 +285,14 @@ export function MiningPage() {
 
       {/* 标签页切换按钮 */}
       <div className="px-6 mt-4">
-        <div className="flex space-x-1 bg-white/50 backdrop-blur-sm p-1 rounded-xl border border-white/30">
+        <div className="flex space-x-1 p-1 rounded-xl">
           <button
             type="button"
             onClick={() => setActiveTab('exchange')}
             className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
               activeTab === 'exchange'
-                ? 'bg-white text-blue-600 shadow-md'
-                : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'text-slate-600 hover:text-slate-800'
             }`}
           >
             {t('mining.tabs.exchange') || '交易所'}
@@ -300,8 +302,8 @@ export function MiningPage() {
             onClick={() => setActiveTab('mining')}
             className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
               activeTab === 'mining'
-                ? 'bg-white text-blue-600 shadow-md'
-                : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'text-slate-600 hover:text-slate-800'
             }`}
           >
             {t('mining.tabs.data') || '挖矿数据'}
