@@ -65,8 +65,8 @@ export function NewsPage() {
   // 生成分享链接
   const getShareUrl = useCallback((item: NewsItem | null) => {
     if (!item) return ''
-    // 始终跳转到新闻页面而非注册页面
-    return `${window.location.origin}/?tab=news&news=${item.id}`
+    // 生成直达文章的链接，包含必要的参数
+    return `${window.location.origin}/?tab=news&news=${item.id}&direct=true`
   }, [])
 
   const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
@@ -290,16 +290,30 @@ export function NewsPage() {
     setConsumedNewsId(id)
     if (id >= 0) {
       fetchArticleContent(id)
+    } else {
+      // 直接处理负数 ID（RSS 文章）
+      const direct = searchParams?.get('direct') === 'true'
+      if (direct) {
+        // 如果是直达链接，等待数据加载完成后自动处理
+        // 在下面的 useEffect 中处理
+      }
     }
   }, [searchParams, consumedNewsId, fetchArticleContent])
 
   useEffect(() => {
-    if (consumedNewsId !== null && consumedNewsId < 0 && !viewingArticle) {
+    // 处理 RSS 文章（负数 ID）
+    if (consumedNewsId !== null && consumedNewsId < 0) {
+      // 检查是否已经有数据
       const rssArticle = newsItems.find((n) => n.id === consumedNewsId)
-      if (rssArticle) {
+      if (rssArticle && !viewingArticle) {
+        // 找到了文章且未显示，则显示
         setCurrentArticle(rssArticle)
         setViewingArticle(true)
+      } else if (!rssArticle && newsItems.length > 0) {
+        // 如果已经加载了文章但没找到对应ID，可能是无效ID
+        console.warn(`未找到ID为 ${consumedNewsId} 的RSS文章`)
       }
+      // 如果 newsItems 为空，等待数据加载完成后会自动处理
     }
   }, [newsItems, consumedNewsId, viewingArticle])
 
@@ -330,19 +344,50 @@ export function NewsPage() {
     setShowShareModal(true)
   }
 
-  // 新增的返回列表处理函数
+  // 返回列表处理函数
   const handleBackToList = useCallback(() => {
+    // 先将视图状态设置为列表模式
     setViewingArticle(false)
+    setCurrentArticle(null)
+
+    // 检查是否是从直达链接进入的
+    const isDirect = searchParams?.get('direct') === 'true'
+
+    // 然后清理 URL 参数
     try {
-      const params = new URLSearchParams(window.location.search)
-      if (params.has('news')) {
-        params.delete('news')
-        const qs = params.toString()
-        const url = qs ? `?${qs}` : '?tab=news' // 保持在 news tab
-        router.replace(url)
+      // 如果是直达链接，使用 window.history.back() 返回上一页
+      if (isDirect) {
+        // 如果有上一页历史记录，则返回
+        if (window.history.length > 1) {
+          window.history.back()
+          return
+        }
+        // 如果没有历史记录，则直接刷新窗口到首页
+        window.location.replace('/?tab=news')
+        return
       }
-    } catch {}
-  }, [router])
+
+      // 非直达链接的正常处理流程
+      const params = new URLSearchParams(window.location.search)
+
+      // 删除直达相关的参数
+      if (params.has('news')) params.delete('news')
+      if (params.has('direct')) params.delete('direct')
+
+      // 确保保持在 news tab
+      params.set('tab', 'news')
+
+      const qs = params.toString()
+      const url = `?${qs}`
+
+      // 使用 setTimeout 确保视图先更新，再更新 URL
+      setTimeout(() => {
+        router.replace(url, { scroll: false })
+      }, 0)
+    } catch (error) {
+      console.error('处理返回操作时出错:', error)
+    }
+  }, [router, searchParams])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)

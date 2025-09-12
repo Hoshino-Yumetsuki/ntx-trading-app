@@ -42,7 +42,7 @@ export function NotificationsPage() {
   const getShareUrl = useCallback(
     (item: NewsItem | null) =>
       item
-        ? `${window.location.origin}/?tab=notifications&news=${item.id}`
+        ? `${window.location.origin}/?tab=notifications&news=${item.id}&direct=true`
         : '',
     []
   )
@@ -127,19 +127,32 @@ export function NotificationsPage() {
     setShowShareModal(true)
   }
 
-  const handleBackToList = () => {
+  const handleBackToList = useCallback(() => {
+    // 先将视图状态设置为列表模式
     setViewingArticle(false)
-    // 清理URL中的news参数，返回列表视图
-    const params = new URLSearchParams(window.location.search)
-    if (params.has('news')) {
-      params.delete('news')
-      const queryString = params.toString()
-      const newUrl = queryString
-        ? `?${queryString}`
-        : `${window.location.pathname}?tab=notifications`
-      router.replace(newUrl)
+    setCurrentArticle(null)
+
+    // 然后清理 URL 参数
+    try {
+      const params = new URLSearchParams(window.location.search)
+
+      // 删除直达相关的参数
+      if (params.has('news')) params.delete('news')
+      if (params.has('direct')) params.delete('direct')
+
+      // 确保保持在 notifications tab
+      params.set('tab', 'notifications')
+
+      const url = `?${params.toString()}`
+
+      // 使用 setTimeout 确保视图先更新，再更新 URL
+      setTimeout(() => {
+        router.replace(url, { scroll: false })
+      }, 0)
+    } catch (error) {
+      console.error('处理返回操作时出错:', error)
     }
-  }
+  }, [router])
 
   const formatDate = (dateString: string) => {
     if (!dateString) return ''
