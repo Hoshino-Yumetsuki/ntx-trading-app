@@ -380,3 +380,27 @@
     0 12px 30px rgba(135, 206, 250, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
+
+/* --- 精确视口缩放方案 --- */
+/* 仅在移动端竖屏应用 */
+@media (max-width: 639px) {
+  .scalable-content-area {
+  --scale-ratio: calc(100vw / var(--design-width));
+
+  width: calc(1px * var(--design-width));
+  transform: scale(var(--scale-ratio));
+  
+  /* --- 新增和修改的行 --- */
+  margin-left: auto;      /* 新增：自动计算左边距 */
+  margin-right: auto;     /* 新增：自动计算右边距 */
+  transform-origin: top center; /* 修改：将缩放基点从左侧改为顶部中心 */
+}
+}
+
+@media (min-width: 768px) {
+  body {
+    /* 设置一个深灰色背景，您可以换成 #000000 (纯黑) 或其他颜色 */
+    display: flex;
+    justify-content: center;
+  }
+}

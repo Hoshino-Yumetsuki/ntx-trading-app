@@ -31,7 +31,7 @@ export function ContactCard() {
           >
             <div className="premium-icon w-10 h-10 rounded-[12pt] relative overflow-hidden">
               <Image
-                src="/Frame32@3x.png"
+                src="/twitter.png"
                 alt="Twitter Icon"
                 fill
                 className="object-cover"

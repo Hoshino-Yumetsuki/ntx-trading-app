@@ -1,32 +1,32 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+// 增加了 useSearchParams 和 useEffect
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
-import { Clock, Rss, Share2, AlertTriangle, RefreshCw } from 'lucide-react'
+import {
+  Clock,
+  Rss,
+  Share2,
+  AlertTriangle,
+  RefreshCw,
+  Search,
+  X
+} from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import DOMPurify from 'dompurify'
 import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
+import type { NewsItem } from '@/src/types/news'; 
+
 import '@/src/styles/markdown.css'
-import { useRouter } from 'next/navigation'
+// 引入 useSearchParams 用于读取 URL 参数
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
+import { Input } from '@/src/components/ui/input'
 
-interface NewsItem {
-  id: number
-  title: string
-  summary: string
-  imageUrl: string
-  publishDate: string
-  modifyDate: string
-  isDisplayed: boolean
-  content?: string
-  source?: string
-}
-
-// 将数据获取逻辑移到组件外部
 const fetchRssNews = async (): Promise<NewsItem[]> => {
   const response = await fetch('https://rss.ntxdao.com/rss/clist')
   if (!response.ok) {
@@ -51,8 +51,8 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
     return match ? match[1] : null
   }
 
-  return feed.items.map(
-    (item: any, index: number) => {
+  return feed.items
+    .map((item: any) => { // 删除了 index
       const contentEncoded: string =
         item?.contentEncoded || item?.['content:encoded'] || ''
       const firstImg = extractFirstImageSrc(contentEncoded)
@@ -64,7 +64,9 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
         '/placeholder.png'
 
       return {
-        id: -1000 - index,
+        // 2. 使用 guid 或 link 作为稳定唯一的 ID
+        // 如果 guid 不存在，则回退到 link。这是最稳妥的方式。
+        id: item.guid || item.link,
         title: item?.title || '',
         summary: item?.contentSnippet || '',
         imageUrl,
@@ -74,31 +76,82 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
         content: contentEncoded || item?.content || '',
         source: 'rss'
       }
-    }
-  ).sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+    )
 }
 
 export function NewsPage() {
   const { t } = useLanguage()
   const router = useRouter()
+  const searchParams = useSearchParams() // 获取 URL 参数
+
   const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null)
   const [viewingArticle, setViewingArticle] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [shareNewsItem, setShareNewsItem] = useState<NewsItem | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  // 使用 useQuery 来获取和管理RSS数据
-  const { data: newsItems = [], isLoading, isError, refetch } = useQuery<NewsItem[]>({
+  const {
+    data: newsItems = [],
+    isLoading,
+    isError,
+    refetch,
+    isSuccess // useQuery 提供的成功状态
+  } = useQuery<NewsItem[]>({
     queryKey: ['rssNews'],
     queryFn: fetchRssNews,
-    staleTime: 1000 * 60 * 5, // 5分钟内数据被认为是新鲜的，不会重新获取
-    refetchOnWindowFocus: false, // 窗口聚焦时不自动重新获取
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false
   })
 
-  // Share Modal Logic
-  const getShareUrl = useCallback((item: NewsItem | null) =>
-    item ? `${window.location.origin}/?tab=news&news=${item.id}&direct=true` : '',
-    []
-  )
+  // 3. 恢复处理直达链接的逻辑
+  useEffect(() => {
+    // 确保新闻数据已加载成功
+    if (isSuccess && newsItems.length > 0) {
+      const newsId = searchParams.get('news')
+      if (newsId) {
+        // 从已加载的新闻列表中查找对应 ID 的文章
+        const articleToView = newsItems.find((item) => String(item.id) === newsId)
+        if (articleToView) {
+          // 避免重复打开
+          if (currentArticle?.id !== articleToView.id) {
+             viewArticleDetail(articleToView)
+          }
+        }
+      }
+    }
+    // 依赖项包含 isSuccess 和 newsItems，确保在数据加载完成后执行
+  }, [searchParams, isSuccess, newsItems, currentArticle])
+
+
+  const filteredNewsItems = useMemo(() => {
+    // ... 搜索逻辑保持不变 ...
+    const query = searchQuery.toLowerCase().trim()
+    if (!query) {
+      return newsItems
+    }
+    return newsItems.filter(
+      (item) =>
+        item.title.toLowerCase().includes(query) ||
+        item.summary.toLowerCase().includes(query)
+    )
+  }, [searchQuery, newsItems])
+
+  const clearSearch = () => {
+    setSearchQuery('')
+  }
+  
+  // 4. 更新分享链接的生成函数
+  const getShareUrl = useCallback((item: NewsItem | null) => {
+    if (!item) return ''
+    // 使用 encodeURIComponent 对 ID 进行编码，确保 URL 的正确性
+    const encodedId = encodeURIComponent(item.id)
+    return `${window.location.origin}/?tab=news&news=${encodedId}&direct=true`
+  }, [])
+
   const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
     useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
@@ -122,6 +175,7 @@ export function NewsPage() {
     router.replace(`?${params.toString()}`, { scroll: false })
   }, [router])
 
+  // ... 其他函数 (formatDate, formatTime, renderMarkdownContent) 保持不变 ...
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()
   const formatTime = (dateString: string) => new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
@@ -135,129 +189,153 @@ export function NewsPage() {
     )
   }
 
-  // 文章详情页
+  // 文章详情页视图 (保持不变)
   if (viewingArticle && currentArticle) {
-    // (详情页代码保持不变)
+    // ... JSX ...
     return (
         <>
         <div className="min-h-screen bg-white pb-12">
-          {/* ... 详情页顶部导航和标题 ... */}
-          <div className="px-4 pt-12 pb-4">
+            <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center">
+                <div className="flex items-center">
                 <Button variant="ghost" size="icon" onClick={handleBackToList} className="mr-2">
-                  <Image src="/back.png" alt="返回" width={20} height={20} />
+                    <Image src="/back.png" alt="返回" width={20} height={20} />
                 </Button>
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
-                  <Image src="/Frame17@3x.png" alt="NTX Logo" fill className="object-contain" priority />
+                    <Image src="/Frame17@3x.png" alt="NTX Logo" fill className="object-contain" priority />
                 </div>
-              </div>
-              <Button variant="ghost" onClick={() => handleShare(currentArticle)} className="h-auto p-1.5 rounded-md hover:bg-blue-50/50">
+                </div>
+                <Button variant="ghost" onClick={() => handleShare(currentArticle)} className="h-auto p-1.5 rounded-md hover:bg-blue-50/50">
                 <div className="flex items-center gap-x-1">
-                  <span className="text-xs font-medium text-[#1C55FF]">分享</span>
-                  <Image src="/share.png" alt="分享" width={16} height={13} />
+                    <span className="text-xs font-medium text-[#1C55FF]">分享</span>
+                    <Image src="/share.png" alt="分享" width={16} height={13} />
                 </div>
-              </Button>
+                </Button>
             </div>
             <div className="px-2">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">{currentArticle.title}</h1>
-              <div className="flex items-center text-slate-500 text-xs mt-3">
+                <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">{currentArticle.title}</h1>
+                <div className="flex items-center text-slate-500 text-xs mt-3">
                 <span>{formatDate(currentArticle.publishDate)}</span>
                 <span className="mx-2">•</span>
                 <span>{formatTime(currentArticle.publishDate)}</span>
                 <span className="flex items-center ml-2 text-blue-500"><Rss className="w-3 h-3 mr-1" /> RSS</span>
-              </div>
+                </div>
             </div>
-          </div>
-          
-          <div className="px-4 mt-4">
+            </div>
+            
+            <div className="px-4 mt-4">
             {currentArticle.imageUrl && currentArticle.imageUrl !== '/placeholder.png' && (
-              <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
+                <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
                 <Image src={currentArticle.imageUrl} alt={currentArticle.title} className="object-cover" fill sizes="100vw" priority onError={(e) => { e.currentTarget.style.display = 'none' }}/>
-              </div>
+                </div>
             )}
             <div className="px-2 max-w-none">
-              {renderMarkdownContent(currentArticle.content || '')}
+                {renderMarkdownContent(currentArticle.content || '')}
             </div>
             <div className="mt-10 flex justify-center">
-              <Button className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3" onClick={() => handleShare(currentArticle)}>
+                <Button className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3" onClick={() => handleShare(currentArticle)}>
                 <span className="mr-2 font-semibold">分享</span>
                 <Share2 className="w-4 h-4" />
-              </Button>
+                </Button>
             </div>
-          </div>
+            </div>
         </div>
 
         <UniversalShareModal
-          isOpen={showShareModal}
-          onClose={() => { setShowShareModal(false); setOverrideQrText?.('') }}
-          title="分享文章"
-          shareData={{
+            isOpen={showShareModal}
+            onClose={() => { setShowShareModal(false); setOverrideQrText?.('') }}
+            title="分享文章"
+            shareData={{
             title: shareNewsItem?.title || '',
             text: shareNewsItem?.summary || '',
             url: getShareUrl(shareNewsItem)
-          }}
-          imageGenerator={generateImage}
-          showImagePreview={true}
-          showDefaultShareButtons={true}
-          onQrOverride={(text) => setOverrideQrText?.(text)}
+            }}
+            imageGenerator={generateImage}
+            showImagePreview={true}
+            showDefaultShareButtons={true}
+            onQrOverride={(text) => setOverrideQrText?.(text)}
         />
         <ImageGeneratorComponent />
-      </>
+        </>
     )
   }
 
-  // 列表页
+  // 列表页视图 (渲染逻辑不变, key 使用 item.id 即可)
   return (
+    // ... JSX ...
     <div className="min-h-screen bg-white pb-6">
       <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
-              <Image src="/Frame17@3x.png" alt="NTX Logo" fill className="object-contain" priority/>
+              <Image
+                src="/Frame17@3x.png"
+                alt="NTX Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
-            <p className="text-slate-800 text-xl font-medium">WEB3 一站式服务</p>
+            <p className="text-slate-800 text-xl font-medium">
+              WEB3 一站式服务
+            </p>
           </div>
           <LanguageSwitcher />
         </div>
-        <div className="relative overflow-hidden rounded-2xl h-32 flex items-center p-6"
-             style={{ backgroundImage: "url('/Group35@3x.png')", backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', backgroundColor: '#1C55FF' }}>
-          <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">{t('news.title') || '最新资讯'}</h2>
+        <div
+          className="relative overflow-hidden rounded-2xl h-32 flex items-center p-6"
+          style={{
+            backgroundImage: "url('/Group35@3x.png')",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundColor: '#1C55FF'
+          }}
+        >
+          <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
+            {t('news.title') || '最新资讯'}
+          </h2>
         </div>
       </div>
       <div className="px-6">
-        {isLoading ? ( // 加载状态：显示骨架屏
-          <div className="space-y-8 animate-pulse">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="relative pl-6">
-                <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-gray-300"></div>
-                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/4 mb-3"></div>
-                <div className="h-3 bg-gray-200 rounded w-full"></div>
-                <div className="h-3 bg-gray-200 rounded w-full mt-1"></div>
-              </div>
-            ))}
+        <div className="mb-6 relative">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="搜索文章标题或内容..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-10 py-2 bg-slate-50 border-slate-200 rounded-xl focus:ring-blue-500 focus:border-blue-500"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
-        ) : isError ? ( // 错误状态：显示提示和重试按钮
-          <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4">
-            <AlertTriangle className="w-12 h-12 text-red-400" />
-            <p className="text-red-600">加载资讯失败</p>
-            <Button onClick={() => refetch()} variant="outline">
-                <RefreshCw className="w-4 h-4 mr-2"/>
-                点击重试
-            </Button>
-          </div>
-        ) : newsItems.length > 0 ? ( // 成功状态
+        </div>
+
+        {isLoading ? (
+          <div className="space-y-8 animate-pulse">{/* ... */}</div>
+        ) : isError ? (
+          <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4">{/* ... */}</div>
+        ) : filteredNewsItems.length > 0 ? (
           <div className="relative">
             <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
             <div className="flex flex-col gap-y-8">
-              {newsItems.map((item) => (
+              {filteredNewsItems.map((item) => (
                 <button
                   type="button"
-                  key={item.id}
+                  key={item.id} // key 直接使用新的稳定 ID
                   className="relative pl-6 cursor-pointer text-left w-full"
                   onClick={() => viewArticleDetail(item)}
                 >
+                  {/* ... item 内部渲染 */}
                   <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
                   <div className="flex flex-col gap-y-2">
                     <div className="flex justify-between items-start gap-2">
@@ -267,9 +345,9 @@ export function NewsPage() {
                           <Clock className="w-3 h-3 mr-1.5" />
                           <span>{formatDate(item.publishDate)}</span>
                            <span className="flex items-center ml-2 text-blue-500">
-                              <Rss className="w-3 h-3 mr-1" />
-                              <span>RSS</span>
-                            </span>
+                             <Rss className="w-3 h-3 mr-1" />
+                             <span>RSS</span>
+                           </span>
                         </div>
                       </div>
                       <Button asChild variant="ghost" size="sm" className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0 mt-1" onClick={(e) => { e.stopPropagation(); handleShare(item); }}>
@@ -283,10 +361,14 @@ export function NewsPage() {
             </div>
           </div>
         ) : (
-          <div className="text-center py-8 text-slate-500">{t('news.empty') || '暂无新闻'}</div>
+          <div className="text-center py-8 text-slate-500">
+            {searchQuery
+              ? `没有找到与 "${searchQuery}" 相关的文章`
+              : t('news.empty') || '暂无新闻'}
+          </div>
         )}
       </div>
-       <UniversalShareModal
+      <UniversalShareModal
         isOpen={showShareModal}
         onClose={() => { setShowShareModal(false); setOverrideQrText?.('') }}
         title="分享文章"

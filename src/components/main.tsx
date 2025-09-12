@@ -22,7 +22,6 @@ export function MainApp() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // 从 localStorage 恢复页面状态
   useEffect(() => {
     const savedTab = localStorage.getItem('ntx-active-tab')
     if (savedTab) {
@@ -31,7 +30,6 @@ export function MainApp() {
     setIsInitialized(true)
   }, [])
 
-  // 从 URL 查询参数恢复页面状态（优先级高于 localStorage 的默认）
   useEffect(() => {
     if (!searchParams) return
     const tab = searchParams.get('tab') || ''
@@ -50,17 +48,14 @@ export function MainApp() {
     } else if (newsId) {
       setActiveTab('news')
     }
-    // 当查询参数变化时自动同步
   }, [searchParams])
 
-  // 保存页面状态到 localStorage
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem('ntx-active-tab', activeTab)
     }
   }, [activeTab, isInitialized])
 
-  // 若在“我的”页且登出/未登录，则自动切回首页
   useEffect(() => {
     if (activeTab === 'profile' && !isAuthenticated) {
       setActiveTab('home')
@@ -68,71 +63,41 @@ export function MainApp() {
   }, [isAuthenticated, activeTab])
 
   const tabs = [
-    {
-      id: 'home',
-      label: t('nav.home'),
-      icon: Home,
-      component: HomePage
-    },
+    { id: 'home', label: t('nav.home'), icon: Home, component: HomePage },
     { id: 'news', label: t('nav.news'), icon: Newspaper, component: NewsPage },
-    {
-      id: 'academy',
-      label: t('nav.academy'),
-      icon: BookOpen,
-      component: AcademyPage
-    },
-    {
-      id: 'mining',
-      label: t('nav.mining'),
-      icon: Coins,
-      component: MiningPage
-    },
-    {
-      id: 'profile',
-      label: t('nav.profile'),
-      icon: User,
-      component: ProfilePage
-    }
+    { id: 'academy', label: t('nav.academy'), icon: BookOpen, component: AcademyPage },
+    { id: 'mining', label: t('nav.mining'), icon: Coins, component: MiningPage },
+    { id: 'profile', label: t('nav.profile'), icon: User, component: ProfilePage }
   ]
 
-  // 确定要显示的活动组件
   let ActiveComponent: any
-  // 特殊页面：经纪商
   if (activeTab === 'broker') {
     ActiveComponent = BrokerPage
   } else if (activeTab === 'notifications') {
     ActiveComponent = NotificationsPage
   } else {
-    // 检查是否是主标签页中的一个
-    const activeTabComponent = tabs.find(
-      (tab) => tab.id === activeTab
-    )?.component
-    if (activeTabComponent) {
-      ActiveComponent = activeTabComponent
-    } else {
-      // 默认回到首页
-      ActiveComponent = tabs[0].component
-    }
+    const activeTabComponent = tabs.find((tab) => tab.id === activeTab)?.component
+    ActiveComponent = activeTabComponent || tabs[0].component
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {activeTab !== 'news' && activeTab !== 'notifications' && (
-        <AppBackground />
-      )}
-      <div className="flex-1 overflow-auto pb-28 pt-0">
-        {activeTab === 'home' ? (
-          <HomePage onNavigate={setActiveTab} />
-        ) : (
-          <ActiveComponent />
-        )}
+    // 核心修改：重构为 Flex 布局，分离内容区和导航栏
+    <div className="relative h-screen flex flex-col overflow-hidden">
+      <AppBackground />
 
-        {/* {activeTab === 'home' && (
-          <RecentNotifications onViewMore={() => setActiveTab('news')} />
-        )} */}
-      </div>
+      {/* 1. 可滚动的内容区域 */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar">
+        <div className="scalable-content-area">
+          {activeTab === 'home' ? (
+            <HomePage onNavigate={setActiveTab} />
+          ) : (
+            <ActiveComponent />
+          )}
+        </div>
+      </main>
 
-      <div className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl">
+      {/* 3. 底部导航栏（现在与内容区分离，不再受缩放影响） */}
+      <footer className="shrink-0 glass-card border-t-0 rounded-t-3xl">
         <div className="flex items-center justify-around py-3">
           {tabs.map((tab) => {
             const Icon = tab.icon
@@ -142,11 +107,9 @@ export function MainApp() {
                 type="button"
                 key={tab.id}
                 onClick={() => {
-                  if (tab.id === 'profile') {
-                    if (!isAuthenticated) {
-                      router.push('/login?next=profile')
-                      return
-                    }
+                  if (tab.id === 'profile' && !isAuthenticated) {
+                    router.push('/login?next=profile')
+                    return
                   }
                   setActiveTab(tab.id)
                 }}
@@ -168,7 +131,7 @@ export function MainApp() {
             )
           })}
         </div>
-      </div>
+      </footer>
     </div>
   )
 }

@@ -107,7 +107,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     },
     {
       name: '6',
-      image: '/exchange/okex.png'
+      image: '/exchange/xt.png'
     },
     {
       name: '7',
@@ -398,7 +398,8 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     className="w-full aspect-[4/3]"
                   >
                     <div className="flex items-center justify-center p-0.5 w-full h-full">
-                      <div className="relative w-[70%] h-[70%]">
+                      {/* === 这里是修改的地方 === */}
+                      <div className="relative h-[80%] aspect-square rounded-2xl overflow-hidden">
                         <Image
                           src={exchange.image}
                           alt={exchange.name}

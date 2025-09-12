@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
-import { Clock, Share2 } from 'lucide-react'
+import { Clock, Share2, Search, X } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from '@/src/hooks/use-toast'
 import MarkdownIt from 'markdown-it'
@@ -15,6 +15,7 @@ import { useNewsImageGenerator } from '@/src/components/pages/news/news-image-ge
 import { API_BASE_URL } from '@/src/services/config'
 import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Input } from '@/src/components/ui/input'
 
 interface NewsItem {
   id: number
@@ -38,6 +39,7 @@ export function NotificationsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [consumedNewsId, setConsumedNewsId] = useState<number | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const getShareUrl = useCallback(
     (item: NewsItem | null) =>
@@ -60,7 +62,11 @@ export function NotificationsPage() {
           const data = await response.json()
           if (!cancelled) {
             // 按日期倒序排序
-            const sortedData = data.sort((a: NewsItem, b: NewsItem) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+            const sortedData = data.sort(
+              (a: NewsItem, b: NewsItem) =>
+                new Date(b.publishDate).getTime() -
+                new Date(a.publishDate).getTime()
+            )
             setNewsItems(sortedData)
           }
         } else {
@@ -81,6 +87,23 @@ export function NotificationsPage() {
       cancelled = true
     }
   }, [])
+  
+  const filteredNewsItems = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim()
+    if (!query) {
+      return newsItems
+    }
+    return newsItems.filter(
+      (item) =>
+        item.title.toLowerCase().includes(query) ||
+        item.summary.toLowerCase().includes(query)
+    )
+  }, [searchQuery, newsItems])
+
+  const clearSearch = () => {
+    setSearchQuery('')
+  }
+
 
   const fetchArticleContent = useCallback(async (id: number) => {
     try {
@@ -116,8 +139,8 @@ export function NotificationsPage() {
     const idStr = searchParams?.get('news')
     if (!idStr) return
     const id = Number(idStr)
-    if (Number.isNaN(id) || consumedNewsId === id) return;
-    
+    if (Number.isNaN(id) || consumedNewsId === id) return
+
     // 等待列表加载完成
     if (newsItems.length > 0) {
       setConsumedNewsId(id)
@@ -183,7 +206,7 @@ export function NotificationsPage() {
       />
     )
   }
-  
+
   // 文章详情页视图
   if (viewingArticle && currentArticle) {
     return (
@@ -192,22 +215,41 @@ export function NotificationsPage() {
           <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
-                <Button variant="ghost" size="icon" onClick={handleBackToList} className="mr-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleBackToList}
+                  className="mr-2"
+                >
                   <Image src="/back.png" alt="返回" width={20} height={20} />
                 </Button>
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
-                  <Image src="/Frame17@3x.png" alt="NTX Logo" fill className="object-contain" priority />
+                  <Image
+                    src="/Frame17@3x.png"
+                    alt="NTX Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
               </div>
-              <Button variant="ghost" onClick={() => handleShare(currentArticle)} className="h-auto p-1.5 rounded-md hover:bg-blue-50/50">
+              <Button
+                variant="ghost"
+                onClick={() => handleShare(currentArticle)}
+                className="h-auto p-1.5 rounded-md hover:bg-blue-50/50"
+              >
                 <div className="flex items-center gap-x-1">
-                  <span className="text-xs font-medium text-[#1C55FF]">分享</span>
+                  <span className="text-xs font-medium text-[#1C55FF]">
+                    分享
+                  </span>
                   <Image src="/share.png" alt="分享" width={16} height={13} />
                 </div>
               </Button>
             </div>
             <div className="px-2">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">{currentArticle.title}</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
+                {currentArticle.title}
+              </h1>
               <div className="flex items-center text-slate-500 text-xs mt-3">
                 <span>{formatDate(currentArticle.publishDate)}</span>
                 <span className="mx-2">•</span>
@@ -216,16 +258,30 @@ export function NotificationsPage() {
             </div>
           </div>
           <div className="px-4 mt-4">
-            {currentArticle.imageUrl && currentArticle.imageUrl !== '/placeholder.png' && (
+            {currentArticle.imageUrl &&
+              currentArticle.imageUrl !== '/placeholder.png' && (
                 <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
-                  <Image src={currentArticle.imageUrl} alt={currentArticle.title} className="object-cover" fill sizes="100vw" priority onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  <Image
+                    src={currentArticle.imageUrl}
+                    alt={currentArticle.title}
+                    className="object-cover"
+                    fill
+                    sizes="100vw"
+                    priority
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
                 </div>
               )}
             <div className="px-2 max-w-none">
               {renderMarkdownContent(currentArticle.content || '')}
             </div>
             <div className="mt-10 flex justify-center">
-              <Button className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3" onClick={() => handleShare(currentArticle)}>
+              <Button
+                className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
+                onClick={() => handleShare(currentArticle)}
+              >
                 <span className="mr-2 font-semibold">分享</span>
                 <Share2 className="w-4 h-4" />
               </Button>
@@ -234,7 +290,10 @@ export function NotificationsPage() {
         </div>
         <UniversalShareModal
           isOpen={showShareModal}
-          onClose={() => { setShowShareModal(false); setOverrideQrText?.('') }}
+          onClose={() => {
+            setShowShareModal(false)
+            setOverrideQrText?.('')
+          }}
           title="分享文章"
           shareData={{
             title: shareNewsItem?.title || '',
@@ -258,26 +317,67 @@ export function NotificationsPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
-              <Image src="/Frame17@3x.png" alt="NTX Logo" fill className="object-contain" priority />
+              <Image
+                src="/Frame17@3x.png"
+                alt="NTX Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
-            <p className="text-slate-800 text-xl font-medium">WEB3 一站式服务</p>
+            <p className="text-slate-800 text-xl font-medium">
+              WEB3 一站式服务
+            </p>
           </div>
           <LanguageSwitcher />
         </div>
         <div className="relative mb-6 rounded-2xl overflow-hidden">
-          <div className="h-32 w-full bg-cover bg-center flex items-center p-6" style={{ backgroundImage: 'url(/Group35@3x.png)', backgroundColor: '#0262f4', borderRadius: '16px' }}>
-            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">{t('ui.notifications.title') || '最新通知'}</h2>
+          <div
+            className="h-32 w-full bg-cover bg-center flex items-center p-6"
+            style={{
+              backgroundImage: 'url(/Group35@3x.png)',
+              backgroundColor: '#0262f4',
+              borderRadius: '16px'
+            }}
+          >
+            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
+              {t('ui.notifications.title') || '最新通知'}
+            </h2>
           </div>
         </div>
       </div>
       <div className="px-6">
+        <div className="mb-6 relative">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="搜索通知标题或内容..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-10 py-2 bg-slate-50 border-slate-200 rounded-xl focus:ring-blue-500 focus:border-blue-500"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
         {loading ? (
-          <div className="text-center py-8 text-slate-500">{t('news.loading') || '加载中...'}</div>
-        ) : newsItems.length > 0 ? (
+          <div className="text-center py-8 text-slate-500">
+            {t('news.loading') || '加载中...'}
+          </div>
+        ) : filteredNewsItems.length > 0 ? (
           <div className="relative">
             <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
             <div className="flex flex-col gap-y-8">
-              {newsItems.map((item) => (
+              {filteredNewsItems.map((item) => (
                 <button
                   type="button"
                   key={item.id}
@@ -287,28 +387,50 @@ export function NotificationsPage() {
                   <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
                   <div className="flex flex-col gap-y-2">
                     <div className="flex justify-between items-start gap-2">
-                      <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">{item.title}</h3>
-                      <Button asChild variant="ghost" size="sm" className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0" onClick={(e) => { e.stopPropagation(); handleShare(item); }}>
-                        <span><Share2 className="w-4 h-4" /></span>
+                      <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
+                        {item.title}
+                      </h3>
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleShare(item)
+                        }}
+                      >
+                        <span>
+                          <Share2 className="w-4 h-4" />
+                        </span>
                       </Button>
                     </div>
                     <div className="flex items-center text-xs text-[#AAB7CF]">
                       <Clock className="w-3 h-3 mr-1.5" />
                       <span>{formatDate(item.publishDate)}</span>
                     </div>
-                    <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">{item.summary}</p>
+                    <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
+                      {item.summary}
+                    </p>
                   </div>
                 </button>
               ))}
             </div>
           </div>
         ) : (
-          <div className="text-center py-8 text-slate-500">{t('news.empty') || '暂无通知'}</div>
+          <div className="text-center py-8 text-slate-500">
+            {searchQuery
+              ? `没有找到与 "${searchQuery}" 相关的通知`
+              : t('news.empty') || '暂无通知'}
+          </div>
         )}
       </div>
       <UniversalShareModal
         isOpen={showShareModal}
-        onClose={() => { setShowShareModal(false); setOverrideQrText?.('') }}
+        onClose={() => {
+          setShowShareModal(false)
+          setOverrideQrText?.('')
+        }}
         title="分享文章"
         shareData={{
           title: shareNewsItem?.title || '',

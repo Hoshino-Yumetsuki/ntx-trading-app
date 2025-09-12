@@ -6,15 +6,10 @@ import QRCode from 'qrcode'
 import { ShareCard } from '@/src/components/ui/share-card'
 import { API_BASE_URL } from '@/src/services/config'
 import { preloadImages } from '@/src/utils/image'
+// 1. 导入我们之前创建的统一 NewsItem 类型
+import type { NewsItem } from '@/src/types/news'
 
-interface NewsItem {
-  id: number
-  title: string
-  content?: string
-  summary: string
-  publishDate: string
-  source?: string
-}
+
 
 // Hook to use the news image generator
 export function useNewsImageGenerator(
@@ -27,9 +22,8 @@ export function useNewsImageGenerator(
   const [_isLoadingContent, setIsLoadingContent] = useState<boolean>(false)
   const [overrideQrText, setOverrideQrText] = useState<string>('')
 
-  // 获取完整文章内容
+  // 获取完整文章内容 (此函数逻辑保持不变)
   const fetchFullContent = useCallback(async () => {
-    // ... (此函数保持不变)
     if (!newsItem || newsItem.source === 'rss') {
       const content = newsItem?.content || ''
       setFullContent(content)
@@ -58,15 +52,18 @@ export function useNewsImageGenerator(
     }
   }, [newsItem])
 
-  // 生成二维码
+  // 生成二维码 (核心修改点)
   const generateQRCode = useCallback(async () => {
-    // ... (此函数保持不变)
-    if (!newsItem) return ''
+    // 3. 确保 shareUrl 存在才继续
+    if (!shareUrl) {
+        setQrCodeDataUrl('')
+        return ''
+    }
+
     try {
-      const textToEncode =
-        overrideQrText ||
-        shareUrl ||
-        `${window.location.origin}/news/${newsItem.id}`
+      // 4. 优先使用 overrideQrText，否则直接使用从外部传入的 shareUrl
+      const textToEncode = overrideQrText || shareUrl
+
       const qrDataUrl = await QRCode.toDataURL(textToEncode, {
         width: 120,
         margin: 2,
@@ -78,39 +75,26 @@ export function useNewsImageGenerator(
       console.error('生成二维码失败:', error)
       return ''
     }
-  }, [newsItem, overrideQrText, shareUrl])
+  }, [overrideQrText, shareUrl]) // 5. 移除对 newsItem 的依赖
 
   const generateImage = useCallback(async (): Promise<string | null> => {
+    // ... (此函数逻辑保持不变) ...
     if (!shareCardRef.current || !newsItem) {
       console.error('生成图片的前置条件不足')
       return null
     }
 
     try {
-      // 步骤 1: 获取动态数据
       await Promise.all([fetchFullContent(), generateQRCode()])
-
-      // 步骤 2: 等待React更新DOM
       await new Promise((resolve) => requestAnimationFrame(resolve))
-
       const node = shareCardRef.current
       if (!node) return null
-
-      // 步骤 3: 从更新后的DOM中收集所有图片URL
       const imageUrls = Array.from(node.querySelectorAll('img')).map(
         (img) => img.src
       )
-
-      // 步骤 4: 执行预加载
       await preloadImages(imageUrls)
-
-      // 步骤 5: 再次等待帧绘制
       await new Promise((resolve) => requestAnimationFrame(resolve))
-      
-      // 额外增加一个小的延时，作为iOS Safari的最后保障
       await new Promise((resolve) => setTimeout(resolve, 50));
-
-      // 步骤 6: 执行截图
       const dataUrl = await toPng(node, {
         backgroundColor: '#ffffff',
         cacheBust: false,
@@ -122,7 +106,6 @@ export function useNewsImageGenerator(
         width: node.scrollWidth,
         height: node.scrollHeight
       })
-
       return dataUrl
     } catch (error) {
       console.error('生成新闻分享图片失败:', error)
@@ -139,8 +122,6 @@ export function useNewsImageGenerator(
 
   const ImageGeneratorComponent = () => {
     if (!newsItem) return null
-    //  ======= 核心修改点 =======
-    //  将 -top-[9999px] 修改为 opacity-0
     return (
       <div className="fixed top-0 left-0 opacity-0 pointer-events-none -z-10">
         <ShareCard
