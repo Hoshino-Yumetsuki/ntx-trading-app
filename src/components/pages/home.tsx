@@ -390,15 +390,15 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </div>
 
             {/* 交易所图标静态网格显示 */}
-            <div className="h-auto py-1">
-              <div className="grid grid-cols-4 gap-1.5">
+            <div className="h-auto py-0.5">
+              <div className="grid grid-cols-4 gap-1">
                 {exchanges.map((exchange, idx) => (
                   <div
                     key={`exchange-${exchange.name}-${idx}`}
-                    className="w-full aspect-square"
+                    className="w-full aspect-[4/3]"
                   >
-                    <div className="bg-white/40 rounded-md shadow-sm flex items-center justify-center p-0.5 w-full h-full">
-                      <div className="relative w-full h-full">
+                    <div className="flex items-center justify-center p-0.5 w-full h-full">
+                      <div className="relative w-[70%] h-[70%]">
                         <Image
                           src={exchange.image}
                           alt={exchange.name}
