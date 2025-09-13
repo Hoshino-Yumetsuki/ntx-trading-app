@@ -64,7 +64,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     fetchApiNews()
   }, [])
 
-  // 检查用户是否已绑定交易所
   useEffect(() => {
     const checkUserExchanges = async () => {
       if (!token || !isAuthenticated) {
@@ -85,44 +84,19 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   }, [token, isAuthenticated])
 
   const exchanges = [
-    {
-      name: '1',
-      image: '/exchange/binance.png'
-    },
-    {
-      name: '2',
-      image: '/exchange/htx.jpg'
-    },
-    {
-      name: '3',
-      image: '/exchange/bybit.jpg'
-    },
-    {
-      name: '4',
-      image: '/exchange/gate.png'
-    },
-    {
-      name: '5',
-      image: '/exchange/bitget.png'
-    },
-    {
-      name: '6',
-      image: '/exchange/xt.png'
-    },
-    {
-      name: '7',
-      image: '/exchange/okx.png'
-    },
-    {
-      name: '8',
-      image: '/exchange/hotcoin.png'
-    }
+    { name: '1', image: '/exchange/binance.png' },
+    { name: '2', image: '/exchange/htx.jpg' },
+    { name: '3', image: '/exchange/bybit.jpg' },
+    { name: '4', image: '/exchange/gate.png' },
+    { name: '5', image: '/exchange/bitget.png' },
+    { name: '6', image: '/exchange/xt.png' },
+    { name: '7', image: '/exchange/okx.png' },
+    { name: '8', image: '/exchange/hotcoin.png' }
   ]
   const half = Math.ceil(exchanges.length / 2)
   const _topRow = exchanges.slice(0, half)
   const _bottomRow = exchanges.slice(half)
 
-  // 从 localStorage 恢复教程页面状态
   useEffect(() => {
     const savedTutorialState = localStorage.getItem('ntx-show-tutorial')
     if (savedTutorialState === 'true') {
@@ -131,7 +105,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     setIsInitialized(true)
   }, [])
 
-  // 保存教程页面状态到 localStorage
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem('ntx-show-tutorial', showTutorialPage.toString())
@@ -146,11 +119,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     setShowTutorialPage(false)
   }
 
-  // 双横幅（仅图片，可滚动）+ 后端自定义 banners
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
   const goBroker = () => onNavigate?.('broker')
 
-  // 内置本地 banner
   const builtInBanners = [
     {
       type: 'internal' as const,
@@ -166,7 +137,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     }
   ]
 
-  // 自定义 banner 类型与数据
   interface CustomBanner {
     id: number
     image_url: string
@@ -175,14 +145,14 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   }
   const [customBanners, setCustomBanners] = useState<CustomBanner[]>([])
 
-  // 规范化链接，补全协议
   const normalizeHref = (href?: string) => {
     if (!href) return ''
+    // If it's an internal link, don't add protocol
+    if (href.startsWith('/')) return href;
     if (/^https?:\/\//i.test(href)) return href
     return `https://${href}`
   }
 
-  // 拉取自定义 banners
   useEffect(() => {
     const fetchBanners = async () => {
       try {
@@ -196,6 +166,20 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     }
     fetchBanners()
   }, [])
+  
+  // *** 新增的点击处理函数 ***
+  const handleBannerClick = (url: string) => {
+    // 检查是否是外部链接
+    const isExternal = url.startsWith('http://') || url.startsWith('https://');
+    
+    if (isExternal) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      // 内部链接使用 Next.js router
+      router.push(url);
+    }
+  };
+
 
   type InternalBanner = {
     type: 'internal'
@@ -220,7 +204,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     }))
   ]
 
-  // 指示点与自动轮播
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [paused, setPaused] = useState(false)
 
@@ -244,14 +227,12 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     return () => clearInterval(id)
   }, [emblaApi, paused])
 
-  // 如果显示教程页面，渲染教程页面
   if (showTutorialPage) {
     return <TutorialPage onBack={backToHome} />
   }
 
   return (
     <div className="min-h-screen relative">
-      {/* 背景装饰图片（平分高度，居于各自 1/3、2/3、3/3 的中心） */}
       <Image
         src="/FigmaDDSSlicePNG073d40ed32eb293f261f340b011653b3.png"
         alt=""
@@ -300,7 +281,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               <LanguageSwitcher />
             </div>
           </div>
-          {/* 大横幅（可滚动，整图点击） */}
           <div className="relative z-10">
             <section
               className="overflow-hidden"
@@ -328,11 +308,11 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       />
                     </button>
                   ) : b.href ? (
-                    <a
+                    // *** 修改：从 <a> 标签改为 <button> 并使用新的点击处理器 ***
+                    <button
                       key={`be-${i}`}
-                      href={b.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      type="button"
+                      onClick={() => handleBannerClick(b.href)}
                       className="relative flex-[0_0_100%] min-w-0 w-full rounded-2xl overflow-hidden"
                       style={{ aspectRatio: '702 / 350' }}
                     >
@@ -343,7 +323,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                         className="object-contain"
                         priority={i === 0}
                       />
-                    </a>
+                    </button>
                   ) : (
                     <div
                       key={`bnl-${i}`}
@@ -362,7 +342,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 )}
               </div>
             </section>
-            {/* 指示点 */}
             <div className="flex items-center justify-center gap-2 mt-2">
               {combinedBanners.map((_, i) => (
                 <button
@@ -381,15 +360,12 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </div>
         </div>
 
-        {/* 立刻开赚交易所卡片 */}
+        {/* ...页面其余部分保持不变... */}
         <div className="mt-4 mb-4 bg-white rounded-xl shadow-sm">
           <div className="p-3">
-            {/* 居中显示的标题 */}
             <div className="text-center mb-1">
               <h3 className="text-base font-semibold text-slate-800">已接入</h3>
             </div>
-
-            {/* 交易所图标静态网格显示 */}
             <div className="h-auto py-0.5">
               <div className="grid grid-cols-4 gap-1">
                 {exchanges.map((exchange, idx) => (
@@ -398,7 +374,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     className="w-full aspect-[4/3]"
                   >
                     <div className="flex items-center justify-center p-0.5 w-full h-full">
-                      {/* === 这里是修改的地方 === */}
                       <div className="relative h-[80%] aspect-square rounded-2xl overflow-hidden">
                         <Image
                           src={exchange.image}
@@ -412,8 +387,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 ))}
               </div>
             </div>
-
-            {/* 添加蓝色按钮 */}
             <div className="mt-3 text-center">
               <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-md shadow-sm text-sm"
@@ -422,7 +395,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     toast.error('请先登录')
                     return
                   }
-
                   if (hasBindedExchange === false) {
                     setShowBindDialog(true)
                   } else {
@@ -436,7 +408,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </div>
         </div>
       </div>
-
       <div className="px-6 space-y-4">
         <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
           <CardContent className="p-6 flex flex-col items-center text-center">
@@ -473,7 +444,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </Button>
           </CardContent>
         </Card>
-
         <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
           <CardContent className="p-6 flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-x-2 mb-3">
@@ -504,8 +474,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </Button>
           </CardContent>
         </Card>
-
-        {/* 四个功能卡片（长方形 2x2，所有屏幕保持两列） */}
         <div className="grid grid-cols-2 gap-4 mt-4">
           <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
             <CardContent className="p-4 h-full">
@@ -527,7 +495,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               </AutoScaleBox>
             </CardContent>
           </Card>
-
           <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
             <CardContent className="p-4 h-full">
               <AutoScaleBox className="h-full w-full">
@@ -548,7 +515,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               </AutoScaleBox>
             </CardContent>
           </Card>
-
           <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
             <CardContent className="p-4 h-full">
               <AutoScaleBox className="h-full w-full">
@@ -569,7 +535,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               </AutoScaleBox>
             </CardContent>
           </Card>
-
           <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
             <CardContent className="p-4 h-full">
               <AutoScaleBox className="h-full w-full">
@@ -591,8 +556,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             </CardContent>
           </Card>
         </div>
-
-        {/* 最近通知 */}
         <Card className="rounded-[20px] bg-white/80 shadow-lg w-full">
           <CardContent className="p-4">
             <h3 className="text-slate-800 font-semibold text-base mb-3">
@@ -607,9 +570,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     aria-label={`查看文章 ${item.title}`}
                     className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     onClick={() => {
-                      // 先切换到通知页面，再更新URL参数，避免闪烁
                       onNavigate?.('notifications')
-                      // 使用setTimeout确保页面切换完成后再更新URL参数
                       setTimeout(() => {
                         router.replace(`/?tab=notifications&news=${item.id}`)
                       }, 50)
@@ -617,9 +578,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
-                        // 先切换到通知页面，再更新URL参数，避免闪烁
                         onNavigate?.('notifications')
-                        // 使用setTimeout确保页面切换完成后再更新URL参数
                         setTimeout(() => {
                           router.replace(`/?tab=notifications&news=${item.id}`)
                         }, 50)
@@ -644,7 +603,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         </Card>
       </div>
 
-      {/* 未绑定交易所提示对话框 */}
       <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px]">
           <DialogHeader>
