@@ -1,5 +1,5 @@
 export interface NewsItem {
-  id: string | number // 确保 id 是 string | number
+  id: string | number
   title: string
   summary: string
   imageUrl: string

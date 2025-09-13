@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react' // 引入 useRef
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
@@ -16,6 +16,7 @@ import { API_BASE_URL } from '@/src/services/config'
 import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Input } from '@/src/components/ui/input'
+import { ShareCard } from '@/src/components/ui/share-card' // 引入 ShareCard
 
 interface NewsItem {
   id: number
@@ -40,6 +41,7 @@ export function NotificationsPage() {
   const searchParams = useSearchParams()
   const [consumedNewsId, setConsumedNewsId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const posterRef = useRef<HTMLDivElement>(null) // 为海报创建 ref
 
   const getShareUrl = useCallback(
     (item: NewsItem | null) =>
@@ -48,10 +50,11 @@ export function NotificationsPage() {
         : '',
     []
   )
-  const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
+
+  // 使用 Hook
+  const { generateImage, setOverrideQrText, qrCodeDataUrl, fullContent } =
     useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
-  // 只获取 API 新闻列表
   useEffect(() => {
     let cancelled = false
     async function fetchApiNews() {
@@ -61,7 +64,6 @@ export function NotificationsPage() {
         if (response.ok) {
           const data = await response.json()
           if (!cancelled) {
-            // 按日期倒序排序
             const sortedData = data.sort(
               (a: NewsItem, b: NewsItem) =>
                 new Date(b.publishDate).getTime() -
@@ -130,7 +132,6 @@ export function NotificationsPage() {
     }
   }, [])
 
-  // URL 跳转逻辑
   useEffect(() => {
     const currentTab = searchParams?.get('tab')
     if (currentTab !== 'notifications' && currentTab !== null) return
@@ -140,7 +141,6 @@ export function NotificationsPage() {
     const id = Number(idStr)
     if (Number.isNaN(id) || consumedNewsId === id) return
 
-    // 等待列表加载完成
     if (newsItems.length > 0) {
       setConsumedNewsId(id)
       fetchArticleContent(id)
@@ -201,18 +201,17 @@ export function NotificationsPage() {
     return (
       <div
         className="markdown-content"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: 内容已通过DOMPurify清洗
         dangerouslySetInnerHTML={{ __html: safe }}
       />
     )
   }
 
-  // 文章详情页视图
   if (viewingArticle && currentArticle) {
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-          <div className="px-4 pt-12 pb-4">
+            {/* ...文章详情页UI, 保持不变... */}
+            <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
                 <Button
@@ -292,7 +291,7 @@ export function NotificationsPage() {
           isOpen={showShareModal}
           onClose={() => {
             setShowShareModal(false)
-            setOverrideQrText?.('')
+            setOverrideQrText('')
           }}
           title="分享文章"
           shareData={{
@@ -300,20 +299,28 @@ export function NotificationsPage() {
             text: shareNewsItem?.summary || '',
             url: getShareUrl(shareNewsItem)
           }}
-          imageGenerator={generateImage}
-          showImagePreview={true}
-          showDefaultShareButtons={true}
-          onQrOverride={(text) => setOverrideQrText?.(text)}
+          imageGenerator={(node) => generateImage(node)}
+          posterComponent={
+            <ShareCard
+              ref={posterRef}
+              title={shareNewsItem?.title || ''}
+              content={fullContent || shareNewsItem?.content || ''}
+              summary={shareNewsItem?.summary || ''}
+              publishDate={shareNewsItem?.publishDate || ''}
+              qrCodeDataUrl={qrCodeDataUrl}
+              source={shareNewsItem?.source}
+            />
+          }
+          onQrOverride={setOverrideQrText}
         />
-        <ImageGeneratorComponent />
       </>
     )
   }
 
-  // 通知列表页视图
   return (
     <div className="min-h-screen bg-white pb-6">
-      <div className="px-6 pt-12 pb-8 relative z-10">
+      {/* ...列表页UI, 保持不变... */}
+        <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
@@ -429,7 +436,7 @@ export function NotificationsPage() {
         isOpen={showShareModal}
         onClose={() => {
           setShowShareModal(false)
-          setOverrideQrText?.('')
+          setOverrideQrText('')
         }}
         title="分享文章"
         shareData={{
@@ -437,12 +444,20 @@ export function NotificationsPage() {
           text: shareNewsItem?.summary || '',
           url: getShareUrl(shareNewsItem)
         }}
-        imageGenerator={generateImage}
-        showImagePreview={true}
-        showDefaultShareButtons={true}
-        onQrOverride={(text) => setOverrideQrText?.(text)}
+        imageGenerator={(node) => generateImage(node)}
+        posterComponent={
+          <ShareCard
+            ref={posterRef}
+            title={shareNewsItem?.title || ''}
+            content={fullContent || shareNewsItem?.content || ''}
+            summary={shareNewsItem?.summary || ''}
+            publishDate={shareNewsItem?.publishDate || ''}
+            qrCodeDataUrl={qrCodeDataUrl}
+            source={shareNewsItem?.source}
+          />
+        }
+        onQrOverride={setOverrideQrText}
       />
-      <ImageGeneratorComponent />
     </div>
   )
 }

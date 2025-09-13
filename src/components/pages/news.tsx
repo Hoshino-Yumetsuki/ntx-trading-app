@@ -1,7 +1,6 @@
 'use client'
 
-// 增加了 useSearchParams 和 useEffect
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react' // 引入 useRef
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
@@ -12,15 +11,16 @@ import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
 import type { NewsItem } from '@/src/types/news'
+import { ShareCard } from '@/src/components/ui/share-card' // 引入 ShareCard
 
 import '@/src/styles/markdown.css'
-// 引入 useSearchParams 用于读取 URL 参数
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { Input } from '@/src/components/ui/input'
 
 const fetchRssNews = async (): Promise<NewsItem[]> => {
-  const response = await fetch('https://rss.ntxdao.com/rss/clist')
+    // ...函数内容保持不变...
+    const response = await fetch('https://rss.ntxdao.com/rss/clist')
   if (!response.ok) {
     throw new Error('网络响应错误，无法获取RSS源')
   }
@@ -45,7 +45,6 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
 
   return feed.items
     .map((item: any) => {
-      // 删除了 index
       const contentEncoded: string =
         item?.contentEncoded || item?.['content:encoded'] || ''
       const firstImg = extractFirstImageSrc(contentEncoded)
@@ -57,8 +56,6 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
         '/placeholder.png'
 
       return {
-        // 2. 使用 guid 或 link 作为稳定唯一的 ID
-        // 如果 guid 不存在，则回退到 link。这是最稳妥的方式。
         id: item.guid || item.link,
         title: item?.title || '',
         summary: item?.contentSnippet || '',
@@ -79,7 +76,8 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
 export function NewsPage() {
   const { t } = useLanguage()
   const router = useRouter()
-  const searchParams = useSearchParams() // 获取 URL 参数
+  const searchParams = useSearchParams()
+  const posterRef = useRef<HTMLDivElement>(null) // 为海报创建 ref
 
   const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null)
   const [viewingArticle, setViewingArticle] = useState(false)
@@ -91,7 +89,7 @@ export function NewsPage() {
     data: newsItems = [],
     isLoading,
     isError,
-    isSuccess // useQuery 提供的成功状态
+    isSuccess
   } = useQuery<NewsItem[]>({
     queryKey: ['rssNews'],
     queryFn: fetchRssNews,
@@ -99,35 +97,28 @@ export function NewsPage() {
     refetchOnWindowFocus: false
   })
 
-  // 将viewArticleDetail定义移到useEffect之前
   const viewArticleDetail = useCallback((article: NewsItem) => {
     setCurrentArticle(article)
     setViewingArticle(true)
   }, [])
 
-  // 3. 恢复处理直达链接的逻辑
   useEffect(() => {
-    // 确保新闻数据已加载成功
     if (isSuccess && newsItems.length > 0) {
       const newsId = searchParams.get('news')
       if (newsId) {
-        // 从已加载的新闻列表中查找对应 ID 的文章
         const articleToView = newsItems.find(
           (item) => String(item.id) === newsId
         )
         if (articleToView) {
-          // 避免重复打开
           if (currentArticle?.id !== articleToView.id) {
             viewArticleDetail(articleToView)
           }
         }
       }
     }
-    // 依赖项包含 isSuccess 和 newsItems，确保在数据加载完成后执行
   }, [searchParams, isSuccess, newsItems, currentArticle, viewArticleDetail])
 
   const filteredNewsItems = useMemo(() => {
-    // ... 搜索逻辑保持不变 ...
     const query = searchQuery.toLowerCase().trim()
     if (!query) {
       return newsItems
@@ -143,23 +134,19 @@ export function NewsPage() {
     setSearchQuery('')
   }
 
-  // 4. 更新分享链接的生成函数
   const getShareUrl = useCallback((item: NewsItem | null) => {
     if (!item) return ''
-    // 使用 encodeURIComponent 对 ID 进行编码，确保 URL 的正确性
     const encodedId = encodeURIComponent(item.id)
     return `${window.location.origin}/?tab=news&news=${encodedId}&direct=true`
   }, [])
 
-  const { generateImage, ImageGeneratorComponent, setOverrideQrText } =
+  const { generateImage, setOverrideQrText, qrCodeDataUrl, fullContent } =
     useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
   const handleShare = (newsItem: NewsItem) => {
     setShareNewsItem(newsItem)
     setShowShareModal(true)
   }
-
-  // viewArticleDetail已移动到useEffect之前
 
   const handleBackToList = useCallback(() => {
     setViewingArticle(false)
@@ -171,7 +158,6 @@ export function NewsPage() {
     router.replace(`?${params.toString()}`, { scroll: false })
   }, [router])
 
-  // ... 其他函数 (formatDate, formatTime, renderMarkdownContent) 保持不变 ...
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString()
   const formatTime = (dateString: string) =>
@@ -185,19 +171,17 @@ export function NewsPage() {
     return (
       <div
         className="markdown-content"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: 内容已通过DOMPurify清洗
         dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
     )
   }
 
-  // 文章详情页视图 (保持不变)
   if (viewingArticle && currentArticle) {
-    // ... JSX ...
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-          <div className="px-4 pt-12 pb-4">
+           {/* ...文章详情页UI, 保持不变... */}
+           <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
                 <Button
@@ -282,7 +266,7 @@ export function NewsPage() {
           isOpen={showShareModal}
           onClose={() => {
             setShowShareModal(false)
-            setOverrideQrText?.('')
+            setOverrideQrText('')
           }}
           title="分享文章"
           shareData={{
@@ -290,21 +274,29 @@ export function NewsPage() {
             text: shareNewsItem?.summary || '',
             url: getShareUrl(shareNewsItem)
           }}
-          imageGenerator={generateImage}
-          showImagePreview={true}
-          showDefaultShareButtons={true}
-          onQrOverride={(text) => setOverrideQrText?.(text)}
+          imageGenerator={(node) => generateImage(node)}
+          posterComponent={
+            <ShareCard
+              ref={posterRef}
+              title={shareNewsItem?.title || ''}
+              content={fullContent || shareNewsItem?.content || ''}
+              summary={shareNewsItem?.summary || ''}
+              publishDate={shareNewsItem?.publishDate || ''}
+              qrCodeDataUrl={qrCodeDataUrl}
+              source={shareNewsItem?.source}
+            />
+          }
+          onQrOverride={setOverrideQrText}
         />
-        <ImageGeneratorComponent />
       </>
     )
   }
 
-  // 列表页视图 (渲染逻辑不变, key 使用 item.id 即可)
   return (
-    // ... JSX ...
-    <div className="min-h-screen bg-white pb-6">
-      <div className="px-6 pt-12 pb-8 relative z-10">
+    <>
+      <div className="min-h-screen bg-white pb-6">
+        {/* ...列表页UI, 保持不变... */}
+        <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
@@ -383,7 +375,7 @@ export function NewsPage() {
               {filteredNewsItems.map((item) => (
                 <button
                   type="button"
-                  key={item.id} // key 直接使用新的稳定 ID
+                  key={item.id}
                   className="relative pl-6 cursor-pointer text-left w-full"
                   onClick={() => viewArticleDetail(item)}
                 >
@@ -434,11 +426,12 @@ export function NewsPage() {
           </div>
         )}
       </div>
+      </div>
       <UniversalShareModal
         isOpen={showShareModal}
         onClose={() => {
           setShowShareModal(false)
-          setOverrideQrText?.('')
+          setOverrideQrText('')
         }}
         title="分享文章"
         shareData={{
@@ -446,12 +439,20 @@ export function NewsPage() {
           text: shareNewsItem?.summary || '',
           url: getShareUrl(shareNewsItem)
         }}
-        imageGenerator={generateImage}
-        showImagePreview={true}
-        showDefaultShareButtons={true}
-        onQrOverride={(text) => setOverrideQrText?.(text)}
+        imageGenerator={(node) => generateImage(node)}
+        posterComponent={
+          <ShareCard
+            ref={posterRef}
+            title={shareNewsItem?.title || ''}
+            content={fullContent || shareNewsItem?.content || ''}
+            summary={shareNewsItem?.summary || ''}
+            publishDate={shareNewsItem?.publishDate || ''}
+            qrCodeDataUrl={qrCodeDataUrl}
+            source={shareNewsItem?.source}
+          />
+        }
+        onQrOverride={setOverrideQrText}
       />
-      <ImageGeneratorComponent />
-    </div>
+    </>
   )
 }

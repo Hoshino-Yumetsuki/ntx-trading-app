@@ -171,8 +171,35 @@ export function UniversalShareModal({
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
   const posterRef = useRef<HTMLDivElement>(null)
+  
+  // 用于动态调整预览容器高度的状态
+  const [previewContainerHeight, setPreviewContainerHeight] = useState(400); 
 
   const { downloadImage } = useImageActions(generatedImage, shareData.title)
+
+  // 使用 ResizeObserver 监测海报实际高度变化
+  useEffect(() => {
+    if (isOpen && posterRef.current) {
+      const posterElement = posterRef.current;
+      
+      const observer = new ResizeObserver(entries => {
+        const entry = entries[0];
+        if (entry) {
+          // scrollHeight 是元素内容的完整高度
+          const fullHeight = entry.target.scrollHeight;
+          // 容器的高度应该是海报实际高度缩放后的大小
+          setPreviewContainerHeight(fullHeight * 0.5);
+        }
+      });
+      
+      observer.observe(posterElement);
+      
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, [isOpen, posterComponent]); // 当模态框打开或海报组件变化时，重新监测
+
 
   const handleGenerateAndSave = useCallback(async () => {
     if (generatedImage) {
@@ -289,9 +316,12 @@ export function UniversalShareModal({
         <div className="space-y-4">
           {posterWithRef && showImagePreview && (
             <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
-              {/* 1. 固定尺寸的视窗，这个视窗会被flexbox居中 */}
-              <div style={{ width: '300px', height: '400px', position: 'relative' }}>
-                {/* 2. 海报本身用绝对定位放在视窗内，并通过transform来缩放 */}
+              <div style={{ 
+                  width: '300px', 
+                  height: `${previewContainerHeight}px`, // 使用动态高度
+                  position: 'relative',
+                  transition: 'height 0.2s ease-in-out' // 增加平滑过渡效果
+              }}>
                 <div style={{
                     position: 'absolute',
                     top: 0,
