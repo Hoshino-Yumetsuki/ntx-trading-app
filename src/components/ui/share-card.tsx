@@ -63,11 +63,11 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         // 计算正文字区可用高度（到底部浮层顶部）
         const available = footer.offsetTop - wrapper.offsetTop - 8
         // 从基础字号开始递减，直到内容高度不再溢出或到达下限
-        let font = 18
+        let font = 20  // 将基础字号从18px增加到20px
         inner.style.fontSize = `${font}px`
         inner.style.lineHeight = '1.9'
         let guard = 0
-        while (inner.scrollHeight > available && font > 14 && guard < 24) {
+        while (inner.scrollHeight > available && font > 16 && guard < 24) {  // 将最小字号从14px增加到16px
           font -= 1
           inner.style.fontSize = `${font}px`
           guard++
