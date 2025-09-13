@@ -132,11 +132,31 @@ export function ProfilePage() {
             sizes="100vw"
           />
           {/* 左侧文字覆盖 */}
-          <div className="absolute inset-0 flex items-center">
+          <div className="absolute inset-0 flex items-center justify-between">
             <div className="pl-4 md:pl-6">
               <span className="text-white text-lg font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
                 我的社区
               </span>
+            </div>
+            {/* 右侧“点击进入”和箭头 */}
+            <div className="pr-4 md:pr-6 flex items-center">
+              <span className="text-white text-sm font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] mr-1">
+                点击进入
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
             </div>
           </div>
         </button>
