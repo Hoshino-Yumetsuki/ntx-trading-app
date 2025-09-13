@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react' // Removed useEffect as it's no longer needed for iOS check here
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -13,7 +13,7 @@ import type { UserInfo } from '@/src/types/user'
 import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from 'sonner'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
-import { useInviteImageGenerator } from './invite-image-generator'
+import { useInviteImageGenerator, InvitePoster } from './invite-image-generator'
 
 interface InviteCodeCardProps {
   userInfo: UserInfo | null
@@ -22,17 +22,9 @@ interface InviteCodeCardProps {
 export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   const { t } = useLanguage()
   const [showShareModal, setShowShareModal] = useState(false)
-  const [_isIOS, setIsIOS] = useState(false)
-  const { generateImage, InviteCanvas } = useInviteImageGenerator(userInfo)
-
-  // 检测是否为iOS设备
-  useEffect(() => {
-    const checkIsIOS = () => {
-      const userAgent = window.navigator.userAgent.toLowerCase()
-      return /iphone|ipad|ipod/.test(userAgent)
-    }
-    setIsIOS(checkIsIOS())
-  }, [])
+  
+  // The hook now returns the generator function and qrDataUrl
+  const { generateImage, qrDataUrl } = useInviteImageGenerator(userInfo)
 
   const copyInviteCode = () => {
     if (userInfo?.myInviteCode) {
@@ -92,10 +84,8 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
             </Button>
           </div>
         </div>
-        {/* 邀请人邮箱已隐藏 */}
       </CardContent>
 
-      {/* 分享海报模态框 */}
       <UniversalShareModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
@@ -107,7 +97,14 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
             ? `${typeof window !== 'undefined' ? window.location.origin : ''}/register?invite=${userInfo.myInviteCode}`
             : ''
         }}
-        imageGenerator={generateImage}
+        imageGenerator={generateImage} // Pass the generator function
+        // Pass the poster component with its props
+        posterComponent={
+          <InvitePoster
+            userInfo={userInfo}
+            qrDataUrl={qrDataUrl}
+          />
+        }
         showImagePreview={true}
         showCustomQrUpload={false}
         customActions={[
@@ -129,9 +126,6 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         showDefaultShareButtons={true}
         showCopyLinkButton={false}
       />
-
-      {/* 图片生成器组件 */}
-      <InviteCanvas />
     </Card>
   )
 }

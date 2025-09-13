@@ -7,7 +7,9 @@ import {
   useRef,
   type ChangeEvent,
   type FC,
-  type ComponentType
+  type ComponentType,
+  cloneElement,
+  isValidElement
 } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
@@ -16,12 +18,12 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/src/components/ui/dialog'
-import { Download, Share2, Copy } from 'lucide-react'
+import { Download, Share2, Copy, Loader2 } from 'lucide-react'
 import { toast } from '@/src/hooks/use-toast'
 import NextImage from 'next/image'
 import jsqr from 'jsqr'
 
-// --- 接口定义 ---
+// --- 接口定义 (保持不变) ---
 export interface ShareData {
   title: string
   text: string
@@ -42,7 +44,8 @@ interface UniversalShareModalProps {
   onClose: () => void
   title: string
   shareData: ShareData
-  imageGenerator?: () => Promise<string | null>
+  imageGenerator?: (node: HTMLDivElement | null) => Promise<string | null>
+  posterComponent?: React.ReactElement
   showImagePreview?: boolean
   customActions?: ShareAction[]
   showDefaultShareButtons?: boolean
@@ -51,57 +54,7 @@ interface UniversalShareModalProps {
   showCustomQrUpload?: boolean
 }
 
-// ######################################################################
-// ### 1. 内部子组件定义 (Internal Sub-components) ###
-// ######################################################################
-
-interface ShareImagePreviewProps {
-  isGenerating: boolean
-  generatedImage: string
-  onRegenerate: () => void
-}
-
-const ShareImagePreview: FC<ShareImagePreviewProps> = ({
-  isGenerating,
-  generatedImage,
-  onRegenerate
-}) => (
-  <div className="bg-gray-50 rounded-lg p-4 text-center min-h-[150px] flex items-center justify-center">
-    {isGenerating ? (
-      <div className="flex flex-col items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
-        <p className="text-sm text-gray-500">正在生成分享图片...</p>
-      </div>
-    ) : generatedImage ? (
-      <div className="relative">
-        <NextImage
-          src={generatedImage}
-          alt="分享预览"
-          width={300}
-          height={400}
-          className="rounded-lg shadow-lg mx-auto w-auto h-auto max-w-full max-h-[500px] object-contain"
-          unoptimized
-        />
-        <p className="text-xs text-gray-500 mt-2">分享图片预览</p>
-      </div>
-    ) : (
-      <div className="py-8 text-gray-500 flex flex-col items-center gap-3">
-        <p className="text-sm">生成图片失败或未生成</p>
-        <Button variant="outline" onClick={onRegenerate}>
-          重新生成
-        </Button>
-      </div>
-    )}
-  </div>
-)
-
-// ######################################################################
-// ### 2. 内部自定义 Hook 定义 (Internal Custom Hooks) ###
-// ######################################################################
-
-/**
- * Hook: 封装图片下载、复制及 iOS 兼容逻辑
- */
+// --- 自定义 Hooks (保持不变) ---
 const useImageActions = (generatedImage: string, title: string) => {
   const [isIOS, setIsIOS] = useState(false)
 
@@ -110,7 +63,10 @@ const useImageActions = (generatedImage: string, title: string) => {
   }, [])
 
   const downloadImage = useCallback(() => {
-    if (!generatedImage) return
+    if (!generatedImage) {
+        toast({ title: '图片尚未生成', description: '请稍后再试', variant: 'destructive'})
+        return;
+    };
 
     if (isIOS) {
       const newWindow = window.open()
@@ -138,9 +94,6 @@ const useImageActions = (generatedImage: string, title: string) => {
   return { downloadImage }
 }
 
-/**
- * Hook: 封装二维码上传和解析逻辑
- */
 const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -196,6 +149,7 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
   return { fileInputRef, triggerUpload, handleFileChange }
 }
 
+
 // ######################################################################
 // ### 3. 主组件实现 (Main Component Implementation) ###
 // ######################################################################
@@ -206,7 +160,8 @@ export function UniversalShareModal({
   title,
   shareData,
   imageGenerator,
-  showImagePreview = false,
+  posterComponent,
+  showImagePreview = true,
   customActions = [],
   showDefaultShareButtons = true,
   showCopyLinkButton = true,
@@ -215,17 +170,38 @@ export function UniversalShareModal({
 }: UniversalShareModalProps) {
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
+  const posterRef = useRef<HTMLDivElement>(null)
 
-  // --- 逻辑处理 (Logic Handling) ---
-  const generateImage = useCallback(async () => {
+  const { downloadImage } = useImageActions(generatedImage, shareData.title)
+
+  const handleGenerateAndSave = useCallback(async () => {
+    if (generatedImage) {
+      downloadImage()
+      return
+    }
+
     if (!imageGenerator) return
     setIsGenerating(true)
     try {
-      const imageDataUrl = await imageGenerator()
-      setGeneratedImage(imageDataUrl || '')
+      const imageDataUrl = await imageGenerator(posterRef.current)
+      if (imageDataUrl) {
+        setGeneratedImage(imageDataUrl)
+        const link = document.createElement('a')
+        link.href = imageDataUrl
+        link.download = `${shareData.title}.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        toast({ title: '下载成功', description: '图片已保存到本地' })
+      } else {
+        toast({
+          title: '生成失败',
+          description: '无法生成分享图片',
+          variant: 'destructive'
+        })
+      }
     } catch (error) {
-      console.error('生成图片失败:', error)
-      setGeneratedImage('')
+      console.error('Failed to generate image:', error)
       toast({
         title: '生成失败',
         description: '无法生成分享图片',
@@ -234,42 +210,38 @@ export function UniversalShareModal({
     } finally {
       setIsGenerating(false)
     }
-  }, [imageGenerator])
+  }, [imageGenerator, generatedImage, downloadImage, shareData.title])
 
-  const onQrScanSuccess = useCallback(
-    (qrText: string) => {
-      onQrOverride?.(qrText)
-      if (showImagePreview) generateImage()
-    },
-    [onQrOverride, showImagePreview, generateImage]
-  )
-
-  const restoreDefaultQr = () => {
-    onQrOverride?.('')
-    toast({ title: '已还原默认二维码' })
-    if (showImagePreview) generateImage()
-  }
-
-  // --- 调用内部 Hooks (Using Internal Hooks) ---
-  const { downloadImage } = useImageActions(generatedImage, shareData.title)
-  const { fileInputRef, triggerUpload, handleFileChange } =
-    useQrCodeScanner(onQrScanSuccess)
-
-  // --- Effect 管理 ---
   useEffect(() => {
     if (isOpen) {
       setGeneratedImage('')
-      if (showImagePreview) {
-        generateImage()
-      }
     }
-  }, [isOpen, showImagePreview, generateImage])
-
-  // --- 分享动作 (Share Actions) ---
+  }, [isOpen])
+  
   const copyLink = () => {
     navigator.clipboard.writeText(shareData.url)
     toast({ title: '复制成功', description: '链接已复制到剪贴板' })
   }
+  
+  const onQrScanSuccess = useCallback(
+    (qrText: string) => {
+      onQrOverride?.(qrText)
+    },
+    [onQrOverride]
+  )
+  
+  const restoreDefaultQr = () => {
+    onQrOverride?.('')
+    toast({ title: '已还原默认二维码' })
+  }
+  
+  const { fileInputRef, triggerUpload, handleFileChange } =
+    useQrCodeScanner(onQrScanSuccess)
+
+  const posterWithRef =
+    posterComponent && isValidElement(posterComponent)
+      ? cloneElement(posterComponent as React.ReactElement<{ ref: React.Ref<HTMLDivElement> }>, { ref: posterRef })
+      : null
 
   const shareToTelegram = () => {
     const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`
@@ -315,16 +287,33 @@ export function UniversalShareModal({
         </DialogHeader>
 
         <div className="space-y-4">
-          {showImagePreview && (
-            <ShareImagePreview
-              isGenerating={isGenerating}
-              generatedImage={generatedImage}
-              onRegenerate={generateImage}
-            />
+          {posterWithRef && showImagePreview && (
+            <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
+              {/* 1. 固定尺寸的视窗，这个视窗会被flexbox居中 */}
+              <div style={{ width: '300px', height: '400px', position: 'relative' }}>
+                {/* 2. 海报本身用绝对定位放在视窗内，并通过transform来缩放 */}
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    transform: 'scale(0.5)',
+                    transformOrigin: 'top left'
+                }}>
+                    {posterWithRef}
+                </div>
+              </div>
+              
+              {isGenerating && (
+                <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                  <p className="mt-2 text-sm text-slate-600">正在生成高清图...</p>
+                </div>
+              )}
+            </div>
           )}
 
           {showCustomQrUpload && onQrOverride && (
-            <div>
+             <div>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -357,17 +346,15 @@ export function UniversalShareModal({
           )}
 
           <div className="space-y-3">
-            {showImagePreview && generatedImage && (
-              <div>
-                <Button
-                  onClick={downloadImage}
-                  variant="outline"
-                  className="flex items-center justify-center w-full"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  保存图片
-                </Button>
-              </div>
+            {showImagePreview && (
+              <Button
+                onClick={handleGenerateAndSave}
+                disabled={isGenerating}
+                className="w-full"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                {isGenerating ? '正在处理...' : '保存分享海报'}
+              </Button>
             )}
 
             {showCopyLinkButton && (
