@@ -61,7 +61,7 @@ export function ContactCard() {
         {/* Telegram */}
         <div className="flex items-center justify-between p-4 hover:bg-white/40 transition-all">
           <a
-            href="https://t.me/NexTradeDao"
+            href="https://t.me/+eUGjIMUFdio2ODg1"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-4"
@@ -87,7 +87,12 @@ export function ContactCard() {
             <span className="text-slate-600 text-sm">@NexTradeDao</span>
             <button
               type="button"
-              onClick={() => copyToClipboard('@NexTradeDao', '已复制到剪贴板')}
+              onClick={() =>
+                copyToClipboard(
+                  'https://t.me/+eUGjIMUFdio2ODg1',
+                  '已复制到剪贴板'
+                )
+              }
               className="p-1 hover:bg-white/50 rounded transition-colors"
             >
               <Copy className="w-4 h-4 text-slate-500" />
