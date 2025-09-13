@@ -19,7 +19,7 @@ import DOMPurify from 'dompurify'
 import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
-import type { NewsItem } from '@/src/types/news'; 
+import { NewsItem } from '@/src/types/news'; 
 
 import '@/src/styles/markdown.css'
 // 引入 useSearchParams 用于读取 URL 参数
