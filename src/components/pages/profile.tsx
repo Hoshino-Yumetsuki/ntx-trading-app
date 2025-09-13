@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useAuth } from '@/src/contexts/AuthContext'
@@ -26,6 +26,7 @@ export function ProfilePage() {
   const { logout } = useAuth()
   const router = useRouter()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
+  const communityArrowId = useId()
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState<
     'profile' | 'security' | 'assets' | 'community' | 'broker'
@@ -154,7 +155,10 @@ export function ProfilePage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+                role="img"
+                aria-labelledby={communityArrowId}
               >
+                <title id={communityArrowId}>进入社区页面</title>
                 <path d="m9 18 6-6-6-6" />
               </svg>
             </div>
