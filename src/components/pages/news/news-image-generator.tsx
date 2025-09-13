@@ -6,7 +6,7 @@ import QRCode from 'qrcode'
 import { ShareCard } from '@/src/components/ui/share-card'
 import { API_BASE_URL } from '@/src/services/config'
 import { preloadImages } from '@/src/utils/image' // 导入预加载函数
-import { NewsItem } from '@/src/types/news'
+import type { NewsItem } from '@/src/types/news'
 
 interface NewsImageGeneratorProps {
   newsItem: NewsItem | null

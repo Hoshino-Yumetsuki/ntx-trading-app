@@ -25,7 +25,8 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         {/* --- 新增的“手机画框”容器 --- */}
-        <div className="
+        <div
+          className="
           relative              /* 设定为相对定位，作为内部元素的定位参考 */
           mx-auto               /* 关键：水平居中 */
           flex                  /* 使用 flex 布局 */
@@ -36,7 +37,8 @@ export default function RootLayout({
           md:max-w-md           /* 关键：在 md 断点(768px)及以上，最大宽度设为 md (448px) */
           md:shadow-2xl         /* 在 md 断点及以上，添加阴影以产生立体感 */
           md:border-gray-800
-        ">
+        "
+        >
           {children}
         </div>
         <Toaster position="top-center" richColors closeButton />

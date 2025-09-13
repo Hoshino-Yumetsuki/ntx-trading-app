@@ -65,9 +65,24 @@ export function MainApp() {
   const tabs = [
     { id: 'home', label: t('nav.home'), icon: Home, component: HomePage },
     { id: 'news', label: t('nav.news'), icon: Newspaper, component: NewsPage },
-    { id: 'academy', label: t('nav.academy'), icon: BookOpen, component: AcademyPage },
-    { id: 'mining', label: t('nav.mining'), icon: Coins, component: MiningPage },
-    { id: 'profile', label: t('nav.profile'), icon: User, component: ProfilePage }
+    {
+      id: 'academy',
+      label: t('nav.academy'),
+      icon: BookOpen,
+      component: AcademyPage
+    },
+    {
+      id: 'mining',
+      label: t('nav.mining'),
+      icon: Coins,
+      component: MiningPage
+    },
+    {
+      id: 'profile',
+      label: t('nav.profile'),
+      icon: User,
+      component: ProfilePage
+    }
   ]
 
   let ActiveComponent: any
@@ -76,7 +91,9 @@ export function MainApp() {
   } else if (activeTab === 'notifications') {
     ActiveComponent = NotificationsPage
   } else {
-    const activeTabComponent = tabs.find((tab) => tab.id === activeTab)?.component
+    const activeTabComponent = tabs.find(
+      (tab) => tab.id === activeTab
+    )?.component
     ActiveComponent = activeTabComponent || tabs[0].component
   }
 

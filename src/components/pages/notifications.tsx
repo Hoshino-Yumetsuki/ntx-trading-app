@@ -87,7 +87,7 @@ export function NotificationsPage() {
       cancelled = true
     }
   }, [])
-  
+
   const filteredNewsItems = useMemo(() => {
     const query = searchQuery.toLowerCase().trim()
     if (!query) {
@@ -103,7 +103,6 @@ export function NotificationsPage() {
   const clearSearch = () => {
     setSearchQuery('')
   }
-
 
   const fetchArticleContent = useCallback(async (id: number) => {
     try {
@@ -202,6 +201,7 @@ export function NotificationsPage() {
     return (
       <div
         className="markdown-content"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: 内容已通过DOMPurify清洗
         dangerouslySetInnerHTML={{ __html: safe }}
       />
     )

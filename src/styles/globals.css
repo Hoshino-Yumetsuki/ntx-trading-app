@@ -11,5 +11,5 @@
 /* 保证滚动体验更流畅 */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
-  background-color: #F0F8FF;
+  background-color: #f0f8ff;
 }
