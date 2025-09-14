@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useCallback, useEffect, useState, forwardRef } from 'react' // Import forwardRef
+import { useCallback, useEffect, useState, forwardRef } from 'react' // Import forwardRef
 import { toPng } from 'html-to-image'
 import Image from 'next/image'
 import QRCode from 'qrcode'
@@ -23,7 +23,8 @@ export const InvitePoster = forwardRef<
     userInfo: UserInfo | null
     qrDataUrl: string
   }
->(({ userInfo, qrDataUrl }, ref) => { // ref is now the second argument
+>(({ userInfo, qrDataUrl }, ref) => {
+  // ref is now the second argument
   if (!userInfo) return null
 
   const code = String(userInfo.myInviteCode || '').toUpperCase()
@@ -131,8 +132,7 @@ export const InvitePoster = forwardRef<
   )
 })
 // Add display name for better debugging
-InvitePoster.displayName = 'InvitePoster';
-
+InvitePoster.displayName = 'InvitePoster'
 
 /**
  * Hook for generating the invite share image.
@@ -159,7 +159,9 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
   const generateImage = useCallback(
     async (node: HTMLDivElement | null): Promise<string | null> => {
       if (!node || !userInfo?.myInviteCode) {
-        console.error('Generation prerequisites not met: DOM node or user info is missing.')
+        console.error(
+          'Generation prerequisites not met: DOM node or user info is missing.'
+        )
         return null
       }
       if (!qrDataUrl) {
@@ -174,10 +176,10 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
           '/share_p1.png'
         ]
         const allImageUrls = [...staticImageUrls, qrDataUrl]
-        
+
         await preloadImages(allImageUrls)
-        
-        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        await new Promise((resolve) => setTimeout(resolve, 100))
 
         const dataUrl = await toPng(node, {
           backgroundColor: '#ffffff',

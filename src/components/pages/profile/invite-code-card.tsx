@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react' // Removed useEffect as it's no longer needed for iOS check here
+import { useState } from 'react' // Removed useEffect as it's no longer needed for iOS check here
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -22,7 +22,7 @@ interface InviteCodeCardProps {
 export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   const { t } = useLanguage()
   const [showShareModal, setShowShareModal] = useState(false)
-  
+
   // The hook now returns the generator function and qrDataUrl
   const { generateImage, qrDataUrl } = useInviteImageGenerator(userInfo)
 
@@ -100,10 +100,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         imageGenerator={generateImage} // Pass the generator function
         // Pass the poster component with its props
         posterComponent={
-          <InvitePoster
-            userInfo={userInfo}
-            qrDataUrl={qrDataUrl}
-          />
+          <InvitePoster userInfo={userInfo} qrDataUrl={qrDataUrl} />
         }
         showImagePreview={true}
         showCustomQrUpload={false}

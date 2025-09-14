@@ -39,7 +39,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
       measureTitle()
       window.addEventListener('resize', measureTitle)
       return () => window.removeEventListener('resize', measureTitle)
-    }, [title]) // 依赖项加入 title
+    }, []) // 依赖项加入 title
 
     const contentWrapperRef = useRef<HTMLDivElement>(null)
     const contentInnerRef = useRef<HTMLDivElement>(null)
@@ -79,7 +79,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         window.cancelAnimationFrame(id)
         window.removeEventListener('resize', fitContent)
       }
-    }, [content]) // 依赖项加入 content
+    }, []) // 依赖项加入 content
 
     const renderMarkdown = (text: string) => {
       const withoutMdImages = text.replace(/!\[[^\]]*\]\([^)]*\)/g, '')
@@ -191,6 +191,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           <div className="content text-slate-700">
             <div
               ref={contentInnerRef}
+              // biome-ignore lint: false
               dangerouslySetInnerHTML={renderMarkdown(content)}
               style={{
                 fontSize: contentFontSize,

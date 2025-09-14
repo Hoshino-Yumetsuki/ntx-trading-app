@@ -148,7 +148,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const normalizeHref = (href?: string) => {
     if (!href) return ''
     // If it's an internal link, don't add protocol
-    if (href.startsWith('/')) return href;
+    if (href.startsWith('/')) return href
     if (/^https?:\/\//i.test(href)) return href
     return `https://${href}`
   }
@@ -166,20 +166,19 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     }
     fetchBanners()
   }, [])
-  
+
   // *** 新增的点击处理函数 ***
   const handleBannerClick = (url: string) => {
     // 检查是否是外部链接
-    const isExternal = url.startsWith('http://') || url.startsWith('https://');
-    
+    const isExternal = url.startsWith('http://') || url.startsWith('https://')
+
     if (isExternal) {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      window.open(url, '_blank', 'noopener,noreferrer')
     } else {
       // 内部链接使用 Next.js router
-      router.push(url);
+      router.push(url)
     }
-  };
-
+  }
 
   type InternalBanner = {
     type: 'internal'

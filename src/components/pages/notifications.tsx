@@ -27,6 +27,7 @@ interface NewsItem {
   modifyDate: string
   isDisplayed: boolean
   content?: string
+  source?: string
 }
 
 export function NotificationsPage() {
@@ -201,6 +202,7 @@ export function NotificationsPage() {
     return (
       <div
         className="markdown-content"
+        // biome-ignore lint: false
         dangerouslySetInnerHTML={{ __html: safe }}
       />
     )
@@ -210,8 +212,8 @@ export function NotificationsPage() {
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-            {/* ...文章详情页UI, 保持不变... */}
-            <div className="px-4 pt-12 pb-4">
+          {/* ...文章详情页UI, 保持不变... */}
+          <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
                 <Button
@@ -320,7 +322,7 @@ export function NotificationsPage() {
   return (
     <div className="min-h-screen bg-white pb-6">
       {/* ...列表页UI, 保持不变... */}
-        <div className="px-6 pt-12 pb-8 relative z-10">
+      <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">

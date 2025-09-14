@@ -6,7 +6,6 @@ import {
   useCallback,
   useRef,
   type ChangeEvent,
-  type FC,
   type ComponentType,
   cloneElement,
   isValidElement
@@ -64,9 +63,13 @@ const useImageActions = (generatedImage: string, title: string) => {
 
   const downloadImage = useCallback(() => {
     if (!generatedImage) {
-        toast({ title: '图片尚未生成', description: '请稍后再试', variant: 'destructive'})
-        return;
-    };
+      toast({
+        title: '图片尚未生成',
+        description: '请稍后再试',
+        variant: 'destructive'
+      })
+      return
+    }
 
     if (isIOS) {
       const newWindow = window.open()
@@ -149,7 +152,6 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
   return { fileInputRef, triggerUpload, handleFileChange }
 }
 
-
 // ######################################################################
 // ### 3. 主组件实现 (Main Component Implementation) ###
 // ######################################################################
@@ -171,35 +173,34 @@ export function UniversalShareModal({
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
   const posterRef = useRef<HTMLDivElement>(null)
-  
+
   // 用于动态调整预览容器高度的状态
-  const [previewContainerHeight, setPreviewContainerHeight] = useState(400); 
+  const [previewContainerHeight, setPreviewContainerHeight] = useState(400)
 
   const { downloadImage } = useImageActions(generatedImage, shareData.title)
 
   // 使用 ResizeObserver 监测海报实际高度变化
   useEffect(() => {
     if (isOpen && posterRef.current) {
-      const posterElement = posterRef.current;
-      
-      const observer = new ResizeObserver(entries => {
-        const entry = entries[0];
+      const posterElement = posterRef.current
+
+      const observer = new ResizeObserver((entries) => {
+        const entry = entries[0]
         if (entry) {
           // scrollHeight 是元素内容的完整高度
-          const fullHeight = entry.target.scrollHeight;
+          const fullHeight = entry.target.scrollHeight
           // 容器的高度应该是海报实际高度缩放后的大小
-          setPreviewContainerHeight(fullHeight * 0.5);
+          setPreviewContainerHeight(fullHeight * 0.5)
         }
-      });
-      
-      observer.observe(posterElement);
-      
-      return () => {
-        observer.disconnect();
-      };
-    }
-  }, [isOpen, posterComponent]); // 当模态框打开或海报组件变化时，重新监测
+      })
 
+      observer.observe(posterElement)
+
+      return () => {
+        observer.disconnect()
+      }
+    }
+  }, [isOpen]) // 当模态框打开或海报组件变化时，重新监测
 
   const handleGenerateAndSave = useCallback(async () => {
     if (generatedImage) {
@@ -244,30 +245,35 @@ export function UniversalShareModal({
       setGeneratedImage('')
     }
   }, [isOpen])
-  
+
   const copyLink = () => {
     navigator.clipboard.writeText(shareData.url)
     toast({ title: '复制成功', description: '链接已复制到剪贴板' })
   }
-  
+
   const onQrScanSuccess = useCallback(
     (qrText: string) => {
       onQrOverride?.(qrText)
     },
     [onQrOverride]
   )
-  
+
   const restoreDefaultQr = () => {
     onQrOverride?.('')
     toast({ title: '已还原默认二维码' })
   }
-  
+
   const { fileInputRef, triggerUpload, handleFileChange } =
     useQrCodeScanner(onQrScanSuccess)
 
   const posterWithRef =
     posterComponent && isValidElement(posterComponent)
-      ? cloneElement(posterComponent as React.ReactElement<{ ref: React.Ref<HTMLDivElement> }>, { ref: posterRef })
+      ? cloneElement(
+          posterComponent as React.ReactElement<{
+            ref: React.Ref<HTMLDivElement>
+          }>,
+          { ref: posterRef }
+        )
       : null
 
   const shareToTelegram = () => {
@@ -316,34 +322,40 @@ export function UniversalShareModal({
         <div className="space-y-4">
           {posterWithRef && showImagePreview && (
             <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
-              <div style={{ 
-                  width: '300px', 
+              <div
+                style={{
+                  width: '300px',
                   height: `${previewContainerHeight}px`, // 使用动态高度
                   position: 'relative',
                   transition: 'height 0.2s ease-in-out' // 增加平滑过渡效果
-              }}>
-                <div style={{
+                }}
+              >
+                <div
+                  style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     transform: 'scale(0.5)',
                     transformOrigin: 'top left'
-                }}>
-                    {posterWithRef}
+                  }}
+                >
+                  {posterWithRef}
                 </div>
               </div>
-              
+
               {isGenerating && (
                 <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
                   <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                  <p className="mt-2 text-sm text-slate-600">正在生成高清图...</p>
+                  <p className="mt-2 text-sm text-slate-600">
+                    正在生成高清图...
+                  </p>
                 </div>
               )}
             </div>
           )}
 
           {showCustomQrUpload && onQrOverride && (
-             <div>
+            <div>
               <input
                 ref={fileInputRef}
                 type="file"

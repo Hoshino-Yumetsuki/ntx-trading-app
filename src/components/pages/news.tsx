@@ -19,8 +19,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Input } from '@/src/components/ui/input'
 
 const fetchRssNews = async (): Promise<NewsItem[]> => {
-    // ...函数内容保持不变...
-    const response = await fetch('https://rss.ntxdao.com/rss/clist')
+  // ...函数内容保持不变...
+  const response = await fetch('https://rss.ntxdao.com/rss/clist')
   if (!response.ok) {
     throw new Error('网络响应错误，无法获取RSS源')
   }
@@ -171,6 +171,7 @@ export function NewsPage() {
     return (
       <div
         className="markdown-content"
+        // biome-ignore lint: false
         dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
     )
@@ -180,8 +181,8 @@ export function NewsPage() {
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-           {/* ...文章详情页UI, 保持不变... */}
-           <div className="px-4 pt-12 pb-4">
+          {/* ...文章详情页UI, 保持不变... */}
+          <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
                 <Button
@@ -297,135 +298,135 @@ export function NewsPage() {
       <div className="min-h-screen bg-white pb-6">
         {/* ...列表页UI, 保持不变... */}
         <div className="px-6 pt-12 pb-8 relative z-10">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex flex-col">
-            <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
-              <Image
-                src="/Frame17@3x.png"
-                alt="NTX Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <p className="text-slate-800 text-xl font-medium">
-              WEB3 一站式服务
-            </p>
-          </div>
-          <LanguageSwitcher />
-        </div>
-        <div
-          className="relative overflow-hidden rounded-2xl h-32 flex items-center p-6"
-          style={{
-            backgroundImage: "url('/Group35@3x.png')",
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundColor: '#1C55FF'
-          }}
-        >
-          <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
-            {t('news.title') || '最新资讯'}
-          </h2>
-        </div>
-      </div>
-      <div className="px-6">
-        <div className="mb-6 relative">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="搜索文章标题或内容..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-10 py-2 bg-slate-50 border-slate-200 rounded-xl focus:ring-blue-500 focus:border-blue-500"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={clearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="space-y-8 animate-pulse">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="relative pl-6">
-                <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-gray-300"></div>
-                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/4 mb-3"></div>
-                <div className="h-3 bg-gray-200 rounded w-full"></div>
-                <div className="h-3 bg-gray-200 rounded w-full mt-1"></div>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col">
+              <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
+                <Image
+                  src="/Frame17@3x.png"
+                  alt="NTX Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
-            ))}
+              <p className="text-slate-800 text-xl font-medium">
+                WEB3 一站式服务
+              </p>
+            </div>
+            <LanguageSwitcher />
           </div>
-        ) : isError ? (
-          <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4">
-            {/* ... */}
+          <div
+            className="relative overflow-hidden rounded-2xl h-32 flex items-center p-6"
+            style={{
+              backgroundImage: "url('/Group35@3x.png')",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundColor: '#1C55FF'
+            }}
+          >
+            <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
+              {t('news.title') || '最新资讯'}
+            </h2>
           </div>
-        ) : filteredNewsItems.length > 0 ? (
-          <div className="relative">
-            <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
-            <div className="flex flex-col gap-y-8">
-              {filteredNewsItems.map((item) => (
+        </div>
+        <div className="px-6">
+          <div className="mb-6 relative">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="搜索文章标题或内容..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 py-2 bg-slate-50 border-slate-200 rounded-xl focus:ring-blue-500 focus:border-blue-500"
+              />
+              {searchQuery && (
                 <button
                   type="button"
-                  key={item.id}
-                  className="relative pl-6 cursor-pointer text-left w-full"
-                  onClick={() => viewArticleDetail(item)}
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
-                  <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
-                  <div className="flex flex-col gap-y-2">
-                    <div className="flex justify-between items-start gap-2">
-                      <div className="flex-1">
-                        <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
-                          {item.title}
-                        </h3>
-                        <div className="flex items-center text-xs text-[#AAB7CF] mt-1">
-                          <Clock className="w-3 h-3 mr-1.5" />
-                          <span>{formatDate(item.publishDate)}</span>
-                          <span className="flex items-center ml-2 text-blue-500">
-                            <Rss className="w-3 h-3 mr-1" />
-                            <span>RSS</span>
-                          </span>
-                        </div>
-                      </div>
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0 mt-1"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleShare(item)
-                        }}
-                      >
-                        <span>
-                          <Share2 className="w-4 h-4" />
-                        </span>
-                      </Button>
-                    </div>
-                    <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
-                      {item.summary}
-                    </p>
-                  </div>
+                  <X className="w-4 h-4" />
                 </button>
-              ))}
+              )}
             </div>
           </div>
-        ) : (
-          <div className="text-center py-8 text-slate-500">
-            {searchQuery
-              ? `没有找到与 "${searchQuery}" 相关的文章`
-              : t('news.empty') || '暂无新闻'}
-          </div>
-        )}
-      </div>
+
+          {isLoading ? (
+            <div className="space-y-8 animate-pulse">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="relative pl-6">
+                  <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-gray-300"></div>
+                  <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/4 mb-3"></div>
+                  <div className="h-3 bg-gray-200 rounded w-full"></div>
+                  <div className="h-3 bg-gray-200 rounded w-full mt-1"></div>
+                </div>
+              ))}
+            </div>
+          ) : isError ? (
+            <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4">
+              {/* ... */}
+            </div>
+          ) : filteredNewsItems.length > 0 ? (
+            <div className="relative">
+              <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>
+              <div className="flex flex-col gap-y-8">
+                {filteredNewsItems.map((item) => (
+                  <button
+                    type="button"
+                    key={item.id}
+                    className="relative pl-6 cursor-pointer text-left w-full"
+                    onClick={() => viewArticleDetail(item)}
+                  >
+                    <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-[#1C55FF] border-2 border-white"></div>
+                    <div className="flex flex-col gap-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1">
+                          <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
+                            {item.title}
+                          </h3>
+                          <div className="flex items-center text-xs text-[#AAB7CF] mt-1">
+                            <Clock className="w-3 h-3 mr-1.5" />
+                            <span>{formatDate(item.publishDate)}</span>
+                            <span className="flex items-center ml-2 text-blue-500">
+                              <Rss className="w-3 h-3 mr-1" />
+                              <span>RSS</span>
+                            </span>
+                          </div>
+                        </div>
+                        <Button
+                          asChild
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0 mt-1"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleShare(item)
+                          }}
+                        >
+                          <span>
+                            <Share2 className="w-4 h-4" />
+                          </span>
+                        </Button>
+                      </div>
+                      <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
+                        {item.summary}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-slate-500">
+              {searchQuery
+                ? `没有找到与 "${searchQuery}" 相关的文章`
+                : t('news.empty') || '暂无新闻'}
+            </div>
+          )}
+        </div>
       </div>
       <UniversalShareModal
         isOpen={showShareModal}
