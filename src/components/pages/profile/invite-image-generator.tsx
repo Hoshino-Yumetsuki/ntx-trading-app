@@ -1,7 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useState, forwardRef } from 'react' // Import forwardRef
-import { toPng } from 'html-to-image'
+import { useCallback, useEffect, useState, forwardRef } from 'react'
+import { toSvg } from 'html-to-image' // <--- 修改点: 导入 toSvg
+import { svgAsPngUri } from 'save-svg-as-png' // <--- 新增点: 导入新库的方法
 import Image from 'next/image'
 import QRCode from 'qrcode'
 import type { UserInfo } from '@/src/types/user'
@@ -180,11 +181,10 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
         await preloadImages(allImageUrls)
 
         await new Promise((resolve) => setTimeout(resolve, 100))
-
-        const dataUrl = await toPng(node, {
+        const svgDataUrl = await toSvg(node, {
           backgroundColor: '#ffffff',
           cacheBust: true,
-          pixelRatio: 2,
+          pixelRatio: 2, // 保持2倍图以确保清晰度
           fetchRequestInit: {
             mode: 'cors',
             credentials: 'omit'
@@ -193,7 +193,12 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
           height: node.scrollHeight
         })
 
-        return dataUrl
+        const pngDataUrl = await svgAsPngUri(svgDataUrl, {
+          scale: 2 // 确保输出的PNG也是2倍大小
+        })
+
+
+        return pngDataUrl
       } catch (error) {
         console.error('Failed to generate invite share image:', error)
         return null

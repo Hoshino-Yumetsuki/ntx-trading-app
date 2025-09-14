@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useState, useEffect } from 'react'
-import { toPng } from 'html-to-image'
+import { toSvg } from 'html-to-image'
+import { svgAsPngUri } from 'save-svg-as-png'
 import QRCode from 'qrcode'
 import { API_BASE_URL } from '@/src/services/config'
 import { preloadImages } from '@/src/utils/image'
@@ -86,10 +87,12 @@ export function useNewsImageGenerator(
         await preloadImages(imageUrls)
         await new Promise((resolve) => requestAnimationFrame(resolve))
 
-        const dataUrl = await toPng(node, {
+        // --- 核心修改 ---
+        // 1. 先生成 SVG Data URL
+        const svgDataUrl = await toSvg(node, {
           backgroundColor: '#ffffff',
-          cacheBust: true, // 增加 cacheBust
-          pixelRatio: 2,
+          cacheBust: true,
+          pixelRatio: 2, // 保持2倍图以确保清晰度
           fetchRequestInit: {
             mode: 'cors',
             credentials: 'omit'
@@ -98,7 +101,13 @@ export function useNewsImageGenerator(
           height: node.scrollHeight
         })
 
-        return dataUrl
+        // 2. 将 SVG 转换为 PNG Data URL
+        const pngDataUrl = await svgAsPngUri(svgDataUrl, {
+          scale: 2 // 确保输出的PNG也是2倍大小
+        })
+        // --- 修改结束 ---
+
+        return pngDataUrl // 返回PNG格式的数据
       } catch (error) {
         console.error('生成新闻分享图片失败:', error)
         throw error
