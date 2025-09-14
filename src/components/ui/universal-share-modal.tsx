@@ -6,7 +6,6 @@ import {
   useCallback,
   useRef,
   type ChangeEvent,
-  type FC,
   type ComponentType,
   cloneElement,
   isValidElement
@@ -19,7 +18,7 @@ import {
   DialogTitle
 } from '@/src/components/ui/dialog'
 import { Download, Share2, Copy, Loader2 } from 'lucide-react'
-import { toast } from '@/src/hooks/use-toast'
+import { toast } from 'sonner'
 import NextImage from 'next/image'
 import jsqr from 'jsqr'
 
@@ -53,45 +52,6 @@ interface UniversalShareModalProps {
   showCustomQrUpload?: boolean
 }
 
-const useImageActions = (generatedImage: string, title: string) => {
-  const [isIOS, setIsIOS] = useState(false)
-
-  useEffect(() => {
-    setIsIOS(/iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase()))
-  }, [])
-
-  const downloadImage = useCallback(() => {
-    if (!generatedImage) {
-        toast({ title: '图片尚未生成', description: '请稍后再试', variant: 'destructive'})
-        return;
-    };
-
-    if (isIOS) {
-      const newWindow = window.open()
-      if (newWindow) {
-        newWindow.document.write(
-          `<html><head><title>保存海报</title><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}img{max-width:100%;max-height:80vh;border-radius:8px;}p{margin-top:20px;font-family:-apple-system,sans-serif}</style></head><body><img src="${generatedImage}" alt="分享海报"><p><strong>请长按图片保存到相册</strong></p></body></html>`
-        )
-        newWindow.document.close()
-      }
-      toast({
-        title: '请长按图片保存',
-        description: 'iOS设备请长按图片，然后选择"添加到照片"'
-      })
-    } else {
-      const link = document.createElement('a')
-      link.href = generatedImage
-      link.download = `${title}.png`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      toast({ title: '下载成功', description: '图片已保存到本地' })
-    }
-  }, [generatedImage, title, isIOS])
-
-  return { downloadImage }
-}
-
 const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -103,7 +63,7 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
       if (!file) return
 
       try {
-        const img = new Image()
+        const img = new window.Image()
         img.src = URL.createObjectURL(file)
         await img.decode()
 
@@ -119,23 +79,18 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
 
         if (result?.data) {
           onQrScanSuccess(result.data)
-          toast({
-            title: '二维码识别成功',
+          toast.success('二维码识别成功', {
             description: '将使用自定义二维码内容'
           })
         } else {
-          toast({
-            title: '识别失败',
-            description: '未能识别到二维码',
-            variant: 'destructive'
+          toast.error('识别失败', {
+            description: '未能识别到二维码'
           })
         }
       } catch (error) {
         console.error('二维码识别异常:', error)
-        toast({
-          title: '识别失败',
-          description: '处理图片时发生错误',
-          variant: 'destructive'
+        toast.error('识别失败', {
+          description: '处理图片时发生错误'
         })
       } finally {
         if (fileInputRef.current) fileInputRef.current.value = ''
@@ -147,10 +102,6 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
   return { fileInputRef, triggerUpload, handleFileChange }
 }
 
-
-// ######################################################################
-// ### 3. 主组件实现 (Main Component Implementation) ###
-// ######################################################################
 
 export function UniversalShareModal({
   isOpen,
@@ -169,39 +120,94 @@ export function UniversalShareModal({
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
   const posterRef = useRef<HTMLDivElement>(null)
-  
-  // 用于动态调整预览容器高度的状态
   const [previewContainerHeight, setPreviewContainerHeight] = useState(400); 
 
-  const { downloadImage } = useImageActions(generatedImage, shareData.title)
+  const [isIOS, setIsIOS] = useState(false)
+  useEffect(() => {
+    const platform = navigator.platform
+    const userAgent = navigator.userAgent
+    
+    let isIOSDevice =
+      /iPad|iPhone|iPod/.test(platform) ||
+      (platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    
+    if (!isIOSDevice) {
+      isIOSDevice = /iPhone|iPad|iPod/.test(userAgent)
+    }
+    
+    setIsIOS(isIOSDevice)
+  }, [])
 
-  // 使用 ResizeObserver 监测海报实际高度变化
+  const downloadImage = useCallback((imageToDownload: string, imageTitle: string) => {
+    if (!imageToDownload) {
+      toast.error('图片尚未生成', {
+        description: '请稍后再试'
+      })
+      return
+    }
+    
+    if (isIOS) {
+      // --- 修复点：实现新的iOS下载逻辑 ---
+      // 1. 优先尝试直接下载
+      const link = document.createElement('a');
+      link.href = imageToDownload;
+      link.download = `${imageTitle}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // 2. 立即弹出提示，告知用户正在尝试，并预告后续操作
+      toast.info('正在尝试为您下载...', {
+        description: '若下载失败，将为您打开新页面手动保存。'
+      });
+
+      // 3. 延迟后执行后备方案
+      setTimeout(() => {
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(
+            `<html><head><title>保存海报</title><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}img{max-width:100%;max-height:80vh;border-radius:8px;}p{margin-top:20px;font-family:-apple-system,sans-serif}</style></head><body><img src="${imageToDownload}" alt="分享海报"><p><strong>请长按图片保存到相册</strong></p></body></html>`
+          );
+          newWindow.document.close();
+        }
+      }, 1500); // 延迟1.5秒，给用户足够的时间看提示和响应原生下载
+      // --- 修复结束 ---
+    } else {
+      // 非iOS设备的标准下载逻辑
+      const link = document.createElement('a');
+      link.href = imageToDownload;
+      link.download = `${imageTitle}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success('下载成功', {
+        description: '图片已保存到您的设备'
+      });
+    }
+  }, [isIOS]);
+
+
   useEffect(() => {
     if (isOpen && posterRef.current) {
       const posterElement = posterRef.current;
-      
       const observer = new ResizeObserver(entries => {
         const entry = entries[0];
         if (entry) {
-          // scrollHeight 是元素内容的完整高度
           const fullHeight = entry.target.scrollHeight;
-          // 容器的高度应该是海报实际高度缩放后的大小
           setPreviewContainerHeight(fullHeight * 0.5);
         }
       });
-      
       observer.observe(posterElement);
-      
       return () => {
         observer.disconnect();
       };
     }
-  }, [isOpen, posterComponent]); // 当模态框打开或海报组件变化时，重新监测
+  }, [isOpen, posterComponent]);
 
 
   const handleGenerateAndSave = useCallback(async () => {
     if (generatedImage) {
-      downloadImage()
+      downloadImage(generatedImage, shareData.title)
       return
     }
 
@@ -211,26 +217,16 @@ export function UniversalShareModal({
       const imageDataUrl = await imageGenerator(posterRef.current)
       if (imageDataUrl) {
         setGeneratedImage(imageDataUrl)
-        const link = document.createElement('a')
-        link.href = imageDataUrl
-        link.download = `${shareData.title}.png`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        toast({ title: '下载成功', description: '图片已保存到本地' })
+        downloadImage(imageDataUrl, shareData.title)
       } else {
-        toast({
-          title: '生成失败',
-          description: '无法生成分享图片',
-          variant: 'destructive'
+        toast.error('生成失败', {
+          description: '无法生成分享图片'
         })
       }
     } catch (error) {
       console.error('Failed to generate image:', error)
-      toast({
-        title: '生成失败',
-        description: '无法生成分享图片',
-        variant: 'destructive'
+      toast.error('生成失败', {
+        description: '无法生成分享图片'
       })
     } finally {
       setIsGenerating(false)
@@ -245,7 +241,9 @@ export function UniversalShareModal({
   
   const copyLink = () => {
     navigator.clipboard.writeText(shareData.url)
-    toast({ title: '复制成功', description: '链接已复制到剪贴板' })
+    toast.success('复制成功', {
+      description: '链接已复制到剪贴板'
+    })
   }
   
   const onQrScanSuccess = useCallback(
@@ -257,7 +255,7 @@ export function UniversalShareModal({
   
   const restoreDefaultQr = () => {
     onQrOverride?.('')
-    toast({ title: '已还原默认二维码' })
+    toast.success('已还原默认二维码')
   }
   
   const { fileInputRef, triggerUpload, handleFileChange } =
@@ -316,9 +314,9 @@ export function UniversalShareModal({
             <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
               <div style={{ 
                   width: '300px', 
-                  height: `${previewContainerHeight}px`, // 使用动态高度
+                  height: `${previewContainerHeight}px`,
                   position: 'relative',
-                  transition: 'height 0.2s ease-in-out' // 增加平滑过渡效果
+                  transition: 'height 0.2s ease-in-out'
               }}>
                 <div style={{
                     position: 'absolute',
