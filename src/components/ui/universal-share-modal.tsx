@@ -102,7 +102,6 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
   return { fileInputRef, triggerUpload, handleFileChange }
 }
 
-
 export function UniversalShareModal({
   isOpen,
   onClose,
@@ -120,90 +119,46 @@ export function UniversalShareModal({
   const [generatedImage, setGeneratedImage] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
   const posterRef = useRef<HTMLDivElement>(null)
-  const [previewContainerHeight, setPreviewContainerHeight] = useState(400); 
+  const [previewContainerHeight, setPreviewContainerHeight] = useState(400)
 
-  const [isIOS, setIsIOS] = useState(false)
-  useEffect(() => {
-    const platform = navigator.platform
-    const userAgent = navigator.userAgent
-    
-    let isIOSDevice =
-      /iPad|iPhone|iPod/.test(platform) ||
-      (platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-    
-    if (!isIOSDevice) {
-      isIOSDevice = /iPhone|iPad|iPod/.test(userAgent)
-    }
-    
-    setIsIOS(isIOSDevice)
-  }, [])
+  const downloadImage = useCallback(
+    (imageToDownload: string, imageTitle: string) => {
+      if (!imageToDownload) {
+        toast.error('图片尚未生成', {
+          description: '请稍后再试'
+        })
+        return
+      }
 
-  const downloadImage = useCallback((imageToDownload: string, imageTitle: string) => {
-    if (!imageToDownload) {
-      toast.error('图片尚未生成', {
-        description: '请稍后再试'
+      const link = document.createElement('a')
+      link.href = imageToDownload
+      link.download = `${imageTitle}.png`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      toast.success('下载已开始', {
+        description: '图片将保存到您的设备'
       })
-      return
-    }
-    
-    if (isIOS) {
-      // --- 修复点：实现新的iOS下载逻辑 ---
-      // 1. 优先尝试直接下载
-      const link = document.createElement('a');
-      link.href = imageToDownload;
-      link.download = `${imageTitle}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // 2. 立即弹出提示，告知用户正在尝试，并预告后续操作
-      toast.info('正在尝试为您下载...', {
-        description: '若下载失败，将为您打开新页面手动保存。'
-      });
-
-      // 3. 延迟后执行后备方案
-      setTimeout(() => {
-        const newWindow = window.open();
-        if (newWindow) {
-          newWindow.document.write(
-            `<html><head><title>保存海报</title><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}img{max-width:100%;max-height:80vh;border-radius:8px;}p{margin-top:20px;font-family:-apple-system,sans-serif}</style></head><body><img src="${imageToDownload}" alt="分享海报"><p><strong>请长按图片保存到相册</strong></p></body></html>`
-          );
-          newWindow.document.close();
-        }
-      }, 1500); // 延迟1.5秒，给用户足够的时间看提示和响应原生下载
-      // --- 修复结束 ---
-    } else {
-      // 非iOS设备的标准下载逻辑
-      const link = document.createElement('a');
-      link.href = imageToDownload;
-      link.download = `${imageTitle}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast.success('下载成功', {
-        description: '图片已保存到您的设备'
-      });
-    }
-  }, [isIOS]);
-
+    },
+    []
+  )
 
   useEffect(() => {
     if (isOpen && posterRef.current) {
-      const posterElement = posterRef.current;
-      const observer = new ResizeObserver(entries => {
-        const entry = entries[0];
+      const posterElement = posterRef.current
+      const observer = new ResizeObserver((entries) => {
+        const entry = entries[0]
         if (entry) {
-          const fullHeight = entry.target.scrollHeight;
-          setPreviewContainerHeight(fullHeight * 0.5);
+          const fullHeight = entry.target.scrollHeight
+          setPreviewContainerHeight(fullHeight * 0.5)
         }
-      });
-      observer.observe(posterElement);
+      })
+      observer.observe(posterElement)
       return () => {
-        observer.disconnect();
-      };
+        observer.disconnect()
+      }
     }
-  }, [isOpen, posterComponent]);
-
+  }, [isOpen])
 
   const handleGenerateAndSave = useCallback(async () => {
     if (generatedImage) {
@@ -238,32 +193,37 @@ export function UniversalShareModal({
       setGeneratedImage('')
     }
   }, [isOpen])
-  
+
   const copyLink = () => {
     navigator.clipboard.writeText(shareData.url)
     toast.success('复制成功', {
       description: '链接已复制到剪贴板'
     })
   }
-  
+
   const onQrScanSuccess = useCallback(
     (qrText: string) => {
       onQrOverride?.(qrText)
     },
     [onQrOverride]
   )
-  
+
   const restoreDefaultQr = () => {
     onQrOverride?.('')
     toast.success('已还原默认二维码')
   }
-  
+
   const { fileInputRef, triggerUpload, handleFileChange } =
     useQrCodeScanner(onQrScanSuccess)
 
   const posterWithRef =
     posterComponent && isValidElement(posterComponent)
-      ? cloneElement(posterComponent as React.ReactElement<{ ref: React.Ref<HTMLDivElement> }>, { ref: posterRef })
+      ? cloneElement(
+          posterComponent as React.ReactElement<{
+            ref: React.Ref<HTMLDivElement>
+          }>,
+          { ref: posterRef }
+        )
       : null
 
   const shareToTelegram = () => {
@@ -312,34 +272,40 @@ export function UniversalShareModal({
         <div className="space-y-4">
           {posterWithRef && showImagePreview && (
             <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
-              <div style={{ 
-                  width: '300px', 
+              <div
+                style={{
+                  width: '300px',
                   height: `${previewContainerHeight}px`,
                   position: 'relative',
                   transition: 'height 0.2s ease-in-out'
-              }}>
-                <div style={{
+                }}
+              >
+                <div
+                  style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     transform: 'scale(0.5)',
                     transformOrigin: 'top left'
-                }}>
-                    {posterWithRef}
+                  }}
+                >
+                  {posterWithRef}
                 </div>
               </div>
-              
+
               {isGenerating && (
                 <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
                   <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                  <p className="mt-2 text-sm text-slate-600">正在生成高清图...</p>
+                  <p className="mt-2 text-sm text-slate-600">
+                    正在生成高清图...
+                  </p>
                 </div>
               )}
             </div>
           )}
 
           {showCustomQrUpload && onQrOverride && (
-             <div>
+            <div>
               <input
                 ref={fileInputRef}
                 type="file"

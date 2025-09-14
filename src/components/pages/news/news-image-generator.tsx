@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useState, useEffect } from 'react'
-import { toSvg } from 'html-to-image'
+import html2canvas from 'html2canvas'
 import QRCode from 'qrcode'
 import { API_BASE_URL } from '@/src/services/config'
 import { preloadImages } from '@/src/utils/image'
@@ -80,43 +80,77 @@ export function useNewsImageGenerator(
           (img) => img.src
         )
         await preloadImages(imageUrls)
+        // 等待下一帧与字体加载，减少文字排版差异
         await new Promise((resolve) => requestAnimationFrame(resolve))
+        if ((document as any).fonts?.ready) {
+          try {
+            await (document as any).fonts.ready
+          } catch {}
+        }
 
         const scale = 2
         const width = 600
-        const height = node.scrollHeight
+        let height = node.scrollHeight
 
-        const svgDataUrl = await toSvg(node, {
+        // 使用离屏克隆节点，避免受预览容器的 transform 等样式影响
+        const offscreen = document.createElement('div')
+        offscreen.style.position = 'absolute'
+        offscreen.style.left = '-10000px'
+        offscreen.style.top = '0'
+        offscreen.style.width = `${width}px`
+        offscreen.style.height = `${height}px`
+        offscreen.style.backgroundColor = '#ffffff'
+        offscreen.style.webkitTextSizeAdjust = '100%'
+        const clone = node.cloneNode(true) as HTMLDivElement
+        clone.style.transform = 'none'
+        clone.style.transformOrigin = 'top left'
+        clone.style.width = `${width}px`
+        clone.style.height = `${height}px`
+        clone.style.backgroundColor = '#ffffff'
+        offscreen.appendChild(clone)
+        document.body.appendChild(offscreen)
+
+        // 确保克隆节点内的图片已解码，避免渲染空白
+        const cloneImgs = Array.from(clone.querySelectorAll('img'))
+        cloneImgs.forEach((img) => {
+          try {
+            ;(img as HTMLImageElement).loading = 'eager'
+          } catch {}
+        })
+        try {
+          await Promise.all(
+            cloneImgs.map(
+              (img) =>
+                (img as HTMLImageElement).decode?.().catch(() => {}) ||
+                Promise.resolve()
+            )
+          )
+        } catch {}
+
+        // 使用克隆后的实际高度，防止高度为 0 或截断
+        height = clone.scrollHeight || height
+        offscreen.style.height = `${height}px`
+
+        const canvas = await html2canvas(clone, {
           backgroundColor: '#ffffff',
-          cacheBust: true,
-          pixelRatio: scale,
-          fetchRequestInit: {
-            mode: 'cors',
-            credentials: 'omit'
-          },
-          width: width,
-          height: height
+          scale,
+          useCORS: true,
+          allowTaint: false,
+          width,
+          height,
+          imageTimeout: 15000,
+          foreignObjectRendering: false,
+          windowWidth: width,
+          windowHeight: height,
+          scrollX: 0,
+          scrollY: 0
         })
 
-        return await new Promise((resolve, reject) => {
-          const img = new window.Image()
-          img.onload = () => {
-            const canvas = document.createElement('canvas')
-            canvas.width = width * scale
-            canvas.height = height * scale
-            const ctx = canvas.getContext('2d')
-            if (ctx) {
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // <-- 修复点
-              resolve(canvas.toDataURL('image/png'))
-            } else {
-              reject(new Error('无法获取 canvas 上下文'))
-            }
-          }
-          img.onerror = (err) => {
-            reject(err)
-          }
-          img.src = svgDataUrl
-        })
+        const dataUrl = canvas.toDataURL('image/png')
+        try {
+          document.body.removeChild(offscreen)
+        } catch {}
+        return dataUrl
       } catch (error) {
         console.error('生成新闻分享图片失败:', error)
         throw error
