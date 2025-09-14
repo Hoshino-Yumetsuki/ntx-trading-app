@@ -88,7 +88,7 @@ export function useNewsImageGenerator(
           } catch {}
         }
 
-        const scale = 2
+        const scale = 1
         const width = 600
         let height = node.scrollHeight
 

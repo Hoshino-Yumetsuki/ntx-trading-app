@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Alibaba PuHuiTi font faces */
-@font-face {
+/* @font-face {
   font-family: "AlibabaPuHuiTi";
   src:
     url("/fonts/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.woff2")
@@ -41,7 +41,7 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
-}
+} */
 
 @layer utilities {
   .text-balance {
@@ -77,7 +77,7 @@
   }
 
   /* Alibaba PuHuiTi utilities */
-  .font-alibaba-bold {
+  /* .font-alibaba-bold {
     font-weight: 700;
   }
   .font-alibaba-medium {
@@ -85,7 +85,7 @@
   }
   .font-alibaba-light {
     font-weight: 300;
-  }
+  } */
   /* 横向无缝滚动工具类 */
   .marquee {
     overflow-x: hidden;
