@@ -191,7 +191,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           <div className="content text-slate-700">
             <div
               ref={contentInnerRef}
-              // biome-ignore lint: flase
+              // biome-ignore lint: false
               dangerouslySetInnerHTML={renderMarkdown(content)}
               style={{
                 fontSize: contentFontSize,
