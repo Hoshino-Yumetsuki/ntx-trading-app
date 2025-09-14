@@ -1,23 +1,18 @@
 'use client'
 
 import { useCallback, useEffect, useState, forwardRef } from 'react'
-import { toSvg } from 'html-to-image' // <--- 修改点: 导入 toSvg
-import { svgAsPngUri } from 'save-svg-as-png' // <--- 新增点: 导入新库的方法
+import { toSvg } from 'html-to-image'
 import Image from 'next/image'
 import QRCode from 'qrcode'
 import type { UserInfo } from '@/src/types/user'
 import { preloadImages } from '@/src/utils/image'
 
-// --- Helper Functions ---
 function getBaseUrl(): string {
   if (typeof window !== 'undefined' && window.location.origin)
     return window.location.origin
   return process.env.NEXT_PUBLIC_BASE_URL || ''
 }
 
-/**
- * Invite Poster Component - Now wrapped in forwardRef
- */
 export const InvitePoster = forwardRef<
   HTMLDivElement,
   {
@@ -25,13 +20,11 @@ export const InvitePoster = forwardRef<
     qrDataUrl: string
   }
 >(({ userInfo, qrDataUrl }, ref) => {
-  // ref is now the second argument
   if (!userInfo) return null
 
   const code = String(userInfo.myInviteCode || '').toUpperCase()
 
   return (
-    // The forwarded ref is attached here
     <div
       ref={ref}
       className="relative bg-white overflow-hidden mx-auto"
@@ -181,24 +174,41 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
         await preloadImages(allImageUrls)
 
         await new Promise((resolve) => setTimeout(resolve, 100))
+        
+        const scale = 2;
+        const width = 600;
+        const height = 800;
+
         const svgDataUrl = await toSvg(node, {
           backgroundColor: '#ffffff',
           cacheBust: true,
-          pixelRatio: 2, // 保持2倍图以确保清晰度
+          pixelRatio: scale,
           fetchRequestInit: {
             mode: 'cors',
             credentials: 'omit'
           },
-          width: node.scrollWidth,
-          height: node.scrollHeight
+          width: width,
+          height: height
         })
 
-        const pngDataUrl = await svgAsPngUri(svgDataUrl, {
-          scale: 2 // 确保输出的PNG也是2倍大小
-        })
+        return await new Promise((resolve, reject) => {
+            const img = new window.Image()
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = width * scale;
+                canvas.height = height * scale;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/png'));
+                } else {
+                    reject(new Error('Could not get canvas context'));
+                }
+            };
+            img.onerror = reject;
+            img.src = svgDataUrl;
+        });
 
-
-        return pngDataUrl
       } catch (error) {
         console.error('Failed to generate invite share image:', error)
         return null

@@ -2,16 +2,11 @@
 
 import { useCallback, useState, useEffect } from 'react'
 import { toSvg } from 'html-to-image'
-import { svgAsPngUri } from 'save-svg-as-png'
 import QRCode from 'qrcode'
 import { API_BASE_URL } from '@/src/services/config'
 import { preloadImages } from '@/src/utils/image'
 import type { NewsItem } from '@/src/types/news'
 
-/**
- * Hook to use the news image generator.
- * It now returns data and a function, but does not render anything.
- */
 export function useNewsImageGenerator(
   newsItem: NewsItem | null,
   shareUrl?: string
@@ -87,27 +82,41 @@ export function useNewsImageGenerator(
         await preloadImages(imageUrls)
         await new Promise((resolve) => requestAnimationFrame(resolve))
 
-        // --- 核心修改 ---
-        // 1. 先生成 SVG Data URL
+        const scale = 2
+        const width = 600
+        const height = node.scrollHeight
+
         const svgDataUrl = await toSvg(node, {
           backgroundColor: '#ffffff',
           cacheBust: true,
-          pixelRatio: 2, // 保持2倍图以确保清晰度
+          pixelRatio: scale,
           fetchRequestInit: {
             mode: 'cors',
             credentials: 'omit'
           },
-          width: node.scrollWidth,
-          height: node.scrollHeight
+          width: width,
+          height: height
         })
 
-        // 2. 将 SVG 转换为 PNG Data URL
-        const pngDataUrl = await svgAsPngUri(svgDataUrl, {
-          scale: 2 // 确保输出的PNG也是2倍大小
+        return await new Promise((resolve, reject) => {
+          const img = new window.Image()
+          img.onload = () => {
+            const canvas = document.createElement('canvas')
+            canvas.width = width * scale
+            canvas.height = height * scale
+            const ctx = canvas.getContext('2d')
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // <-- 修复点
+              resolve(canvas.toDataURL('image/png'))
+            } else {
+              reject(new Error('无法获取 canvas 上下文'))
+            }
+          }
+          img.onerror = (err) => {
+            reject(err)
+          }
+          img.src = svgDataUrl
         })
-        // --- 修改结束 ---
-
-        return pngDataUrl // 返回PNG格式的数据
       } catch (error) {
         console.error('生成新闻分享图片失败:', error)
         throw error
