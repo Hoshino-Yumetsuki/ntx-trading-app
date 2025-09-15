@@ -161,7 +161,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             height={200}
             priority
             loading="eager"
-            unoptimized
           />
           <style jsx>{`
           .content :global(p) { margin: 0 0 1em 0; text-indent: 0; }
@@ -221,7 +220,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
                 width={150}
                 height={150}
                 className="w-[150px] h-[150px]"
-                unoptimized
                 priority
               />
             </div>

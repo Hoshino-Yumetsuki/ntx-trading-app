@@ -106,7 +106,6 @@ export const InvitePoster = forwardRef<
                     alt="QR"
                     width={120}
                     height={120}
-                    unoptimized
                   />
                 ) : (
                   <div
