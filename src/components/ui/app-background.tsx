@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from "next/image";
 
 export function AppBackground() {
   return (
@@ -23,5 +23,5 @@ export function AppBackground() {
         className="pointer-events-none fixed inset-0 -z-20 bg-[#F0F8FF]"
       />
     </>
-  )
+  );
 }

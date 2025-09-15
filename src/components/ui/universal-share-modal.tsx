@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   useState,
@@ -8,100 +8,99 @@ import {
   type ChangeEvent,
   type ComponentType,
   cloneElement,
-  isValidElement
-} from 'react'
-import { Button } from '@/src/components/ui/button'
+  isValidElement,
+} from "react";
+import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle
-} from '@/src/components/ui/dialog'
-import { Download, Share2, Copy, Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
-import NextImage from 'next/image'
-import jsqr from 'jsqr'
+  DialogTitle,
+} from "@/src/components/ui/dialog";
+import { Download, Share2, Copy, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import NextImage from "next/image";
+import jsqr from "jsqr";
 
 export interface ShareData {
-  title: string
-  text: string
-  url: string
-  qrCodeUrl?: string
+  title: string;
+  text: string;
+  url: string;
+  qrCodeUrl?: string;
 }
 
 export interface ShareAction {
-  label: string
-  icon?: ComponentType<{ className?: string }>
-  onClick: () => void
-  variant?: 'default' | 'outline' | 'ghost'
-  className?: string
+  label: string;
+  icon?: ComponentType<{ className?: string }>;
+  onClick: () => void;
+  variant?: "default" | "outline" | "ghost";
+  className?: string;
 }
 
 interface UniversalShareModalProps {
-  isOpen: boolean
-  onClose: () => void
-  title: string
-  shareData: ShareData
-  imageGenerator?: (node: HTMLDivElement | null) => Promise<string | null>
-  posterComponent?: React.ReactElement
-  showImagePreview?: boolean
-  customActions?: ShareAction[]
-  showDefaultShareButtons?: boolean
-  showCopyLinkButton?: boolean
-  onQrOverride?: (text: string) => void
-  showCustomQrUpload?: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  shareData: ShareData;
+  imageGenerator?: (node: HTMLDivElement | null) => Promise<string | null>;
+  posterComponent?: React.ReactElement;
+  showImagePreview?: boolean;
+  customActions?: ShareAction[];
+  showDefaultShareButtons?: boolean;
+  showCopyLinkButton?: boolean;
+  onQrOverride?: (text: string) => void;
+  showCustomQrUpload?: boolean;
 }
 
 const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const triggerUpload = () => fileInputRef.current?.click()
+  const triggerUpload = () => fileInputRef.current?.click();
 
   const handleFileChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (!file) return
+      const file = e.target.files?.[0];
+      if (!file) return;
 
       try {
-        const img = new window.Image()
-        img.src = URL.createObjectURL(file)
-        await img.decode()
+        const img = new window.Image();
+        img.src = URL.createObjectURL(file);
+        await img.decode();
 
-        const canvas = document.createElement('canvas')
-        canvas.width = img.naturalWidth
-        canvas.height = img.naturalHeight
-        const ctx = canvas.getContext('2d', { willReadFrequently: true })
-        if (!ctx) throw new Error('无法获取 canvas 上下文')
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (!ctx) throw new Error("无法获取 canvas 上下文");
 
-        ctx.drawImage(img, 0, 0)
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const result = jsqr(imageData.data, imageData.width, imageData.height)
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const result = jsqr(imageData.data, imageData.width, imageData.height);
 
         if (result?.data) {
-          onQrScanSuccess(result.data)
-          toast.success('二维码识别成功', {
-            description: '将使用自定义二维码内容'
-          })
+          onQrScanSuccess(result.data);
+          toast.success("二维码识别成功", {
+            description: "将使用自定义二维码内容",
+          });
         } else {
-          toast.error('识别失败', {
-            description: '未能识别到二维码'
-          })
+          toast.error("识别失败", {
+            description: "未能识别到二维码",
+          });
         }
       } catch (error) {
-        console.error('二维码识别异常:', error)
-        toast.error('识别失败', {
-          description: '处理图片时发生错误'
-        })
+        console.error("二维码识别异常:", error);
+        toast.error("识别失败", {
+          description: "处理图片时发生错误",
+        });
       } finally {
-        if (fileInputRef.current) fileInputRef.current.value = ''
+        if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
-    [onQrScanSuccess]
-  )
+    [onQrScanSuccess],
+  );
 
-  return { fileInputRef, triggerUpload, handleFileChange }
-}
-
+  return { fileInputRef, triggerUpload, handleFileChange };
+};
 
 export function UniversalShareModal({
   isOpen,
@@ -115,82 +114,84 @@ export function UniversalShareModal({
   showDefaultShareButtons = true,
   showCopyLinkButton = true,
   onQrOverride,
-  showCustomQrUpload = true
+  showCustomQrUpload = true,
 }: UniversalShareModalProps) {
-  const [generatedImage, setGeneratedImage] = useState<string>('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const posterRef = useRef<HTMLDivElement>(null)
-  const [previewContainerHeight, setPreviewContainerHeight] = useState(400); 
+  const [generatedImage, setGeneratedImage] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const posterRef = useRef<HTMLDivElement>(null);
+  const [previewContainerHeight, setPreviewContainerHeight] = useState(400);
 
-  const [isIOS, setIsIOS] = useState(false)
+  const [isIOS, setIsIOS] = useState(false);
   useEffect(() => {
-    const platform = navigator.platform
-    const userAgent = navigator.userAgent
-    
+    const platform = navigator.platform;
+    const userAgent = navigator.userAgent;
+
     let isIOSDevice =
       /iPad|iPhone|iPod/.test(platform) ||
-      (platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-    
+      (platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
     if (!isIOSDevice) {
-      isIOSDevice = /iPhone|iPad|iPod/.test(userAgent)
+      isIOSDevice = /iPhone|iPad|iPod/.test(userAgent);
     }
-    
-    setIsIOS(isIOSDevice)
-  }, [])
 
-  const downloadImage = useCallback((imageToDownload: string, imageTitle: string) => {
-    if (!imageToDownload) {
-      toast.error('图片尚未生成', {
-        description: '请稍后再试'
-      })
-      return
-    }
-    
-    if (isIOS) {
-      // --- 修复点：实现新的iOS下载逻辑 ---
-      // 1. 优先尝试直接下载
-      const link = document.createElement('a');
-      link.href = imageToDownload;
-      link.download = `${imageTitle}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // 2. 立即弹出提示，告知用户正在尝试，并预告后续操作
-      toast.info('正在尝试为您下载...', {
-        description: '若下载失败，将为您打开新页面手动保存。'
-      });
+    setIsIOS(isIOSDevice);
+  }, []);
 
-      // 3. 延迟后执行后备方案
-      setTimeout(() => {
-        const newWindow = window.open();
-        if (newWindow) {
-          newWindow.document.write(
-            `<html><head><title>保存海报</title><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}img{max-width:100%;max-height:80vh;border-radius:8px;}p{margin-top:20px;font-family:-apple-system,sans-serif}</style></head><body><img src="${imageToDownload}" alt="分享海报"><p><strong>请长按图片保存到相册</strong></p></body></html>`
-          );
-          newWindow.document.close();
-        }
-      }, 1500); // 延迟1.5秒，给用户足够的时间看提示和响应原生下载
-      // --- 修复结束 ---
-    } else {
-      // 非iOS设备的标准下载逻辑
-      const link = document.createElement('a');
-      link.href = imageToDownload;
-      link.download = `${imageTitle}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast.success('下载成功', {
-        description: '图片已保存到您的设备'
-      });
-    }
-  }, [isIOS]);
+  const downloadImage = useCallback(
+    (imageToDownload: string, imageTitle: string) => {
+      if (!imageToDownload) {
+        toast.error("图片尚未生成", {
+          description: "请稍后再试",
+        });
+        return;
+      }
 
+      if (isIOS) {
+        // --- 修复点：实现新的iOS下载逻辑 ---
+        // 1. 优先尝试直接下载
+        const link = document.createElement("a");
+        link.href = imageToDownload;
+        link.download = `${imageTitle}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 2. 立即弹出提示，告知用户正在尝试，并预告后续操作
+        toast.info("正在尝试为您下载...", {
+          description: "若下载失败，将为您打开新页面手动保存。",
+        });
+
+        // 3. 延迟后执行后备方案
+        setTimeout(() => {
+          const newWindow = window.open();
+          if (newWindow) {
+            newWindow.document.write(
+              `<html><head><title>保存海报</title><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}img{max-width:100%;max-height:80vh;border-radius:8px;}p{margin-top:20px;font-family:-apple-system,sans-serif}</style></head><body><img src="${imageToDownload}" alt="分享海报"><p><strong>请长按图片保存到相册</strong></p></body></html>`,
+            );
+            newWindow.document.close();
+          }
+        }, 1500); // 延迟1.5秒，给用户足够的时间看提示和响应原生下载
+        // --- 修复结束 ---
+      } else {
+        // 非iOS设备的标准下载逻辑
+        const link = document.createElement("a");
+        link.href = imageToDownload;
+        link.download = `${imageTitle}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("下载成功", {
+          description: "图片已保存到您的设备",
+        });
+      }
+    },
+    [isIOS],
+  );
 
   useEffect(() => {
     if (isOpen && posterRef.current) {
       const posterElement = posterRef.current;
-      const observer = new ResizeObserver(entries => {
+      const observer = new ResizeObserver((entries) => {
         const entry = entries[0];
         if (entry) {
           const fullHeight = entry.target.scrollHeight;
@@ -204,103 +205,107 @@ export function UniversalShareModal({
     }
   }, [isOpen, posterComponent]);
 
-
   const handleGenerateAndSave = useCallback(async () => {
     if (generatedImage) {
-      downloadImage(generatedImage, shareData.title)
-      return
+      downloadImage(generatedImage, shareData.title);
+      return;
     }
 
-    if (!imageGenerator) return
-    setIsGenerating(true)
+    if (!imageGenerator) return;
+    setIsGenerating(true);
     try {
-      const imageDataUrl = await imageGenerator(posterRef.current)
+      const imageDataUrl = await imageGenerator(posterRef.current);
       if (imageDataUrl) {
-        setGeneratedImage(imageDataUrl)
-        downloadImage(imageDataUrl, shareData.title)
+        setGeneratedImage(imageDataUrl);
+        downloadImage(imageDataUrl, shareData.title);
       } else {
-        toast.error('生成失败', {
-          description: '无法生成分享图片'
-        })
+        toast.error("生成失败", {
+          description: "无法生成分享图片",
+        });
       }
     } catch (error) {
-      console.error('Failed to generate image:', error)
-      toast.error('生成失败', {
-        description: '无法生成分享图片'
-      })
+      console.error("Failed to generate image:", error);
+      toast.error("生成失败", {
+        description: "无法生成分享图片",
+      });
     } finally {
-      setIsGenerating(false)
+      setIsGenerating(false);
     }
-  }, [imageGenerator, generatedImage, downloadImage, shareData.title])
+  }, [imageGenerator, generatedImage, downloadImage, shareData.title]);
 
   useEffect(() => {
     if (isOpen) {
-      setGeneratedImage('')
+      setGeneratedImage("");
     }
-  }, [isOpen])
-  
+  }, [isOpen]);
+
   const copyLink = () => {
-    navigator.clipboard.writeText(shareData.url)
-    toast.success('复制成功', {
-      description: '链接已复制到剪贴板'
-    })
-  }
-  
+    navigator.clipboard.writeText(shareData.url);
+    toast.success("复制成功", {
+      description: "链接已复制到剪贴板",
+    });
+  };
+
   const onQrScanSuccess = useCallback(
     (qrText: string) => {
-      onQrOverride?.(qrText)
+      onQrOverride?.(qrText);
     },
-    [onQrOverride]
-  )
-  
+    [onQrOverride],
+  );
+
   const restoreDefaultQr = () => {
-    onQrOverride?.('')
-    toast.success('已还原默认二维码')
-  }
-  
+    onQrOverride?.("");
+    toast.success("已还原默认二维码");
+  };
+
   const { fileInputRef, triggerUpload, handleFileChange } =
-    useQrCodeScanner(onQrScanSuccess)
+    useQrCodeScanner(onQrScanSuccess);
 
   const posterWithRef =
     posterComponent && isValidElement(posterComponent)
-      ? cloneElement(posterComponent as React.ReactElement<{ ref: React.Ref<HTMLDivElement> }>, { ref: posterRef })
-      : null
+      ? cloneElement(
+          posterComponent as React.ReactElement<{
+            ref: React.Ref<HTMLDivElement>;
+          }>,
+          { ref: posterRef },
+        )
+      : null;
 
   const shareToTelegram = () => {
-    const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareText)}`
-    window.open(shareUrl, '_blank')
-  }
+    const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareText)}`;
+    window.open(shareUrl, "_blank");
+  };
 
   const shareToTwitter = () => {
-    const shareText = `${shareData.title}\n\n${shareData.text}`
-    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareData.url)}`
-    window.open(shareUrl, '_blank')
-  }
+    const shareText = `${shareData.title}\n\n${shareData.text}`;
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareData.url)}`;
+    window.open(shareUrl, "_blank");
+  };
 
   const shareToWhatsApp = () => {
-    const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`
-    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
-    window.open(shareUrl, '_blank')
-  }
+    const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
+    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(shareUrl, "_blank");
+  };
 
   const shareNative = async () => {
     const shareDataPayload = {
       title: shareData.title,
       text: shareData.text,
-      url: shareData.url
-    }
+      url: shareData.url,
+    };
     try {
       if (navigator.share) {
-        await navigator.share(shareDataPayload)
+        await navigator.share(shareDataPayload);
       } else {
-        copyLink()
+        copyLink();
       }
     } catch (error) {
-      console.error('分享失败:', error)
-      copyLink()
+      console.error("分享失败:", error);
+      copyLink();
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -312,34 +317,40 @@ export function UniversalShareModal({
         <div className="space-y-4">
           {posterWithRef && showImagePreview && (
             <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
-              <div style={{ 
-                  width: '300px', 
+              <div
+                style={{
+                  width: "300px",
                   height: `${previewContainerHeight}px`,
-                  position: 'relative',
-                  transition: 'height 0.2s ease-in-out'
-              }}>
-                <div style={{
-                    position: 'absolute',
+                  position: "relative",
+                  transition: "height 0.2s ease-in-out",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
                     top: 0,
                     left: 0,
-                    transform: 'scale(0.5)',
-                    transformOrigin: 'top left'
-                }}>
-                    {posterWithRef}
+                    transform: "scale(0.5)",
+                    transformOrigin: "top left",
+                  }}
+                >
+                  {posterWithRef}
                 </div>
               </div>
-              
+
               {isGenerating && (
                 <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
                   <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                  <p className="mt-2 text-sm text-slate-600">正在生成高清图...</p>
+                  <p className="mt-2 text-sm text-slate-600">
+                    正在生成高清图...
+                  </p>
                 </div>
               )}
             </div>
           )}
 
           {showCustomQrUpload && onQrOverride && (
-             <div>
+            <div>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -379,7 +390,7 @@ export function UniversalShareModal({
                 className="w-full"
               >
                 <Download className="w-4 h-4 mr-2" />
-                {isGenerating ? '正在处理...' : '保存分享海报'}
+                {isGenerating ? "正在处理..." : "保存分享海报"}
               </Button>
             )}
 
@@ -393,20 +404,20 @@ export function UniversalShareModal({
             {customActions.length > 0 && (
               <div className="space-y-2">
                 {customActions.map((action, index) => {
-                  const IconComponent = action.icon
+                  const IconComponent = action.icon;
                   return (
                     <Button
                       key={index}
-                      variant={action.variant || 'outline'}
+                      variant={action.variant || "outline"}
                       onClick={action.onClick}
-                      className={action.className || 'w-full'}
+                      className={action.className || "w-full"}
                     >
                       {IconComponent && (
                         <IconComponent className="w-4 h-4 mr-2" />
                       )}
                       {action.label}
                     </Button>
-                  )
+                  );
                 })}
               </div>
             )}
@@ -468,5 +479,5 @@ export function UniversalShareModal({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

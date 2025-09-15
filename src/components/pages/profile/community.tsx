@@ -1,71 +1,71 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
-import { ChevronLeft, User } from 'lucide-react'
-import { UserService } from '@/src/services/user'
-import { AuthService } from '@/src/services/auth'
-import type { CommunityResponse, UserInfo } from '@/src/types/user'
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { ChevronLeft, User } from "lucide-react";
+import { UserService } from "@/src/services/user";
+import { AuthService } from "@/src/services/auth";
+import type { CommunityResponse, UserInfo } from "@/src/types/user";
 
 interface CommunityPageProps {
-  onBack: () => void
+  onBack: () => void;
 }
 
 export default function CommunityPage({ onBack }: CommunityPageProps) {
-  const [loading, setLoading] = useState(true)
-  const [userInfoLoading, setUserInfoLoading] = useState(true)
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
+  const [loading, setLoading] = useState(true);
+  const [userInfoLoading, setUserInfoLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [communityData, setCommunityData] = useState<CommunityResponse>({
     communityUserCount: 0,
     directInviteCount: 0,
-    communityUsers: []
-  })
+    communityUsers: [],
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         // token 校验，避免无效请求
-        const token = AuthService.getToken()
+        const token = AuthService.getToken();
         if (!token) {
-          toast.error('请先登录以查看社区信息')
+          toast.error("请先登录以查看社区信息");
           setCommunityData({
             communityUserCount: 0,
             directInviteCount: 0,
-            communityUsers: []
-          })
-          return
+            communityUsers: [],
+          });
+          return;
         }
-        const data = await UserService.getMyTeams()
-        setCommunityData(data)
+        const data = await UserService.getMyTeams();
+        setCommunityData(data);
       } catch (err: any) {
-        console.error('获取社区数据失败:', err)
-        toast.error(err?.message || '获取社区数据失败')
+        console.error("获取社区数据失败:", err);
+        toast.error(err?.message || "获取社区数据失败");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   // 获取用户信息，包括邀请人信息
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        setUserInfoLoading(true)
-        const token = AuthService.getToken()
-        if (!token) return
+        setUserInfoLoading(true);
+        const token = AuthService.getToken();
+        if (!token) return;
 
-        const data = await UserService.getUserInfo()
-        setUserInfo(data)
+        const data = await UserService.getUserInfo();
+        setUserInfo(data);
       } catch (err: any) {
-        console.error('获取用户信息失败:', err)
+        console.error("获取用户信息失败:", err);
       } finally {
-        setUserInfoLoading(false)
+        setUserInfoLoading(false);
       }
-    }
-    fetchUserInfo()
-  }, [])
+    };
+    fetchUserInfo();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center font-inter antialiased">
@@ -188,5 +188,5 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { LoginPage } from '@/src/components/pages/login'
-import { AuthProvider } from '@/src/contexts/AuthContext'
-import { LanguageProvider } from '@/src/contexts/language-context'
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { LoginPage } from "@/src/components/pages/login";
+import { AuthProvider } from "@/src/contexts/AuthContext";
+import { LanguageProvider } from "@/src/contexts/language-context";
 
 function RegisterAppContent() {
-  const searchParams = useSearchParams()
-  const invite = searchParams.get('invite') || ''
+  const searchParams = useSearchParams();
+  const invite = searchParams.get("invite") || "";
 
-  return <LoginPage initialMode="register" initialInviteCode={invite} />
+  return <LoginPage initialMode="register" initialInviteCode={invite} />;
 }
 
 export default function RegisterPage() {
@@ -22,5 +22,5 @@ export default function RegisterPage() {
         </Suspense>
       </AuthProvider>
     </LanguageProvider>
-  )
+  );
 }

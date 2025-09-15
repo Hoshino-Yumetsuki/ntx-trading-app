@@ -1,56 +1,56 @@
-'use client'
+"use client";
 
-import { Card } from '@/src/components/ui/card'
-import { Shield, ChevronRight, DollarSign, FileText } from 'lucide-react'
-import { useLanguage } from '@/src/contexts/language-context'
-import { useRouter } from 'next/navigation'
+import { Card } from "@/src/components/ui/card";
+import { Shield, ChevronRight, DollarSign, FileText } from "lucide-react";
+import { useLanguage } from "@/src/contexts/language-context";
+import { useRouter } from "next/navigation";
 
 interface QuickActionsCardProps {
-  onNavigate: (page: 'assets' | 'security') => void
+  onNavigate: (page: "assets" | "security") => void;
 }
 
 export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
-  const { t } = useLanguage()
-  const router = useRouter()
+  const { t } = useLanguage();
+  const router = useRouter();
 
   const menuItems = [
     {
       icon: DollarSign,
-      label: t('profile.menu.assets.title'),
-      description: t('profile.menu.assets.description'),
-      onClick: () => onNavigate('assets')
+      label: t("profile.menu.assets.title"),
+      description: t("profile.menu.assets.description"),
+      onClick: () => onNavigate("assets"),
     },
     {
       icon: Shield,
-      label: t('profile.menu.security.title'),
-      description: t('profile.menu.security.description'),
-      onClick: () => onNavigate('security')
+      label: t("profile.menu.security.title"),
+      description: t("profile.menu.security.description"),
+      onClick: () => onNavigate("security"),
     },
     {
       icon: FileText,
-      label: t('profile.menu.orders.title') || '我的订单',
+      label: t("profile.menu.orders.title") || "我的订单",
       description:
-        t('profile.menu.orders.description') || '查看购买记录与支付状态',
-      onClick: () => router.push('/orders')
-    }
-  ]
+        t("profile.menu.orders.description") || "查看购买记录与支付状态",
+      onClick: () => router.push("/orders"),
+    },
+  ];
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-slate-800 font-medium">
-          {t('profile.quickActions')}
+          {t("profile.quickActions")}
         </h3>
       </div>
 
       <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
         {menuItems.map((item, index) => {
-          const Icon = item.icon
+          const Icon = item.icon;
           return (
             <button
               type="button"
               key={index}
-              className={`flex items-center justify-between p-3 hover:bg-white/40 transition-all w-full text-left ${index < menuItems.length - 1 ? 'border-b border-white/20' : ''}`}
+              className={`flex items-center justify-between p-3 hover:bg-white/40 transition-all w-full text-left ${index < menuItems.length - 1 ? "border-b border-white/20" : ""}`}
               onClick={item.onClick}
             >
               <div className="flex items-center space-x-3">
@@ -64,9 +64,9 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
               </div>
               <ChevronRight className="w-5 h-5 text-slate-500" />
             </button>
-          )
+          );
         })}
       </Card>
     </div>
-  )
+  );
 }

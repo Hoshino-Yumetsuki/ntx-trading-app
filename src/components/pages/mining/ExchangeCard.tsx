@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
+import { useState } from "react";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/src/components/ui/dialog'
-import { ExternalLink, UserX, UserPlus, Copy } from 'lucide-react'
-import type { Exchange, UserExchange } from '@/src/services/mining'
-import { useLanguage } from '@/src/contexts/language-context'
-import Image from 'next/image'
-import { toast } from '@/src/hooks/use-toast'
+  DialogTitle,
+} from "@/src/components/ui/dialog";
+import { ExternalLink, UserX, UserPlus, Copy } from "lucide-react";
+import type { Exchange, UserExchange } from "@/src/services/mining";
+import { useLanguage } from "@/src/contexts/language-context";
+import Image from "next/image";
+import { toast } from "@/src/hooks/use-toast";
 
 interface ExchangeCardProps {
-  exchanges: Exchange[]
-  userExchanges: UserExchange[]
-  exchangesLoading: boolean
-  onBindExchange: (exchangeId: number, uid: string) => void
-  onUnbindExchange: (exchangeId: number) => void
+  exchanges: Exchange[];
+  userExchanges: UserExchange[];
+  exchangesLoading: boolean;
+  onBindExchange: (exchangeId: number, uid: string) => void;
+  onUnbindExchange: (exchangeId: number) => void;
 }
 
 export function ExchangeCard({
@@ -30,59 +30,59 @@ export function ExchangeCard({
   userExchanges,
   exchangesLoading,
   onBindExchange,
-  onUnbindExchange
+  onUnbindExchange,
 }: ExchangeCardProps) {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
   const [bindingExchangeId, setBindingExchangeId] = useState<number | null>(
-    null
-  )
-  const [uid, setUid] = useState('')
-  const [isBindDialogOpen, setIsBindDialogOpen] = useState(false)
+    null,
+  );
+  const [uid, setUid] = useState("");
+  const [isBindDialogOpen, setIsBindDialogOpen] = useState(false);
   const [isBindRequiredDialogOpen, setIsBindRequiredDialogOpen] =
-    useState(false)
+    useState(false);
 
   // 解析官网链接、邀请链接和邀请码
   const getUrls = (
-    cexUrl: string | undefined
+    cexUrl: string | undefined,
   ): { miningUrl: string; registerUrl: string; inviteCode: string } => {
     if (!cexUrl) {
-      return { miningUrl: '#', registerUrl: '#', inviteCode: '' }
+      return { miningUrl: "#", registerUrl: "#", inviteCode: "" };
     }
     // 新格式："https://官网:https://注册链接:邀请码"
     try {
-      const firstScheme = cexUrl.indexOf('://')
-      const secondScheme = cexUrl.indexOf('://', firstScheme + 3)
+      const firstScheme = cexUrl.indexOf("://");
+      const secondScheme = cexUrl.indexOf("://", firstScheme + 3);
       if (firstScheme !== -1 && secondScheme !== -1) {
         // 第二个 scheme 之前最近的冒号即为分隔符（避免把 http(s):// 的冒号当作分隔符）
-        const sep = cexUrl.lastIndexOf(':', secondScheme - 1)
+        const sep = cexUrl.lastIndexOf(":", secondScheme - 1);
         const normalizeUrl = (u: string) => {
-          let s = u.trim()
-          if (!s) return s
+          let s = u.trim();
+          if (!s) return s;
           // 完整协议
-          if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s
+          if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s;
           // 修正类似 http:/example.com
-          s = s.replace(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(?!\/)/, '$1://')
-          if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s
+          s = s.replace(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(?!\/)/, "$1://");
+          if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s;
           // 去掉异常的前缀 ':/'
-          s = s.replace(/^:\/+/, '')
+          s = s.replace(/^:\/+/, "");
           // 协议相对 //domain
-          if (/^\/\//.test(s)) return `https:${s}`
+          if (/^\/\//.test(s)) return `https:${s}`;
           // 去掉开头的斜杠，避免被当作相对路径
-          s = s.replace(/^\/+/, '')
-          return `https://${s}`
-        }
+          s = s.replace(/^\/+/, "");
+          return `https://${s}`;
+        };
 
-        const miningUrl = normalizeUrl(cexUrl.slice(0, sep))
-        const rest = cexUrl.slice(sep + 1)
-        const schemeIdx = rest.indexOf('://')
-        const afterScheme = schemeIdx >= 0 ? schemeIdx + 3 : 0
-        const codeSep = rest.indexOf(':', afterScheme)
+        const miningUrl = normalizeUrl(cexUrl.slice(0, sep));
+        const rest = cexUrl.slice(sep + 1);
+        const schemeIdx = rest.indexOf("://");
+        const afterScheme = schemeIdx >= 0 ? schemeIdx + 3 : 0;
+        const codeSep = rest.indexOf(":", afterScheme);
         if (codeSep !== -1) {
-          const registerUrl = normalizeUrl(rest.slice(0, codeSep))
-          const inviteCode = rest.slice(codeSep + 1)
-          return { miningUrl, registerUrl, inviteCode }
+          const registerUrl = normalizeUrl(rest.slice(0, codeSep));
+          const inviteCode = rest.slice(codeSep + 1);
+          return { miningUrl, registerUrl, inviteCode };
         }
-        return { miningUrl, registerUrl: normalizeUrl(rest), inviteCode: '' }
+        return { miningUrl, registerUrl: normalizeUrl(rest), inviteCode: "" };
       }
     } catch (_e) {
       // ignore and fallback
@@ -91,52 +91,58 @@ export function ExchangeCard({
     // 旧/异常格式兜底：尝试用 URL 解析邀请码
     try {
       const normalizeUrl = (u: string) => {
-        let s = u.trim()
-        if (!s) return s
-        if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s
-        s = s.replace(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(?!\/)/, '$1://')
-        if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s
-        s = s.replace(/^:\/+/, '')
-        if (/^\/\//.test(s)) return `https:${s}`
-        s = s.replace(/^\/+/, '')
-        return `https://${s}`
-      }
-      const single = normalizeUrl(cexUrl)
-      const url = new URL(single)
-      const possibleParams = ['code', 'invite', 'inviteCode', 'ref', 'referral']
-      let inviteCode = ''
+        let s = u.trim();
+        if (!s) return s;
+        if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s;
+        s = s.replace(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(?!\/)/, "$1://");
+        if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s;
+        s = s.replace(/^:\/+/, "");
+        if (/^\/\//.test(s)) return `https:${s}`;
+        s = s.replace(/^\/+/, "");
+        return `https://${s}`;
+      };
+      const single = normalizeUrl(cexUrl);
+      const url = new URL(single);
+      const possibleParams = [
+        "code",
+        "invite",
+        "inviteCode",
+        "ref",
+        "referral",
+      ];
+      let inviteCode = "";
       for (const p of possibleParams) {
-        const v = url.searchParams.get(p)
+        const v = url.searchParams.get(p);
         if (v) {
-          inviteCode = v
-          break
+          inviteCode = v;
+          break;
         }
       }
-      return { miningUrl: single, registerUrl: single, inviteCode }
+      return { miningUrl: single, registerUrl: single, inviteCode };
     } catch (_e) {
       // 实在无法解析时，原样回退
-      return { miningUrl: cexUrl, registerUrl: cexUrl, inviteCode: '' }
+      return { miningUrl: cexUrl, registerUrl: cexUrl, inviteCode: "" };
     }
-  }
+  };
 
   const handleBindClick = (exchangeId: number) => {
-    setBindingExchangeId(exchangeId)
-    setUid('')
-    setIsBindDialogOpen(true)
-  }
+    setBindingExchangeId(exchangeId);
+    setUid("");
+    setIsBindDialogOpen(true);
+  };
 
   const handleBindConfirm = () => {
     if (bindingExchangeId && uid.trim()) {
-      onBindExchange(bindingExchangeId, uid.trim())
-      setIsBindDialogOpen(false)
-      setBindingExchangeId(null)
-      setUid('')
+      onBindExchange(bindingExchangeId, uid.trim());
+      setIsBindDialogOpen(false);
+      setBindingExchangeId(null);
+      setUid("");
     }
-  }
+  };
 
   const handleUnbind = (exchangeId: number) => {
-    onUnbindExchange(exchangeId)
-  }
+    onUnbindExchange(exchangeId);
+  };
 
   return (
     <>
@@ -162,9 +168,9 @@ export function ExchangeCard({
         ) : exchanges.length > 0 ? (
           exchanges.map((exchange) => {
             const isUserBound = userExchanges.some(
-              (ue) => ue.id === exchange.id
-            )
-            const { miningUrl } = getUrls(exchange.cex_url)
+              (ue) => ue.id === exchange.id,
+            );
+            const { miningUrl } = getUrls(exchange.cex_url);
             return (
               <div
                 key={exchange.id}
@@ -191,7 +197,7 @@ export function ExchangeCard({
                       {exchange.name}
                     </p>
                     <p className="text-slate-500 text-xs mt-0.5">
-                      {t('mining.exchange.efficiency')}:{' '}
+                      {t("mining.exchange.efficiency")}:{" "}
                       {exchange.mining_efficiency.toFixed(1)}%
                     </p>
                   </div>
@@ -203,16 +209,16 @@ export function ExchangeCard({
                     variant="outline"
                     onClick={() => {
                       if (isUserBound) {
-                        window.open(miningUrl, '_blank')
+                        window.open(miningUrl, "_blank");
                       } else {
-                        setBindingExchangeId(exchange.id)
-                        setIsBindRequiredDialogOpen(true)
+                        setBindingExchangeId(exchange.id);
+                        setIsBindRequiredDialogOpen(true);
                       }
                     }}
                     className="h-8 px-3 text-xs bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:text-green-800"
                   >
                     <ExternalLink className="w-3 h-3 mr-1" />
-                    {t('mining.exchange.goMining')}
+                    {t("mining.exchange.goMining")}
                   </Button>
 
                   {isUserBound ? (
@@ -223,7 +229,7 @@ export function ExchangeCard({
                       className="h-8 px-3 text-xs"
                     >
                       <UserX className="w-3 h-3 mr-1" />
-                      {t('mining.exchange.unbind')}
+                      {t("mining.exchange.unbind")}
                     </Button>
                   ) : (
                     <Button
@@ -232,21 +238,21 @@ export function ExchangeCard({
                       className="h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       <UserPlus className="w-3 h-3 mr-1" />
-                      {t('mining.exchange.bind')}
+                      {t("mining.exchange.bind")}
                     </Button>
                   )}
                 </div>
               </div>
-            )
+            );
           })
         ) : (
           <div className="text-center py-8">
             <ExternalLink className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-500 mb-2">
-              {t('mining.exchange.noExchanges')}
+              {t("mining.exchange.noExchanges")}
             </p>
             <p className="text-sm text-gray-400">
-              {t('mining.exchange.tryLater')}
+              {t("mining.exchange.tryLater")}
             </p>
           </div>
         )}
@@ -257,9 +263,11 @@ export function ExchangeCard({
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[480px] max-h-[80vh] overflow-y-auto">
           {bindingExchangeId &&
             (() => {
-              const exchange = exchanges.find((e) => e.id === bindingExchangeId)
-              if (!exchange) return null
-              const { registerUrl, inviteCode } = getUrls(exchange.cex_url)
+              const exchange = exchanges.find(
+                (e) => e.id === bindingExchangeId,
+              );
+              if (!exchange) return null;
+              const { registerUrl, inviteCode } = getUrls(exchange.cex_url);
 
               return (
                 <>
@@ -284,13 +292,13 @@ export function ExchangeCard({
 
                       {/* 交易所名称 */}
                       <DialogTitle className="text-xl font-bold text-slate-800">
-                        {exchange.name}{' '}
+                        {exchange.name}{" "}
                       </DialogTitle>
 
                       {/* 描述 */}
                       <DialogDescription className="text-center text-slate-600">
-                        {t('mining.exchange.bindSteps') ||
-                          '绑定您的交易所账户以开始挖矿。'}
+                        {t("mining.exchange.bindSteps") ||
+                          "绑定您的交易所账户以开始挖矿。"}
                       </DialogDescription>
                     </div>
                   </DialogHeader>
@@ -302,7 +310,7 @@ export function ExchangeCard({
                     </p>
                     <ol className="list-decimal pl-5 space-y-1">
                       <li>
-                        打开 {exchange.name || 'HTX'} 交易所 APP/Web
+                        打开 {exchange.name || "HTX"} 交易所 APP/Web
                         的「个人中心」
                       </li>
                       <li>找到并复制您的 UID</li>
@@ -317,7 +325,7 @@ export function ExchangeCard({
                   <div className="flex justify-center mb-6">
                     <div className="bg-blue-50 rounded-xl p-4 text-center min-w-[120px]">
                       <div className="text-sm text-blue-600 font-medium mb-1">
-                        {t('mining.exchange.efficiency') || '挖矿效率'}
+                        {t("mining.exchange.efficiency") || "挖矿效率"}
                       </div>
                       <div className="text-2xl font-bold text-blue-600">
                         {exchange.mining_efficiency.toFixed(2)}%
@@ -333,18 +341,18 @@ export function ExchangeCard({
                           1
                         </div>
                         <h3 className="font-semibold text-slate-800">
-                          {t('mining.exchange.step1') || '第一步：通过链接注册'}
+                          {t("mining.exchange.step1") || "第一步：通过链接注册"}
                         </h3>
                       </div>
 
                       <div className="ml-8 space-y-3">
                         <Button
                           type="button"
-                          onClick={() => window.open(registerUrl, '_blank')}
+                          onClick={() => window.open(registerUrl, "_blank")}
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                         >
                           <ExternalLink className="w-4 h-4 mr-2" />
-                          {t('mining.exchange.goRegister') || '去注册'}
+                          {t("mining.exchange.goRegister") || "去注册"}
                         </Button>
 
                         {/* 显示邀请码 */}
@@ -362,8 +370,8 @@ export function ExchangeCard({
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => {
-                                  navigator.clipboard.writeText(inviteCode)
-                                  toast({ description: '邀请码已复制' })
+                                  navigator.clipboard.writeText(inviteCode);
+                                  toast({ description: "邀请码已复制" });
                                 }}
                                 className="h-7 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-100"
                               >
@@ -377,8 +385,8 @@ export function ExchangeCard({
                         <p className="text-xs text-orange-600 flex items-start space-x-1">
                           <span>⚠️</span>
                           <span>
-                            {t('mining.exchange.registerWarning') ||
-                              '仅通过本链接注册的新用户可以进行绑定'}
+                            {t("mining.exchange.registerWarning") ||
+                              "仅通过本链接注册的新用户可以进行绑定"}
                           </span>
                         </p>
                       </div>
@@ -391,16 +399,16 @@ export function ExchangeCard({
                           2
                         </div>
                         <h3 className="font-semibold text-slate-800">
-                          {t('mining.exchange.step2') ||
-                            '第二步：绑定交易所UID：绑定UID'}
+                          {t("mining.exchange.step2") ||
+                            "第二步：绑定交易所UID：绑定UID"}
                         </h3>
                       </div>
 
                       <div className="ml-8 space-y-3">
                         <Input
                           placeholder={
-                            t('mining.exchange.uidPlaceholder') ||
-                            '请输入交易所UID'
+                            t("mining.exchange.uidPlaceholder") ||
+                            "请输入交易所UID"
                           }
                           value={uid}
                           onChange={(e) => setUid(e.target.value)}
@@ -410,8 +418,8 @@ export function ExchangeCard({
                         <p className="text-xs text-orange-600 flex items-start space-x-1">
                           <span>⚠️</span>
                           <span>
-                            {t('mining.exchange.uidWarning') ||
-                              '仅绑定通过本链接注册的交易所UID，其他UID无法参与挖矿'}
+                            {t("mining.exchange.uidWarning") ||
+                              "仅绑定通过本链接注册的交易所UID，其他UID无法参与挖矿"}
                           </span>
                         </p>
                       </div>
@@ -425,7 +433,7 @@ export function ExchangeCard({
                       onClick={() => setIsBindDialogOpen(false)}
                       className="flex-1"
                     >
-                      {t('common.cancel') || '取消'}
+                      {t("common.cancel") || "取消"}
                     </Button>
                     <Button
                       type="button"
@@ -433,11 +441,11 @@ export function ExchangeCard({
                       disabled={!uid.trim()}
                       className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      {t('mining.exchange.bind') || '绑定'}
+                      {t("mining.exchange.bind") || "绑定"}
                     </Button>
                   </DialogFooter>
                 </>
-              )
+              );
             })()}
         </DialogContent>
       </Dialog>
@@ -450,7 +458,7 @@ export function ExchangeCard({
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[400px]">
           <DialogHeader>
             <DialogTitle className="text-center text-xl font-bold text-slate-800">
-              {t('mining.exchange.bindRequired') || '需要绑定交易所'}
+              {t("mining.exchange.bindRequired") || "需要绑定交易所"}
             </DialogTitle>
           </DialogHeader>
 
@@ -459,8 +467,8 @@ export function ExchangeCard({
               <UserPlus className="w-16 h-16 text-blue-500" />
             </div>
             <p className="text-slate-700 mb-4">
-              {t('mining.exchange.bindRequiredDesc') ||
-                '您需要先绑定交易所账户才能开始挖矿'}
+              {t("mining.exchange.bindRequiredDesc") ||
+                "您需要先绑定交易所账户才能开始挖矿"}
             </p>
           </div>
 
@@ -470,22 +478,22 @@ export function ExchangeCard({
               variant="outline"
               className="flex-1"
             >
-              {t('common.cancel') || '取消'}
+              {t("common.cancel") || "取消"}
             </Button>
             <Button
               onClick={() => {
-                setIsBindRequiredDialogOpen(false)
+                setIsBindRequiredDialogOpen(false);
                 if (bindingExchangeId !== null) {
-                  handleBindClick(bindingExchangeId)
+                  handleBindClick(bindingExchangeId);
                 }
               }}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {t('mining.exchange.bind') || '立即绑定'}
+              {t("mining.exchange.bind") || "立即绑定"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

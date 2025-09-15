@@ -1,38 +1,38 @@
-'use client'
+"use client";
 
-import { Wallet, History } from 'lucide-react'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { useLanguage } from '@/src/contexts/language-context'
-import type { CommissionRecord } from '@/src/types/user'
+import { Wallet, History } from "lucide-react";
+import { Card, CardContent } from "@/src/components/ui/card";
+import { useLanguage } from "@/src/contexts/language-context";
+import type { CommissionRecord } from "@/src/types/user";
 
 interface CommissionHistoryProps {
-  records: CommissionRecord[]
-  loading: boolean
+  records: CommissionRecord[];
+  loading: boolean;
 }
 
 export function CommissionHistory({
   records,
-  loading
+  loading,
 }: CommissionHistoryProps) {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
 
   const formatBalance = (balance: number | undefined) => {
-    if (balance === undefined || balance === null) return '0.00'
-    return balance.toLocaleString('en-US', {
+    if (balance === undefined || balance === null) return "0.00";
+    return balance.toLocaleString("en-US", {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 6
-    })
-  }
+      maximumFractionDigits: 6,
+    });
+  };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+    return new Date(dateString).toLocaleString("zh-CN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   if (loading) {
     return (
@@ -46,7 +46,7 @@ export function CommissionHistory({
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   if (records.length === 0) {
@@ -54,10 +54,10 @@ export function CommissionHistory({
       <Card className="bg-white shadow-sm">
         <CardContent className="p-8 text-center">
           <History className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-          <p className="text-slate-600">{t('assets.noCommissionRecords')}</p>
+          <p className="text-slate-600">{t("assets.noCommissionRecords")}</p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -72,7 +72,7 @@ export function CommissionHistory({
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-slate-800">
-                    {t('assets.inviteCommission')}
+                    {t("assets.inviteCommission")}
                   </h4>
                   <p className="text-xs text-slate-600">
                     {formatDate(record.created_at)}
@@ -90,5 +90,5 @@ export function CommissionHistory({
         </Card>
       ))}
     </div>
-  )
+  );
 }

@@ -1,61 +1,61 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Wallet, ExternalLink, Copy, Check } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { useState } from "react";
+import { Wallet, ExternalLink, Copy, Check } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
-import { toast } from 'sonner'
-import { useLanguage } from '@/src/contexts/language-context'
-import type { UserInfo } from '@/src/types/user'
+  CardTitle,
+} from "@/src/components/ui/card";
+import { toast } from "sonner";
+import { useLanguage } from "@/src/contexts/language-context";
+import type { UserInfo } from "@/src/types/user";
 
 interface AssetsOverviewProps {
-  userInfo: UserInfo
-  onWithdraw: (type: 'usdt' | 'ntx') => void
+  userInfo: UserInfo;
+  onWithdraw: (type: "usdt" | "ntx") => void;
 }
 
 export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
-  const { t } = useLanguage()
-  const [addressCopied, setAddressCopied] = useState(false)
+  const { t } = useLanguage();
+  const [addressCopied, setAddressCopied] = useState(false);
 
   const formatBalance = (balance: number | undefined) => {
-    if (balance === undefined || balance === null) return '0.00'
+    if (balance === undefined || balance === null) return "0.00";
 
     // 对于非常大的数值，使用简化显示
     if (balance >= 1000000) {
-      return `${(balance / 1000000).toLocaleString('en-US', {
+      return `${(balance / 1000000).toLocaleString("en-US", {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}M`
+        maximumFractionDigits: 2,
+      })}M`;
     } else if (balance >= 1000) {
-      return `${(balance / 1000).toLocaleString('en-US', {
+      return `${(balance / 1000).toLocaleString("en-US", {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}K`
+        maximumFractionDigits: 2,
+      })}K`;
     }
 
-    return balance.toLocaleString('en-US', {
+    return balance.toLocaleString("en-US", {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 6
-    })
-  }
+      maximumFractionDigits: 6,
+    });
+  };
 
   const copyAddress = async () => {
     if (userInfo.bscAddress) {
       try {
-        await navigator.clipboard.writeText(userInfo.bscAddress)
-        setAddressCopied(true)
-        toast.success(t('common.copied'))
-        setTimeout(() => setAddressCopied(false), 2000)
+        await navigator.clipboard.writeText(userInfo.bscAddress);
+        setAddressCopied(true);
+        toast.success(t("common.copied"));
+        setTimeout(() => setAddressCopied(false), 2000);
       } catch (_error) {
-        toast.error(t('common.copyFailed'))
+        toast.error(t("common.copyFailed"));
       }
     }
-  }
+  };
 
   return (
     <>
@@ -76,11 +76,11 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
               </div>
               <Button
                 size="sm"
-                onClick={() => onWithdraw('usdt')}
+                onClick={() => onWithdraw("usdt")}
                 className="bg-blue-600 hover:bg-blue-700 text-white border-0"
               >
                 <ExternalLink className="w-4 h-4 mr-1" />
-                {t('assets.withdraw')}
+                {t("assets.withdraw")}
               </Button>
             </CardTitle>
           </CardHeader>
@@ -89,16 +89,16 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
               <p
                 className="font-bold text-slate-800 truncate"
                 style={{
-                  fontSize: 'clamp(1rem, 5vw, 1.5rem)',
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  fontSize: "clamp(1rem, 5vw, 1.5rem)",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {formatBalance(userInfo.usdtBalance)}
               </p>
               <p className="text-sm text-slate-600">
-                {t('assets.availableBalance')}
+                {t("assets.availableBalance")}
               </p>
             </div>
           </CardContent>
@@ -119,11 +119,11 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
               </div>
               <Button
                 size="sm"
-                onClick={() => onWithdraw('ntx')}
+                onClick={() => onWithdraw("ntx")}
                 className="bg-blue-600 hover:bg-blue-700 text-white border-0"
               >
                 <ExternalLink className="w-4 h-4 mr-1" />
-                {t('assets.withdraw')}
+                {t("assets.withdraw")}
               </Button>
             </CardTitle>
           </CardHeader>
@@ -132,16 +132,16 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
               <p
                 className="font-bold text-slate-800 truncate"
                 style={{
-                  fontSize: 'clamp(1rem, 5vw, 1.5rem)',
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  fontSize: "clamp(1rem, 5vw, 1.5rem)",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {formatBalance(userInfo.ntxBalance)}
               </p>
               <p className="text-sm text-slate-600">
-                {t('assets.availableBalance')}
+                {t("assets.availableBalance")}
               </p>
             </div>
           </CardContent>
@@ -157,7 +157,7 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
             </div>
             <div>
               <h3 className="font-semibold text-slate-800">
-                {t('assets.bscWalletAddress')}
+                {t("assets.bscWalletAddress")}
               </h3>
               <p className="text-sm text-slate-600">Binance Smart Chain</p>
             </div>
@@ -167,7 +167,7 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
           <div className="flex items-center justify-between">
             <div className="flex-1 mr-3">
               <p className="text-sm font-mono text-slate-700 break-all font-tektur-semibold">
-                {userInfo.bscAddress || t('assets.notSet')}
+                {userInfo.bscAddress || t("assets.notSet")}
               </p>
             </div>
             {userInfo.bscAddress && (
@@ -188,5 +188,5 @@ export function AssetsOverview({ userInfo, onWithdraw }: AssetsOverviewProps) {
         </CardContent>
       </Card>
     </>
-  )
+  );
 }

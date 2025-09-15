@@ -1,15 +1,19 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/src/components/ui/button'
+import { useState, useEffect } from "react";
+import { Button } from "@/src/components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Badge } from "@/src/components/ui/badge";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/components/ui/avatar";
 import {
   GraduationCap,
   Play,
@@ -18,93 +22,93 @@ import {
   TrendingUp,
   Shield,
   Target,
-  Loader2
-} from 'lucide-react'
-import type { Course } from '@/src/types/course'
-import { getAllCourses } from '@/src/services/courseService'
-import { processCourses } from '@/src/utils/courseUtils'
-import Image from 'next/image'
-import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
+  Loader2,
+} from "lucide-react";
+import type { Course } from "@/src/types/course";
+import { getAllCourses } from "@/src/services/courseService";
+import { processCourses } from "@/src/utils/courseUtils";
+import Image from "next/image";
+import { AcademyMarkdownReader } from "@/src/components/pages/academy/academy-reader";
 
 export function LearningResourcesPage({
   onReadingChange,
-  onNavigateTab
+  onNavigateTab,
 }: {
-  onReadingChange?: (reading: boolean) => void
-  onNavigateTab?: (tabId: string) => void
+  onReadingChange?: (reading: boolean) => void;
+  onNavigateTab?: (tabId: string) => void;
 }) {
-  const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
-  const [lockedCourses, setLockedCourses] = useState<Course[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string>('')
-  const [viewingCourse, setViewingCourse] = useState<Course | null>(null)
-  const [filterTab, setFilterTab] = useState<'practice' | 'advanced'>(
-    'practice'
-  )
+  const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([]);
+  const [lockedCourses, setLockedCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+  const [viewingCourse, setViewingCourse] = useState<Course | null>(null);
+  const [filterTab, setFilterTab] = useState<"practice" | "advanced">(
+    "practice",
+  );
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        setLoading(true)
-        const allCoursesData = await getAllCourses()
+        setLoading(true);
+        const allCoursesData = await getAllCourses();
 
         // Process courses to separate unlocked and locked, filter for articles only
         const { unlockedCourses, lockedCourses } = processCourses(
           allCoursesData,
-          'article'
-        )
+          "article",
+        );
 
-        setUnlockedCourses(unlockedCourses)
-        setLockedCourses(lockedCourses)
+        setUnlockedCourses(unlockedCourses);
+        setLockedCourses(lockedCourses);
       } catch (err) {
-        console.error('Failed to fetch courses:', err)
-        setError('获取课程失败，请稍后再试')
+        console.error("Failed to fetch courses:", err);
+        setError("获取课程失败，请稍后再试");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCourses()
-  }, [])
+    fetchCourses();
+  }, []);
 
   // 过滤逻辑：实战课(默认) 与 进阶
   const matchesFilter = (course: Course) => {
-    const level = (course.level || '').toLowerCase()
-    if (filterTab === 'advanced') {
-      return level.includes('进阶') || level.includes('advanced')
+    const level = (course.level || "").toLowerCase();
+    if (filterTab === "advanced") {
+      return level.includes("进阶") || level.includes("advanced");
     }
     // 实战：默认展示非进阶课程
-    return !(level.includes('进阶') || level.includes('advanced'))
-  }
+    return !(level.includes("进阶") || level.includes("advanced"));
+  };
 
-  const filteredUnlocked = unlockedCourses.filter(matchesFilter)
-  const filteredLocked = lockedCourses.filter(matchesFilter)
+  const filteredUnlocked = unlockedCourses.filter(matchesFilter);
+  const filteredLocked = lockedCourses.filter(matchesFilter);
 
   const formatDuration = (mins?: number) => {
-    if (!mins || Number.isNaN(mins)) return ''
-    const h = Math.floor(mins / 60)
-    const m = Math.floor(mins % 60)
-    if (h <= 0) return `${m}分`
-    return `${h}小时${m}分`
-  }
+    if (!mins || Number.isNaN(mins)) return "";
+    const h = Math.floor(mins / 60);
+    const m = Math.floor(mins % 60);
+    if (h <= 0) return `${m}分`;
+    return `${h}小时${m}分`;
+  };
 
   const features = [
     {
       icon: TrendingUp,
-      title: '趋势底层逻辑',
-      description: '识别牛熊拐点、趋势起点、反转信号'
+      title: "趋势底层逻辑",
+      description: "识别牛熊拐点、趋势起点、反转信号",
     },
     {
       icon: Target,
-      title: '机构操盘模型',
-      description: '精准制定买入点、止损点、卖出点'
+      title: "机构操盘模型",
+      description: "精准制定买入点、止损点、卖出点",
     },
     {
       icon: Shield,
-      title: '仓位+风控模型',
-      description: '科学资金管理，建立小亏大赚概率优势'
-    }
-  ]
+      title: "仓位+风控模型",
+      description: "科学资金管理，建立小亏大赚概率优势",
+    },
+  ];
 
   if (viewingCourse?.content) {
     return (
@@ -112,11 +116,11 @@ export function LearningResourcesPage({
         title={viewingCourse.name}
         content={viewingCourse.content}
         onBack={() => {
-          setViewingCourse(null)
-          onReadingChange?.(false)
+          setViewingCourse(null);
+          onReadingChange?.(false);
         }}
       />
-    )
+    );
   }
 
   return (
@@ -144,9 +148,9 @@ export function LearningResourcesPage({
                   className="bg-white/15 hover:bg-white/25 text-white border-white/30"
                   onClick={() =>
                     window.open(
-                      'https://space.bilibili.com/694170164',
-                      '_blank',
-                      'noopener,noreferrer'
+                      "https://space.bilibili.com/694170164",
+                      "_blank",
+                      "noopener,noreferrer",
                     )
                   }
                 >
@@ -170,22 +174,22 @@ export function LearningResourcesPage({
           <Button
             size="sm"
             className={
-              filterTab === 'practice'
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'glass-card text-slate-700'
+              filterTab === "practice"
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "glass-card text-slate-700"
             }
-            onClick={() => setFilterTab('practice')}
+            onClick={() => setFilterTab("practice")}
           >
             实战课
           </Button>
           <Button
             size="sm"
             className={
-              filterTab === 'advanced'
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'glass-card text-slate-700'
+              filterTab === "advanced"
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "glass-card text-slate-700"
             }
-            onClick={() => setFilterTab('advanced')}
+            onClick={() => setFilterTab("advanced")}
           >
             进阶
           </Button>
@@ -203,7 +207,7 @@ export function LearningResourcesPage({
         </CardHeader>
         <CardContent className="grid gap-4 pt-4">
           {features.map((feature, index) => {
-            const Icon = feature.icon
+            const Icon = feature.icon;
             return (
               <div
                 key={index}
@@ -221,7 +225,7 @@ export function LearningResourcesPage({
                   </p>
                 </div>
               </div>
-            )
+            );
           })}
         </CardContent>
       </Card>
@@ -279,12 +283,13 @@ export function LearningResourcesPage({
                           (course as any).totalDuration) && (
                           <p className="text-slate-500 text-xs">
                             课时：
-                            {((course as any).lessonsCount as number) || '--'}{' '}
+                            {((course as any).lessonsCount as number) ||
+                              "--"}{" "}
                             节<span className="mx-2">|</span>
                             总时长：
                             {formatDuration(
-                              (course as any).totalDuration as number
-                            ) || '--'}
+                              (course as any).totalDuration as number,
+                            ) || "--"}
                           </p>
                         )}
                       </div>
@@ -306,18 +311,18 @@ export function LearningResourcesPage({
                             if (course.link) {
                               window.open(
                                 course.link,
-                                '_blank',
-                                'noopener,noreferrer'
-                              )
+                                "_blank",
+                                "noopener,noreferrer",
+                              );
                             } else if (course.videoUrl) {
                               window.open(
                                 course.videoUrl,
-                                '_blank',
-                                'noopener,noreferrer'
-                              )
+                                "_blank",
+                                "noopener,noreferrer",
+                              );
                             } else if (course.content) {
-                              setViewingCourse(course)
-                              onReadingChange?.(true)
+                              setViewingCourse(course);
+                              onReadingChange?.(true);
                             }
                           }}
                         >
@@ -367,12 +372,13 @@ export function LearningResourcesPage({
                           (course as any).totalDuration) && (
                           <p className="text-slate-500 text-xs">
                             课时：
-                            {((course as any).lessonsCount as number) || '--'}{' '}
+                            {((course as any).lessonsCount as number) ||
+                              "--"}{" "}
                             节<span className="mx-2">|</span>
                             总时长：
                             {formatDuration(
-                              (course as any).totalDuration as number
-                            ) || '--'}
+                              (course as any).totalDuration as number,
+                            ) || "--"}
                           </p>
                         )}
                       </div>
@@ -390,7 +396,7 @@ export function LearningResourcesPage({
                         <Button
                           size="sm"
                           className="bg-green-600 hover:bg-green-700 text-white"
-                          onClick={() => onNavigateTab?.('unlock')}
+                          onClick={() => onNavigateTab?.("unlock")}
                         >
                           <Lock className="w-4 h-4 mr-1" />
                           去解锁
@@ -438,5 +444,5 @@ export function LearningResourcesPage({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

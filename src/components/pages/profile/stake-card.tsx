@@ -1,27 +1,27 @@
-'use client'
+"use client";
 
-import { Card } from '@/src/components/ui/card'
-import { useRouter } from 'next/navigation'
-import type { UserInfo } from '@/src/types/user'
-import Image from 'next/image'
-import { toast } from 'sonner'
+import { Card } from "@/src/components/ui/card";
+import { useRouter } from "next/navigation";
+import type { UserInfo } from "@/src/types/user";
+import Image from "next/image";
+import { toast } from "sonner";
 
 interface StakeCardProps {
   // userInfo 可能为 null (在父组件数据加载时)
-  userInfo: UserInfo | null
-  onNavigate?: (page: 'assets' | 'security' | 'community' | 'broker') => void
+  userInfo: UserInfo | null;
+  onNavigate?: (page: "assets" | "security" | "community" | "broker") => void;
 }
 
 // 为了代码清晰，我将 _userInfo 改回了 userInfo
 export function StakeCard({ userInfo }: StakeCardProps) {
-  const _router = useRouter()
+  const _router = useRouter();
 
   const handleBroker = () => {
     // 显示"暂未开放"提示
-    toast.info('质押/释放功能暂未开放', {
-      position: 'top-center',
-      duration: 2000
-    })
+    toast.info("质押/释放功能暂未开放", {
+      position: "top-center",
+      duration: 2000,
+    });
 
     // 注释掉原有的导航逻辑
     // if (onNavigate) {
@@ -29,7 +29,7 @@ export function StakeCard({ userInfo }: StakeCardProps) {
     //   return
     // }
     // router.push('/broker')
-  }
+  };
 
   // 1. 添加加载状态：如果 userInfo 还没传进来，显示一个骨架屏 (Skeleton)
   if (!userInfo) {
@@ -45,33 +45,33 @@ export function StakeCard({ userInfo }: StakeCardProps) {
           <div className="h-8 w-[240px] bg-slate-200 rounded-[8pt] mx-auto"></div>
         </div>
       </Card>
-    )
+    );
   }
 
   // 2. 格式化余额数字，让其更易读
   const formatBalance = (balance: number | undefined) => {
-    if (balance === undefined || balance === null) return '0'
+    if (balance === undefined || balance === null) return "0";
 
     // 对于非常大的数值，使用简化显示
     if (balance >= 1000000) {
-      return `${(balance / 1000000).toLocaleString('en-US', {
+      return `${(balance / 1000000).toLocaleString("en-US", {
         minimumFractionDigits: 1,
-        maximumFractionDigits: 1
-      })}M`
+        maximumFractionDigits: 1,
+      })}M`;
     } else if (balance >= 1000) {
-      return `${(balance / 1000).toLocaleString('en-US', {
+      return `${(balance / 1000).toLocaleString("en-US", {
         minimumFractionDigits: 1,
-        maximumFractionDigits: 1
-      })}K`
+        maximumFractionDigits: 1,
+      })}K`;
     }
 
-    return balance.toLocaleString('en-US', {
-      maximumFractionDigits: 2
-    })
-  }
+    return balance.toLocaleString("en-US", {
+      maximumFractionDigits: 2,
+    });
+  };
 
-  const ntxDisplayBalance = formatBalance(userInfo.ntxBalance)
-  const gntxDisplayBalance = formatBalance(userInfo.gntxBalance)
+  const ntxDisplayBalance = formatBalance(userInfo.ntxBalance);
+  const gntxDisplayBalance = formatBalance(userInfo.gntxBalance);
 
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
@@ -94,10 +94,10 @@ export function StakeCard({ userInfo }: StakeCardProps) {
               <p
                 className="text-[#2F5BFF] font-extrabold leading-tight truncate"
                 style={{
-                  fontSize: 'clamp(1rem, 4vw, 1.875rem)',
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  fontSize: "clamp(1rem, 4vw, 1.875rem)",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {/* 3. 使用格式化后的 ntxBalance */}
@@ -128,10 +128,10 @@ export function StakeCard({ userInfo }: StakeCardProps) {
               <p
                 className="text-[#2F5BFF] font-extrabold leading-tight truncate"
                 style={{
-                  fontSize: 'clamp(1rem, 4vw, 1.875rem)',
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  fontSize: "clamp(1rem, 4vw, 1.875rem)",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {/* 3. 使用格式化后的 gntxBalance */}
@@ -146,7 +146,7 @@ export function StakeCard({ userInfo }: StakeCardProps) {
           className="w-[240px] h-[32px] bg-[#2F5BFF] hover:bg-[#2a52e6] text-white rounded-[8pt] flex items-center justify-center font-semibold transition-colors mx-auto text-sm"
           style={{
             fontFamily:
-              '"PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
+              '"PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
           }}
           onClick={handleBroker}
         >
@@ -154,5 +154,5 @@ export function StakeCard({ userInfo }: StakeCardProps) {
         </button>
       </div>
     </Card>
-  )
+  );
 }

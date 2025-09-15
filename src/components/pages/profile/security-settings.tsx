@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useId } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { useState, useEffect, useId } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import {
   ArrowLeft,
   Shield,
@@ -27,86 +27,86 @@ import {
   Wallet,
   Mail,
   Hash,
-  Copy
-} from 'lucide-react'
-import Image from 'next/image'
-import { UserService } from '@/src/services/user'
-import { useAuth } from '@/src/contexts/AuthContext'
-import { toast } from 'sonner'
+  Copy,
+} from "lucide-react";
+import Image from "next/image";
+import { UserService } from "@/src/services/user";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { toast } from "sonner";
 
 const passwordSchema = z
   .object({
-    oldPassword: z.string().min(1, '请输入当前密码'),
+    oldPassword: z.string().min(1, "请输入当前密码"),
     newPassword: z
       .string()
-      .min(8, '密码至少8个字符')
-      .max(32, '密码最多32个字符')
-      .regex(/[A-Z]/, '密码必须包含至少一个大写字母'),
-    confirmPassword: z.string().min(1, '请确认新密码')
+      .min(8, "密码至少8个字符")
+      .max(32, "密码最多32个字符")
+      .regex(/[A-Z]/, "密码必须包含至少一个大写字母"),
+    confirmPassword: z.string().min(1, "请确认新密码"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: '两次输入的密码不一致',
-    path: ['confirmPassword']
-  })
+    message: "两次输入的密码不一致",
+    path: ["confirmPassword"],
+  });
 
 const nicknameSchema = z.object({
-  nickname: z.string().min(1, '请输入昵称').max(50, '昵称最多50个字符')
-})
+  nickname: z.string().min(1, "请输入昵称").max(50, "昵称最多50个字符"),
+});
 
 const bscAddressSchema = z.object({
   bscAddress: z
     .string()
-    .min(1, '请输入BSC地址')
-    .regex(/^0x[a-fA-F0-9]{40}$/, '请输入有效的BSC地址')
-})
+    .min(1, "请输入BSC地址")
+    .regex(/^0x[a-fA-F0-9]{40}$/, "请输入有效的BSC地址"),
+});
 
-type PasswordFormData = z.infer<typeof passwordSchema>
-type NicknameFormData = z.infer<typeof nicknameSchema>
-type BscAddressFormData = z.infer<typeof bscAddressSchema>
+type PasswordFormData = z.infer<typeof passwordSchema>;
+type NicknameFormData = z.infer<typeof nicknameSchema>;
+type BscAddressFormData = z.infer<typeof bscAddressSchema>;
 
 interface SecuritySettingsProps {
-  onBack: () => void
+  onBack: () => void;
 }
 
-type EditMode = 'none' | 'password' | 'nickname' | 'bscAddress'
+type EditMode = "none" | "password" | "nickname" | "bscAddress";
 
 export function SecuritySettings({ onBack }: SecuritySettingsProps) {
-  const oldPasswordId = useId()
-  const newPasswordId = useId()
-  const confirmPasswordId = useId()
-  const nicknameId = useId()
-  const bscAddressId = useId()
+  const oldPasswordId = useId();
+  const newPasswordId = useId();
+  const confirmPasswordId = useId();
+  const nicknameId = useId();
+  const bscAddressId = useId();
 
-  const { user, updateUser, logout } = useAuth()
-  const [showOldPassword, setShowOldPassword] = useState(false)
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [editMode, setEditMode] = useState<EditMode>('none')
-  const [logoutCountdown, setLogoutCountdown] = useState<number | null>(null)
+  const { user, updateUser, logout } = useAuth();
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editMode, setEditMode] = useState<EditMode>("none");
+  const [logoutCountdown, setLogoutCountdown] = useState<number | null>(null);
 
   // 密码表单
   const passwordForm = useForm<PasswordFormData>({
-    resolver: zodResolver(passwordSchema)
-  })
+    resolver: zodResolver(passwordSchema),
+  });
 
   // 昵称表单
   const nicknameForm = useForm<NicknameFormData>({
     resolver: zodResolver(nicknameSchema),
     defaultValues: {
-      nickname: user?.nickname || ''
-    }
-  })
+      nickname: user?.nickname || "",
+    },
+  });
 
   // BSC地址表单
   const bscAddressForm = useForm<BscAddressFormData>({
-    resolver: zodResolver(bscAddressSchema)
-  })
+    resolver: zodResolver(bscAddressSchema),
+  });
 
   // 倒计时逻辑
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null
+    let intervalId: NodeJS.Timeout | null = null;
 
     if (logoutCountdown !== null && logoutCountdown > 0) {
       intervalId = setInterval(() => {
@@ -114,147 +114,147 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
           if (prev === null || prev <= 1) {
             // 延迟到下一个事件循环执行logout，避免在渲染过程中更新状态
             setTimeout(() => {
-              logout()
-            }, 0)
-            return null
+              logout();
+            }, 0);
+            return null;
           }
-          return prev - 1
-        })
-      }, 1000)
+          return prev - 1;
+        });
+      }, 1000);
     }
 
     return () => {
       if (intervalId) {
-        clearInterval(intervalId)
+        clearInterval(intervalId);
       }
-    }
-  }, [logoutCountdown, logout])
+    };
+  }, [logoutCountdown, logout]);
 
   // 复制到剪贴板
   const handleCopy = async (text: string, label: string) => {
     try {
-      await navigator.clipboard.writeText(text)
-      toast.success(`${label}已复制到剪贴板`)
+      await navigator.clipboard.writeText(text);
+      toast.success(`${label}已复制到剪贴板`);
     } catch (error) {
-      console.error('Copy failed:', error)
-      toast.error('复制失败，请手动复制')
+      console.error("Copy failed:", error);
+      toast.error("复制失败，请手动复制");
     }
-  }
+  };
 
   // 取消编辑
   const handleCancelEdit = () => {
-    setEditMode('none')
+    setEditMode("none");
     // 重置所有表单
-    passwordForm.reset()
-    nicknameForm.reset()
-    bscAddressForm.reset()
-    setSuccess(false)
-  }
+    passwordForm.reset();
+    nicknameForm.reset();
+    bscAddressForm.reset();
+    setSuccess(false);
+  };
 
   // 处理表单提交
   const onPasswordSubmit = async (data: PasswordFormData) => {
-    setIsSubmitting(true)
-    setSuccess(false)
+    setIsSubmitting(true);
+    setSuccess(false);
 
     try {
-      await UserService.updatePassword(data.oldPassword, data.newPassword)
-      setSuccess(true)
-      passwordForm.reset()
-      setEditMode('none') // 提交成功后退出编辑模式
-      toast.success('密码修改成功！')
+      await UserService.updatePassword(data.oldPassword, data.newPassword);
+      setSuccess(true);
+      passwordForm.reset();
+      setEditMode("none"); // 提交成功后退出编辑模式
+      toast.success("密码修改成功！");
 
       // 启动倒计时
-      setLogoutCountdown(3)
+      setLogoutCountdown(3);
     } catch (error) {
-      console.error('Password update failed:', error)
+      console.error("Password update failed:", error);
       toast.error(
-        '密码修改失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
-      )
+        "密码修改失败：" +
+          (error instanceof Error ? error.message : "请稍后重试"),
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const onNicknameSubmit = async (data: NicknameFormData) => {
     try {
-      await UserService.updateNickname(data.nickname)
+      await UserService.updateNickname(data.nickname);
       // 更新AuthContext中的用户信息
-      updateUser({ nickname: data.nickname })
-      setEditMode('none')
-      toast.success('昵称更新成功')
-      nicknameForm.reset()
+      updateUser({ nickname: data.nickname });
+      setEditMode("none");
+      toast.success("昵称更新成功");
+      nicknameForm.reset();
     } catch (error) {
-      console.error('Nickname update failed:', error)
+      console.error("Nickname update failed:", error);
       toast.error(
-        '昵称更新失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
-      )
+        "昵称更新失败：" +
+          (error instanceof Error ? error.message : "请稍后重试"),
+      );
     }
-  }
+  };
 
   const onBscAddressSubmit = async (data: BscAddressFormData) => {
     try {
-      await UserService.bindBscAddress(data.bscAddress)
-      setEditMode('none')
-      toast.success('BSC地址绑定成功')
-      bscAddressForm.reset()
+      await UserService.bindBscAddress(data.bscAddress);
+      setEditMode("none");
+      toast.success("BSC地址绑定成功");
+      bscAddressForm.reset();
     } catch (error) {
-      console.error('BSC address binding failed:', error)
+      console.error("BSC address binding failed:", error);
       toast.error(
-        'BSC地址绑定失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
-      )
+        "BSC地址绑定失败：" +
+          (error instanceof Error ? error.message : "请稍后重试"),
+      );
     }
-  }
+  };
 
   const securityItems = [
     {
       icon: User,
-      title: '用户昵称',
-      description: user?.nickname || '未设置',
-      status: user?.nickname ? 'completed' : 'pending',
-      action: '修改',
-      onClick: () => setEditMode('nickname'),
-      copyable: false
+      title: "用户昵称",
+      description: user?.nickname || "未设置",
+      status: user?.nickname ? "completed" : "pending",
+      action: "修改",
+      onClick: () => setEditMode("nickname"),
+      copyable: false,
     },
     {
       icon: Hash,
-      title: '用户UID',
-      description: user?.id?.toString() || '未获取',
-      status: user?.id ? 'completed' : 'pending',
-      action: '',
+      title: "用户UID",
+      description: user?.id?.toString() || "未获取",
+      status: user?.id ? "completed" : "pending",
+      action: "",
       onClick: () => {},
-      copyable: true
+      copyable: true,
     },
     {
       icon: Mail,
-      title: '电子邮箱',
-      description: user?.email || '未设置',
-      status: user?.email ? 'completed' : 'pending',
-      action: '',
+      title: "电子邮箱",
+      description: user?.email || "未设置",
+      status: user?.email ? "completed" : "pending",
+      action: "",
       onClick: () => {},
-      copyable: true
+      copyable: true,
     },
     {
       icon: Key,
-      title: '登录密码',
-      description: '已设置',
-      status: 'completed',
-      action: '修改',
-      onClick: () => setEditMode('password'),
-      copyable: false
+      title: "登录密码",
+      description: "已设置",
+      status: "completed",
+      action: "修改",
+      onClick: () => setEditMode("password"),
+      copyable: false,
     },
     {
       icon: Wallet,
-      title: 'BSC钱包地址',
-      description: '点击绑定或更新',
-      status: 'pending',
-      action: '绑定',
-      onClick: () => setEditMode('bscAddress'),
-      copyable: false
-    }
-  ]
+      title: "BSC钱包地址",
+      description: "点击绑定或更新",
+      status: "pending",
+      action: "绑定",
+      onClick: () => setEditMode("bscAddress"),
+      copyable: false,
+    },
+  ];
 
   return (
     <div className="min-h-screen">
@@ -309,10 +309,10 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
           <Alert className="border-orange-200 bg-orange-50">
             <AlertCircle className="h-4 w-4 text-orange-600" />
             <AlertDescription className="text-orange-800">
-              密码修改成功！为了您的账户安全，将在{' '}
+              密码修改成功！为了您的账户安全，将在{" "}
               <span className="font-bold text-orange-900">
                 {logoutCountdown}
-              </span>{' '}
+              </span>{" "}
               秒后自动退出登录。
             </AlertDescription>
           </Alert>
@@ -333,7 +333,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             {securityItems.map((item, index, arr) => {
-              const Icon = item.icon
+              const Icon = item.icon;
               return (
                 <div key={index}>
                   <div className="flex items-center justify-between py-4">
@@ -351,16 +351,16 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {item.status === 'completed' && (
+                      {item.status === "completed" && (
                         <CheckCircle className="w-5 h-5 text-green-500" />
                       )}
-                      {item.status === 'pending' && (
+                      {item.status === "pending" && (
                         <AlertCircle className="w-5 h-5 text-yellow-500" />
                       )}
                       {item.copyable &&
                         item.description &&
-                        item.description !== '未设置' &&
-                        item.description !== '未获取' && (
+                        item.description !== "未设置" &&
+                        item.description !== "未获取" && (
                           <Button
                             size="sm"
                             variant="ghost"
@@ -388,13 +388,13 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                     <div className="border-t border-slate-200"></div>
                   )}
                 </div>
-              )
+              );
             })}
           </CardContent>
         </Card>
 
         {/* 编辑表单 - 根据编辑模式显示 */}
-        {editMode === 'password' && (
+        {editMode === "password" && (
           <Card className="glass-card border-white/30 rounded-[16pt]">
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
@@ -422,14 +422,14 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                   <div className="relative">
                     <Input
                       id={oldPasswordId}
-                      type={showOldPassword ? 'text' : 'password'}
+                      type={showOldPassword ? "text" : "password"}
                       placeholder="输入当前密码"
                       autoComplete="current-password"
-                      {...passwordForm.register('oldPassword')}
+                      {...passwordForm.register("oldPassword")}
                       className={
                         passwordForm.formState.errors.oldPassword
-                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
+                          ? "border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                          : "pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
                       }
                     />
                     <Button
@@ -458,14 +458,14 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                   <div className="relative">
                     <Input
                       id={newPasswordId}
-                      type={showNewPassword ? 'text' : 'password'}
+                      type={showNewPassword ? "text" : "password"}
                       placeholder="输入新密码"
                       autoComplete="new-password"
-                      {...passwordForm.register('newPassword')}
+                      {...passwordForm.register("newPassword")}
                       className={
                         passwordForm.formState.errors.newPassword
-                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
+                          ? "border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                          : "pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
                       }
                     />
                     <Button
@@ -494,14 +494,14 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                   <div className="relative">
                     <Input
                       id={confirmPasswordId}
-                      type={showConfirmPassword ? 'text' : 'password'}
+                      type={showConfirmPassword ? "text" : "password"}
                       placeholder="再次输入新密码"
                       autoComplete="new-password"
-                      {...passwordForm.register('confirmPassword')}
+                      {...passwordForm.register("confirmPassword")}
                       className={
                         passwordForm.formState.errors.confirmPassword
-                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
+                          ? "border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                          : "pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
                       }
                     />
                     <Button
@@ -541,7 +541,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                     className="flex-1 premium-gradient text-white"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? '修改中...' : '确认修改'}
+                    {isSubmitting ? "修改中..." : "确认修改"}
                   </Button>
                 </div>
               </form>
@@ -550,7 +550,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
         )}
 
         {/* 更新昵称表单 */}
-        {editMode === 'nickname' && (
+        {editMode === "nickname" && (
           <Card className="glass-card border-white/30 rounded-[16pt]">
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
@@ -570,12 +570,12 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                     id={nicknameId}
                     type="text"
                     placeholder="输入新昵称"
-                    defaultValue={user?.nickname || ''}
-                    {...nicknameForm.register('nickname')}
+                    defaultValue={user?.nickname || ""}
+                    {...nicknameForm.register("nickname")}
                     className={
                       nicknameForm.formState.errors.nickname
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }
                   />
                   {nicknameForm.formState.errors.nickname && (
@@ -607,7 +607,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
         )}
 
         {/* 绑定BSC地址表单 */}
-        {editMode === 'bscAddress' && (
+        {editMode === "bscAddress" && (
           <Card className="glass-card border-white/30 rounded-[16pt]">
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
@@ -629,11 +629,11 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                     id={bscAddressId}
                     type="text"
                     placeholder="输入BSC地址 (0x...)"
-                    {...bscAddressForm.register('bscAddress')}
+                    {...bscAddressForm.register("bscAddress")}
                     className={
                       bscAddressForm.formState.errors.bscAddress
-                        ? 'border-red-500'
-                        : ''
+                        ? "border-red-500"
+                        : ""
                     }
                   />
                   {bscAddressForm.formState.errors.bscAddress && (
@@ -701,5 +701,5 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
         </Card>
       </div>
     </div>
-  )
+  );
 }

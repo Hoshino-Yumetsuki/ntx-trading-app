@@ -21,6 +21,7 @@
 - **权限**: 无需认证
 
 **请求体**:
+
 ```json
 {
   "email": "user@example.com",
@@ -32,6 +33,7 @@
 ```
 
 **响应**:
+
 - 成功 (201 Created):
   ```json
   {
@@ -60,6 +62,7 @@
 - **权限**: 无需认证
 
 **请求体**:
+
 ```json
 {
   "email": "user@example.com",
@@ -68,6 +71,7 @@
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -98,6 +102,7 @@
 - **权限**: 无需认证
 
 **请求体**:
+
 ```json
 {
   "email": "user@example.com"
@@ -105,6 +110,7 @@
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -125,6 +131,7 @@
 - **权限**: 无需认证
 
 **请求体**:
+
 ```json
 {
   "email": "user@example.com"
@@ -132,6 +139,7 @@
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -152,6 +160,7 @@
 - **权限**: 无需认证
 
 **请求体**:
+
 ```json
 {
   "email": "user@example.com",
@@ -161,6 +170,7 @@
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -184,11 +194,13 @@
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **请求体**:
+
 ```json
 {
   "oldPassword": "OldPassword123",
@@ -197,6 +209,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -221,11 +234,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -257,11 +272,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **请求体**:
+
 ```json
 {
   "amount": 100,
@@ -270,6 +287,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -294,11 +312,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **请求体**:
+
 ```json
 {
   "amount": 100,
@@ -307,6 +327,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -328,11 +349,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -356,11 +379,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -381,11 +406,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -408,11 +435,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **请求体**:
+
 ```json
 {
   "bscAddress": "0x1234567890abcdef"
@@ -420,6 +449,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -440,6 +470,7 @@ Authorization: Bearer {jwt_token}
 - **权限**: 无需认证
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -457,6 +488,7 @@ Authorization: Bearer {jwt_token}
 - **权限**: 无需认证
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -476,9 +508,11 @@ Authorization: Bearer {jwt_token}
 - **权限**: 无需认证
 
 **参数**:
+
 - `id`: 文章ID (路径参数)
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -502,11 +536,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **请求体**:
+
 ```json
 {
   "nickname": "新昵称"
@@ -514,6 +550,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -532,6 +569,7 @@ Authorization: Bearer {jwt_token}
 - **权限**: 无需认证
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -550,9 +588,11 @@ Authorization: Bearer {jwt_token}
 - **权限**: 无需认证
 
 **查询参数**:
+
 - `date`: 日期，格式为YYYY-MM-DD
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -577,6 +617,7 @@ Authorization: Bearer {jwt_token}
 - **权限**: 无需认证
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -597,11 +638,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **请求体**:
+
 ```json
 {
   "exchange_id": 1,
@@ -610,6 +653,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -624,11 +668,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -648,11 +694,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -668,14 +716,17 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要JWT认证
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **查询参数**:
+
 - `date`: 日期，格式为YYYY-MM-DD
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -697,6 +748,7 @@ Authorization: Bearer {jwt_token}
 - **权限**: 无需认证
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -726,11 +778,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要管理员权限
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -749,11 +803,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要管理员权限
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   [
@@ -776,11 +832,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要管理员权限
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **请求体**:
+
 ```json
 {
   "email": "newuser@example.com",
@@ -791,6 +849,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (201 Created):
   ```json
   {
@@ -805,14 +864,17 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要管理员权限
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **查询参数**:
+
 - `user_id`: 用户ID
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -846,11 +908,13 @@ Authorization: Bearer {jwt_token}
 - **权限**: 需要管理员权限
 
 **请求头**:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
 
 **响应**:
+
 - 成功 (200 OK):
   ```json
   {
@@ -885,6 +949,7 @@ API返回以下HTTP状态码：
 - `500 Internal Server Error`: 服务器内部错误
 
 错误响应格式：
+
 ```json
 {
   "error": "错误信息"
@@ -894,7 +959,6 @@ API返回以下HTTP状态码：
 ## API基础URL
 
 所有API都以 `/api` 为前缀，后接具体模块名称，如 `/api/auth`, `/api/user`, `/api/mining`, `/api/admin`, `/api/system`。
-
 
 ## 新闻页面
 

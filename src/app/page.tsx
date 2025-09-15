@@ -1,30 +1,30 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { SplashScreen } from '@/src/components/pages/splash-screen'
-import { MainApp } from '@/src/components/main'
-import { AuthProvider, useAuth } from '@/src/contexts/AuthContext'
-import { LanguageProvider } from '@/src/contexts/language-context'
-import { Loader2 } from 'lucide-react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useState, useEffect } from "react";
+import { SplashScreen } from "@/src/components/pages/splash-screen";
+import { MainApp } from "@/src/components/main";
+import { AuthProvider, useAuth } from "@/src/contexts/AuthContext";
+import { LanguageProvider } from "@/src/contexts/language-context";
+import { Loader2 } from "lucide-react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // 创建一个 client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function AppContent() {
-  const [showSplash, setShowSplash] = useState(true)
-  const { isLoading } = useAuth()
+  const [showSplash, setShowSplash] = useState(true);
+  const { isLoading } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShowSplash(false)
-    }, 3000)
+      setShowSplash(false);
+    }, 3000);
 
-    return () => clearTimeout(timer)
-  }, [])
+    return () => clearTimeout(timer);
+  }, []);
 
   if (showSplash) {
-    return <SplashScreen />
+    return <SplashScreen />;
   }
 
   if (isLoading) {
@@ -35,10 +35,10 @@ function AppContent() {
           <p className="text-gray-600">加载中...</p>
         </div>
       </div>
-    )
+    );
   }
 
-  return <MainApp />
+  return <MainApp />;
 }
 
 export default function HomePage() {
@@ -51,5 +51,5 @@ export default function HomePage() {
         </AuthProvider>
       </LanguageProvider>
     </QueryClientProvider>
-  )
+  );
 }

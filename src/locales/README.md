@@ -7,17 +7,20 @@
 ## 主要改进
 
 ### 1. 文件分离
+
 - **旧系统**: 所有翻译都在一个大文件中 (`language-context.tsx`)
 - **新系统**: 翻译内容分离到独立的 JSON 文件中
   - `zh.json` - 中文翻译
   - `en.json` - 英文翻译
 
 ### 2. 类型安全
+
 - 添加了完整的 TypeScript 类型定义 (`src/types/i18n.ts`)
 - 翻译键有类型检查，避免拼写错误
 - IDE 自动补全支持
 
 ### 3. 模块化结构
+
 ```json
 {
   "common": { ... },      // 通用翻译
@@ -28,6 +31,7 @@
 ```
 
 ### 4. 避免重复
+
 - 通过嵌套结构组织翻译键
 - 消除了重复的翻译键问题
 - 更清晰的命名空间
@@ -37,20 +41,18 @@
 ### 基本用法
 
 ```tsx
-import { useLanguage } from '@/src/contexts/language-context-new'
+import { useLanguage } from "@/src/contexts/language-context-new";
 
 function MyComponent() {
-  const { t, language, setLanguage } = useLanguage()
+  const { t, language, setLanguage } = useLanguage();
 
   return (
     <div>
-      <h1>{t('mining.title')}</h1>
-      <p>{t('mining.subtitle')}</p>
-      <button onClick={() => setLanguage('en')}>
-        Switch to English
-      </button>
+      <h1>{t("mining.title")}</h1>
+      <p>{t("mining.subtitle")}</p>
+      <button onClick={() => setLanguage("en")}>Switch to English</button>
     </div>
-  )
+  );
 }
 ```
 
@@ -58,16 +60,18 @@ function MyComponent() {
 
 ```tsx
 // 如果翻译不存在，显示 fallback 文本
-{t('mining.user.totalMining', '总挖矿量')}
+{
+  t("mining.user.totalMining", "总挖矿量");
+}
 ```
 
 ### 类型安全的翻译键
 
 ```tsx
-import type { TranslationKey } from '@/src/types/i18n'
+import type { TranslationKey } from "@/src/types/i18n";
 
-const key: TranslationKey = 'mining.user.title' // ✅ 类型安全
-const invalidKey: TranslationKey = 'invalid.key' // ❌ 编译错误
+const key: TranslationKey = "mining.user.title"; // ✅ 类型安全
+const invalidKey: TranslationKey = "invalid.key"; // ❌ 编译错误
 ```
 
 ## 迁移指南
@@ -75,13 +79,15 @@ const invalidKey: TranslationKey = 'invalid.key' // ❌ 编译错误
 ### 1. 更新导入
 
 **旧代码:**
+
 ```tsx
-import { useLanguage } from '@/src/contexts/language-context'
+import { useLanguage } from "@/src/contexts/language-context";
 ```
 
 **新代码:**
+
 ```tsx
-import { useLanguage } from '@/src/contexts/language-context-new'
+import { useLanguage } from "@/src/contexts/language-context-new";
 ```
 
 ### 2. 翻译键保持不变
@@ -90,14 +96,21 @@ import { useLanguage } from '@/src/contexts/language-context-new'
 
 ```tsx
 // 这些调用保持不变
-{t('mining.title')}
-{t('mining.user.title')}
-{t('mining.exchange.bind')}
+{
+  t("mining.title");
+}
+{
+  t("mining.user.title");
+}
+{
+  t("mining.exchange.bind");
+}
 ```
 
 ### 3. 移除重复键
 
 以下重复的键已被移除：
+
 - `mining.exchange.bindExchange` → 使用 `mining.exchange.bind`
 
 ## 文件结构
@@ -133,6 +146,7 @@ src/
 ### 1. 在 JSON 文件中添加翻译
 
 **zh.json:**
+
 ```json
 {
   "mining": {
@@ -145,6 +159,7 @@ src/
 ```
 
 **en.json:**
+
 ```json
 {
   "mining": {
@@ -161,7 +176,7 @@ src/
 在 `src/types/i18n.ts` 中添加新的类型：
 
 ```typescript
-export type TranslationKey = 
+export type TranslationKey =
   | 'mining.newFeature.title'
   | 'mining.newFeature.description'
   | ... // 其他键
@@ -170,8 +185,12 @@ export type TranslationKey =
 ### 3. 在组件中使用
 
 ```tsx
-{t('mining.newFeature.title')}
-{t('mining.newFeature.description')}
+{
+  t("mining.newFeature.title");
+}
+{
+  t("mining.newFeature.description");
+}
 ```
 
 ## 切换到新系统

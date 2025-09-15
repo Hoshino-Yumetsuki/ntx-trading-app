@@ -1,55 +1,55 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { TrendingUp, ExternalLink, Loader2 } from 'lucide-react'
-import type { Course } from '@/src/types/course'
-import { getAllCourses } from '@/src/services/courseService'
-import { processCourses } from '@/src/utils/courseUtils'
-import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Button } from "@/src/components/ui/button";
+import { Badge } from "@/src/components/ui/badge";
+import { TrendingUp, ExternalLink, Loader2 } from "lucide-react";
+import type { Course } from "@/src/types/course";
+import { getAllCourses } from "@/src/services/courseService";
+import { processCourses } from "@/src/utils/courseUtils";
+import { AcademyMarkdownReader } from "@/src/components/pages/academy/academy-reader";
 
 export function BlackHorseModelPage({
-  onReadingChange
+  onReadingChange,
 }: {
-  onReadingChange?: (reading: boolean) => void
+  onReadingChange?: (reading: boolean) => void;
 }) {
-  const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
-  const [lockedCourses, setLockedCourses] = useState<Course[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string>('')
-  const [viewingCourse, setViewingCourse] = useState<Course | null>(null)
+  const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([]);
+  const [lockedCourses, setLockedCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+  const [viewingCourse, setViewingCourse] = useState<Course | null>(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        setLoading(true)
-        const allCoursesData = await getAllCourses()
+        setLoading(true);
+        const allCoursesData = await getAllCourses();
 
         // Process courses to separate unlocked and locked, filter for dark_horse only
         const { unlockedCourses, lockedCourses } = processCourses(
           allCoursesData,
-          'dark_horse'
-        )
+          "dark_horse",
+        );
 
-        setUnlockedCourses(unlockedCourses)
-        setLockedCourses(lockedCourses)
+        setUnlockedCourses(unlockedCourses);
+        setLockedCourses(lockedCourses);
       } catch (err) {
-        console.error('Failed to fetch courses:', err)
-        setError('获取学习资源数据失败，请稍后再试')
+        console.error("Failed to fetch courses:", err);
+        setError("获取学习资源数据失败，请稍后再试");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCourses()
-  }, [])
+    fetchCourses();
+  }, []);
 
   if (viewingCourse?.content) {
     return (
@@ -57,11 +57,11 @@ export function BlackHorseModelPage({
         title={viewingCourse.name}
         content={viewingCourse.content}
         onBack={() => {
-          setViewingCourse(null)
-          onReadingChange?.(false)
+          setViewingCourse(null);
+          onReadingChange?.(false);
         }}
       />
-    )
+    );
   }
 
   return (
@@ -131,12 +131,12 @@ export function BlackHorseModelPage({
                                   if (course.link) {
                                     window.open(
                                       course.link,
-                                      '_blank',
-                                      'noopener,noreferrer'
-                                    )
+                                      "_blank",
+                                      "noopener,noreferrer",
+                                    );
                                   } else if (course.content) {
-                                    setViewingCourse(course)
-                                    onReadingChange?.(true)
+                                    setViewingCourse(course);
+                                    onReadingChange?.(true);
                                   }
                                 }}
                               >
@@ -197,8 +197,8 @@ export function BlackHorseModelPage({
                                           {group.name}
                                         </span>
                                         {i < course.required_groups.length - 1
-                                          ? '，'
-                                          : ''}
+                                          ? "，"
+                                          : ""}
                                       </span>
                                     ))}
                                   </p>
@@ -242,5 +242,5 @@ export function BlackHorseModelPage({
           </Card>
         )}
     </div>
-  )
+  );
 }

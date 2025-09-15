@@ -1,60 +1,60 @@
-'use client'
+"use client";
 
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
-import { Award, TrendingUp, Users, DollarSign } from 'lucide-react'
-import type { UserInfo } from '@/src/types/user'
-import { useLanguage } from '@/src/contexts/language-context'
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Award, TrendingUp, Users, DollarSign } from "lucide-react";
+import type { UserInfo } from "@/src/types/user";
+import { useLanguage } from "@/src/contexts/language-context";
 
 interface StatsCardProps {
-  userInfo: UserInfo | null
+  userInfo: UserInfo | null;
 }
 
 export function StatsCard({ userInfo }: StatsCardProps) {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
 
   const stats = [
     {
-      label: t('profile.stats.ntxBalance'),
-      value: `${userInfo?.ntxBalance?.toLocaleString() || '0'} NTX`,
+      label: t("profile.stats.ntxBalance"),
+      value: `${userInfo?.ntxBalance?.toLocaleString() || "0"} NTX`,
       icon: Award,
-      color: 'text-yellow-600'
+      color: "text-yellow-600",
     },
     {
-      label: t('profile.stats.usdtBalance'),
-      value: `$${userInfo?.usdtBalance?.toLocaleString() || '0'}`,
+      label: t("profile.stats.usdtBalance"),
+      value: `$${userInfo?.usdtBalance?.toLocaleString() || "0"}`,
       icon: DollarSign,
-      color: 'text-green-600'
+      color: "text-green-600",
     },
     {
-      label: t('profile.stats.gntxBalance'),
-      value: `${userInfo?.gntxBalance?.toLocaleString() || '0'} GNTX`,
+      label: t("profile.stats.gntxBalance"),
+      value: `${userInfo?.gntxBalance?.toLocaleString() || "0"} GNTX`,
       icon: TrendingUp,
-      color: 'text-blue-600'
+      color: "text-blue-600",
     },
     {
-      label: t('profile.stats.referrals'),
+      label: t("profile.stats.referrals"),
       value: `${userInfo?.invitedUserCount || 0}`,
       icon: Users,
-      color: 'text-purple-600'
-    }
-  ]
+      color: "text-purple-600",
+    },
+  ];
 
   return (
     <Card className="glass-card border-white/30 rounded-[16pt]">
       <CardHeader>
         <CardTitle className="text-slate-800">
-          {t('profile.stats.totalReward')}
+          {t("profile.stats.totalReward")}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
           {stats.map((stat, index) => {
-            const Icon = stat.icon
+            const Icon = stat.icon;
             return (
               <div
                 key={index}
@@ -68,10 +68,10 @@ export function StatsCard({ userInfo }: StatsCardProps) {
                 </p>
                 <p className="text-slate-600 text-sm">{stat.label}</p>
               </div>
-            )
+            );
           })}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
