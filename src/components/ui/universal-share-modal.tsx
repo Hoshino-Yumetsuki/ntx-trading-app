@@ -138,7 +138,7 @@ export function UniversalShareModal({
   }, []);
 
   const downloadImage = useCallback(
-    (imageToDownload: string, imageTitle: string) => {
+    (imageToDownload: string, sharePayload: ShareData) => {
       if (!imageToDownload) {
         toast.error("图片尚未生成", {
           description: "请稍后再试",
@@ -147,36 +147,84 @@ export function UniversalShareModal({
       }
 
       if (isIOS) {
-        // --- 修复点：实现新的iOS下载逻辑 ---
-        // 1. 优先尝试直接下载
-        const link = document.createElement("a");
-        link.href = imageToDownload;
-        link.download = `${imageTitle}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // --- MODIFICATION START: New Enhanced iOS Share Page ---
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(`
+            <html>
+              <head>
+                <title>分享海报</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+                <style>
+                  body { margin: 0; background-color: #F0F8FF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+                  .poster-container { width: 100%; text-align: center; }
+                  .poster { max-width: 100%; height: auto; max-height: 70vh; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+                  .actions-container { width: 100%; max-width: 380px; padding: 15px 0; }
+                  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+                  button { display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #ffffff; color: #007aff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; -webkit-appearance: none; transition: background-color 0.2s, transform 0.1s; }
+                  button:active { transform: scale(0.97); background-color: #f0f0f0; }
+                  button.primary { background-color: #007aff; color: white; border: none; }
+                  .tip { color: #8a8a8e; font-size: 15px; text-align: center; margin-top: 25px; }
+                </style>
+              </head>
+              <body>
+                <div class="poster-container">
+                  <img src="${imageToDownload}" alt="分享海报" class="poster">
+                </div>
 
-        // 2. 立即弹出提示，告知用户正在尝试，并预告后续操作
-        toast.info("正在尝试为您下载...", {
-          description: "若下载失败，将为您打开新页面手动保存。",
-        });
+                <div class="actions-container">
+                  <p class="tip">如果要保存到相册，请长按图片，选择“保存图片”</p>
+                    <div class="actions">
+                        <a id="downloadLink" href="${imageToDownload}" download="${sharePayload.title}.png" style="text-decoration: none;">
+                            <button>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                <span>下载图片</span>
+                            </button>
+                        </a>
+                        <button class="primary" onclick="shareImage()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                            <span>分享海报</span>
+                        </button>
+                    </div>
+                </div>
 
-        // 3. 延迟后执行后备方案
-        setTimeout(() => {
-          const newWindow = window.open();
-          if (newWindow) {
-            newWindow.document.write(
-              `<html><head><title>保存海报</title><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}img{max-width:100%;max-height:80vh;border-radius:8px;}p{margin-top:20px;font-family:-apple-system,sans-serif}</style></head><body><img src="${imageToDownload}" alt="分享海报"><p><strong>请长按图片保存到相册</strong></p></body></html>`,
-            );
-            newWindow.document.close();
-          }
-        }, 1500); // 延迟1.5秒，给用户足够的时间看提示和响应原生下载
-        // --- 修复结束 ---
+                <script>
+                  async function shareImage() {
+                    const dataUrl = "${imageToDownload}";
+                    const title = \`${sharePayload.title.replace(/`/g, "\\`")}\`;
+                    const text = \`${sharePayload.text.replace(/`/g, "\\`")}\`;
+                    
+                    try {
+                      const response = await fetch(dataUrl);
+                      const blob = await response.blob();
+                      const file = new File([blob], title + '.png', { type: blob.type });
+
+                      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                          files: [file],
+                          title: title,
+                          text: text,
+                        });
+                      } else {
+                        alert('您的浏览器不支持分享文件，请长按图片保存。');
+                      }
+                    } catch (err) {
+                      console.error('分享失败:', err);
+                      alert('分享失败，您可以尝试长按图片进行保存。');
+                    }
+                  }
+                </script>
+              </body>
+            </html>
+          `);
+          newWindow.document.close();
+        }
+        // --- MODIFICATION END ---
       } else {
-        // 非iOS设备的标准下载逻辑
+        // Non-iOS devices standard download logic
         const link = document.createElement("a");
         link.href = imageToDownload;
-        link.download = `${imageTitle}.png`;
+        link.download = `${sharePayload.title}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -207,7 +255,7 @@ export function UniversalShareModal({
 
   const handleGenerateAndSave = useCallback(async () => {
     if (generatedImage) {
-      downloadImage(generatedImage, shareData.title);
+      downloadImage(generatedImage, shareData);
       return;
     }
 
@@ -217,7 +265,7 @@ export function UniversalShareModal({
       const imageDataUrl = await imageGenerator(posterRef.current);
       if (imageDataUrl) {
         setGeneratedImage(imageDataUrl);
-        downloadImage(imageDataUrl, shareData.title);
+        downloadImage(imageDataUrl, shareData);
       } else {
         toast.error("生成失败", {
           description: "无法生成分享图片",
@@ -231,7 +279,7 @@ export function UniversalShareModal({
     } finally {
       setIsGenerating(false);
     }
-  }, [imageGenerator, generatedImage, downloadImage, shareData.title]);
+  }, [imageGenerator, generatedImage, downloadImage, shareData]);
 
   useEffect(() => {
     if (isOpen) {
@@ -390,7 +438,7 @@ export function UniversalShareModal({
                 className="w-full"
               >
                 <Download className="w-4 h-4 mr-2" />
-                {isGenerating ? "正在处理..." : "保存分享海报"}
+                {isGenerating ? "正在处理..." : "保存/分享海报"}
               </Button>
             )}
 
