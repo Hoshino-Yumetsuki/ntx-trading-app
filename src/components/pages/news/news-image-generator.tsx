@@ -1,90 +1,90 @@
-"use client";
+'use client'
 
-import { useCallback, useState, useEffect } from "react";
-import QRCode from "qrcode";
-import { API_BASE_URL } from "@/src/services/config";
-import { preloadImages } from "@/src/utils/image";
-import { generateImageWithRetry } from "@/src/utils/image-generation";
-import type { NewsItem } from "@/src/types/news";
+import { useCallback, useState, useEffect } from 'react'
+import QRCode from 'qrcode'
+import { API_BASE_URL } from '@/src/services/config'
+import { preloadImages } from '@/src/utils/image'
+import { generateImageWithRetry } from '@/src/utils/image-generation'
+import type { NewsItem } from '@/src/types/news'
 
 export function useNewsImageGenerator(
   newsItem: NewsItem | null,
-  shareUrl?: string,
+  shareUrl?: string
 ) {
-  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
-  const [fullContent, setFullContent] = useState<string>("");
-  const [isLoadingContent, setIsLoadingContent] = useState<boolean>(false);
-  const [overrideQrText, setOverrideQrText] = useState<string>("");
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('')
+  const [fullContent, setFullContent] = useState<string>('')
+  const [isLoadingContent, setIsLoadingContent] = useState<boolean>(false)
+  const [overrideQrText, setOverrideQrText] = useState<string>('')
 
   const fetchFullContent = useCallback(async () => {
-    if (!newsItem) return;
-    if (newsItem.source === "rss") {
-      setFullContent(newsItem.content || "");
-      return;
+    if (!newsItem) return
+    if (newsItem.source === 'rss') {
+      setFullContent(newsItem.content || '')
+      return
     }
-    setIsLoadingContent(true);
+    setIsLoadingContent(true)
     try {
       const response = await fetch(
-        `${API_BASE_URL}/user/academy/articles/${newsItem.id}`,
-      );
+        `${API_BASE_URL}/user/academy/articles/${newsItem.id}`
+      )
       if (response.ok) {
-        const articleData = await response.json();
-        setFullContent(articleData.content || newsItem.content || "");
+        const articleData = await response.json()
+        setFullContent(articleData.content || newsItem.content || '')
       } else {
-        setFullContent(newsItem.content || "");
+        setFullContent(newsItem.content || '')
       }
     } catch (_error) {
-      setFullContent(newsItem.content || "");
+      setFullContent(newsItem.content || '')
     } finally {
-      setIsLoadingContent(false);
+      setIsLoadingContent(false)
     }
-  }, [newsItem]);
+  }, [newsItem])
 
   useEffect(() => {
     if (newsItem) {
-      fetchFullContent();
+      fetchFullContent()
     }
-  }, [newsItem, fetchFullContent]);
+  }, [newsItem, fetchFullContent])
 
   useEffect(() => {
     const generateQRCode = async () => {
-      if (!newsItem) return;
+      if (!newsItem) return
       try {
         const textToEncode =
           overrideQrText ||
           shareUrl ||
-          `${window.location.origin}/news/${newsItem.id}`;
+          `${window.location.origin}/news/${newsItem.id}`
         const qrDataUrl = await QRCode.toDataURL(textToEncode, {
           width: 120,
           margin: 2,
-          color: { dark: "#1e40af", light: "#ffffff" },
-        });
-        setQrCodeDataUrl(qrDataUrl);
+          color: { dark: '#1e40af', light: '#ffffff' }
+        })
+        setQrCodeDataUrl(qrDataUrl)
       } catch (error) {
-        console.error("生成二维码失败:", error);
+        console.error('生成二维码失败:', error)
       }
-    };
-    generateQRCode();
-  }, [newsItem, overrideQrText, shareUrl]);
+    }
+    generateQRCode()
+  }, [newsItem, overrideQrText, shareUrl])
 
   const generateImage = useCallback(
     async (node: HTMLDivElement | null): Promise<string | null> => {
       if (!node || !newsItem) {
-        console.error("生成图片的前置条件不足");
-        return null;
+        console.error('生成图片的前置条件不足')
+        return null
       }
 
       try {
         // 从DOM中收集图片URL并预加载
-        const imageUrls = Array.from(node.querySelectorAll("img")).map(
-          (img) => img.src,
-        );
-        await preloadImages(imageUrls);
+        const imageUrls = Array.from(node.querySelectorAll('img')).map(
+          (img) => img.src
+        )
+        await preloadImages(imageUrls)
 
-        await new Promise((resolve) => requestAnimationFrame(resolve));
+        await new Promise((resolve) => requestAnimationFrame(resolve))
 
-        const width = 600;
-        const height = node.scrollHeight;
+        const width = 600
+        const height = node.scrollHeight
 
         const result = await generateImageWithRetry(node, {
           width,
@@ -92,23 +92,23 @@ export function useNewsImageGenerator(
           pixelRatio: 2,
           minBlobSize: 50000,
           maxAttempts: 10,
-          retryDelay: 500,
-        });
+          retryDelay: 500
+        })
 
-        return result;
+        return result
       } catch (error) {
-        console.error("生成新闻分享图片失败:", error);
-        throw error;
+        console.error('生成新闻分享图片失败:', error)
+        throw error
       }
     },
-    [newsItem],
-  );
+    [newsItem]
+  )
 
   return {
     generateImage,
     setOverrideQrText,
     qrCodeDataUrl,
     fullContent,
-    isLoadingContent,
-  };
+    isLoadingContent
+  }
 }

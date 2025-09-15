@@ -9,8 +9,12 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "experimentalScannerIgnores": ["*.lock"],
-    "includes": ["**"]
+    "experimentalScannerIgnores": [
+      "*.lock"
+    ],
+    "includes": [
+      "**"
+    ]
   },
   "formatter": {
     "enabled": true,

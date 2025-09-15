@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import { useEffect, useState, useId } from "react";
-import { Button } from "@/src/components/ui/button";
+import { useEffect, useState, useId } from 'react'
+import { Button } from '@/src/components/ui/button'
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
+  CardTitle
+} from '@/src/components/ui/card'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from "@/src/components/ui/dialog";
+  DialogDescription
+} from '@/src/components/ui/dialog'
 import {
   Loader2,
   ShoppingCart,
@@ -22,136 +22,136 @@ import {
   Copy,
   Lock,
   BookOpen,
-  BadgeCheck,
-} from "lucide-react";
+  BadgeCheck
+} from 'lucide-react'
 import {
   getPermissionGroups,
-  getAllCourses,
-} from "@/src/services/courseService";
-import { createOrder } from "@/src/services/payment";
-import type { CoursePackage, CreateOrderResponse } from "@/src/types/course";
-import { useAuth } from "@/src/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+  getAllCourses
+} from '@/src/services/courseService'
+import { createOrder } from '@/src/services/payment'
+import type { CoursePackage, CreateOrderResponse } from '@/src/types/course'
+import { useAuth } from '@/src/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
 
 export function UnlockCoursesPage({
   onNavigateTab,
   hideInfoCards = false,
-  hideDescription = false,
+  hideDescription = false
 }: {
-  onNavigateTab?: (tabId: string) => void;
-  showHiddenOnly?: boolean;
-  hideInfoCards?: boolean;
-  hideDescription?: boolean;
+  onNavigateTab?: (tabId: string) => void
+  showHiddenOnly?: boolean
+  hideInfoCards?: boolean
+  hideDescription?: boolean
 }) {
-  const packagesSectionId = useId();
+  const packagesSectionId = useId()
   // 由课程 required_groups 反查得到的展示分组；permission_groups 仅用于查询套餐，不参与显示判断
   const [derivedGroups, setDerivedGroups] = useState<
     Array<{
-      key: string;
-      groupId?: number;
-      groupName: string;
-      groupDescription?: string;
-      packages: CoursePackage[];
+      key: string
+      groupId?: number
+      groupName: string
+      groupDescription?: string
+      packages: CoursePackage[]
     }>
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [creatingOrder, setCreatingOrder] = useState<number | null>(null);
+  >([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [creatingOrder, setCreatingOrder] = useState<number | null>(null)
 
-  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false)
   const [paymentInfo, setPaymentInfo] = useState<CreateOrderResponse | null>(
-    null,
-  );
+    null
+  )
 
-  const { isAuthenticated } = useAuth();
-  const router = useRouter();
+  const { isAuthenticated } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-        setError("");
+        setLoading(true)
+        setError('')
         // 并行请求：课程列表和权限组/套餐
         const [courses, allGroups] = await Promise.all([
           getAllCourses(),
-          getPermissionGroups(),
-        ]);
+          getPermissionGroups()
+        ])
 
         // 仅依据“未解锁且非 broker 课程”的 required_groups 决定需要展示哪些权限组
         const byKey = new Map<
           string,
           {
-            key: string;
-            groupId?: number;
-            groupName: string;
-            groupDescription?: string;
-            packages: CoursePackage[];
+            key: string
+            groupId?: number
+            groupName: string
+            groupDescription?: string
+            packages: CoursePackage[]
           }
-        >();
+        >()
         for (const c of courses) {
-          if (c?.course_type === "broker") continue;
+          if (c?.course_type === 'broker') continue
           // 仅处理“未解锁”的课程
-          if (c?.isUnlocked || !Array.isArray(c?.required_groups)) continue;
+          if (c?.isUnlocked || !Array.isArray(c?.required_groups)) continue
           for (const rg of c.required_groups) {
-            const hasId = typeof rg?.id === "number";
+            const hasId = typeof rg?.id === 'number'
             const key = hasId
               ? `id:${rg?.id}`
               : rg?.name
                 ? `name:${rg?.name}`
-                : "";
-            if (!key) continue;
+                : ''
+            if (!key) continue
             if (!byKey.has(key)) {
               // 查找该组对应的套餐（如果存在），permission_groups 仅做查询用途
               const matched = allGroups.find((g) =>
-                hasId ? g.group.id === rg?.id : g.group.name === rg?.name,
-              );
+                hasId ? g.group.id === rg?.id : g.group.name === rg?.name
+              )
               byKey.set(key, {
                 key,
                 groupId: hasId ? rg?.id : undefined,
-                groupName: rg?.name || `权限组 ${hasId ? rg?.id : ""}`,
+                groupName: rg?.name || `权限组 ${hasId ? rg?.id : ''}`,
                 groupDescription: matched?.group?.description,
-                packages: matched?.packages ?? [],
-              });
+                packages: matched?.packages ?? []
+              })
             }
           }
         }
 
         // 仅展示有可购买套餐的权限组
         setDerivedGroups(
-          Array.from(byKey.values()).filter((x) => x.packages.length > 0),
-        );
+          Array.from(byKey.values()).filter((x) => x.packages.length > 0)
+        )
       } catch (e: any) {
-        setError(e.message || "加载课程与套餐失败");
+        setError(e.message || '加载课程与套餐失败')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchData();
-  }, []);
+    }
+    fetchData()
+  }, [])
 
   const handleBuy = async (packageId: number) => {
     // 未登录则跳转到登录页
     if (!isAuthenticated) {
-      router.push("/login");
-      return;
+      router.push('/login')
+      return
     }
     try {
-      setCreatingOrder(packageId);
-      const res = await createOrder(packageId);
-      setPaymentInfo(res);
-      setPaymentOpen(true);
+      setCreatingOrder(packageId)
+      const res = await createOrder(packageId)
+      setPaymentInfo(res)
+      setPaymentOpen(true)
     } catch (e: any) {
-      alert(e.message || "创建订单失败，请稍后重试");
+      alert(e.message || '创建订单失败，请稍后重试')
     } finally {
-      setCreatingOrder(null);
+      setCreatingOrder(null)
     }
-  };
+  }
 
   const copyToClipboard = async (text: string) => {
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(text)
     } catch (_) {}
-  };
+  }
 
   // 不再依据 permission_groups 的 hidden 参与显示；完全由课程反查而来
 
@@ -172,8 +172,8 @@ export function UnlockCoursesPage({
             <Button
               className="diffused-button text-white font-semibold border-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
               onClick={() => {
-                const el = document.getElementById(packagesSectionId);
-                if (el) el.scrollIntoView({ behavior: "smooth" });
+                const el = document.getElementById(packagesSectionId)
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
               }}
             >
               获得机构级策略
@@ -251,7 +251,7 @@ export function UnlockCoursesPage({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onNavigateTab?.("orders")}
+            onClick={() => onNavigateTab?.('orders')}
             className="text-slate-600 hover:text-slate-800"
           >
             <ExternalLink className="w-4 h-4 mr-1" /> 订单列表
@@ -293,7 +293,7 @@ export function UnlockCoursesPage({
                           <div className="min-w-0 flex-1">
                             <div className="text-slate-800 font-medium">
                               {p.duration_days > 10000
-                                ? "永久"
+                                ? '永久'
                                 : `${p.duration_days} 天`}
                             </div>
                             <div className="text-sm text-slate-600">
@@ -403,7 +403,7 @@ export function UnlockCoursesPage({
                     size="sm"
                     onClick={() =>
                       copyToClipboard(
-                        `${paymentInfo.paymentAmount} ${paymentInfo.currency}`,
+                        `${paymentInfo.paymentAmount} ${paymentInfo.currency}`
                       )
                     }
                     className="ml-2"
@@ -427,8 +427,8 @@ export function UnlockCoursesPage({
                 <Button
                   className="flex-1"
                   onClick={() => {
-                    setPaymentOpen(false);
-                    onNavigateTab?.("orders");
+                    setPaymentOpen(false)
+                    onNavigateTab?.('orders')
                   }}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" /> 查看订单
@@ -446,5 +446,5 @@ export function UnlockCoursesPage({
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

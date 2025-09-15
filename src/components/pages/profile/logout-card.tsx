@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent } from "@/src/components/ui/card";
-import { LogOut } from "lucide-react";
-import { useLanguage } from "@/src/contexts/language-context";
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { LogOut } from 'lucide-react'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface LogoutCardProps {
-  onLogout: () => void;
+  onLogout: () => void
 }
 
 export function LogoutCard({ onLogout }: LogoutCardProps) {
-  const { t } = useLanguage();
+  const { t } = useLanguage()
 
   return (
     <Card className="glass-card border-white/30 rounded-[16pt]">
@@ -24,11 +24,11 @@ export function LogoutCard({ onLogout }: LogoutCardProps) {
           >
             <span className="inline-flex items-center gap-2">
               <LogOut className="w-4 h-4" />
-              {t("profile.logout.title")}
+              {t('profile.logout.title')}
             </span>
           </Button>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

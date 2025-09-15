@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-import { TrendingUp } from "lucide-react";
-import type { UserInfo } from "@/src/types/user";
-import { useLanguage } from "@/src/contexts/language-context";
+  CardTitle
+} from '@/src/components/ui/card'
+import { TrendingUp } from 'lucide-react'
+import type { UserInfo } from '@/src/types/user'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface GntxCardProps {
-  userInfo: UserInfo | null;
+  userInfo: UserInfo | null
 }
 
 export function GntxCard({ userInfo }: GntxCardProps) {
-  const { t } = useLanguage();
+  const { t } = useLanguage()
 
   return (
     <Card className="glass-card border-white/30 overflow-hidden rounded-[16pt]">
@@ -25,18 +25,18 @@ export function GntxCard({ userInfo }: GntxCardProps) {
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-slate-800 flex items-center">
           <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
-          {t("profile.gntx.title")}
+          {t('profile.gntx.title')}
         </CardTitle>
       </CardHeader>
 
       <CardContent>
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
           <div className="text-2xl md:text-3xl font-bold text-blue-700 text-center">
-            {userInfo?.gntxBalance?.toLocaleString() || "0"}{" "}
+            {userInfo?.gntxBalance?.toLocaleString() || '0'}{' '}
             <span className="text-blue-500">GNTX</span>
           </div>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

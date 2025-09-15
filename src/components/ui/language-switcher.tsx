@@ -1,29 +1,29 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Button } from "@/src/components/ui/button";
-import { useLanguage } from "@/src/contexts/language-context";
-import { Globe, ChevronDown } from "lucide-react";
+import { useState } from 'react'
+import { Button } from '@/src/components/ui/button'
+import { useLanguage } from '@/src/contexts/language-context'
+import { Globe, ChevronDown } from 'lucide-react'
 
 export function LanguageSwitcher() {
-  const { language, setLanguage } = useLanguage();
-  const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage } = useLanguage()
+  const [isOpen, setIsOpen] = useState(false)
 
   const languages = [
-    { code: "zh", name: "中文", flag: "🇨🇳" },
-    { code: "en", name: "English", flag: "🇺🇸" },
-  ];
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'en', name: 'English', flag: '🇺🇸' }
+  ]
 
-  const currentLanguage = languages.find((lang) => lang.code === language);
+  const currentLanguage = languages.find((lang) => lang.code === language)
 
   const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+    setIsOpen(!isOpen)
+  }
 
-  const selectLanguage = (langCode: "zh" | "en") => {
-    setLanguage(langCode);
-    setIsOpen(false);
-  };
+  const selectLanguage = (langCode: 'zh' | 'en') => {
+    setLanguage(langCode)
+    setIsOpen(false)
+  }
 
   return (
     <div className="relative">
@@ -38,7 +38,7 @@ export function LanguageSwitcher() {
           {currentLanguage?.flag} {currentLanguage?.name}
         </span>
         <ChevronDown
-          className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
       </Button>
 
@@ -58,11 +58,11 @@ export function LanguageSwitcher() {
               <button
                 key={lang.code}
                 type="button"
-                onClick={() => selectLanguage(lang.code as "zh" | "en")}
+                onClick={() => selectLanguage(lang.code as 'zh' | 'en')}
                 className={`w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors flex items-center space-x-3 ${
                   language === lang.code
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-slate-700"
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-slate-700'
                 }`}
               >
                 <span className="text-lg">{lang.flag}</span>
@@ -76,5 +76,5 @@ export function LanguageSwitcher() {
         </>
       )}
     </div>
-  );
+  )
 }

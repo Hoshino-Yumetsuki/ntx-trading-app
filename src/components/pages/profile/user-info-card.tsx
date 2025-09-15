@@ -1,24 +1,24 @@
-"use client";
+'use client'
 
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-import type { UserInfo } from "@/src/types/user";
-import Image from "next/image";
+  CardTitle
+} from '@/src/components/ui/card'
+import type { UserInfo } from '@/src/types/user'
+import Image from 'next/image'
 
 interface UserInfoCardProps {
-  userInfo: UserInfo | null;
+  userInfo: UserInfo | null
 }
 
 export function UserInfoCard({ userInfo }: UserInfoCardProps) {
-  const invites = userInfo?.invitedUserCount ?? 0;
+  const invites = userInfo?.invitedUserCount ?? 0
   // 经纪商进度：仅根据邀请人数计算，目标100人
-  const brokerProgress = Math.min(invites / 100, 1);
-  const brokerPercent = Math.floor(brokerProgress * 100);
-  const remainingInvites = Math.max(0, 100 - invites);
+  const brokerProgress = Math.min(invites / 100, 1)
+  const brokerPercent = Math.floor(brokerProgress * 100)
+  const remainingInvites = Math.max(0, 100 - invites)
 
   return (
     <Card className="glass-card border-white/30 relative rounded-[16pt]">
@@ -42,11 +42,11 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
           <div className="text-base font-medium text-slate-800">
             会员角色：
             <span className="text-green-600">
-              {userInfo?.role || "Normal User"}
+              {userInfo?.role || 'Normal User'}
             </span>
           </div>
           <div className="text-sm text-slate-700">
-            当前 GNTX 持有：{userInfo?.gntxBalance?.toLocaleString() || "0"}
+            当前 GNTX 持有：{userInfo?.gntxBalance?.toLocaleString() || '0'}
           </div>
           <div className="text-sm text-slate-700">
             已邀请人数：
@@ -73,15 +73,15 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
               {brokerPercent}% 完成
             </div>
             <div className="text-xs text-slate-600 mt-1 text-right">
-              还需要邀请{" "}
+              还需要邀请{' '}
               <span className="text-blue-600">
                 {remainingInvites.toLocaleString()}
-              </span>{" "}
+              </span>{' '}
               人
             </div>
           </div>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,181 +1,181 @@
-"use client";
+'use client'
 
-import { useState, useCallback, useMemo, useEffect, useRef } from "react"; // 引入 useRef
-import { Button } from "@/src/components/ui/button";
-import { LanguageSwitcher } from "@/src/components/ui/language-switcher";
-import Image from "next/image";
-import { Clock, Rss, Share2, Search, X } from "lucide-react";
-import { useLanguage } from "@/src/contexts/language-context";
-import DOMPurify from "dompurify";
-import Parser from "rss-parser";
-import { UniversalShareModal } from "@/src/components/ui/universal-share-modal";
-import { useNewsImageGenerator } from "./news/news-image-generator";
-import type { NewsItem } from "@/src/types/news";
-import { ShareCard } from "@/src/components/ui/share-card"; // 引入 ShareCard
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react' // 引入 useRef
+import { Button } from '@/src/components/ui/button'
+import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
+import Image from 'next/image'
+import { Clock, Rss, Share2, Search, X } from 'lucide-react'
+import { useLanguage } from '@/src/contexts/language-context'
+import DOMPurify from 'dompurify'
+import Parser from 'rss-parser'
+import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
+import { useNewsImageGenerator } from './news/news-image-generator'
+import type { NewsItem } from '@/src/types/news'
+import { ShareCard } from '@/src/components/ui/share-card' // 引入 ShareCard
 
-import "@/src/styles/markdown.css";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { Input } from "@/src/components/ui/input";
+import '@/src/styles/markdown.css'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+import { Input } from '@/src/components/ui/input'
 
 const fetchRssNews = async (): Promise<NewsItem[]> => {
   // ...函数内容保持不变...
-  const response = await fetch("https://rss.ntxdao.com/rss/clist");
+  const response = await fetch('https://rss.ntxdao.com/rss/clist')
   if (!response.ok) {
-    throw new Error("网络响应错误，无法获取RSS源");
+    throw new Error('网络响应错误，无法获取RSS源')
   }
 
-  const xmlText = await response.text();
+  const xmlText = await response.text()
   const parser = new Parser({
     customFields: {
       item: [
-        ["content:encoded", "contentEncoded"],
-        ["media:content", "mediaContent"],
-        ["media:thumbnail", "mediaThumbnail"],
-      ],
-    },
-  });
-  const feed = await parser.parseString(xmlText);
+        ['content:encoded', 'contentEncoded'],
+        ['media:content', 'mediaContent'],
+        ['media:thumbnail', 'mediaThumbnail']
+      ]
+    }
+  })
+  const feed = await parser.parseString(xmlText)
 
   const extractFirstImageSrc = (html: string): string | null => {
-    if (!html) return null;
-    const match = html.match(/<img[^>]+src=["']?([^"'>\s]+)["']?[^>]*>/i);
-    return match ? match[1] : null;
-  };
+    if (!html) return null
+    const match = html.match(/<img[^>]+src=["']?([^"'>\s]+)["']?[^>]*>/i)
+    return match ? match[1] : null
+  }
 
   return feed.items
     .map((item: any) => {
       const contentEncoded: string =
-        item?.contentEncoded || item?.["content:encoded"] || "";
-      const firstImg = extractFirstImageSrc(contentEncoded);
+        item?.contentEncoded || item?.['content:encoded'] || ''
+      const firstImg = extractFirstImageSrc(contentEncoded)
       const imageUrl =
         item?.enclosure?.url ||
         item?.mediaContent?.url ||
         item?.mediaThumbnail?.url ||
         firstImg ||
-        "/placeholder.png";
+        '/placeholder.png'
 
       return {
         id: item.guid || item.link,
-        title: item?.title || "",
-        summary: item?.contentSnippet || "",
+        title: item?.title || '',
+        summary: item?.contentSnippet || '',
         imageUrl,
         publishDate: item?.pubDate || new Date().toISOString(),
         modifyDate: item?.isoDate || new Date().toISOString(),
         isDisplayed: true,
-        content: contentEncoded || item?.content || "",
-        source: "rss",
-      };
+        content: contentEncoded || item?.content || '',
+        source: 'rss'
+      }
     })
     .sort(
       (a, b) =>
-        new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime(),
-    );
-};
+        new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+    )
+}
 
 export function NewsPage() {
-  const { t } = useLanguage();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const posterRef = useRef<HTMLDivElement>(null); // 为海报创建 ref
+  const { t } = useLanguage()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const posterRef = useRef<HTMLDivElement>(null) // 为海报创建 ref
 
-  const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null);
-  const [viewingArticle, setViewingArticle] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [shareNewsItem, setShareNewsItem] = useState<NewsItem | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null)
+  const [viewingArticle, setViewingArticle] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
+  const [shareNewsItem, setShareNewsItem] = useState<NewsItem | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const {
     data: newsItems = [],
     isLoading,
     isError,
-    isSuccess,
+    isSuccess
   } = useQuery<NewsItem[]>({
-    queryKey: ["rssNews"],
+    queryKey: ['rssNews'],
     queryFn: fetchRssNews,
     staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
-  });
+    refetchOnWindowFocus: false
+  })
 
   const viewArticleDetail = useCallback((article: NewsItem) => {
-    setCurrentArticle(article);
-    setViewingArticle(true);
-  }, []);
+    setCurrentArticle(article)
+    setViewingArticle(true)
+  }, [])
 
   useEffect(() => {
     if (isSuccess && newsItems.length > 0) {
-      const newsId = searchParams.get("news");
+      const newsId = searchParams.get('news')
       if (newsId) {
         const articleToView = newsItems.find(
-          (item) => String(item.id) === newsId,
-        );
+          (item) => String(item.id) === newsId
+        )
         if (articleToView) {
           if (currentArticle?.id !== articleToView.id) {
-            viewArticleDetail(articleToView);
+            viewArticleDetail(articleToView)
           }
         }
       }
     }
-  }, [searchParams, isSuccess, newsItems, currentArticle, viewArticleDetail]);
+  }, [searchParams, isSuccess, newsItems, currentArticle, viewArticleDetail])
 
   const filteredNewsItems = useMemo(() => {
-    const query = searchQuery.toLowerCase().trim();
+    const query = searchQuery.toLowerCase().trim()
     if (!query) {
-      return newsItems;
+      return newsItems
     }
     return newsItems.filter(
       (item) =>
         item.title.toLowerCase().includes(query) ||
-        item.summary.toLowerCase().includes(query),
-    );
-  }, [searchQuery, newsItems]);
+        item.summary.toLowerCase().includes(query)
+    )
+  }, [searchQuery, newsItems])
 
   const clearSearch = () => {
-    setSearchQuery("");
-  };
+    setSearchQuery('')
+  }
 
   const getShareUrl = useCallback((item: NewsItem | null) => {
-    if (!item) return "";
-    const encodedId = encodeURIComponent(item.id);
-    return `${window.location.origin}/?tab=news&news=${encodedId}&direct=true`;
-  }, []);
+    if (!item) return ''
+    const encodedId = encodeURIComponent(item.id)
+    return `${window.location.origin}/?tab=news&news=${encodedId}&direct=true`
+  }, [])
 
   const { generateImage, setOverrideQrText, qrCodeDataUrl, fullContent } =
-    useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem));
+    useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
   const handleShare = (newsItem: NewsItem) => {
-    setShareNewsItem(newsItem);
-    setShowShareModal(true);
-  };
+    setShareNewsItem(newsItem)
+    setShowShareModal(true)
+  }
 
   const handleBackToList = useCallback(() => {
-    setViewingArticle(false);
-    setCurrentArticle(null);
-    const params = new URLSearchParams(window.location.search);
-    params.delete("news");
-    params.delete("direct");
-    params.set("tab", "news");
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }, [router]);
+    setViewingArticle(false)
+    setCurrentArticle(null)
+    const params = new URLSearchParams(window.location.search)
+    params.delete('news')
+    params.delete('direct')
+    params.set('tab', 'news')
+    router.replace(`?${params.toString()}`, { scroll: false })
+  }, [router])
 
   const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString();
+    new Date(dateString).toLocaleDateString()
   const formatTime = (dateString: string) =>
     new Date(dateString).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+      hour: '2-digit',
+      minute: '2-digit'
+    })
 
   const renderMarkdownContent = (content: string) => {
-    const safeHtml = DOMPurify.sanitize(content);
+    const safeHtml = DOMPurify.sanitize(content)
     return (
       <div
         className="markdown-content"
         // biome-ignore lint: false
         dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
-    );
-  };
+    )
+  }
 
   if (viewingArticle && currentArticle) {
     return (
@@ -233,7 +233,7 @@ export function NewsPage() {
 
           <div className="px-4 mt-4">
             {currentArticle.imageUrl &&
-              currentArticle.imageUrl !== "/placeholder.png" && (
+              currentArticle.imageUrl !== '/placeholder.png' && (
                 <div className="w-full h-48 md:h-64 overflow-hidden relative rounded-2xl mb-6">
                   <Image
                     src={currentArticle.imageUrl}
@@ -243,13 +243,13 @@ export function NewsPage() {
                     sizes="100vw"
                     priority
                     onError={(e) => {
-                      e.currentTarget.style.display = "none";
+                      e.currentTarget.style.display = 'none'
                     }}
                   />
                 </div>
               )}
             <div className="px-2 max-w-none">
-              {renderMarkdownContent(currentArticle.content || "")}
+              {renderMarkdownContent(currentArticle.content || '')}
             </div>
             <div className="mt-10 flex justify-center">
               <Button
@@ -266,23 +266,23 @@ export function NewsPage() {
         <UniversalShareModal
           isOpen={showShareModal}
           onClose={() => {
-            setShowShareModal(false);
-            setOverrideQrText("");
+            setShowShareModal(false)
+            setOverrideQrText('')
           }}
           title="分享文章"
           shareData={{
-            title: shareNewsItem?.title || "",
-            text: shareNewsItem?.summary || "",
-            url: getShareUrl(shareNewsItem),
+            title: shareNewsItem?.title || '',
+            text: shareNewsItem?.summary || '',
+            url: getShareUrl(shareNewsItem)
           }}
           imageGenerator={(node) => generateImage(node)}
           posterComponent={
             <ShareCard
               ref={posterRef}
-              title={shareNewsItem?.title || ""}
-              content={fullContent || shareNewsItem?.content || ""}
-              summary={shareNewsItem?.summary || ""}
-              publishDate={shareNewsItem?.publishDate || ""}
+              title={shareNewsItem?.title || ''}
+              content={fullContent || shareNewsItem?.content || ''}
+              summary={shareNewsItem?.summary || ''}
+              publishDate={shareNewsItem?.publishDate || ''}
               qrCodeDataUrl={qrCodeDataUrl}
               source={shareNewsItem?.source}
             />
@@ -290,7 +290,7 @@ export function NewsPage() {
           onQrOverride={setOverrideQrText}
         />
       </>
-    );
+    )
   }
 
   return (
@@ -319,14 +319,14 @@ export function NewsPage() {
             className="relative overflow-hidden rounded-2xl h-32 flex items-center p-6"
             style={{
               backgroundImage: "url('/Group35@3x.png')",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-              backgroundColor: "#1C55FF",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundColor: '#1C55FF'
             }}
           >
             <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
-              {t("news.title") || "最新资讯"}
+              {t('news.title') || '最新资讯'}
             </h2>
           </div>
         </div>
@@ -402,8 +402,8 @@ export function NewsPage() {
                           size="sm"
                           className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0 mt-1"
                           onClick={(e) => {
-                            e.stopPropagation();
-                            handleShare(item);
+                            e.stopPropagation()
+                            handleShare(item)
                           }}
                         >
                           <span>
@@ -423,7 +423,7 @@ export function NewsPage() {
             <div className="text-center py-8 text-slate-500">
               {searchQuery
                 ? `没有找到与 "${searchQuery}" 相关的文章`
-                : t("news.empty") || "暂无新闻"}
+                : t('news.empty') || '暂无新闻'}
             </div>
           )}
         </div>
@@ -431,23 +431,23 @@ export function NewsPage() {
       <UniversalShareModal
         isOpen={showShareModal}
         onClose={() => {
-          setShowShareModal(false);
-          setOverrideQrText("");
+          setShowShareModal(false)
+          setOverrideQrText('')
         }}
         title="分享文章"
         shareData={{
-          title: shareNewsItem?.title || "",
-          text: shareNewsItem?.summary || "",
-          url: getShareUrl(shareNewsItem),
+          title: shareNewsItem?.title || '',
+          text: shareNewsItem?.summary || '',
+          url: getShareUrl(shareNewsItem)
         }}
         imageGenerator={(node) => generateImage(node)}
         posterComponent={
           <ShareCard
             ref={posterRef}
-            title={shareNewsItem?.title || ""}
-            content={fullContent || shareNewsItem?.content || ""}
-            summary={shareNewsItem?.summary || ""}
-            publishDate={shareNewsItem?.publishDate || ""}
+            title={shareNewsItem?.title || ''}
+            content={fullContent || shareNewsItem?.content || ''}
+            summary={shareNewsItem?.summary || ''}
+            publishDate={shareNewsItem?.publishDate || ''}
             qrCodeDataUrl={qrCodeDataUrl}
             source={shareNewsItem?.source}
           />
@@ -455,5 +455,5 @@ export function NewsPage() {
         onQrOverride={setOverrideQrText}
       />
     </>
-  );
+  )
 }

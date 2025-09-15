@@ -1,60 +1,60 @@
-import type { CreateOrderResponse, Order } from "@/src/types/course";
-import { API_BASE_URL } from "@/src/services/config";
-import { AuthService } from "@/src/services/auth";
+import type { CreateOrderResponse, Order } from '@/src/types/course'
+import { API_BASE_URL } from '@/src/services/config'
+import { AuthService } from '@/src/services/auth'
 
 function getAuthHeaders() {
-  const token = AuthService.getToken();
+  const token = AuthService.getToken()
   return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  }
 }
 
 export async function createOrder(
-  packageId: number,
+  packageId: number
 ): Promise<CreateOrderResponse> {
-  const token = AuthService.getToken();
+  const token = AuthService.getToken()
   if (!token) {
-    throw new Error("未登录");
+    throw new Error('未登录')
   }
 
   const response = await fetch(`${API_BASE_URL}/payment/orders`, {
-    method: "POST",
+    method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify({ package_id: packageId }),
-  });
+    body: JSON.stringify({ package_id: packageId })
+  })
 
   if (!response.ok) {
     if (response.status === 401) {
-      AuthService.removeToken();
-      AuthService.removeUser();
+      AuthService.removeToken()
+      AuthService.removeUser()
     }
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || "创建订单失败");
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.error || '创建订单失败')
   }
 
-  return response.json();
+  return response.json()
 }
 
 export async function getMyOrders(): Promise<Order[]> {
-  const token = AuthService.getToken();
+  const token = AuthService.getToken()
   if (!token) {
-    throw new Error("未登录");
+    throw new Error('未登录')
   }
 
   const response = await fetch(`${API_BASE_URL}/payment/orders`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
+    method: 'GET',
+    headers: getAuthHeaders()
+  })
 
   if (!response.ok) {
     if (response.status === 401) {
-      AuthService.removeToken();
-      AuthService.removeUser();
+      AuthService.removeToken()
+      AuthService.removeUser()
     }
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || "获取订单失败");
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.error || '获取订单失败')
   }
 
-  return response.json();
+  return response.json()
 }

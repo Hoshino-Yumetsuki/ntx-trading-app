@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { Suspense } from "react";
-import { LoginPage } from "@/src/components/pages/login";
-import { AuthProvider } from "@/src/contexts/AuthContext";
-import { LanguageProvider } from "@/src/contexts/language-context";
+import { Suspense } from 'react'
+import { LoginPage } from '@/src/components/pages/login'
+import { AuthProvider } from '@/src/contexts/AuthContext'
+import { LanguageProvider } from '@/src/contexts/language-context'
 
 function LoginAppContent() {
-  return <LoginPage initialMode="login" />;
+  return <LoginPage initialMode="login" />
 }
 
 export default function LoginRoutePage() {
@@ -18,5 +18,5 @@ export default function LoginRoutePage() {
         </Suspense>
       </AuthProvider>
     </LanguageProvider>
-  );
+  )
 }

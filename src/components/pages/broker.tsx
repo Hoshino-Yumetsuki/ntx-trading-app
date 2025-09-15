@@ -1,193 +1,193 @@
-"use client";
+'use client'
 
-import { useEffect, useState, useId } from "react";
-import Image from "next/image";
+import { useEffect, useState, useId } from 'react'
+import Image from 'next/image'
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-import { Button } from "@/src/components/ui/button";
-import { LanguageSwitcher } from "@/src/components/ui/language-switcher";
+  CardTitle
+} from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 // import { UnlockCoursesPage } from '@/src/components/pages/academy/unlock-courses'
-import { AcademyMarkdownReader } from "@/src/components/pages/academy/academy-reader";
+import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import type {
   Course,
   CoursePackage,
-  CreateOrderResponse,
-} from "@/src/types/course";
+  CreateOrderResponse
+} from '@/src/types/course'
 import {
   getAllCourses,
-  getPermissionGroups,
-} from "@/src/services/courseService";
-import { createOrder } from "@/src/services/payment";
-import { processCourses } from "@/src/utils/courseUtils";
-import { useRouter } from "next/navigation";
+  getPermissionGroups
+} from '@/src/services/courseService'
+import { createOrder } from '@/src/services/payment'
+import { processCourses } from '@/src/utils/courseUtils'
+import { useRouter } from 'next/navigation'
 import {
   ChevronLeft,
   Loader2,
   ShoppingCart,
   ExternalLink,
-  Copy,
-} from "lucide-react";
-import { useAuth } from "@/src/contexts/AuthContext";
+  Copy
+} from 'lucide-react'
+import { useAuth } from '@/src/contexts/AuthContext'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/src/components/ui/dialog";
+  DialogTitle
+} from '@/src/components/ui/dialog'
 
 export function BrokerPage({ onBack }: { onBack?: () => void }) {
-  const router = useRouter();
-  const packagesAnchorId = useId();
-  const [unlocked, setUnlocked] = useState<Course[]>([]);
-  const [locked, setLocked] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [viewing, setViewing] = useState<Course | null>(null);
+  const router = useRouter()
+  const packagesAnchorId = useId()
+  const [unlocked, setUnlocked] = useState<Course[]>([])
+  const [locked, setLocked] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [viewing, setViewing] = useState<Course | null>(null)
   // 购买区数据
-  const [pkgLoading, setPkgLoading] = useState(true);
-  const [pkgError, setPkgError] = useState("");
-  const [creatingOrder, setCreatingOrder] = useState<number | null>(null);
-  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [pkgLoading, setPkgLoading] = useState(true)
+  const [pkgError, setPkgError] = useState('')
+  const [creatingOrder, setCreatingOrder] = useState<number | null>(null)
+  const [paymentOpen, setPaymentOpen] = useState(false)
   const [paymentInfo, setPaymentInfo] = useState<CreateOrderResponse | null>(
-    null,
-  );
+    null
+  )
   const [derivedGroups, setDerivedGroups] = useState<
     Array<{
-      key: string;
-      groupId?: number;
-      groupName: string;
-      groupDescription?: string;
-      packages: CoursePackage[];
+      key: string
+      groupId?: number
+      groupName: string
+      groupDescription?: string
+      packages: CoursePackage[]
     }>
-  >([]);
-  const { isAuthenticated } = useAuth();
+  >([])
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-        setError("");
-        const data = await getAllCourses();
+        setLoading(true)
+        setError('')
+        const data = await getAllCourses()
         const { unlockedCourses, lockedCourses } = processCourses(
           data,
-          "broker",
-        );
-        setUnlocked(unlockedCourses);
-        setLocked(lockedCourses);
+          'broker'
+        )
+        setUnlocked(unlockedCourses)
+        setLocked(lockedCourses)
       } catch (e: any) {
-        setError(e.message || "加载经纪商内容失败");
+        setError(e.message || '加载经纪商内容失败')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchData();
-  }, []);
+    }
+    fetchData()
+  }, [])
 
   // 购买区：基于“未解锁的 broker 课程”直接展示课程卡片（标题=课程名）
   // 从课程的 required_groups 聚合其对应权限组内的套餐（不再过滤 hidden=true）
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        setPkgLoading(true);
-        setPkgError("");
+        setPkgLoading(true)
+        setPkgError('')
         const [courses, allGroups] = await Promise.all([
           getAllCourses(),
-          getPermissionGroups(),
-        ]);
+          getPermissionGroups()
+        ])
         const list: Array<{
-          key: string;
-          groupId?: number;
-          groupName: string; // 复用字段，显示“课程名”
-          groupDescription?: string;
-          packages: CoursePackage[];
-        }> = [];
+          key: string
+          groupId?: number
+          groupName: string // 复用字段，显示“课程名”
+          groupDescription?: string
+          packages: CoursePackage[]
+        }> = []
 
         for (const c of courses) {
-          if (c?.course_type !== "broker") continue;
+          if (c?.course_type !== 'broker') continue
           // 仅处理“未解锁”的课程用于购买区
-          if (c?.isUnlocked || !Array.isArray(c?.required_groups)) continue;
+          if (c?.isUnlocked || !Array.isArray(c?.required_groups)) continue
 
-          const pkgMap = new Map<number, CoursePackage>();
-          let desc: string | undefined;
+          const pkgMap = new Map<number, CoursePackage>()
+          let desc: string | undefined
 
           for (const rg of c.required_groups) {
-            const hasId = typeof rg?.id === "number";
+            const hasId = typeof rg?.id === 'number'
             const matched = allGroups.find((g) =>
-              hasId ? g.group.id === rg?.id : g.group.name === rg?.name,
-            );
-            if (!matched) continue;
+              hasId ? g.group.id === rg?.id : g.group.name === rg?.name
+            )
+            if (!matched) continue
             // 不再过滤 hidden 组；但不显示组名，仅展示课程名
             if (!desc && matched.group?.description)
-              desc = matched.group.description;
+              desc = matched.group.description
             for (const p of matched.packages ?? []) {
-              pkgMap.set(p.id, p);
+              pkgMap.set(p.id, p)
             }
           }
 
-          const pkgs = Array.from(pkgMap.values());
+          const pkgs = Array.from(pkgMap.values())
           if (pkgs.length > 0) {
             list.push({
               key: `course:${c.id}`,
               groupName: c.name,
               groupDescription: c.description || desc,
-              packages: pkgs,
-            });
+              packages: pkgs
+            })
           }
         }
 
-        setDerivedGroups(list);
+        setDerivedGroups(list)
       } catch (e: any) {
-        setPkgError(e.message || "加载套餐失败");
+        setPkgError(e.message || '加载套餐失败')
       } finally {
-        setPkgLoading(false);
+        setPkgLoading(false)
       }
-    };
-    fetchPackages();
-  }, []);
+    }
+    fetchPackages()
+  }, [])
 
   const handleBuy = async (packageId: number) => {
     if (!isAuthenticated) {
-      router.push("/login");
-      return;
+      router.push('/login')
+      return
     }
     try {
-      setCreatingOrder(packageId);
-      const res = await createOrder(packageId);
-      setPaymentInfo(res);
-      setPaymentOpen(true);
+      setCreatingOrder(packageId)
+      const res = await createOrder(packageId)
+      setPaymentInfo(res)
+      setPaymentOpen(true)
     } catch (e: any) {
-      alert(e.message || "创建订单失败，请稍后重试");
+      alert(e.message || '创建订单失败，请稍后重试')
     } finally {
-      setCreatingOrder(null);
+      setCreatingOrder(null)
     }
-  };
+  }
 
   const copyToClipboard = async (text: string) => {
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(text)
     } catch (_) {}
-  };
+  }
 
-  const featured = unlocked[0] || locked[0];
+  const featured = unlocked[0] || locked[0]
 
   const handleClick = (c: Course) => {
     if (c.link) {
-      window.open(c.link, "_blank", "noopener,noreferrer");
-      return;
+      window.open(c.link, '_blank', 'noopener,noreferrer')
+      return
     }
     if (!c.isUnlocked) {
       // 未解锁的提示，引导下滑购买
-      const anchor = document.getElementById(packagesAnchorId);
-      if (anchor) anchor.scrollIntoView({ behavior: "smooth" });
-      return;
+      const anchor = document.getElementById(packagesAnchorId)
+      if (anchor) anchor.scrollIntoView({ behavior: 'smooth' })
+      return
     }
-    if (c.content) setViewing(c);
-  };
+    if (c.content) setViewing(c)
+  }
 
   if (viewing?.content) {
     return (
@@ -196,7 +196,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         content={viewing.content}
         onBack={() => setViewing(null)}
       />
-    );
+    )
   }
 
   return (
@@ -231,9 +231,9 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
           className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
           style={{
             backgroundImage: "url('/Group81@3x.png')",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
           }}
         >
           <div className="flex items-center h-full">
@@ -255,7 +255,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.push("/orders")}
+              onClick={() => router.push('/orders')}
               className="text-slate-600 hover:text-slate-800"
             >
               <ExternalLink className="w-4 h-4 mr-1" /> 订单列表
@@ -297,7 +297,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                             <div className="min-w-0 flex-1">
                               <div className="text-slate-800 font-medium">
                                 {p.duration_days > 10000
-                                  ? "永久"
+                                  ? '永久'
                                   : `${p.duration_days} 天`}
                               </div>
                               <div className="text-sm text-slate-600">
@@ -367,12 +367,12 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                         onClick={() => handleClick(featured)}
                         className={
                           featured.isUnlocked
-                            ? "shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
-                            : "shrink-0 bg-gray-200 text-gray-500 cursor-not-allowed"
+                            ? 'shrink-0 bg-blue-600 hover:bg-blue-700 text-white'
+                            : 'shrink-0 bg-gray-200 text-gray-500 cursor-not-allowed'
                         }
                         disabled={!featured.isUnlocked}
                       >
-                        {featured.isUnlocked ? "查看" : "待解锁"}
+                        {featured.isUnlocked ? '查看' : '待解锁'}
                       </Button>
                     </div>
                   </CardContent>
@@ -420,7 +420,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                     size="sm"
                     onClick={() =>
                       copyToClipboard(
-                        `${paymentInfo.paymentAmount} ${paymentInfo.currency}`,
+                        `${paymentInfo.paymentAmount} ${paymentInfo.currency}`
                       )
                     }
                     className="ml-2"
@@ -444,8 +444,8 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                 <Button
                   className="flex-1"
                   onClick={() => {
-                    setPaymentOpen(false);
-                    router.push("/orders");
+                    setPaymentOpen(false)
+                    router.push('/orders')
                   }}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" /> 查看订单
@@ -463,5 +463,5 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

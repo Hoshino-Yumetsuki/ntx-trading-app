@@ -1,42 +1,42 @@
-"use client";
+'use client'
 
-import { useEffect, useRef } from "react";
-import Image from "next/image";
+import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 
 interface QRCodeCanvasProps {
-  dataUrl: string;
-  width: number;
-  height: number;
-  className?: string;
+  dataUrl: string
+  width: number
+  height: number
+  className?: string
 }
 
 export function QRCodeCanvas({
   dataUrl,
   width,
   height,
-  className,
+  className
 }: QRCodeCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const isIOS =
-    typeof window !== "undefined" &&
+    typeof window !== 'undefined' &&
     /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-    !(window as any).MSStream;
+    !(window as any).MSStream
 
   useEffect(() => {
-    if (!isIOS || !canvasRef.current || !dataUrl) return;
+    if (!isIOS || !canvasRef.current || !dataUrl) return
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-    const img = new window.Image();
+    const img = new window.Image()
     img.onload = () => {
-      canvas.width = width;
-      canvas.height = height;
-      ctx.drawImage(img, 0, 0, width, height);
-    };
-    img.src = dataUrl;
-  }, [dataUrl, width, height, isIOS]);
+      canvas.width = width
+      canvas.height = height
+      ctx.drawImage(img, 0, 0, width, height)
+    }
+    img.src = dataUrl
+  }, [dataUrl, width, height, isIOS])
 
   if (isIOS) {
     return (
@@ -47,7 +47,7 @@ export function QRCodeCanvas({
         className={className}
         style={{ width, height }}
       />
-    );
+    )
   }
 
   return (
@@ -58,5 +58,5 @@ export function QRCodeCanvas({
       height={height}
       className={className}
     />
-  );
+  )
 }

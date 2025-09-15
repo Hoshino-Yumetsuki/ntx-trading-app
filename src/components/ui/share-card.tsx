@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import { forwardRef, useEffect, useRef, useState } from "react";
-import MarkdownIt from "markdown-it";
-import multimdTable from "markdown-it-multimd-table";
-import Image from "next/image";
-import { QRCodeCanvas } from "@/src/components/ui/qr-code-canvas";
+import { forwardRef, useEffect, useRef, useState } from 'react'
+import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
+import Image from 'next/image'
+import { QRCodeCanvas } from '@/src/components/ui/qr-code-canvas'
 
 interface ShareCardProps {
-  title: string;
-  content: string;
-  summary: string;
-  publishDate: string;
-  qrCodeDataUrl?: string;
-  source?: string;
+  title: string
+  content: string
+  summary: string
+  publishDate: string
+  qrCodeDataUrl?: string
+  source?: string
 }
 
 // 使用 forwardRef 包装组件，使其可以接收 ref
@@ -21,91 +21,91 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
     const md = new MarkdownIt({
       html: true,
       linkify: true,
-      typographer: true,
+      typographer: true
     }).use(multimdTable, {
       multiline: true,
       rowspan: true,
-      headerless: true,
-    });
+      headerless: true
+    })
 
-    const titleContainerRef = useRef<HTMLDivElement>(null);
-    const [titleHeight, setTitleHeight] = useState(0);
+    const titleContainerRef = useRef<HTMLDivElement>(null)
+    const [titleHeight, setTitleHeight] = useState(0)
 
     useEffect(() => {
       const measureTitle = () => {
         if (titleContainerRef.current) {
-          setTitleHeight(titleContainerRef.current.offsetHeight);
+          setTitleHeight(titleContainerRef.current.offsetHeight)
         }
-      };
-      measureTitle();
-      window.addEventListener("resize", measureTitle);
-      return () => window.removeEventListener("resize", measureTitle);
-    }, [title]);
+      }
+      measureTitle()
+      window.addEventListener('resize', measureTitle)
+      return () => window.removeEventListener('resize', measureTitle)
+    }, [])
 
-    const contentWrapperRef = useRef<HTMLDivElement>(null);
-    const contentInnerRef = useRef<HTMLDivElement>(null);
-    const footerRef = useRef<HTMLDivElement>(null);
-    const [contentFontSize, setContentFontSize] = useState(18);
-    const BASE_HEIGHT = 1068;
-    const TOP_SLICE = Math.floor(BASE_HEIGHT / 2);
-    const BOTTOM_SLICE = BASE_HEIGHT - TOP_SLICE;
-    const [cardHeight, setCardHeight] = useState(BASE_HEIGHT);
+    const contentWrapperRef = useRef<HTMLDivElement>(null)
+    const contentInnerRef = useRef<HTMLDivElement>(null)
+    const footerRef = useRef<HTMLDivElement>(null)
+    const [contentFontSize, setContentFontSize] = useState(18)
+    const BASE_HEIGHT = 1068
+    const TOP_SLICE = Math.floor(BASE_HEIGHT / 2)
+    const BOTTOM_SLICE = BASE_HEIGHT - TOP_SLICE
+    const [cardHeight, setCardHeight] = useState(BASE_HEIGHT)
 
     useEffect(() => {
       const fitContent = () => {
-        const wrapper = contentWrapperRef.current;
-        const inner = contentInnerRef.current as HTMLDivElement | null;
-        const footer = footerRef.current;
-        if (!wrapper || !inner || !footer) return;
+        const wrapper = contentWrapperRef.current
+        const inner = contentInnerRef.current as HTMLDivElement | null
+        const footer = footerRef.current
+        if (!wrapper || !inner || !footer) return
 
-        const available = footer.offsetTop - wrapper.offsetTop - 8;
-        let font = 20;
-        inner.style.fontSize = `${font}px`;
-        inner.style.lineHeight = "1.9";
-        let guard = 0;
+        const available = footer.offsetTop - wrapper.offsetTop - 8
+        let font = 20
+        inner.style.fontSize = `${font}px`
+        inner.style.lineHeight = '1.9'
+        let guard = 0
         while (inner.scrollHeight > available && font > 16 && guard < 24) {
-          font -= 1;
-          inner.style.fontSize = `${font}px`;
-          guard++;
+          font -= 1
+          inner.style.fontSize = `${font}px`
+          guard++
         }
-        setContentFontSize(font);
+        setContentFontSize(font)
 
-        const overflow = Math.max(0, inner.scrollHeight - available);
-        setCardHeight(BASE_HEIGHT + overflow);
-      };
+        const overflow = Math.max(0, inner.scrollHeight - available)
+        setCardHeight(BASE_HEIGHT + overflow)
+      }
 
-      const id = window.requestAnimationFrame(fitContent);
-      window.addEventListener("resize", fitContent);
+      const id = window.requestAnimationFrame(fitContent)
+      window.addEventListener('resize', fitContent)
       return () => {
-        window.cancelAnimationFrame(id);
-        window.removeEventListener("resize", fitContent);
-      };
-    }, [content]);
+        window.cancelAnimationFrame(id)
+        window.removeEventListener('resize', fitContent)
+      }
+    }, [])
 
     const renderMarkdown = (text: string) => {
-      const withoutMdImages = text.replace(/!\[[^\]]*\]\([^)]*\)/g, "");
-      const html = md.render(withoutMdImages);
-      const withoutHtmlImages = html.replace(/<img[^>]*>/gi, "");
-      return { __html: withoutHtmlImages };
-    };
+      const withoutMdImages = text.replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+      const html = md.render(withoutMdImages)
+      const withoutHtmlImages = html.replace(/<img[^>]*>/gi, '')
+      return { __html: withoutHtmlImages }
+    }
 
     const qrPlaceholderSvg = `<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'>
   <rect width='100%' height='100%' fill='#ffffff'/>
   <rect x='8' y='8' width='134' height='134' rx='12' ry='12' fill='none' stroke='#E2E8F0' stroke-width='2'/>
   <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#94A3B8' font-family='system-ui, sans-serif' font-size='14'>QR Code</text>
-</svg>`;
+</svg>`
     const qrSrc =
-      qrCodeDataUrl && qrCodeDataUrl.trim() !== ""
+      qrCodeDataUrl && qrCodeDataUrl.trim() !== ''
         ? qrCodeDataUrl
-        : `data:image/svg+xml;utf8,${encodeURIComponent(qrPlaceholderSvg)}`;
+        : `data:image/svg+xml;utf8,${encodeURIComponent(qrPlaceholderSvg)}`
 
     const formatDateYMD = (d: Date) => {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${y}年${m}月${day}日`;
-    };
-    const todayLabel = formatDateYMD(new Date());
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}年${m}月${day}日`
+    }
+    const todayLabel = formatDateYMD(new Date())
 
     return (
       <div
@@ -114,12 +114,12 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         style={{
           fontFamily:
             'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          width: "600px",
+          width: '600px',
           height: `${cardHeight}px`,
-          margin: "0 auto",
-          backgroundColor: "#ffffff",
-          borderRadius: "24px",
-          boxShadow: "0 10px 30px rgba(2, 6, 23, 0.08)",
+          margin: '0 auto',
+          backgroundColor: '#ffffff',
+          borderRadius: '24px',
+          boxShadow: '0 10px 30px rgba(2, 6, 23, 0.08)'
         }}
       >
         {/* 背景切片 */}
@@ -128,10 +128,10 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="absolute inset-x-0 top-0 z-0"
           style={{
             height: `${TOP_SLICE}px`,
-            backgroundImage: "url(/Frame35.png)",
-            backgroundSize: "600px 1068px",
-            backgroundPosition: "top center",
-            backgroundRepeat: "no-repeat",
+            backgroundImage: 'url(/Frame35.png)',
+            backgroundSize: '600px 1068px',
+            backgroundPosition: 'top center',
+            backgroundRepeat: 'no-repeat'
           }}
         />
         <div
@@ -139,10 +139,10 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="absolute inset-x-0 bottom-0 z-0"
           style={{
             height: `${BOTTOM_SLICE}px`,
-            backgroundImage: "url(/Frame35.png)",
-            backgroundSize: "600px 1068px",
-            backgroundPosition: "bottom center",
-            backgroundRepeat: "no-repeat",
+            backgroundImage: 'url(/Frame35.png)',
+            backgroundSize: '600px 1068px',
+            backgroundPosition: 'bottom center',
+            backgroundRepeat: 'no-repeat'
           }}
         />
         <div
@@ -151,7 +151,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           style={{
             top: `${TOP_SLICE}px`,
             bottom: `${BOTTOM_SLICE}px`,
-            background: "#fefefe",
+            background: '#fefefe'
           }}
         />
         {/* Header */}
@@ -194,7 +194,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         <div
           ref={titleContainerRef}
           className="absolute left-0 right-0 z-20 pointer-events-none overflow-visible px-8"
-          style={{ top: "96px" }}
+          style={{ top: '96px' }}
         >
           <h1 className="text-left whitespace-normal break-words text-[32px] font-extrabold text-slate-900 leading-snug">
             {title}
@@ -210,10 +210,11 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           <div className="content text-slate-700">
             <div
               ref={contentInnerRef}
+              // biome-ignore lint: false
               dangerouslySetInnerHTML={renderMarkdown(content)}
               style={{
                 fontSize: contentFontSize,
-                lineHeight: "1.9",
+                lineHeight: '1.9'
               }}
             />
           </div>
@@ -234,7 +235,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="bg-white p-2 rounded-xl border border-[#E2E8F0] shadow-sm">
-              {qrCodeDataUrl && qrCodeDataUrl.trim() !== "" ? (
+              {qrCodeDataUrl && qrCodeDataUrl.trim() !== '' ? (
                 <QRCodeCanvas
                   dataUrl={qrCodeDataUrl}
                   width={150}
@@ -261,8 +262,8 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           {todayLabel}
         </div>
       </div>
-    );
-  },
-);
+    )
+  }
+)
 
-ShareCard.displayName = "ShareCard";
+ShareCard.displayName = 'ShareCard'

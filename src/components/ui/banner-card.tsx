@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import { Button } from "@/src/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { Button } from '@/src/components/ui/button'
+import { ArrowRight } from 'lucide-react'
 
 interface BannerCardProps {
-  title: string;
-  subtitle: string;
-  buttonText: string;
-  backgroundImage: string;
-  gradientFrom?: string;
-  gradientTo?: string;
-  onClick: () => void;
+  title: string
+  subtitle: string
+  buttonText: string
+  backgroundImage: string
+  gradientFrom?: string
+  gradientTo?: string
+  onClick: () => void
 }
 
 export function BannerCard({
@@ -18,14 +18,14 @@ export function BannerCard({
   subtitle,
   buttonText,
   backgroundImage,
-  onClick,
+  onClick
 }: BannerCardProps) {
   return (
     <div className="relative mb-6 rounded-2xl overflow-hidden shadow-2xl">
       <div
         className="relative h-48 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url(${backgroundImage})`,
+          backgroundImage: `url(${backgroundImage})`
         }}
       >
         <div className="absolute inset-0 flex flex-col justify-center px-8">
@@ -40,5 +40,5 @@ export function BannerCard({
         </div>
       </div>
     </div>
-  );
+  )
 }

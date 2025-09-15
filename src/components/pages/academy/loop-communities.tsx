@@ -1,53 +1,53 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/src/components/ui/card";
-import { Loader2, Users } from "lucide-react";
-import type { Course } from "@/src/types/course";
-import { getAllCourses } from "@/src/services/courseService";
-import { processCourses } from "@/src/utils/courseUtils";
-import { AcademyMarkdownReader } from "@/src/components/pages/academy/academy-reader";
-import Image from "next/image";
+import { useState, useEffect } from 'react'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Loader2, Users } from 'lucide-react'
+import type { Course } from '@/src/types/course'
+import { getAllCourses } from '@/src/services/courseService'
+import { processCourses } from '@/src/utils/courseUtils'
+import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
+import Image from 'next/image'
 
 export function LoopCommunitiesPage({
-  onReadingChange,
+  onReadingChange
 }: {
-  onReadingChange?: (reading: boolean) => void;
+  onReadingChange?: (reading: boolean) => void
 }) {
-  const [communities, setCommunities] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [viewingCommunity, setViewingCommunity] = useState<Course | null>(null);
+  const [communities, setCommunities] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [viewingCommunity, setViewingCommunity] = useState<Course | null>(null)
 
   // 获取社区数据
   useEffect(() => {
     const fetchCommunities = async () => {
       try {
-        setLoading(true);
-        setError("");
-        const data = await getAllCourses();
-        const { unlockedCourses } = processCourses(data, "loop_comm");
-        setCommunities(unlockedCourses);
+        setLoading(true)
+        setError('')
+        const data = await getAllCourses()
+        const { unlockedCourses } = processCourses(data, 'loop_comm')
+        setCommunities(unlockedCourses)
       } catch (error) {
-        console.error("Failed to fetch communities:", error);
-        setError("获取社区数据失败，请稍后再试");
+        console.error('Failed to fetch communities:', error)
+        setError('获取社区数据失败，请稍后再试')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchCommunities();
-  }, []);
+    fetchCommunities()
+  }, [])
 
   // 点击社区卡片：优先跳转外链，无 link 时以 Markdown 形式展示内容
   const handleCommunityClick = (community: Course) => {
     if (community.link) {
-      window.open(community.link, "_blank", "noopener,noreferrer");
+      window.open(community.link, '_blank', 'noopener,noreferrer')
     } else if (community.content) {
-      setViewingCommunity(community);
-      onReadingChange?.(true);
+      setViewingCommunity(community)
+      onReadingChange?.(true)
     }
-  };
+  }
 
   if (viewingCommunity?.content) {
     return (
@@ -55,11 +55,11 @@ export function LoopCommunitiesPage({
         title={viewingCommunity.name}
         content={viewingCommunity.content}
         onBack={() => {
-          setViewingCommunity(null);
-          onReadingChange?.(false);
+          setViewingCommunity(null)
+          onReadingChange?.(false)
         }}
       />
-    );
+    )
   }
 
   if (loading) {
@@ -68,7 +68,7 @@ export function LoopCommunitiesPage({
         <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
         <span className="ml-2 text-slate-600">加载社区中...</span>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -76,7 +76,7 @@ export function LoopCommunitiesPage({
       <div className="text-center py-6">
         <p className="text-red-500">{error}</p>
       </div>
-    );
+    )
   }
 
   if (communities.length === 0) {
@@ -84,7 +84,7 @@ export function LoopCommunitiesPage({
       <div className="text-center py-6">
         <p className="text-slate-600">暂无社区可显示</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -94,12 +94,12 @@ export function LoopCommunitiesPage({
           key={community.id}
           className="data-card hover:shadow-lg transition-all duration-200 cursor-pointer group"
           style={{
-            border: "none",
-            backgroundImage: "url(/Group69@3x.png)",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right top",
-            backgroundSize: "40%",
-            backgroundColor: "white",
+            border: 'none',
+            backgroundImage: 'url(/Group69@3x.png)',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right top',
+            backgroundSize: '40%',
+            backgroundColor: 'white'
           }}
           onClick={() => handleCommunityClick(community)}
         >
@@ -130,5 +130,5 @@ export function LoopCommunitiesPage({
         </Card>
       ))}
     </div>
-  );
+  )
 }

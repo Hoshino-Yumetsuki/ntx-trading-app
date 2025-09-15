@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import { Button } from "@/src/components/ui/button";
-import Image from "next/image";
-import { useLanguage } from "@/src/contexts/language-context";
+import { Button } from '@/src/components/ui/button'
+import Image from 'next/image'
+import { useLanguage } from '@/src/contexts/language-context'
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-import MarkdownIt from "markdown-it";
-import multimdTable from "markdown-it-multimd-table";
-import texmath from "markdown-it-texmath";
-import katex from "katex";
-import DOMPurify from "dompurify";
-import "katex/dist/katex.min.css";
+  CardTitle
+} from '@/src/components/ui/card'
+import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
+import texmath from 'markdown-it-texmath'
+import katex from 'katex'
+import DOMPurify from 'dompurify'
+import 'katex/dist/katex.min.css'
 import {
   ArrowLeft,
   Users,
@@ -24,70 +24,70 @@ import {
   Coins,
   Shield,
   Heart,
-  Building,
-} from "lucide-react";
+  Building
+} from 'lucide-react'
 
 interface TutorialPageProps {
-  onBack: () => void;
+  onBack: () => void
 }
 
 export function TutorialPage({ onBack }: TutorialPageProps) {
-  const { t } = useLanguage();
+  const { t } = useLanguage()
   const tutorialSections = [
     {
-      id: "overview",
-      title: t("tutorial.overview.title"),
+      id: 'overview',
+      title: t('tutorial.overview.title'),
       icon: <Building className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.overview.content"),
+      content: t('tutorial.overview.content')
     },
     {
-      id: "audience",
-      title: t("tutorial.audience.title"),
+      id: 'audience',
+      title: t('tutorial.audience.title'),
       icon: <Users className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.audience.content"),
+      content: t('tutorial.audience.content')
     },
     {
-      id: "account-setup",
-      title: t("tutorial.account.title"),
+      id: 'account-setup',
+      title: t('tutorial.account.title'),
       icon: <Wallet className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.account.content"),
+      content: t('tutorial.account.content')
     },
     {
-      id: "mining-mechanism",
-      title: t("tutorial.mining.title"),
+      id: 'mining-mechanism',
+      title: t('tutorial.mining.title'),
       icon: <TrendingUp className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.mining.content"),
+      content: t('tutorial.mining.content')
     },
     {
-      id: "rebate-structure",
-      title: t("tutorial.rebate.title"),
+      id: 'rebate-structure',
+      title: t('tutorial.rebate.title'),
       icon: <Coins className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.rebate.content"),
+      content: t('tutorial.rebate.content'),
       images: [
-        "/introduction/1.png",
-        "/introduction/2.png",
-        "/introduction/3.png",
-      ],
+        '/introduction/1.png',
+        '/introduction/2.png',
+        '/introduction/3.png'
+      ]
     },
     {
-      id: "staking-dividends",
-      title: t("tutorial.staking.title"),
+      id: 'staking-dividends',
+      title: t('tutorial.staking.title'),
       icon: <Shield className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.staking.content"),
+      content: t('tutorial.staking.content')
     },
     {
-      id: "community-governance",
-      title: t("tutorial.governance.title"),
+      id: 'community-governance',
+      title: t('tutorial.governance.title'),
       icon: <Heart className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.governance.content"),
+      content: t('tutorial.governance.content')
     },
     {
-      id: "academy-system",
-      title: t("tutorial.academy.title"),
+      id: 'academy-system',
+      title: t('tutorial.academy.title'),
       icon: <GraduationCap className="w-6 h-6 text-blue-600" />,
-      content: t("tutorial.academy.content"),
-    },
-  ];
+      content: t('tutorial.academy.content')
+    }
+  ]
 
   return (
     <div className="min-h-screen bg-white">
@@ -118,10 +118,10 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
             <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
               <div>
                 <h2 className="text-2xl font-bold text-blue-600">
-                  {t("tutorial.title") || "新手教程"}
+                  {t('tutorial.title') || '新手教程'}
                 </h2>
                 <p className="text-slate-500 text-sm mt-1">
-                  {t("tutorial.subtitle") || "快速了解与上手指南"}
+                  {t('tutorial.subtitle') || '快速了解与上手指南'}
                 </p>
               </div>
             </div>
@@ -184,28 +184,28 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
                       html: true,
                       linkify: true,
                       typographer: true,
-                      breaks: true,
+                      breaks: true
                     })
                       .use(multimdTable, {
                         multiline: true,
                         rowspan: true,
-                        headerless: true,
+                        headerless: true
                       })
                       .use(texmath, {
                         engine: katex,
-                        delimiters: ["dollars", "bracks"],
-                        katexOptions: { macros: { "\\RR": "\\mathbb{R}" } },
-                      });
+                        delimiters: ['dollars', 'bracks'],
+                        katexOptions: { macros: { '\\RR': '\\mathbb{R}' } }
+                      })
 
-                    const html = md.render(section.content || "");
-                    const safe = DOMPurify.sanitize(html);
+                    const html = md.render(section.content || '')
+                    const safe = DOMPurify.sanitize(html)
 
                     return (
                       <div
                         // biome-ignore lint/security/noDangerouslySetInnerHtml: 已通过 DOMPurify 清洗
                         dangerouslySetInnerHTML={{ __html: safe }}
                       />
-                    );
+                    )
                   })()}
                 </div>
 
@@ -235,5 +235,5 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

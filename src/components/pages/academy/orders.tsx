@@ -1,76 +1,76 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/src/components/ui/card";
-import { Button } from "@/src/components/ui/button";
-import { Loader2 } from "lucide-react";
-import type { Order } from "@/src/types/course";
-import { getMyOrders } from "@/src/services/payment";
-import { getPermissionGroups } from "@/src/services/courseService";
+import { useEffect, useState } from 'react'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Loader2 } from 'lucide-react'
+import type { Order } from '@/src/types/course'
+import { getMyOrders } from '@/src/services/payment'
+import { getPermissionGroups } from '@/src/services/courseService'
 
 export function OrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
   const [packageNameMap, setPackageNameMap] = useState<Record<number, string>>(
-    {},
-  );
+    {}
+  )
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        setLoading(true);
-        setError("");
+        setLoading(true)
+        setError('')
         const [ordersData, groups] = await Promise.all([
           getMyOrders(),
-          getPermissionGroups().catch(() => []),
-        ]);
+          getPermissionGroups().catch(() => [])
+        ])
         const sorted = [...ordersData].sort(
           (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        );
-        setOrders(sorted);
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+        setOrders(sorted)
 
-        const map: Record<number, string> = {};
-        (groups || []).forEach((pg: any) => {
-          const groupName = pg?.group?.name ?? "";
-          (pg?.packages || []).forEach((p: any) => {
+        const map: Record<number, string> = {}
+        ;(groups || []).forEach((pg: any) => {
+          const groupName = pg?.group?.name ?? ''
+          ;(pg?.packages || []).forEach((p: any) => {
             const name =
               (p?.description?.trim?.() as string) ||
-              `${groupName} · ${p?.duration_days ?? ""}天`;
-            if (p?.id) map[p.id as number] = name;
-          });
-        });
-        setPackageNameMap(map);
+              `${groupName} · ${p?.duration_days ?? ''}天`
+            if (p?.id) map[p.id as number] = name
+          })
+        })
+        setPackageNameMap(map)
       } catch (e: any) {
-        setError(e.message || "获取订单失败");
+        setError(e.message || '获取订单失败')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchAll();
-  }, []);
+    }
+    fetchAll()
+  }, [])
 
   const renderStatus = (o: Order) => {
     const base =
-      "px-2 py-1 rounded text-xs font-medium inline-flex items-center";
-    if (o.status === "confirmed") {
+      'px-2 py-1 rounded text-xs font-medium inline-flex items-center'
+    if (o.status === 'confirmed') {
       return (
         <span
           className={`${base} bg-green-100 text-green-700 border border-green-200`}
         >
           支付成功
         </span>
-      );
+      )
     }
-    if (o.status === "pending") {
+    if (o.status === 'pending') {
       return (
         <span
           className={`${base} bg-amber-100 text-amber-700 border border-amber-200`}
         >
           待支付/待确认
         </span>
-      );
+      )
     }
     return (
       <span
@@ -78,16 +78,16 @@ export function OrdersPage() {
       >
         已关闭
       </span>
-    );
-  };
+    )
+  }
 
   const formatOrderNo = (o: Order) => {
-    const d = new Date(o.created_at);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}${m}${day}0000${o.id}`;
-  };
+    const d = new Date(o.created_at)
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}${m}${day}0000${o.id}`
+  }
 
   return (
     <div className="space-y-4">
@@ -97,16 +97,16 @@ export function OrdersPage() {
           size="sm"
           onClick={async () => {
             try {
-              setLoading(true);
-              const data = await getMyOrders();
+              setLoading(true)
+              const data = await getMyOrders()
               const sorted = [...data].sort(
                 (a, b) =>
                   new Date(b.created_at).getTime() -
-                  new Date(a.created_at).getTime(),
-              );
-              setOrders(sorted);
+                  new Date(a.created_at).getTime()
+              )
+              setOrders(sorted)
             } finally {
-              setLoading(false);
+              setLoading(false)
             }
           }}
         >
@@ -140,7 +140,7 @@ export function OrdersPage() {
                     订单#{formatOrderNo(o)}
                   </div>
                   <div className="text-slate-400 text-sm">
-                    {packageNameMap[o.package_id] ?? "-"}
+                    {packageNameMap[o.package_id] ?? '-'}
                   </div>
                 </div>
                 <div className="text-slate-700 text-sm">
@@ -159,5 +159,5 @@ export function OrdersPage() {
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -1,25 +1,25 @@
-"use client";
+'use client'
 
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-import { Trophy } from "lucide-react";
-import { formatCurrency, type LeaderboardItem } from "@/src/services/mining";
-import { useLanguage } from "@/src/contexts/language-context";
+  CardTitle
+} from '@/src/components/ui/card'
+import { Trophy } from 'lucide-react'
+import { formatCurrency, type LeaderboardItem } from '@/src/services/mining'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface LeaderboardCardProps {
-  leaderboard: LeaderboardItem[];
-  leaderboardLoading: boolean;
+  leaderboard: LeaderboardItem[]
+  leaderboardLoading: boolean
 }
 
 export function LeaderboardCard({
   leaderboard,
-  leaderboardLoading,
+  leaderboardLoading
 }: LeaderboardCardProps) {
-  const { t } = useLanguage();
+  const { t } = useLanguage()
 
   return (
     <Card className="glass-card border-white/50">
@@ -28,10 +28,10 @@ export function LeaderboardCard({
           <div className="premium-icon w-6 h-6 rounded-lg mr-3">
             <Trophy className="w-3 h-3 text-yellow-600" />
           </div>
-          {t("mining.leaderboard.title")}
+          {t('mining.leaderboard.title')}
         </CardTitle>
         <p className="text-slate-600 text-sm ml-11">
-          {t("mining.leaderboard.description")}
+          {t('mining.leaderboard.description')}
         </p>
       </CardHeader>
       <CardContent>
@@ -64,12 +64,12 @@ export function LeaderboardCard({
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                       index === 0
-                        ? "bg-yellow-100 text-yellow-700"
+                        ? 'bg-yellow-100 text-yellow-700'
                         : index === 1
-                          ? "bg-gray-100 text-gray-700"
+                          ? 'bg-gray-100 text-gray-700'
                           : index === 2
-                            ? "bg-orange-100 text-orange-700"
-                            : "bg-blue-100 text-blue-700"
+                            ? 'bg-orange-100 text-orange-700'
+                            : 'bg-blue-100 text-blue-700'
                     }`}
                   >
                     {index + 1}
@@ -85,7 +85,7 @@ export function LeaderboardCard({
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-yellow-600 text-sm">
-                    {formatCurrency(item.mining_amount, "NTX")}
+                    {formatCurrency(item.mining_amount, 'NTX')}
                   </p>
                 </div>
               </div>
@@ -95,14 +95,14 @@ export function LeaderboardCard({
           <div className="text-center py-8">
             <Trophy className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-500 mb-2">
-              {t("mining.leaderboard.noData")}
+              {t('mining.leaderboard.noData')}
             </p>
             <p className="text-sm text-gray-400">
-              {t("mining.leaderboard.tryLater")}
+              {t('mining.leaderboard.tryLater')}
             </p>
           </div>
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

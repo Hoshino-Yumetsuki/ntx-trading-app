@@ -1,26 +1,26 @@
-"use client";
+'use client'
 
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/src/components/ui/button";
-import { useLanguage } from "@/src/contexts/language-context";
-import Image from "next/image";
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/src/components/ui/button'
+import { useLanguage } from '@/src/contexts/language-context'
+import Image from 'next/image'
 
 interface AssetsHeaderProps {
-  onBack: () => void;
-  currentView: "assets" | "history" | "commission";
-  onRefresh: () => void;
-  onViewChange: (view: "assets" | "history" | "commission") => void;
+  onBack: () => void
+  currentView: 'assets' | 'history' | 'commission'
+  onRefresh: () => void
+  onViewChange: (view: 'assets' | 'history' | 'commission') => void
 }
 
 export function AssetsHeader({
   onBack,
   currentView,
   onRefresh: _onRefresh,
-  onViewChange,
+  onViewChange
 }: AssetsHeaderProps) {
-  const { t } = useLanguage();
+  const { t } = useLanguage()
   // Mark as used to satisfy linter; refresh is provided by parent when needed
-  void _onRefresh;
+  void _onRefresh
 
   return (
     <div className="px-6 pt-12 pb-4 relative z-10">
@@ -46,7 +46,7 @@ export function AssetsHeader({
           {/* 左侧标题 */}
           <div className="relative z-10 h-full flex items-center pl-1 pr-40">
             <h1 className="text-2xl font-bold text-blue-600">
-              {t("assets.title")}
+              {t('assets.title')}
             </h1>
           </div>
           {/* 右侧图标 */}
@@ -66,38 +66,38 @@ export function AssetsHeader({
       <div className="flex space-x-1 bg-slate-100/80 backdrop-blur-sm p-1 rounded-lg border border-slate-200/50">
         <button
           type="button"
-          onClick={() => onViewChange("assets")}
+          onClick={() => onViewChange('assets')}
           className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-            currentView === "assets"
-              ? "bg-white text-slate-800 shadow-sm"
-              : "text-slate-600 hover:text-slate-800 hover:bg-white/50"
+            currentView === 'assets'
+              ? 'bg-white text-slate-800 shadow-sm'
+              : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
           }`}
         >
-          {t("assets.overview")}
+          {t('assets.overview')}
         </button>
         <button
           type="button"
-          onClick={() => onViewChange("history")}
+          onClick={() => onViewChange('history')}
           className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-            currentView === "history"
-              ? "bg-white text-slate-800 shadow-sm"
-              : "text-slate-600 hover:text-slate-800 hover:bg-white/50"
+            currentView === 'history'
+              ? 'bg-white text-slate-800 shadow-sm'
+              : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
           }`}
         >
-          {t("assets.withdrawHistory")}
+          {t('assets.withdrawHistory')}
         </button>
         <button
           type="button"
-          onClick={() => onViewChange("commission")}
+          onClick={() => onViewChange('commission')}
           className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-            currentView === "commission"
-              ? "bg-white text-slate-800 shadow-sm"
-              : "text-slate-600 hover:text-slate-800 hover:bg-white/50"
+            currentView === 'commission'
+              ? 'bg-white text-slate-800 shadow-sm'
+              : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
           }`}
         >
-          {t("assets.commissionHistory")}
+          {t('assets.commissionHistory')}
         </button>
       </div>
     </div>
-  );
+  )
 }

@@ -1,261 +1,261 @@
-"use client";
+'use client'
 
-import { useState, useId } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useState, useId } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
 // 移除不再使用的UI组件导入
-import { Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useAuth } from "@/src/contexts/AuthContext";
+import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { useAuth } from '@/src/contexts/AuthContext'
 import {
   register as registerUser,
   sendVerificationCode,
   forgotPassword,
-  resetPassword,
-} from "@/src/services/auth";
-import { toast } from "sonner";
-import { TermsModal } from "@/src/components/ui/terms-modal";
+  resetPassword
+} from '@/src/services/auth'
+import { toast } from 'sonner'
+import { TermsModal } from '@/src/components/ui/terms-modal'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from "@/src/components/ui/dialog";
-import { useLanguage } from "@/src/contexts/language-context";
-import Image from "next/image";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+  DialogTitle
+} from '@/src/components/ui/dialog'
+import { useLanguage } from '@/src/contexts/language-context'
+import Image from 'next/image'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 
 const createLoginSchema = (t: (key: string) => string) =>
   z.object({
-    email: z.string().email(t("validation.email.invalid")),
-    password: z.string().min(1, t("validation.password.required")),
-  });
+    email: z.string().email(t('validation.email.invalid')),
+    password: z.string().min(1, t('validation.password.required'))
+  })
 
 const createRegisterSchema = (t: (key: string) => string) =>
   z
     .object({
-      email: z.string().email(t("validation.email.invalid")),
+      email: z.string().email(t('validation.email.invalid')),
       nickname: z
         .string()
-        .min(2, t("validation.nickname.minLength"))
-        .max(20, t("validation.nickname.maxLength")),
+        .min(2, t('validation.nickname.minLength'))
+        .max(20, t('validation.nickname.maxLength')),
       verification_code: z
         .string()
-        .min(6, t("validation.verificationCode.length")),
+        .min(6, t('validation.verificationCode.length')),
       password: z
         .string()
-        .min(8, t("validation.password.minLength"))
-        .max(128, t("validation.password.maxLength"))
-        .regex(/^(?=.*[a-z])/, t("validation.password.lowercase"))
-        .regex(/^(?=.*\d)/, t("validation.password.number"))
-        .regex(/^(?=.*[A-Z])/, t("validation.password.uppercase")),
+        .min(8, t('validation.password.minLength'))
+        .max(128, t('validation.password.maxLength'))
+        .regex(/^(?=.*[a-z])/, t('validation.password.lowercase'))
+        .regex(/^(?=.*\d)/, t('validation.password.number'))
+        .regex(/^(?=.*[A-Z])/, t('validation.password.uppercase')),
       confirmPassword: z.string(),
       invite_code: z.string().optional(),
       agreeToTerms: z.boolean().refine((val) => val === true, {
-        message: t("validation.terms.required"),
-      }),
+        message: t('validation.terms.required')
+      })
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: t("validation.password.mismatch"),
-      path: ["confirmPassword"],
-    });
+      message: t('validation.password.mismatch'),
+      path: ['confirmPassword']
+    })
 
 interface LoginPageProps {
-  initialMode?: "login" | "register";
-  initialInviteCode?: string;
+  initialMode?: 'login' | 'register'
+  initialInviteCode?: string
 }
 
 export function LoginPage({
-  initialMode = "login",
-  initialInviteCode = "",
+  initialMode = 'login',
+  initialInviteCode = ''
 }: LoginPageProps) {
   // 生成唯一ID
-  const emailId = useId();
-  const passwordId = useId();
-  const nicknameId = useId();
-  const verificationCodeId = useId();
-  const inviteCodeId = useId();
-  const confirmPasswordId = useId();
-  const agreeToTermsId = useId();
+  const emailId = useId()
+  const passwordId = useId()
+  const nicknameId = useId()
+  const verificationCodeId = useId()
+  const inviteCodeId = useId()
+  const confirmPasswordId = useId()
+  const agreeToTermsId = useId()
 
   const [isRegisterMode, setIsRegisterMode] = useState(
-    initialMode === "register",
-  );
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoadingVerification, setIsLoadingVerification] = useState(false);
-  const [verificationSent, setVerificationSent] = useState(false);
-  const [showTermsModal, setShowTermsModal] = useState(false);
-  const [termsModalType, setTermsModalType] = useState<"terms" | "privacy">(
-    "terms",
-  );
+    initialMode === 'register'
+  )
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoadingVerification, setIsLoadingVerification] = useState(false)
+  const [verificationSent, setVerificationSent] = useState(false)
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [termsModalType, setTermsModalType] = useState<'terms' | 'privacy'>(
+    'terms'
+  )
   // 忘记密码对话框状态
-  const [showForgotDialog, setShowForgotDialog] = useState(false);
-  const [fpEmail, setFpEmail] = useState("");
-  const [fpSending, setFpSending] = useState(false);
-  const [rpEmail, setRpEmail] = useState("");
-  const [resetCode, setResetCode] = useState("");
-  const [newPwd, setNewPwd] = useState("");
-  const [newPwd2, setNewPwd2] = useState("");
-  const [rpSubmitting, setRpSubmitting] = useState(false);
-  const { login, isLoading } = useAuth();
-  const { t } = useLanguage();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [showForgotDialog, setShowForgotDialog] = useState(false)
+  const [fpEmail, setFpEmail] = useState('')
+  const [fpSending, setFpSending] = useState(false)
+  const [rpEmail, setRpEmail] = useState('')
+  const [resetCode, setResetCode] = useState('')
+  const [newPwd, setNewPwd] = useState('')
+  const [newPwd2, setNewPwd2] = useState('')
+  const [rpSubmitting, setRpSubmitting] = useState(false)
+  const { login, isLoading } = useAuth()
+  const { t } = useLanguage()
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  const loginSchema = createLoginSchema(t);
-  const registerSchema = createRegisterSchema(t);
+  const loginSchema = createLoginSchema(t)
+  const registerSchema = createRegisterSchema(t)
 
-  type LoginFormData = z.infer<typeof loginSchema>;
-  type RegisterFormData = z.infer<typeof registerSchema>;
+  type LoginFormData = z.infer<typeof loginSchema>
+  type RegisterFormData = z.infer<typeof registerSchema>
 
   const loginForm = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
+    resolver: zodResolver(loginSchema)
+  })
 
   const registerForm = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { invite_code: initialInviteCode },
-  });
+    defaultValues: { invite_code: initialInviteCode }
+  })
 
   // 移除动态表单切换，直接在JSX中使用对应的表单
 
   const onLoginSubmit = async (data: LoginFormData) => {
     try {
-      setError(null);
-      await login(data.email, data.password);
+      setError(null)
+      await login(data.email, data.password)
       // 登录成功：根据 next 参数决定默认标签
-      const next = searchParams.get("next");
-      if (next === "profile") {
+      const next = searchParams.get('next')
+      if (next === 'profile') {
         try {
-          localStorage.setItem("ntx-active-tab", "profile");
+          localStorage.setItem('ntx-active-tab', 'profile')
         } catch {}
       }
       // 返回首页
-      router.push("/");
+      router.push('/')
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : t("login.error.loginFailed"),
-      );
+        err instanceof Error ? err.message : t('login.error.loginFailed')
+      )
     }
-  };
+  }
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
     try {
-      setError(null);
-      const inviteCode = (data.invite_code ?? "").trim() || "ABCDEFGH";
+      setError(null)
+      const inviteCode = (data.invite_code ?? '').trim() || 'ABCDEFGH'
       await registerUser({
         email: data.email,
         nickname: data.nickname,
         verification_code: data.verification_code,
         password: data.password,
-        invite_code: inviteCode,
-      });
-      toast.success(t("login.success.registerSuccess"));
-      setIsRegisterMode(false);
-      registerForm.reset();
-      loginForm.reset();
+        invite_code: inviteCode
+      })
+      toast.success(t('login.success.registerSuccess'))
+      setIsRegisterMode(false)
+      registerForm.reset()
+      loginForm.reset()
       // 注册成功：根据 next 参数决定默认标签
-      const next = searchParams.get("next");
-      if (next === "profile") {
+      const next = searchParams.get('next')
+      if (next === 'profile') {
         try {
-          localStorage.setItem("ntx-active-tab", "profile");
+          localStorage.setItem('ntx-active-tab', 'profile')
         } catch {}
       }
       // 返回首页
-      router.push("/");
+      router.push('/')
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : t("login.error.registerFailed"),
-      );
+        err instanceof Error ? err.message : t('login.error.registerFailed')
+      )
     }
-  };
+  }
 
   const handleSendVerificationCode = async () => {
-    const email = registerForm.getValues("email");
+    const email = registerForm.getValues('email')
     if (!email) {
-      setError(t("login.error.emailRequired"));
-      return;
+      setError(t('login.error.emailRequired'))
+      return
     }
 
     try {
-      setIsLoadingVerification(true);
-      setError(null);
-      await sendVerificationCode({ email });
-      setVerificationSent(true);
-      toast.success(t("login.success.codesSent"));
+      setIsLoadingVerification(true)
+      setError(null)
+      await sendVerificationCode({ email })
+      setVerificationSent(true)
+      toast.success(t('login.success.codesSent'))
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : t("login.error.sendCodeFailed"),
-      );
+        err instanceof Error ? err.message : t('login.error.sendCodeFailed')
+      )
     } finally {
-      setIsLoadingVerification(false);
+      setIsLoadingVerification(false)
     }
-  };
+  }
 
   const toggleMode = () => {
-    setIsRegisterMode(!isRegisterMode);
-    setError(null);
-    setVerificationSent(false);
-    loginForm.reset();
-    registerForm.reset();
-  };
+    setIsRegisterMode(!isRegisterMode)
+    setError(null)
+    setVerificationSent(false)
+    loginForm.reset()
+    registerForm.reset()
+  }
 
   // 打开找回密码弹窗
   const openForgotDialog = () => {
-    const loginEmail = loginForm.getValues("email");
-    setFpEmail(loginEmail || "");
-    setRpEmail(loginEmail || "");
-    setShowForgotDialog(true);
-  };
+    const loginEmail = loginForm.getValues('email')
+    setFpEmail(loginEmail || '')
+    setRpEmail(loginEmail || '')
+    setShowForgotDialog(true)
+  }
 
   // 发送重置码
   const handleSendResetCode = async () => {
-    const email = fpEmail.trim();
+    const email = fpEmail.trim()
     if (!email) {
-      toast.error("请输入邮箱");
-      return;
+      toast.error('请输入邮箱')
+      return
     }
     try {
-      setFpSending(true);
-      await forgotPassword({ email });
-      toast.success("重置码已发送，请检查邮箱");
+      setFpSending(true)
+      await forgotPassword({ email })
+      toast.success('重置码已发送，请检查邮箱')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "发送重置码失败");
+      toast.error(err instanceof Error ? err.message : '发送重置码失败')
     } finally {
-      setFpSending(false);
+      setFpSending(false)
     }
-  };
+  }
 
   // 提交重置密码
   const handleSubmitReset = async () => {
-    const email = rpEmail.trim();
-    if (!email) return toast.error("请输入邮箱");
-    if (!resetCode.trim()) return toast.error("请输入重置码");
-    if (!newPwd) return toast.error("请输入新密码");
-    if (newPwd.length < 8) return toast.error("新密码至少8位");
-    if (newPwd !== newPwd2) return toast.error("两次输入的密码不一致");
+    const email = rpEmail.trim()
+    if (!email) return toast.error('请输入邮箱')
+    if (!resetCode.trim()) return toast.error('请输入重置码')
+    if (!newPwd) return toast.error('请输入新密码')
+    if (newPwd.length < 8) return toast.error('新密码至少8位')
+    if (newPwd !== newPwd2) return toast.error('两次输入的密码不一致')
     try {
-      setRpSubmitting(true);
+      setRpSubmitting(true)
       await resetPassword({
         email,
         reset_code: resetCode.trim(),
-        new_password: newPwd,
-      });
-      toast.success("密码重置成功，请使用新密码登录");
-      setShowForgotDialog(false);
+        new_password: newPwd
+      })
+      toast.success('密码重置成功，请使用新密码登录')
+      setShowForgotDialog(false)
       // 清空字段
-      setResetCode("");
-      setNewPwd("");
-      setNewPwd2("");
+      setResetCode('')
+      setNewPwd('')
+      setNewPwd2('')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "重置密码失败");
+      toast.error(err instanceof Error ? err.message : '重置密码失败')
     } finally {
-      setRpSubmitting(false);
+      setRpSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen">
@@ -282,18 +282,18 @@ export function LoginPage({
               <div
                 className={`absolute top-1/2 -translate-y-1/2 z-0 pointer-events-none ${
                   isRegisterMode
-                    ? "right-0 w-48 h-48 md:w-56 md:h-56 overflow-visible"
-                    : "-right-2 md:-right-3 w-56 h-56 md:w-64 md:h-64"
+                    ? 'right-0 w-48 h-48 md:w-56 md:h-56 overflow-visible'
+                    : '-right-2 md:-right-3 w-56 h-56 md:w-64 md:h-64'
                 }`}
               >
                 <Image
                   src={
-                    isRegisterMode ? "/Frame49@3x.png" : "/Group34575@3x.png"
+                    isRegisterMode ? '/Frame49@3x.png' : '/Group34575@3x.png'
                   }
                   alt={
                     isRegisterMode
-                      ? "Register Illustration"
-                      : "Login Illustration"
+                      ? 'Register Illustration'
+                      : 'Login Illustration'
                   }
                   fill
                   className="object-contain object-right"
@@ -313,14 +313,14 @@ export function LoginPage({
               <button
                 type="button"
                 onClick={() => {
-                  if (pathname === "/register") {
-                    router.push("/");
+                  if (pathname === '/register') {
+                    router.push('/')
                   } else {
-                    toggleMode();
+                    toggleMode()
                   }
                 }}
                 className="inline-flex items-center text-blue-600 hover:text-blue-700"
-                aria-label={t("common.back")}
+                aria-label={t('common.back')}
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
                 返回登录
@@ -330,12 +330,12 @@ export function LoginPage({
 
           <div className="text-left mb-8">
             <h2 className="text-2xl font-bold text-slate-800">
-              {isRegisterMode ? t("login.register.title") : t("login.title")}
+              {isRegisterMode ? t('login.register.title') : t('login.title')}
             </h2>
             <p className="mt-2 text-sm text-slate-600">
               {isRegisterMode
-                ? t("login.register.subtitle")
-                : t("login.subtitle")}
+                ? t('login.register.subtitle')
+                : t('login.subtitle')}
             </p>
           </div>
 
@@ -352,21 +352,21 @@ export function LoginPage({
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.email.label")}
+                    {t('login.email.label')}
                   </label>
                   <div
                     className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                       loginForm.formState.errors.email
-                        ? "border-red-300"
-                        : "border-white/30"
+                        ? 'border-red-300'
+                        : 'border-white/30'
                     }`}
                   >
                     <input
-                      {...loginForm.register("email")}
+                      {...loginForm.register('email')}
                       type="email"
                       id={emailId}
                       className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                      placeholder={t("login.email.placeholder")}
+                      placeholder={t('login.email.placeholder')}
                     />
                   </div>
                   {loginForm.formState.errors.email && (
@@ -382,21 +382,21 @@ export function LoginPage({
                     htmlFor="password"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.password.label")}
+                    {t('login.password.label')}
                   </label>
                   <div
                     className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                       loginForm.formState.errors.password
-                        ? "border-red-300"
-                        : "border-white/30"
+                        ? 'border-red-300'
+                        : 'border-white/30'
                     }`}
                   >
                     <input
-                      {...loginForm.register("password")}
-                      type={showPassword ? "text" : "password"}
+                      {...loginForm.register('password')}
+                      type={showPassword ? 'text' : 'password'}
                       id={passwordId}
                       className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
-                      placeholder={t("login.password.placeholder")}
+                      placeholder={t('login.password.placeholder')}
                     />
                     <button
                       type="button"
@@ -441,7 +441,7 @@ export function LoginPage({
                   {(loginForm.formState.isSubmitting || isLoading) && (
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   )}
-                  {t("login.loginButton")}
+                  {t('login.loginButton')}
                 </button>
               </div>
             </form>
@@ -458,21 +458,21 @@ export function LoginPage({
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.email.label")}
+                    {t('login.email.label')}
                   </label>
                   <div
                     className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                       registerForm.formState.errors.email
-                        ? "border-red-300"
-                        : "border-white/30"
+                        ? 'border-red-300'
+                        : 'border-white/30'
                     }`}
                   >
                     <input
-                      {...registerForm.register("email")}
+                      {...registerForm.register('email')}
                       type="email"
                       id={emailId}
                       className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                      placeholder={t("login.email.placeholder")}
+                      placeholder={t('login.email.placeholder')}
                     />
                   </div>
                   {registerForm.formState.errors.email && (
@@ -488,21 +488,21 @@ export function LoginPage({
                     htmlFor="nickname"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.nickname.label")}
+                    {t('login.nickname.label')}
                   </label>
                   <div
                     className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                       registerForm.formState.errors.nickname
-                        ? "border-red-300"
-                        : "border-white/30"
+                        ? 'border-red-300'
+                        : 'border-white/30'
                     }`}
                   >
                     <input
-                      {...registerForm.register("nickname")}
+                      {...registerForm.register('nickname')}
                       type="text"
                       id={nicknameId}
                       className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                      placeholder={t("login.nickname.placeholder")}
+                      placeholder={t('login.nickname.placeholder')}
                     />
                   </div>
                   {registerForm.formState.errors.nickname && (
@@ -518,23 +518,23 @@ export function LoginPage({
                     htmlFor="verification_code"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.verificationCode.label")}
+                    {t('login.verificationCode.label')}
                   </label>
                   <div className="mt-2 flex space-x-3">
                     <div className="flex-1">
                       <div
                         className={`glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                           registerForm.formState.errors.verification_code
-                            ? "border-red-300"
-                            : "border-white/30"
+                            ? 'border-red-300'
+                            : 'border-white/30'
                         }`}
                       >
                         <input
-                          {...registerForm.register("verification_code")}
+                          {...registerForm.register('verification_code')}
                           type="text"
                           id={verificationCodeId}
                           className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                          placeholder={t("login.verificationCode.placeholder")}
+                          placeholder={t('login.verificationCode.placeholder')}
                         />
                       </div>
                     </div>
@@ -547,9 +547,9 @@ export function LoginPage({
                       {isLoadingVerification ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : verificationSent ? (
-                        t("login.resendCode")
+                        t('login.resendCode')
                       ) : (
-                        t("login.sendCode")
+                        t('login.sendCode')
                       )}
                     </button>
                   </div>
@@ -566,21 +566,21 @@ export function LoginPage({
                     htmlFor="invite_code"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.inviteCode.label")}
+                    {t('login.inviteCode.label')}
                   </label>
                   <div
                     className={`mt-2 glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                       registerForm.formState.errors.invite_code
-                        ? "border-red-300"
-                        : "border-white/30"
+                        ? 'border-red-300'
+                        : 'border-white/30'
                     }`}
                   >
                     <input
-                      {...registerForm.register("invite_code")}
+                      {...registerForm.register('invite_code')}
                       type="text"
                       id={inviteCodeId}
                       className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                      placeholder={t("login.inviteCode.placeholder")}
+                      placeholder={t('login.inviteCode.placeholder')}
                     />
                   </div>
                   {registerForm.formState.errors.invite_code && (
@@ -596,21 +596,21 @@ export function LoginPage({
                     htmlFor="password"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.password.label")}
+                    {t('login.password.label')}
                   </label>
                   <div
                     className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                       registerForm.formState.errors.password
-                        ? "border-red-300"
-                        : "border-white/30"
+                        ? 'border-red-300'
+                        : 'border-white/30'
                     }`}
                   >
                     <input
-                      {...registerForm.register("password")}
-                      type={showPassword ? "text" : "password"}
+                      {...registerForm.register('password')}
+                      type={showPassword ? 'text' : 'password'}
                       id={passwordId}
                       className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
-                      placeholder={t("login.password.register.placeholder")}
+                      placeholder={t('login.password.register.placeholder')}
                     />
                     <button
                       type="button"
@@ -637,21 +637,21 @@ export function LoginPage({
                     htmlFor="confirmPassword"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    {t("login.confirmPassword.label")}
+                    {t('login.confirmPassword.label')}
                   </label>
                   <div
                     className={`mt-2 relative glass-card rounded-[12px] border px-3 h-12 flex items-center focus-within:ring-2 focus-within:ring-indigo-500 ${
                       registerForm.formState.errors.confirmPassword
-                        ? "border-red-300"
-                        : "border-white/30"
+                        ? 'border-red-300'
+                        : 'border-white/30'
                     }`}
                   >
                     <input
-                      {...registerForm.register("confirmPassword")}
-                      type={showConfirmPassword ? "text" : "password"}
+                      {...registerForm.register('confirmPassword')}
+                      type={showConfirmPassword ? 'text' : 'password'}
                       id={confirmPasswordId}
                       className="block w-full bg-transparent border-0 pr-10 text-sm focus:outline-none focus:ring-0"
-                      placeholder={t("login.confirmPassword.placeholder")}
+                      placeholder={t('login.confirmPassword.placeholder')}
                     />
                     <button
                       type="button"
@@ -683,7 +683,7 @@ export function LoginPage({
               <div className="mt-4 flex items-start">
                 <div className="flex items-center h-5">
                   <input
-                    {...registerForm.register("agreeToTerms")}
+                    {...registerForm.register('agreeToTerms')}
                     id={agreeToTermsId}
                     type="checkbox"
                     className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
@@ -691,27 +691,27 @@ export function LoginPage({
                 </div>
                 <div className="ml-3 text-sm">
                   <label htmlFor={agreeToTermsId} className="text-gray-700">
-                    {t("login.agreeTerms")}
+                    {t('login.agreeTerms')}
                     <button
                       type="button"
                       onClick={() => {
-                        setTermsModalType("terms");
-                        setShowTermsModal(true);
+                        setTermsModalType('terms')
+                        setShowTermsModal(true)
                       }}
                       className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
                     >
-                      {t("login.termsOfService")}
+                      {t('login.termsOfService')}
                     </button>
-                    {t("login.and")}
+                    {t('login.and')}
                     <button
                       type="button"
                       onClick={() => {
-                        setTermsModalType("privacy");
-                        setShowTermsModal(true);
+                        setTermsModalType('privacy')
+                        setShowTermsModal(true)
                       }}
                       className="text-indigo-600 hover:text-indigo-500 mx-1 underline"
                     >
-                      {t("login.privacyPolicy")}
+                      {t('login.privacyPolicy')}
                     </button>
                   </label>
                   {registerForm.formState.errors.agreeToTerms && (
@@ -731,7 +731,7 @@ export function LoginPage({
                   {registerForm.formState.isSubmitting && (
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   )}
-                  {t("login.registerButton")}
+                  {t('login.registerButton')}
                 </button>
               </div>
             </form>
@@ -743,17 +743,17 @@ export function LoginPage({
               onClick={() => {
                 if (isRegisterMode) {
                   // 注册页切到登录：跳首页
-                  router.push("/");
+                  router.push('/')
                 } else {
                   // 登录页切到注册：跳注册路由
-                  router.push("/register");
+                  router.push('/register')
                 }
               }}
               className="text-blue-600 hover:text-blue-500 text-sm font-medium"
             >
               {isRegisterMode
-                ? t("login.switchToLogin")
-                : t("login.switchToRegister")}
+                ? t('login.switchToLogin')
+                : t('login.switchToRegister')}
             </button>
           </div>
 
@@ -762,9 +762,9 @@ export function LoginPage({
             <div className="text-center mt-3">
               <button
                 type="button"
-                onClick={() => router.push("/")}
+                onClick={() => router.push('/')}
                 className="text-blue-600 hover:text-blue-500 text-sm font-medium"
-                aria-label={t("common.back")}
+                aria-label={t('common.back')}
               >
                 返回主界面
               </button>
@@ -876,5 +876,5 @@ export function LoginPage({
         type={termsModalType}
       />
     </div>
-  );
+  )
 }

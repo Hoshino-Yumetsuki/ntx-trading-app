@@ -1,70 +1,66 @@
-"use client";
+'use client'
 
-import { useState } from "react"; // Removed useEffect as it's no longer needed for iOS check here
-import { Button } from "@/src/components/ui/button";
+import { useState } from 'react' // Removed useEffect as it's no longer needed for iOS check here
+import { Button } from '@/src/components/ui/button'
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-import { Copy, Share2 } from "lucide-react";
-import type { UserInfo } from "@/src/types/user";
-import { useLanguage } from "@/src/contexts/language-context";
-import { toast } from "sonner";
-import { UniversalShareModal } from "@/src/components/ui/universal-share-modal";
-import {
-  useInviteImageGenerator,
-  InvitePoster,
-} from "./invite-image-generator";
+  CardTitle
+} from '@/src/components/ui/card'
+import { Copy, Share2 } from 'lucide-react'
+import type { UserInfo } from '@/src/types/user'
+import { useLanguage } from '@/src/contexts/language-context'
+import { toast } from 'sonner'
+import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
+import { useInviteImageGenerator, InvitePoster } from './invite-image-generator'
 
 interface InviteCodeCardProps {
-  userInfo: UserInfo | null;
+  userInfo: UserInfo | null
 }
 
 export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
-  const { t } = useLanguage();
-  const [showShareModal, setShowShareModal] = useState(false);
+  const { t } = useLanguage()
+  const [showShareModal, setShowShareModal] = useState(false)
 
   // The hook now returns the generator function and qrDataUrl
-  const { generateImage, qrDataUrl } = useInviteImageGenerator(userInfo);
+  const { generateImage, qrDataUrl } = useInviteImageGenerator(userInfo)
 
   const copyInviteCode = () => {
     if (userInfo?.myInviteCode) {
-      navigator.clipboard.writeText(userInfo.myInviteCode);
-      toast.success(t("profile.copy.success"));
+      navigator.clipboard.writeText(userInfo.myInviteCode)
+      toast.success(t('profile.copy.success'))
     }
-  };
+  }
 
   const copyInviteLink = () => {
     if (userInfo?.myInviteCode) {
-      const origin =
-        typeof window !== "undefined" ? window.location.origin : "";
-      const inviteUrl = `${origin}/register?invite=${userInfo.myInviteCode}`;
-      navigator.clipboard.writeText(inviteUrl);
-      toast.success("邀请链接已复制到剪贴板");
+      const origin = typeof window !== 'undefined' ? window.location.origin : ''
+      const inviteUrl = `${origin}/register?invite=${userInfo.myInviteCode}`
+      navigator.clipboard.writeText(inviteUrl)
+      toast.success('邀请链接已复制到剪贴板')
     }
-  };
+  }
 
   const openShareModal = () => {
-    setShowShareModal(true);
-  };
+    setShowShareModal(true)
+  }
 
   return (
     <Card className="glass-card border-white/30 rounded-[16pt]">
       <CardHeader>
         <CardTitle className="text-slate-800">
-          {t("profile.inviteCode.title")}
+          {t('profile.inviteCode.title')}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[16pt] border border-blue-200">
           <div className="mb-3">
             <p className="text-sm text-gray-600 mb-1">
-              {t("profile.inviteCode.description")}
+              {t('profile.inviteCode.description')}
             </p>
             <p className="text-lg font-mono font-bold text-blue-600">
-              {userInfo?.myInviteCode || "Loading..."}
+              {userInfo?.myInviteCode || 'Loading...'}
             </p>
           </div>
           <div className="flex gap-2">
@@ -95,11 +91,11 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         onClose={() => setShowShareModal(false)}
         title="分享邀请海报"
         shareData={{
-          title: "注册 NTX DAO",
-          text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n享受高达50%手续费返佣和交易挖矿\n\n邀请码：${userInfo?.myInviteCode || ""}`,
+          title: '注册 NTX DAO',
+          text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n享受高达50%手续费返佣和交易挖矿\n\n邀请码：${userInfo?.myInviteCode || ''}`,
           url: userInfo?.myInviteCode
-            ? `${typeof window !== "undefined" ? window.location.origin : ""}/register?invite=${userInfo.myInviteCode}`
-            : "",
+            ? `${typeof window !== 'undefined' ? window.location.origin : ''}/register?invite=${userInfo.myInviteCode}`
+            : ''
         }}
         imageGenerator={generateImage} // Pass the generator function
         // Pass the poster component with its props
@@ -110,23 +106,23 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         showCustomQrUpload={false}
         customActions={[
           {
-            label: "复制邀请链接",
+            label: '复制邀请链接',
             icon: Copy,
             onClick: copyInviteLink,
-            variant: "outline",
-            className: "w-full",
+            variant: 'outline',
+            className: 'w-full'
           },
           {
-            label: "复制邀请码",
+            label: '复制邀请码',
             icon: Copy,
             onClick: copyInviteCode,
-            variant: "outline",
-            className: "w-full",
-          },
+            variant: 'outline',
+            className: 'w-full'
+          }
         ]}
         showDefaultShareButtons={true}
         showCopyLinkButton={false}
       />
     </Card>
-  );
+  )
 }

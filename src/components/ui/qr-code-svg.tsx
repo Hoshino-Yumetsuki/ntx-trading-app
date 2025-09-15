@@ -10,9 +10,17 @@ interface QRCodeSVGProps {
   className?: string
 }
 
-export function QRCodeSVG({ dataUrl, width, height, className }: QRCodeSVGProps) {
+export function QRCodeSVG({
+  dataUrl,
+  width,
+  height,
+  className
+}: QRCodeSVGProps) {
   const [svgString, setSvgString] = useState<string>('')
-  const isIOS = typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+  const isIOS =
+    typeof window !== 'undefined' &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+    !(window as any).MSStream
 
   useEffect(() => {
     if (!isIOS || !dataUrl) return
@@ -27,7 +35,7 @@ export function QRCodeSVG({ dataUrl, width, height, className }: QRCodeSVGProps)
 
         const img = new window.Image()
         img.src = dataUrl
-        
+
         await new Promise((resolve, reject) => {
           img.onload = resolve
           img.onerror = reject
@@ -40,7 +48,7 @@ export function QRCodeSVG({ dataUrl, width, height, className }: QRCodeSVGProps)
         if (!ctx) return
 
         ctx.drawImage(img, 0, 0, width, height)
-        
+
         const svg = `
           <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
             <image href="${dataUrl}" width="${width}" height="${height}" />
@@ -57,8 +65,9 @@ export function QRCodeSVG({ dataUrl, width, height, className }: QRCodeSVGProps)
 
   if (isIOS && svgString) {
     return (
-      <div 
+      <div
         className={className}
+        // biome-ignore lint: false
         dangerouslySetInnerHTML={{ __html: svgString }}
         style={{ width, height }}
       />

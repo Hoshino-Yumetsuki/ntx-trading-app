@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import { X } from "lucide-react";
-import { useLanguage } from "@/src/contexts/language-context";
+import { X } from 'lucide-react'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface TermsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  type: "terms" | "privacy";
+  isOpen: boolean
+  onClose: () => void
+  type: 'terms' | 'privacy'
 }
 
 export function TermsModal({ isOpen, onClose, type }: TermsModalProps) {
-  const { t } = useLanguage();
+  const { t } = useLanguage()
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
-  const title = type === "terms" ? t("ui.terms.title") : t("ui.privacy.title");
+  const title = type === 'terms' ? t('ui.terms.title') : t('ui.privacy.title')
 
   const termsContent = `
 服务条款
@@ -68,7 +68,7 @@ NTX特别提醒您应妥善保管您的账号，当您使用完毕后，应安�
 
 十、其他
 您使用NTX即视为您已阅读并同意受NTX协议约束。NTX有权在必要时修改本协议条款。如果您不接受修改后的条款，应当停止使用NTX。
-  `;
+  `
 
   const privacyContent = `
 隐私政策
@@ -147,9 +147,9 @@ V. 本用户协议和隐私政策是否会变更？
 随着业务的发展，我们可能需要更新本政策以适应服务、我们的业务和适用于法律的变化；然而，我们将会一直信守尊重您隐私的承诺。
 
 如果适用法律要求，我们将请求您同意此等变更；在其他情况下，请注意，您在任何变更之后继续使用NTX服务帐户即表示您认可并同意遵守新的用户协议和隐私政策。如果您不同意本政策的任何变更，且不希望您的信息受修订后政策的约束，您需要关闭您的帐户。
-  `;
+  `
 
-  const content = type === "terms" ? termsContent : privacyContent;
+  const content = type === 'terms' ? termsContent : privacyContent
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -184,5 +184,5 @@ V. 本用户协议和隐私政策是否会变更？
         </div>
       </div>
     </div>
-  );
+  )
 }

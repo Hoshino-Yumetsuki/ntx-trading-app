@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
-import { Card } from "@/src/components/ui/card";
-import { Copy } from "lucide-react";
-import { useLanguage } from "@/src/contexts/language-context";
-import { toast } from "sonner";
-import Image from "next/image";
+import { Card } from '@/src/components/ui/card'
+import { Copy } from 'lucide-react'
+import { useLanguage } from '@/src/contexts/language-context'
+import { toast } from 'sonner'
+import Image from 'next/image'
 
 export function ContactCard() {
-  const { t } = useLanguage();
+  const { t } = useLanguage()
 
   const copyToClipboard = (text: string, message: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(message);
-  };
+    navigator.clipboard.writeText(text)
+    toast.success(message)
+  }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-slate-800 font-medium">{t("profile.contactus")}</h3>
+        <h3 className="text-slate-800 font-medium">{t('profile.contactus')}</h3>
       </div>
 
       <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
@@ -39,10 +39,10 @@ export function ContactCard() {
             </div>
             <div>
               <p className="text-slate-800 font-medium">
-                {t("profile.contact.twitter.title")}
+                {t('profile.contact.twitter.title')}
               </p>
               <p className="text-slate-600 text-sm">
-                {t("profile.contact.twitter.description")}
+                {t('profile.contact.twitter.description')}
               </p>
             </div>
           </a>
@@ -50,7 +50,7 @@ export function ContactCard() {
             <span className="text-slate-600 text-sm">@NexTradeDao</span>
             <button
               type="button"
-              onClick={() => copyToClipboard("@NexTradeDao", "已复制到剪贴板")}
+              onClick={() => copyToClipboard('@NexTradeDao', '已复制到剪贴板')}
               className="p-1 hover:bg-white/50 rounded transition-colors"
             >
               <Copy className="w-4 h-4 text-slate-500" />
@@ -76,10 +76,10 @@ export function ContactCard() {
             </div>
             <div>
               <p className="text-slate-800 font-medium">
-                {t("profile.contact.telegram.title")}
+                {t('profile.contact.telegram.title')}
               </p>
               <p className="text-slate-600 text-sm">
-                {t("profile.contact.telegram.description")}
+                {t('profile.contact.telegram.description')}
               </p>
             </div>
           </a>
@@ -89,8 +89,8 @@ export function ContactCard() {
               type="button"
               onClick={() =>
                 copyToClipboard(
-                  "https://t.me/+eUGjIMUFdio2ODg1",
-                  "已复制到剪贴板",
+                  'https://t.me/+eUGjIMUFdio2ODg1',
+                  '已复制到剪贴板'
                 )
               }
               className="p-1 hover:bg-white/50 rounded transition-colors"
@@ -101,5 +101,5 @@ export function ContactCard() {
         </div>
       </Card>
     </div>
-  );
+  )
 }

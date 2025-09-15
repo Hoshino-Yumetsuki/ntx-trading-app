@@ -1,37 +1,37 @@
-"use client";
+'use client'
 
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent } from "@/src/components/ui/card";
-import { ChevronLeft } from "lucide-react";
-import MarkdownIt from "markdown-it";
-import multimdTable from "markdown-it-multimd-table";
-import DOMPurify from "dompurify";
-import "@/src/styles/markdown.css";
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { ChevronLeft } from 'lucide-react'
+import MarkdownIt from 'markdown-it'
+import multimdTable from 'markdown-it-multimd-table'
+import DOMPurify from 'dompurify'
+import '@/src/styles/markdown.css'
 
 interface AcademyMarkdownReaderProps {
-  title: string;
-  content: string;
-  onBack: () => void;
+  title: string
+  content: string
+  onBack: () => void
 }
 
 export function AcademyMarkdownReader({
   title,
   content,
-  onBack,
+  onBack
 }: AcademyMarkdownReaderProps) {
   const md = new MarkdownIt({
     html: true,
     linkify: true,
     typographer: true,
-    breaks: true,
+    breaks: true
   }).use(multimdTable, {
     multiline: true,
     rowspan: true,
-    headerless: true,
-  });
+    headerless: true
+  })
 
-  const html = md.render(content || "");
-  const sanitized = DOMPurify.sanitize(html);
+  const html = md.render(content || '')
+  const sanitized = DOMPurify.sanitize(html)
 
   return (
     <div className="min-h-screen pb-6">
@@ -65,5 +65,5 @@ export function AcademyMarkdownReader({
         </Card>
       </div>
     </div>
-  );
+  )
 }

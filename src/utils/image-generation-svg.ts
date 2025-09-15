@@ -1,14 +1,14 @@
-import { toSvg, toBlob } from 'html-to-image';
+import { toSvg, toBlob } from 'html-to-image'
 
 export async function generateImageWithSVG(
   element: HTMLElement,
   options: {
-    width: number;
-    height: number;
-    pixelRatio?: number;
-    minBlobSize?: number;
-    maxAttempts?: number;
-    retryDelay?: number;
+    width: number
+    height: number
+    pixelRatio?: number
+    minBlobSize?: number
+    maxAttempts?: number
+    retryDelay?: number
   }
 ): Promise<string | null> {
   const {
@@ -18,16 +18,17 @@ export async function generateImageWithSVG(
     minBlobSize = 50000,
     maxAttempts = 10,
     retryDelay = 500
-  } = options;
+  } = options
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
 
-  let attempt = 0;
+  let attempt = 0
 
   while (attempt < maxAttempts) {
     try {
       if (attempt > 0) {
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        await new Promise((resolve) => setTimeout(resolve, retryDelay))
       }
 
       if (isIOS) {
@@ -38,16 +39,16 @@ export async function generateImageWithSVG(
           backgroundColor: '#ffffff',
           cacheBust: true,
           filter: () => {
-            return true;
+            return true
           }
-        });
+        })
 
         if (blob && blob.size > minBlobSize) {
           return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-          });
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result as string)
+            reader.readAsDataURL(blob)
+          })
         }
       } else {
         const svgDataUrl = await toSvg(element, {
@@ -62,33 +63,33 @@ export async function generateImageWithSVG(
             }
           `,
           filter: () => true
-        });
+        })
 
         return new Promise((resolve, reject) => {
-          const img = new window.Image();
+          const img = new window.Image()
           img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = width * pixelRatio;
-            canvas.height = height * pixelRatio;
-            const ctx = canvas.getContext('2d');
+            const canvas = document.createElement('canvas')
+            canvas.width = width * pixelRatio
+            canvas.height = height * pixelRatio
+            const ctx = canvas.getContext('2d')
             if (ctx) {
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-              resolve(canvas.toDataURL('image/png'));
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+              resolve(canvas.toDataURL('image/png'))
             } else {
-              reject(new Error('Could not get canvas context'));
+              reject(new Error('Could not get canvas context'))
             }
-          };
-          img.onerror = reject;
-          img.src = svgDataUrl;
-        });
+          }
+          img.onerror = reject
+          img.src = svgDataUrl
+        })
       }
     } catch (error) {
-      console.error(`Image generation attempt ${attempt + 1} error:`, error);
+      console.error(`Image generation attempt ${attempt + 1} error:`, error)
     }
 
-    attempt += 1;
+    attempt += 1
   }
 
-  console.error('Failed to generate valid image after maximum attempts');
-  return null;
+  console.error('Failed to generate valid image after maximum attempts')
+  return null
 }
