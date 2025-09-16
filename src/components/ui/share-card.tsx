@@ -253,7 +253,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
                 />
               )}
             </div>
-            <div className="text-slate-700 text-base font-medium">扫码注册</div>
+            <div className="text-slate-700 text-base font-medium">获取空投</div>
           </div>
         </div>
 
