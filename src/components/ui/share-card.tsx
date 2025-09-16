@@ -158,8 +158,8 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           <Image
             src="/Frame17@3x.png"
             alt="NTX Logo"
-            width={200}
-            height={200}
+            width={240}
+            height={240}
             priority
             loading="eager"
             unoptimized
