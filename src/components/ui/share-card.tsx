@@ -4,7 +4,6 @@ import { forwardRef, useEffect, useRef, useState } from 'react'
 import MarkdownIt from 'markdown-it'
 import multimdTable from 'markdown-it-multimd-table'
 import Image from 'next/image'
-import { QRCodeCanvas } from '@/src/components/ui/qr-code-canvas'
 
 interface ShareCardProps {
   title: string
@@ -45,7 +44,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
     const contentWrapperRef = useRef<HTMLDivElement>(null)
     const contentInnerRef = useRef<HTMLDivElement>(null)
     const footerRef = useRef<HTMLDivElement>(null)
-    const [contentFontSize, setContentFontSize] = useState(18)
+    const [contentFontSize, setContentFontSize] = useState(20)
     const BASE_HEIGHT = 1068
     const TOP_SLICE = Math.floor(BASE_HEIGHT / 2)
     const BOTTOM_SLICE = BASE_HEIGHT - TOP_SLICE
@@ -59,11 +58,11 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         if (!wrapper || !inner || !footer) return
 
         const available = footer.offsetTop - wrapper.offsetTop - 8
-        let font = 20
+        let font = 22
         inner.style.fontSize = `${font}px`
-        inner.style.lineHeight = '1.9'
+        inner.style.lineHeight = '2.0'
         let guard = 0
-        while (inner.scrollHeight > available && font > 16 && guard < 24) {
+        while (inner.scrollHeight > available && font > 18 && guard < 24) {
           font -= 1
           inner.style.fontSize = `${font}px`
           guard++
@@ -163,31 +162,16 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             height={200}
             priority
             loading="eager"
+            unoptimized
           />
           <style jsx>{`
-            .content :global(p) {
-              margin: 0 0 1em 0;
-              text-indent: 0;
-            }
-            .content :global(ul),
-            .content :global(ol) {
-              margin: 0 0 1em 1.25em;
-            }
-            .content :global(table) {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 1em;
-            }
-            .content :global(th),
-            .content :global(td) {
-              border: 1px solid #e2e8f0;
-              padding: 8px;
-              text-align: left;
-            }
-            .content :global(th) {
-              background-color: #f8fafc;
-              font-weight: bold;
-            }
+            .content :global(p) { margin: 0 0 1em 0; text-indent: 0; text-align: justify; text-justify: inter-ideograph; }
+            .content :global(p:last-child) { margin-bottom: 0; }
+            .content :global(*) { word-break: break-word; overflow-wrap: anywhere; }
+            .content :global(ul), .content :global(ol) { margin: 0 0 1em 1.25em; }
+            .content :global(table) { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
+            .content :global(th), .content :global(td) { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+            .content :global(th) { background-color: #f8fafc; font-weight: bold; }
           `}</style>
         </div>
 
@@ -196,7 +180,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="absolute left-0 right-0 z-20 pointer-events-none overflow-visible px-8"
           style={{ top: '96px' }}
         >
-          <h1 className="text-left whitespace-normal break-words text-[32px] font-extrabold text-slate-900 leading-snug">
+          <h1 className="text-left whitespace-normal break-words text-[36px] font-extrabold text-slate-900 leading-snug">
             {title}
           </h1>
         </div>
@@ -214,7 +198,11 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
               dangerouslySetInnerHTML={renderMarkdown(content)}
               style={{
                 fontSize: contentFontSize,
-                lineHeight: '1.9'
+                lineHeight: '2.0',
+                textAlign: 'justify',
+                textJustify: 'inter-ideograph' as any,
+                wordBreak: 'break-word' as any,
+                overflowWrap: 'anywhere' as any,
               }}
             />
           </div>
@@ -235,23 +223,14 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="bg-white p-2 rounded-xl border border-[#E2E8F0] shadow-sm">
-              {qrCodeDataUrl && qrCodeDataUrl.trim() !== '' ? (
-                <QRCodeCanvas
-                  dataUrl={qrCodeDataUrl}
-                  width={150}
-                  height={150}
-                  className="w-[150px] h-[150px]"
-                />
-              ) : (
-                <Image
-                  src={qrSrc}
-                  alt="二维码"
-                  width={150}
-                  height={150}
-                  className="w-[150px] h-[150px]"
-                  priority
-                />
-              )}
+              <Image
+                src={qrSrc}
+                alt="二维码"
+                width={150}
+                height={150}
+                className="w-[150px] h-[150px]"
+                priority
+              />
             </div>
             <div className="text-slate-700 text-base font-medium">获取空投</div>
           </div>
