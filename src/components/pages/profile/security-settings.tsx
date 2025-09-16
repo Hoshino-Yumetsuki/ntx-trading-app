@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useId } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { useState, useEffect, useId } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import {
   ArrowLeft,
   Shield,
@@ -27,238 +27,243 @@ import {
   Wallet,
   Mail,
   Hash,
-  Copy
-} from 'lucide-react'
-import Image from 'next/image'
-import { UserService } from '@/src/services/user'
-import { useAuth } from '@/src/contexts/AuthContext'
-import { toast } from 'sonner'
+  Copy,
+} from "lucide-react";
+import Image from "next/image";
+import { UserService } from "@/src/services/user";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { toast } from "sonner";
+import { useWeb3Modal, useWeb3ModalAccount } from "@/src/contexts/WalletContext";
+import type { UserInfo } from "@/src/types/user";
 
 const passwordSchema = z
   .object({
-    oldPassword: z.string().min(1, '请输入当前密码'),
+    oldPassword: z.string().min(1, "请输入当前密码"),
     newPassword: z
       .string()
-      .min(8, '密码至少8个字符')
-      .max(32, '密码最多32个字符')
-      .regex(/[A-Z]/, '密码必须包含至少一个大写字母'),
-    confirmPassword: z.string().min(1, '请确认新密码')
+      .min(8, "密码至少8个字符")
+      .max(32, "密码最多32个字符")
+      .regex(/[A-Z]/, "密码必须包含至少一个大写字母"),
+    confirmPassword: z.string().min(1, "请确认新密码"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: '两次输入的密码不一致',
-    path: ['confirmPassword']
-  })
+    message: "两次输入的密码不一致",
+    path: ["confirmPassword"],
+  });
 
 const nicknameSchema = z.object({
-  nickname: z.string().min(1, '请输入昵称').max(50, '昵称最多50个字符')
-})
+  nickname: z.string().min(1, "请输入昵称").max(50, "昵称最多50个字符"),
+});
 
-const bscAddressSchema = z.object({
-  bscAddress: z
-    .string()
-    .min(1, '请输入BSC地址')
-    .regex(/^0x[a-fA-F0-9]{40}$/, '请输入有效的BSC地址')
-})
-
-type PasswordFormData = z.infer<typeof passwordSchema>
-type NicknameFormData = z.infer<typeof nicknameSchema>
-type BscAddressFormData = z.infer<typeof bscAddressSchema>
+type PasswordFormData = z.infer<typeof passwordSchema>;
+type NicknameFormData = z.infer<typeof nicknameSchema>;
 
 interface SecuritySettingsProps {
-  onBack: () => void
+  onBack: () => void;
+  userInfo: UserInfo | null;
+  refetchUserInfo: () => void;
 }
 
-type EditMode = 'none' | 'password' | 'nickname' | 'bscAddress'
+type EditMode = "none" | "password" | "nickname";
 
-export function SecuritySettings({ onBack }: SecuritySettingsProps) {
-  const oldPasswordId = useId()
-  const newPasswordId = useId()
-  const confirmPasswordId = useId()
-  const nicknameId = useId()
-  const bscAddressId = useId()
+export function SecuritySettings({
+  onBack,
+  userInfo,
+  refetchUserInfo,
+}: SecuritySettingsProps) {
+  const oldPasswordId = useId();
+  const newPasswordId = useId();
+  const confirmPasswordId = useId();
+  const nicknameId = useId();
 
-  const { user, updateUser, logout } = useAuth()
-  const [showOldPassword, setShowOldPassword] = useState(false)
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [editMode, setEditMode] = useState<EditMode>('none')
-  const [logoutCountdown, setLogoutCountdown] = useState<number | null>(null)
+  const { user, updateUser, logout } = useAuth();
+  const { open } = useWeb3Modal();
+  const { address: walletAddress, isConnected } = useWeb3ModalAccount();
 
-  // 密码表单
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editMode, setEditMode] = useState<EditMode>("none");
+  const [logoutCountdown, setLogoutCountdown] = useState<number | null>(null);
+
   const passwordForm = useForm<PasswordFormData>({
-    resolver: zodResolver(passwordSchema)
-  })
+    resolver: zodResolver(passwordSchema),
+  });
 
-  // 昵称表单
   const nicknameForm = useForm<NicknameFormData>({
     resolver: zodResolver(nicknameSchema),
     defaultValues: {
-      nickname: user?.nickname || ''
-    }
-  })
+      nickname: user?.nickname || "",
+    },
+  });
 
-  // BSC地址表单
-  const bscAddressForm = useForm<BscAddressFormData>({
-    resolver: zodResolver(bscAddressSchema)
-  })
-
-  // 倒计时逻辑
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null
-
+    let intervalId: NodeJS.Timeout | null = null;
     if (logoutCountdown !== null && logoutCountdown > 0) {
       intervalId = setInterval(() => {
         setLogoutCountdown((prev) => {
           if (prev === null || prev <= 1) {
-            // 延迟到下一个事件循环执行logout，避免在渲染过程中更新状态
-            setTimeout(() => {
-              logout()
-            }, 0)
-            return null
+            setTimeout(() => logout(), 0);
+            return null;
           }
-          return prev - 1
-        })
-      }, 1000)
+          return prev - 1;
+        });
+      }, 1000);
     }
-
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId)
-      }
-    }
-  }, [logoutCountdown, logout])
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [logoutCountdown, logout]);
 
-  // 复制到剪贴板
   const handleCopy = async (text: string, label: string) => {
     try {
-      await navigator.clipboard.writeText(text)
-      toast.success(`${label}已复制到剪贴板`)
+      await navigator.clipboard.writeText(text);
+      toast.success(`${label}已复制到剪贴板`);
     } catch (error) {
-      console.error('Copy failed:', error)
-      toast.error('复制失败，请手动复制')
+      toast.error("复制失败，请手动复制");
     }
-  }
+  };
 
-  // 取消编辑
   const handleCancelEdit = () => {
-    setEditMode('none')
-    // 重置所有表单
-    passwordForm.reset()
-    nicknameForm.reset()
-    bscAddressForm.reset()
-    setSuccess(false)
-  }
+    setEditMode("none");
+    passwordForm.reset();
+    nicknameForm.reset();
+    setSuccess(false);
+  };
 
-  // 处理表单提交
   const onPasswordSubmit = async (data: PasswordFormData) => {
-    setIsSubmitting(true)
-    setSuccess(false)
-
+    setIsSubmitting(true);
+    setSuccess(false);
     try {
-      await UserService.updatePassword(data.oldPassword, data.newPassword)
-      setSuccess(true)
-      passwordForm.reset()
-      setEditMode('none') // 提交成功后退出编辑模式
-      toast.success('密码修改成功！')
-
-      // 启动倒计时
-      setLogoutCountdown(3)
+      await UserService.updatePassword(data.oldPassword, data.newPassword);
+      setSuccess(true);
+      passwordForm.reset();
+      setEditMode("none");
+      toast.success("密码修改成功！");
+      setLogoutCountdown(3);
     } catch (error) {
-      console.error('Password update failed:', error)
       toast.error(
-        '密码修改失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
-      )
+        "密码修改失败：" + (error instanceof Error ? error.message : "请稍后重试"),
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const onNicknameSubmit = async (data: NicknameFormData) => {
     try {
-      await UserService.updateNickname(data.nickname)
-      // 更新AuthContext中的用户信息
-      updateUser({ nickname: data.nickname })
-      setEditMode('none')
-      toast.success('昵称更新成功')
-      nicknameForm.reset()
+      await UserService.updateNickname(data.nickname);
+      updateUser({ nickname: data.nickname });
+      setEditMode("none");
+      toast.success("昵称更新成功");
+      nicknameForm.reset();
     } catch (error) {
-      console.error('Nickname update failed:', error)
       toast.error(
-        '昵称更新失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
-      )
+        "昵称更新失败：" + (error instanceof Error ? error.message : "请稍后重试"),
+      );
     }
-  }
+  };
 
-  const onBscAddressSubmit = async (data: BscAddressFormData) => {
-    try {
-      await UserService.bindBscAddress(data.bscAddress)
-      setEditMode('none')
-      toast.success('BSC地址绑定成功')
-      bscAddressForm.reset()
-    } catch (error) {
-      console.error('BSC address binding failed:', error)
-      toast.error(
-        'BSC地址绑定失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
-      )
+  const handleBindBscAddress = async () => {
+    if (!walletAddress) {
+      toast.error("请先连接您的钱包。");
+      return;
     }
-  }
+    try {
+      await UserService.bindBscAddress(walletAddress);
+      toast.success("BSC 地址绑定成功！");
+      refetchUserInfo();
+    } catch (error) {
+      toast.error(
+        "BSC 地址绑定失败: " +
+          (error instanceof Error ? error.message : "请重试。"),
+      );
+    }
+  };
 
   const securityItems = [
     {
       icon: User,
-      title: '用户昵称',
-      description: user?.nickname || '未设置',
-      status: user?.nickname ? 'completed' : 'pending',
-      action: '修改',
-      onClick: () => setEditMode('nickname'),
-      copyable: false
+      title: "用户昵称",
+      description: userInfo?.nickname || "未设置",
+      status: userInfo?.nickname ? "completed" : "pending",
+      action: "修改",
+      onClick: () => setEditMode("nickname"),
+      copyable: false,
     },
     {
       icon: Hash,
-      title: '用户UID',
-      description: user?.id?.toString() || '未获取',
-      status: user?.id ? 'completed' : 'pending',
-      action: '',
+      title: "用户UID",
+      description: userInfo?.id?.toString() || "未获取",
+      status: userInfo?.id ? "completed" : "pending",
+      action: "",
       onClick: () => {},
-      copyable: true
+      copyable: true,
     },
     {
       icon: Mail,
-      title: '电子邮箱',
-      description: user?.email || '未设置',
-      status: user?.email ? 'completed' : 'pending',
-      action: '',
+      title: "电子邮箱",
+      description: userInfo?.email || "未设置",
+      status: userInfo?.email ? "completed" : "pending",
+      action: "",
       onClick: () => {},
-      copyable: true
+      copyable: true,
     },
     {
       icon: Key,
-      title: '登录密码',
-      description: '已设置',
-      status: 'completed',
-      action: '修改',
-      onClick: () => setEditMode('password'),
-      copyable: false
+      title: "登录密码",
+      description: "已设置",
+      status: "completed",
+      action: "修改",
+      onClick: () => setEditMode("password"),
+      copyable: false,
     },
     {
       icon: Wallet,
-      title: 'BSC钱包地址',
-      description: '点击绑定或更新',
-      status: 'pending',
-      action: '绑定',
-      onClick: () => setEditMode('bscAddress'),
-      copyable: false
+      title: "BSC钱包地址",
+      description: userInfo?.bscAddress || "未绑定",
+      status: userInfo?.bscAddress ? "completed" : "pending",
+      action: "",
+      onClick: () => {},
+      copyable: !!userInfo?.bscAddress,
+    },
+  ];
+
+  // 动态计算绑定按钮的状态和文本
+  const getBindButtonState = () => {
+    if (!isConnected || !walletAddress) {
+      return { text: "连接钱包", disabled: false, action: () => open() };
     }
-  ]
+
+    const isSameAddress =
+      !!userInfo?.bscAddress &&
+      userInfo.bscAddress.toLowerCase() === walletAddress.toLowerCase();
+
+    if (isSameAddress) {
+      return { text: "地址已绑定", disabled: true, action: () => {} };
+    }
+
+    if (userInfo?.bscAddress) {
+      return {
+        text: "更新绑定地址",
+        disabled: false,
+        action: handleBindBscAddress,
+      };
+    }
+
+    return {
+      text: "绑定此地址",
+      disabled: false,
+      action: handleBindBscAddress,
+    };
+  };
+
+  const bindButtonState = getBindButtonState();
 
   return (
     <div className="min-h-screen">
-      {/* 顶部：返回与标识（与新手教程一致） */}
       <div className="px-6 pt-12 pb-2 relative z-10">
         <div className="flex items-center space-x-3">
           <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
@@ -276,11 +281,9 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
         </div>
       </div>
 
-      {/* Header Banner：左文右图 */}
       <div className="px-6">
         <div className="relative mb-6 rounded-[16pt] overflow-visible">
           <div className="relative h-32">
-            {/* 左侧文字区域 */}
             <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
               <div>
                 <h2 className="text-2xl font-bold text-blue-600">安全设置</h2>
@@ -289,7 +292,6 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                 </p>
               </div>
             </div>
-            {/* 右侧大图 */}
             <div className="absolute -right-2 md:-right-3 top-1/2 -translate-y-1/2 w-56 h-56 md:w-64 md:h-64 z-0 pointer-events-none">
               <Image
                 src="/Group34393@3x.png"
@@ -303,16 +305,15 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
         </div>
       </div>
 
-      {/* 倒计时提示 */}
       {logoutCountdown !== null && (
         <div className="px-6 py-2">
           <Alert className="border-orange-200 bg-orange-50">
             <AlertCircle className="h-4 w-4 text-orange-600" />
             <AlertDescription className="text-orange-800">
-              密码修改成功！为了您的账户安全，将在{' '}
+              密码修改成功！为了您的账户安全，将在{" "}
               <span className="font-bold text-orange-900">
                 {logoutCountdown}
-              </span>{' '}
+              </span>{" "}
               秒后自动退出登录。
             </AlertDescription>
           </Alert>
@@ -320,7 +321,6 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
       )}
 
       <div className="px-6 py-6 space-y-6">
-        {/* 安全状态概览 */}
         <Card className="glass-card border-white/30 rounded-[16pt]">
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center space-x-2">
@@ -333,7 +333,7 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             {securityItems.map((item, index, arr) => {
-              const Icon = item.icon
+              const Icon = item.icon;
               return (
                 <div key={index}>
                   <div className="flex items-center justify-between py-4">
@@ -345,22 +345,23 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                         <p className="text-slate-800 font-medium">
                           {item.title}
                         </p>
-                        <p className="text-slate-600 text-sm">
+                        <p className="text-slate-600 text-sm break-all">
                           {item.description}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {item.status === 'completed' && (
+                      {item.status === "completed" && (
                         <CheckCircle className="w-5 h-5 text-green-500" />
                       )}
-                      {item.status === 'pending' && (
-                        <AlertCircle className="w-5 h-5 text-yellow-500" />
-                      )}
+                      {item.status === "pending" &&
+                        item.title !== "BSC钱包地址" && (
+                          <AlertCircle className="w-5 h-5 text-yellow-500" />
+                        )}
                       {item.copyable &&
                         item.description &&
-                        item.description !== '未设置' &&
-                        item.description !== '未获取' && (
+                        item.description !== "未设置" &&
+                        item.description !== "未获取" && (
                           <Button
                             size="sm"
                             variant="ghost"
@@ -383,323 +384,259 @@ export function SecuritySettings({ onBack }: SecuritySettingsProps) {
                       )}
                     </div>
                   </div>
-                  {/* 添加分隔线，但最后一项不添加 */}
                   {index < arr.length - 1 && (
                     <div className="border-t border-slate-200"></div>
                   )}
                 </div>
-              )
+              );
             })}
-          </CardContent>
-        </Card>
-
-        {/* 编辑表单 - 根据编辑模式显示 */}
-        {editMode === 'password' && (
-          <Card className="glass-card border-white/30 rounded-[16pt]">
-            <CardHeader>
-              <CardTitle className="text-slate-800 flex items-center space-x-2">
-                <Key className="w-5 h-5 text-blue-600" />
-                <span>修改密码</span>
-              </CardTitle>
-              <CardDescription>为了账户安全，建议定期更换密码</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {success && (
-                <Alert className="mb-4 border-green-200 bg-green-50">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-800">
-                    密码修改成功！请使用新密码登录。
-                  </AlertDescription>
-                </Alert>
+            <div className="pt-4 space-y-3">
+              {!isConnected ? (
+                <Button onClick={() => open()} className="w-full">
+                  <Wallet className="w-4 h-4 mr-2" />
+                  连接钱包
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-xs text-blue-700">已连接钱包:</p>
+                    <p className="text-sm font-mono text-blue-900 break-all">
+                      {walletAddress}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={bindButtonState.action}
+                      className="flex-1"
+                      disabled={bindButtonState.disabled}
+                    >
+                      {bindButtonState.text}
+                    </Button>
+                    <Button
+                      onClick={() => open({ view: "Account" })}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      切换/断开
+                    </Button>
+                  </div>
+                </div>
               )}
-
-              <form
-                onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
-                className="space-y-4"
-              >
-                <div className="space-y-2">
-                  <Label htmlFor={oldPasswordId}>当前密码</Label>
-                  <div className="relative">
-                    <Input
-                      id={oldPasswordId}
-                      type={showOldPassword ? 'text' : 'password'}
-                      placeholder="输入当前密码"
-                      autoComplete="current-password"
-                      {...passwordForm.register('oldPassword')}
-                      className={
-                        passwordForm.formState.errors.oldPassword
-                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                      }
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowOldPassword(!showOldPassword)}
-                    >
-                      {showOldPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                  {passwordForm.formState.errors.oldPassword && (
-                    <p className="text-sm text-red-500">
-                      {passwordForm.formState.errors.oldPassword.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor={newPasswordId}>新密码</Label>
-                  <div className="relative">
-                    <Input
-                      id={newPasswordId}
-                      type={showNewPassword ? 'text' : 'password'}
-                      placeholder="输入新密码"
-                      autoComplete="new-password"
-                      {...passwordForm.register('newPassword')}
-                      className={
-                        passwordForm.formState.errors.newPassword
-                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                      }
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                    >
-                      {showNewPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                  {passwordForm.formState.errors.newPassword && (
-                    <p className="text-sm text-red-500">
-                      {passwordForm.formState.errors.newPassword.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor={confirmPasswordId}>确认新密码</Label>
-                  <div className="relative">
-                    <Input
-                      id={confirmPasswordId}
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder="再次输入新密码"
-                      autoComplete="new-password"
-                      {...passwordForm.register('confirmPassword')}
-                      className={
-                        passwordForm.formState.errors.confirmPassword
-                          ? 'border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                          : 'pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden'
-                      }
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                  {passwordForm.formState.errors.confirmPassword && (
-                    <p className="text-sm text-red-500">
-                      {passwordForm.formState.errors.confirmPassword.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex space-x-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={handleCancelEdit}
-                  >
-                    取消
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1 premium-gradient text-white"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? '修改中...' : '确认修改'}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* 更新昵称表单 */}
-        {editMode === 'nickname' && (
-          <Card className="glass-card border-white/30 rounded-[16pt]">
-            <CardHeader>
-              <CardTitle className="text-slate-800 flex items-center space-x-2">
-                <User className="w-5 h-5 text-blue-600" />
-                <span>更新昵称</span>
-              </CardTitle>
-              <CardDescription>修改您的显示昵称</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form
-                onSubmit={nicknameForm.handleSubmit(onNicknameSubmit)}
-                className="space-y-4"
-              >
-                <div className="space-y-2">
-                  <Label htmlFor={nicknameId}>昵称</Label>
-                  <Input
-                    id={nicknameId}
-                    type="text"
-                    placeholder="输入新昵称"
-                    defaultValue={user?.nickname || ''}
-                    {...nicknameForm.register('nickname')}
-                    className={
-                      nicknameForm.formState.errors.nickname
-                        ? 'border-red-500'
-                        : ''
-                    }
-                  />
-                  {nicknameForm.formState.errors.nickname && (
-                    <p className="text-sm text-red-500">
-                      {nicknameForm.formState.errors.nickname.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex space-x-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={handleCancelEdit}
-                  >
-                    取消
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1 premium-gradient text-white"
-                  >
-                    确认更新
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* 绑定BSC地址表单 */}
-        {editMode === 'bscAddress' && (
-          <Card className="glass-card border-white/30 rounded-[16pt]">
-            <CardHeader>
-              <CardTitle className="text-slate-800 flex items-center space-x-2">
-                <Wallet className="w-5 h-5 text-blue-600" />
-                <span>绑定BSC地址</span>
-              </CardTitle>
-              <CardDescription>
-                绑定您的BSC钱包地址用于提现和交易
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form
-                onSubmit={bscAddressForm.handleSubmit(onBscAddressSubmit)}
-                className="space-y-4"
-              >
-                <div className="space-y-2">
-                  <Label htmlFor={bscAddressId}>BSC地址</Label>
-                  <Input
-                    id={bscAddressId}
-                    type="text"
-                    placeholder="输入BSC地址 (0x...)"
-                    {...bscAddressForm.register('bscAddress')}
-                    className={
-                      bscAddressForm.formState.errors.bscAddress
-                        ? 'border-red-500'
-                        : ''
-                    }
-                  />
-                  {bscAddressForm.formState.errors.bscAddress && (
-                    <p className="text-sm text-red-500">
-                      {bscAddressForm.formState.errors.bscAddress.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex space-x-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={handleCancelEdit}
-                  >
-                    取消
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1 premium-gradient text-white"
-                  >
-                    确认绑定
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* 安全提示 */}
-        <Card className="glass-card border-white/30 rounded-[16pt]">
-          <CardHeader>
-            <CardTitle className="text-slate-800">安全提示</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-start space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="text-slate-800 font-medium">定期更换密码</p>
-                <p className="text-slate-600 text-sm">
-                  建议每3-6个月更换一次登录密码
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="text-slate-800 font-medium">使用强密码</p>
-                <p className="text-slate-600 text-sm">
-                  密码应包含大小写字母、数字和特殊字符
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="text-slate-800 font-medium">保护账户信息</p>
-                <p className="text-slate-600 text-sm">
-                  不要在公共场所或不安全的网络环境下登录
-                </p>
-              </div>
             </div>
           </CardContent>
         </Card>
+        
+        {editMode === "password" && (
+           <Card className="glass-card border-white/30 rounded-[16pt]">
+           <CardHeader>
+             <CardTitle className="text-slate-800 flex items-center space-x-2">
+               <Key className="w-5 h-5 text-blue-600" />
+               <span>修改密码</span>
+             </CardTitle>
+             <CardDescription>为了账户安全，建议定期更换密码</CardDescription>
+           </CardHeader>
+           <CardContent>
+             {success && (
+               <Alert className="mb-4 border-green-200 bg-green-50">
+                 <CheckCircle className="h-4 w-4 text-green-600" />
+                 <AlertDescription className="text-green-800">
+                   密码修改成功！请使用新密码登录。
+                 </AlertDescription>
+               </Alert>
+             )}
+
+             <form
+               onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
+               className="space-y-4"
+             >
+               <div className="space-y-2">
+                 <Label htmlFor={oldPasswordId}>当前密码</Label>
+                 <div className="relative">
+                   <Input
+                     id={oldPasswordId}
+                     type={showOldPassword ? "text" : "password"}
+                     placeholder="输入当前密码"
+                     autoComplete="current-password"
+                     {...passwordForm.register("oldPassword")}
+                     className={
+                       passwordForm.formState.errors.oldPassword
+                         ? "border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                         : "pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                     }
+                   />
+                   <Button
+                     type="button"
+                     variant="ghost"
+                     size="sm"
+                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                     onClick={() => setShowOldPassword(!showOldPassword)}
+                   >
+                     {showOldPassword ? (
+                       <EyeOff className="h-4 w-4" />
+                     ) : (
+                       <Eye className="h-4 w-4" />
+                     )}
+                   </Button>
+                 </div>
+                 {passwordForm.formState.errors.oldPassword && (
+                   <p className="text-sm text-red-500">
+                     {passwordForm.formState.errors.oldPassword.message}
+                   </p>
+                 )}
+               </div>
+
+               <div className="space-y-2">
+                 <Label htmlFor={newPasswordId}>新密码</Label>
+                 <div className="relative">
+                   <Input
+                     id={newPasswordId}
+                     type={showNewPassword ? "text" : "password"}
+                     placeholder="输入新密码"
+                     autoComplete="new-password"
+                     {...passwordForm.register("newPassword")}
+                     className={
+                       passwordForm.formState.errors.newPassword
+                         ? "border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                         : "pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                     }
+                   />
+                   <Button
+                     type="button"
+                     variant="ghost"
+                     size="sm"
+                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                     onClick={() => setShowNewPassword(!showNewPassword)}
+                   >
+                     {showNewPassword ? (
+                       <EyeOff className="h-4 w-4" />
+                     ) : (
+                       <Eye className="h-4 w-4" />
+                     )}
+                   </Button>
+                 </div>
+                 {passwordForm.formState.errors.newPassword && (
+                   <p className="text-sm text-red-500">
+                     {passwordForm.formState.errors.newPassword.message}
+                   </p>
+                 )}
+               </div>
+
+               <div className="space-y-2">
+                 <Label htmlFor={confirmPasswordId}>确认新密码</Label>
+                 <div className="relative">
+                   <Input
+                     id={confirmPasswordId}
+                     type={showConfirmPassword ? "text" : "password"}
+                     placeholder="再次输入新密码"
+                     autoComplete="new-password"
+                     {...passwordForm.register("confirmPassword")}
+                     className={
+                       passwordForm.formState.errors.confirmPassword
+                         ? "border-red-500 pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                         : "pr-10 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                     }
+                   />
+                   <Button
+                     type="button"
+                     variant="ghost"
+                     size="sm"
+                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                     onClick={() =>
+                       setShowConfirmPassword(!showConfirmPassword)
+                     }
+                   >
+                     {showConfirmPassword ? (
+                       <EyeOff className="h-4 w-4" />
+                     ) : (
+                       <Eye className="h-4 w-4" />
+                     )}
+                   </Button>
+                 </div>
+                 {passwordForm.formState.errors.confirmPassword && (
+                   <p className="text-sm text-red-500">
+                     {passwordForm.formState.errors.confirmPassword.message}
+                   </p>
+                 )}
+               </div>
+
+               <div className="flex space-x-3">
+                 <Button
+                   type="button"
+                   variant="outline"
+                   className="flex-1"
+                   onClick={handleCancelEdit}
+                 >
+                   取消
+                 </Button>
+                 <Button
+                   type="submit"
+                   className="flex-1 premium-gradient text-white"
+                   disabled={isSubmitting}
+                 >
+                   {isSubmitting ? "修改中..." : "确认修改"}
+                 </Button>
+               </div>
+             </form>
+           </CardContent>
+         </Card>
+        )}
+
+        {editMode === "nickname" && (
+           <Card className="glass-card border-white/30 rounded-[16pt]">
+           <CardHeader>
+             <CardTitle className="text-slate-800 flex items-center space-x-2">
+               <User className="w-5 h-5 text-blue-600" />
+               <span>更新昵称</span>
+             </CardTitle>
+             <CardDescription>修改您的显示昵称</CardDescription>
+           </CardHeader>
+           <CardContent>
+             <form
+               onSubmit={nicknameForm.handleSubmit(onNicknameSubmit)}
+               className="space-y-4"
+             >
+               <div className="space-y-2">
+                 <Label htmlFor={nicknameId}>昵称</Label>
+                 <Input
+                   id={nicknameId}
+                   type="text"
+                   placeholder="输入新昵称"
+                   defaultValue={user?.nickname || ""}
+                   {...nicknameForm.register("nickname")}
+                   className={
+                     nicknameForm.formState.errors.nickname
+                       ? "border-red-500"
+                       : ""
+                   }
+                 />
+                 {nicknameForm.formState.errors.nickname && (
+                   <p className="text-sm text-red-500">
+                     {nicknameForm.formState.errors.nickname.message}
+                   </p>
+                 )}
+               </div>
+
+               <div className="flex space-x-3">
+                 <Button
+                   type="button"
+                   variant="outline"
+                   className="flex-1"
+                   onClick={handleCancelEdit}
+                 >
+                   取消
+                 </Button>
+                 <Button
+                   type="submit"
+                   className="flex-1 premium-gradient text-white"
+                 >
+                   确认更新
+                 </Button>
+               </div>
+             </form>
+           </CardContent>
+         </Card>
+        )}
       </div>
     </div>
-  )
+  );
 }
