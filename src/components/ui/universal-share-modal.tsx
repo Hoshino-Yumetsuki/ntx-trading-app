@@ -319,33 +319,50 @@ export function UniversalShareModal({
         )
       : null;
 
+  const buildSharePayload = useCallback(() => {
+    const rawTitle = (shareData.title || '').trim()
+    let rawText = (shareData.text || '').trim()
+    if (!rawText && posterRef.current) {
+      const textContent = posterRef.current.innerText || posterRef.current.textContent || ''
+      rawText = textContent.replace(/\s+/g, ' ').trim()
+    }
+    const excerpt = rawText ? (rawText.length > 50 ? rawText.slice(0, 50) + '…' : rawText) : ''
+    return {
+      title: rawTitle || document.title || '',
+      text: excerpt,
+      url: shareData.url
+    }
+  }, [shareData.title, shareData.text, shareData.url])
+
   const shareToTelegram = () => {
-    const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareText)}`;
+    const payload = buildSharePayload()
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
+    const shareUrl = `https://t.me/share/url?text=${encodeURIComponent(shareText)}`
     window.open(shareUrl, "_blank");
   };
 
   const shareToTwitter = () => {
-    const shareText = `${shareData.title}\n\n${shareData.text}`;
-    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareData.url)}`;
+    const payload = buildSharePayload()
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`
     window.open(shareUrl, "_blank");
   };
 
   const shareToWhatsApp = () => {
-    const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    const payload = buildSharePayload()
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
+    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
     window.open(shareUrl, "_blank");
   };
 
   const shareNative = async () => {
-    const shareDataPayload = {
-      title: shareData.title,
-      text: shareData.text,
-      url: shareData.url,
-    };
+    const shareDataPayload = buildSharePayload()
     try {
       if (navigator.share) {
-        await navigator.share(shareDataPayload);
+        await navigator.share({
+          title: shareDataPayload.title,
+          text: `${shareDataPayload.title}\n\n${shareDataPayload.text}\n${shareDataPayload.url}`
+        });
       } else {
         copyLink();
       }
