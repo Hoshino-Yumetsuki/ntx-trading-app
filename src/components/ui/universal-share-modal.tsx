@@ -397,39 +397,6 @@ export function UniversalShareModal({
             </div>
           )}
 
-          {showCustomQrUpload && onQrOverride && (
-            <div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex flex-col gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={triggerUpload}
-                    className="w-full"
-                  >
-                    上传自定义二维码
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full"
-                    onClick={restoreDefaultQr}
-                  >
-                    还原默认
-                  </Button>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。
-                </p>
-              </div>
-            </div>
-          )}
-
           <div className="space-y-3">
             {showImagePreview && (
               <Button
@@ -524,6 +491,39 @@ export function UniversalShareModal({
               </div>
             )}
           </div>
+
+          {showCustomQrUpload && onQrOverride && (
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              <div className="bg-gray-50 rounded-lg p-3">
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={triggerUpload}
+                    className="w-full"
+                  >
+                    上传自定义二维码
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full"
+                    onClick={restoreDefaultQr}
+                  >
+                    还原默认
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
