@@ -6,6 +6,14 @@ import { API_BASE_URL } from '@/src/services/config'
 import { preloadImages } from '@/src/utils/image'
 import { generateImageWithRetry } from '@/src/utils/image-generation'
 import type { NewsItem } from '@/src/types/news'
+import { useAuth } from '@/src/contexts/AuthContext'
+import { AuthService } from '@/src/services/auth'
+
+function getBaseUrl(): string {
+  if (typeof window !== 'undefined' && window.location.origin)
+    return window.location.origin
+  return process.env.NEXT_PUBLIC_BASE_URL || ''
+}
 
 export function useNewsImageGenerator(
   newsItem: NewsItem | null,
@@ -15,6 +23,7 @@ export function useNewsImageGenerator(
   const [fullContent, setFullContent] = useState<string>('')
   const [isLoadingContent, setIsLoadingContent] = useState<boolean>(false)
   const [overrideQrText, setOverrideQrText] = useState<string>('')
+  const { user } = useAuth()
 
   const fetchFullContent = useCallback(async () => {
     if (!newsItem) return
@@ -50,10 +59,14 @@ export function useNewsImageGenerator(
     const generateQRCode = async () => {
       if (!newsItem) return
       try {
-        const textToEncode =
-          overrideQrText ||
-          shareUrl ||
-          `${window.location.origin}/news/${newsItem.id}`
+        let inviteCode = ''
+        if (user?.id) {
+          const userData = AuthService.getUser()
+          inviteCode = userData?.myInviteCode || ''
+        }
+
+        const textToEncode = overrideQrText ||
+          `${getBaseUrl()}/register${inviteCode ? `?invite=${inviteCode}` : ''}`
         const qrDataUrl = await QRCode.toDataURL(textToEncode, {
           width: 120,
           margin: 2,
@@ -65,7 +78,7 @@ export function useNewsImageGenerator(
       }
     }
     generateQRCode()
-  }, [newsItem, overrideQrText, shareUrl])
+  }, [newsItem, overrideQrText, shareUrl, user?.id])
 
   const generateImage = useCallback(
     async (node: HTMLDivElement | null): Promise<string | null> => {
