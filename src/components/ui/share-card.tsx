@@ -44,7 +44,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
     const contentWrapperRef = useRef<HTMLDivElement>(null)
     const contentInnerRef = useRef<HTMLDivElement>(null)
     const footerRef = useRef<HTMLDivElement>(null)
-    const [contentFontSize, setContentFontSize] = useState(20)
+    const [contentFontSize, setContentFontSize] = useState(22)
     const BASE_HEIGHT = 1068
     const TOP_SLICE = Math.floor(BASE_HEIGHT / 2)
     const BOTTOM_SLICE = BASE_HEIGHT - TOP_SLICE
@@ -58,15 +58,9 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         if (!wrapper || !inner || !footer) return
 
         const available = footer.offsetTop - wrapper.offsetTop - 8
-        let font = 22
+        const font = 22
         inner.style.fontSize = `${font}px`
         inner.style.lineHeight = '2.0'
-        let guard = 0
-        while (inner.scrollHeight > available && font > 18 && guard < 24) {
-          font -= 1
-          inner.style.fontSize = `${font}px`
-          guard++
-        }
         setContentFontSize(font)
 
         const overflow = Math.max(0, inner.scrollHeight - available)
@@ -168,8 +162,18 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             .content :global(p) { margin: 0 0 1em 0; text-indent: 0; text-align: justify; text-justify: inter-ideograph; }
             .content :global(p:last-child) { margin-bottom: 0; }
             .content :global(*) { word-break: break-word; overflow-wrap: anywhere; }
+            .content :global(h1),
+            .content :global(h2),
+            .content :global(h3),
+            .content :global(h4),
+            .content :global(h5),
+            .content :global(h6) { font-size: 1em; line-height: inherit; margin: 0 0 1em 0; font-weight: 700; }
+            .content :global(blockquote),
+            .content :global(pre),
+            .content :global(code) { font-size: 1em; line-height: inherit; }
             .content :global(ul), .content :global(ol) { margin: 0 0 1em 1.25em; }
             .content :global(table) { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
+            .content :global(table), .content :global(th), .content :global(td) { font-size: 1em; }
             .content :global(th), .content :global(td) { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
             .content :global(th) { background-color: #f8fafc; font-weight: bold; }
           `}</style>
