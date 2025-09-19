@@ -75,13 +75,55 @@ export function useNewsImageGenerator(
       }
 
       try {
-        // 从DOM中收集图片URL并预加载
-        const imageUrls = Array.from(node.querySelectorAll('img')).map(
-          (img) => img.src
-        )
+        // 1) 从 DOM 收集图片并预加载（包括 Next/Image 渲染出的 <img>）
+        const imgs = Array.from(node.querySelectorAll('img')) as HTMLImageElement[]
+        const imageUrls = imgs.map((img) => img.currentSrc || img.src)
         await preloadImages(imageUrls)
 
-        await new Promise((resolve) => requestAnimationFrame(resolve))
+        // 2) 等待所有图片 complete+decode，避免截图过早
+        await Promise.all(
+          imgs.map(async (img) => {
+            if (!img.complete) {
+              await new Promise<void>((res) => {
+                img.addEventListener('load', () => res(), { once: true })
+                img.addEventListener('error', () => res(), { once: true })
+              })
+            }
+            if ('decode' in img && typeof (img as any).decode === 'function') {
+              try {
+                await (img as any).decode()
+              } catch {
+                // ignore decode errors
+              }
+            }
+          })
+        )
+
+        // 3) 等待字体与两帧 rAF，使排版稳定
+        const fontsReady = (document as any)?.fonts?.ready
+        if (fontsReady && typeof fontsReady.then === 'function') {
+          try { await fontsReady } catch {}
+        }
+        await new Promise((r) => requestAnimationFrame(() => r(undefined)))
+        await new Promise((r) => requestAnimationFrame(() => r(undefined)))
+
+        // 4) 等待高度稳定（连续多次高度一致）
+        const waitForStableHeight = async (el: HTMLElement, tries = 20) => {
+          let last = -1
+          let stableCount = 0
+          for (let i = 0; i < tries; i++) {
+            const h = el.scrollHeight
+            if (h === last) {
+              stableCount += 1
+              if (stableCount >= 2) break
+            } else {
+              stableCount = 0
+            }
+            last = h
+            await new Promise((r) => setTimeout(r, 50))
+          }
+        }
+        await waitForStableHeight(node)
 
         const width = 600
         const height = node.scrollHeight
