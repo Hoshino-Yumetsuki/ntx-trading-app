@@ -195,6 +195,10 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="relative z-10 px-8 pb-[220px]"
           style={{ marginTop: Math.max(160, titleHeight + 120) }}
         >
+          {/* 日期放到标题下方、正文上方的右侧 */}
+          <div className="text-right text-slate-700 text-base select-none mb-2">
+            {todayLabel}
+          </div>
           <div className="content text-slate-700">
             <div
               ref={contentInnerRef}
@@ -240,10 +244,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
         </div>
 
-        {/* 右上角日期标签 */}
-        <div className="absolute right-8 top-6 z-30 text-slate-700 text-base select-none">
-          {todayLabel}
-        </div>
+        
       </div>
     )
   }
