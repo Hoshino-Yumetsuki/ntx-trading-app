@@ -361,7 +361,7 @@ export function UniversalShareModal({
       if (navigator.share) {
         await navigator.share({
           title: shareDataPayload.title,
-          text: `${shareDataPayload.title}\n\n${shareDataPayload.text}\n${shareDataPayload.url}`
+          text: `${shareDataPayload.title}\n\n${shareDataPayload.text}\n\n${shareDataPayload.url}`
         });
       } else {
         copyLink();
