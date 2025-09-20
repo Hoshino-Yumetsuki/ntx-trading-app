@@ -7,7 +7,7 @@ import { preloadImages } from '@/src/utils/image'
 import { generateImageWithRetry } from '@/src/utils/image-generation'
 import type { NewsItem } from '@/src/types/news'
 import { useAuth } from '@/src/contexts/AuthContext'
-import { AuthService } from '@/src/services/auth'
+import { getUserInfo } from '@/src/services/user'
 
 function getBaseUrl(): string {
   if (typeof window !== 'undefined' && window.location.origin)
@@ -24,6 +24,7 @@ export function useNewsImageGenerator(
   const [isLoadingContent, setIsLoadingContent] = useState<boolean>(false)
   const [overrideQrText, setOverrideQrText] = useState<string>('')
   const { user } = useAuth()
+  const [inviteCode, setInviteCode] = useState<string>('')
 
   const fetchFullContent = useCallback(async () => {
     if (!newsItem) return
@@ -56,15 +57,21 @@ export function useNewsImageGenerator(
   }, [newsItem, fetchFullContent])
 
   useEffect(() => {
+    const loadInvite = async () => {
+      try {
+        const info = await getUserInfo()
+        setInviteCode(info.myInviteCode || '')
+      } catch {
+        setInviteCode('')
+      }
+    }
+    loadInvite()
+  }, [user?.id])
+
+  useEffect(() => {
     const generateQRCode = async () => {
       if (!newsItem) return
       try {
-        let inviteCode = ''
-        if (user?.id) {
-          const userData = AuthService.getUser()
-          inviteCode = userData?.myInviteCode || ''
-        }
-
         const textToEncode = overrideQrText ||
           `${getBaseUrl()}/register${inviteCode ? `?invite=${inviteCode}` : ''}`
         const qrDataUrl = await QRCode.toDataURL(textToEncode, {
@@ -78,7 +85,7 @@ export function useNewsImageGenerator(
       }
     }
     generateQRCode()
-  }, [newsItem, overrideQrText, shareUrl, user?.id])
+  }, [newsItem, overrideQrText, inviteCode])
 
   const generateImage = useCallback(
     async (node: HTMLDivElement | null): Promise<string | null> => {
