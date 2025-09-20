@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react' // 引入 useRef
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
@@ -11,7 +11,7 @@ import Parser from 'rss-parser'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
 import type { NewsItem } from '@/src/types/news'
-import { ShareCard } from '@/src/components/ui/share-card' // 引入 ShareCard
+import { ShareCard } from '@/src/components/ui/share-card'
 
 import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -19,7 +19,6 @@ import { useQuery } from '@tanstack/react-query'
 import { Input } from '@/src/components/ui/input'
 
 const fetchRssNews = async (): Promise<NewsItem[]> => {
-  // ...函数内容保持不变...
   const response = await fetch('https://rss.ntxdao.com/rss/clist')
   if (!response.ok) {
     throw new Error('网络响应错误，无法获取RSS源')
@@ -273,6 +272,7 @@ export function NewsPage() {
           shareData={{
             title: shareNewsItem?.title || '',
             text: shareNewsItem?.summary || '',
+            fullText: fullContent,
             url: getShareUrl(shareNewsItem)
           }}
           imageGenerator={(node) => generateImage(node)}
@@ -438,6 +438,7 @@ export function NewsPage() {
         shareData={{
           title: shareNewsItem?.title || '',
           text: shareNewsItem?.summary || '',
+          fullText: fullContent,
           url: getShareUrl(shareNewsItem)
         }}
         imageGenerator={(node) => generateImage(node)}

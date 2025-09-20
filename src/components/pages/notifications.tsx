@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react' // 引入 useRef
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
@@ -16,7 +16,7 @@ import { API_BASE_URL } from '@/src/services/config'
 import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Input } from '@/src/components/ui/input'
-import { ShareCard } from '@/src/components/ui/share-card' // 引入 ShareCard
+import { ShareCard } from '@/src/components/ui/share-card'
 
 interface NewsItem {
   id: number
@@ -299,6 +299,7 @@ export function NotificationsPage() {
           shareData={{
             title: shareNewsItem?.title || '',
             text: shareNewsItem?.summary || '',
+            fullText: fullContent,
             url: getShareUrl(shareNewsItem)
           }}
           imageGenerator={(node) => generateImage(node)}
@@ -444,6 +445,7 @@ export function NotificationsPage() {
         shareData={{
           title: shareNewsItem?.title || '',
           text: shareNewsItem?.summary || '',
+          fullText: fullContent,
           url: getShareUrl(shareNewsItem)
         }}
         imageGenerator={(node) => generateImage(node)}
