@@ -310,7 +310,7 @@ export function NewsPage() {
                 />
               </div>
               <p className="text-slate-800 text-xl font-medium">
-                WEB3 一站式服务
+                {t('home.slogan')}
               </p>
             </div>
             <LanguageSwitcher />

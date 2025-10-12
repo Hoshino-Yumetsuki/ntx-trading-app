@@ -2,11 +2,19 @@
   "login": {
     "title": "登录账号",
     "subtitle": "欢迎回到 NTX，请登录您的账号",
+    "forgotPassword": "忘记密码？",
+    "backToLogin": "返回登录",
+    "backToHome": "返回主界面",
+    "sendResetCode": "发送重置码",
+    "submitReset": "提交重置",
     "banner": {
       "joinNow": "即刻加入",
       "platform": "全球一站式返佣挖矿服务平台",
       "exchanges": "币安、OKX、BYBIT、Gate、bitget 等",
-      "joinedExchanges": "严选交易所，现已加入平台"
+      "joinedExchanges": "严选交易所，现已加入平台",
+      "title": "立刻加入",
+      "subtitle": "返佣创业平台",
+      "description": "币安、OKX、BYBIT、GATE、Bitget 等严选交易所等现已加入平台"
     },
     "register": {
       "title": "注册",
@@ -39,6 +47,18 @@
       "label": "邀请码 (选填)",
       "placeholder": "请输入邀请码"
     },
+    "resetCode": {
+      "label": "重置码",
+      "placeholder": "请输入邮箱收到的重置码"
+    },
+    "newPassword": {
+      "label": "新密码",
+      "placeholder": "请输入新密码（至少8位）"
+    },
+    "confirmNewPassword": {
+      "label": "确认新密码",
+      "placeholder": "请再次输入新密码"
+    },
     "loginButton": "登录",
     "registerButton": "注册",
     "sendCode": "发送验证码",
@@ -49,15 +69,26 @@
     "termsOfService": "服务条款",
     "and": "和",
     "privacyPolicy": "隐私政策",
+    "dialog": {
+      "recoverPassword": "找回密码"
+    },
     "error": {
       "loginFailed": "登录失败，请检查邮箱和密码",
       "registerFailed": "注册失败，请稍后重试",
       "emailRequired": "请输入有效的邮箱地址",
-      "sendCodeFailed": "验证码发送失败，请稍后重试"
+      "sendCodeFailed": "验证码发送失败，请稍后重试",
+      "sendResetCodeFailed": "发送重置码失败",
+      "resetCodeRequired": "请输入重置码",
+      "newPasswordRequired": "请输入新密码",
+      "passwordMinLength": "新密码至少8位",
+      "passwordMismatch": "两次输入的密码不一致",
+      "resetPasswordFailed": "重置密码失败"
     },
     "success": {
       "registerSuccess": "注册成功",
-      "codesSent": "验证码已发送，请查收邮件"
+      "codesSent": "验证码已发送，请查收邮件",
+      "resetCodeSent": "重置码已发送，请检查邮箱",
+      "passwordReset": "密码重置成功，请使用新密码登录"
     }
   },
   "validation": {
@@ -91,7 +122,47 @@
     "cancel": "取消",
     "confirm": "确认",
     "save": "保存",
-    "refresh": "刷新"
+    "refresh": "刷新",
+    "back": "返回",
+    "retry": "重试",
+    "more": "更多",
+    "view": "查看",
+    "unlock": "去解锁",
+    "locked": "待解锁",
+    "copy": "复制",
+    "copied": "已复制到剪贴板",
+    "copyFailed": "复制失败，请手动复制",
+    "price": "价格：",
+    "requires": "需要：",
+    "ordering": "下单中",
+    "purchase": "购买",
+    "viewOrder": "查看订单",
+    "understood": "我已知晓",
+    "orderList": "订单列表",
+    "edit": "修改",
+    "confirmChange": "确认修改",
+    "changing": "修改中...",
+    "confirmUpdate": "确认更新",
+    "follow": "关注+",
+    "time": {
+      "minutes": "分",
+      "hours": "小时"
+    },
+    "duration": {
+      "permanent": "永久",
+      "days": "天"
+    },
+    "error": {
+      "refreshPage": "请稍后刷新页面重试"
+    },
+    "loading": {
+      "courses": "加载课程中...",
+      "community": "加载社区中...",
+      "packages": "加载套餐中...",
+      "orders": "加载订单中...",
+      "signals": "加载策略信号中...",
+      "learningResources": "加载学习资源中..."
+    }
   },
   "nav": {
     "home": "首页",
@@ -115,6 +186,8 @@
     "registerFailed": "注册失败"
   },
   "security": {
+    "title": "安全设置",
+    "subtitle": "保护您的账户安全，定期检查和更新安全设置",
     "changePassword": "修改密码",
     "oldPassword": "旧密码",
     "newPassword": "新密码",
@@ -123,7 +196,60 @@
     "passwordChangeFailed": "密码修改失败",
     "nickname": {
       "change": "修改昵称",
-      "placeholder": "请输入新昵称"
+      "placeholder": "请输入新昵称",
+      "update": "更新昵称",
+      "updateDescription": "修改您的显示昵称",
+      "label": "昵称",
+      "required": "请输入昵称",
+      "maxLength": "昵称最多50个字符",
+      "updateSuccess": "昵称更新成功",
+      "updateFailed": "昵称更新失败："
+    },
+    "password": {
+      "change": "修改密码",
+      "changeDescription": "为了账户安全，建议定期更换密码",
+      "changeSuccessMessage": "密码修改成功！请使用新密码登录。",
+      "current": "当前密码",
+      "currentRequired": "请输入当前密码",
+      "currentPlaceholder": "输入当前密码",
+      "new": "新密码",
+      "newPlaceholder": "输入新密码",
+      "confirm": "确认新密码",
+      "confirmPlaceholder": "再次输入新密码",
+      "confirmRequired": "请确认新密码",
+      "minLength": "密码至少8个字符",
+      "maxLength": "密码最多32个字符",
+      "requireUppercase": "密码必须包含至少一个大写字母",
+      "mismatch": "两次输入的密码不一致",
+      "updateSuccess": "密码修改成功！",
+      "updateFailed": "密码修改失败：",
+      "logoutCountdown": "密码修改成功！为了您的账户安全，将在"
+    },
+    "wallet": {
+      "connect": "连接钱包",
+      "connectFirst": "请先连接您的钱包。",
+      "bind": "绑定此地址",
+      "bound": "地址已绑定",
+      "updateBind": "更新绑定地址",
+      "bindSuccess": "BSC 地址绑定成功！",
+      "bindFailed": "BSC 地址绑定失败: ",
+      "connected": "已连接钱包:",
+      "switchOrDisconnect": "切换/断开"
+    },
+    "field": {
+      "nickname": "用户昵称",
+      "notSet": "未设置",
+      "uid": "用户UID",
+      "notFetched": "未获取",
+      "email": "电子邮箱",
+      "password": "登录密码",
+      "set": "已设置",
+      "bscAddress": "BSC钱包地址",
+      "notBound": "未绑定"
+    },
+    "status": {
+      "title": "安全状态",
+      "description": "保护您的账户安全，定期检查和更新安全设置"
     }
   },
   "ui": {
@@ -258,6 +384,17 @@
     "welcome": "欢迎使用",
     "title": "NTX Trading",
     "subtitle": "智能交易挖矿平台",
+    "slogan": "Web3 一站式服务",
+    "exchanges": {
+      "title": "已接入",
+      "bindButton": "绑定交易所，立刻开赚"
+    },
+    "dialog": {
+      "bindRequired": "需要绑定交易所",
+      "bindRequiredDesc": "您需要先绑定交易所 UID 才能开始挖矿。请前往挖矿页面完成绑定。",
+      "later": "稍后再说",
+      "goToBind": "前往绑定"
+    },
     "tutorial": {
       "title": "NTX 新手教程",
       "subtitle": "教你如何使用NTX",
@@ -429,6 +566,191 @@
       "addressRequired": "请输入提现地址",
       "invalidBscAddress": "请输入有效的BSC地址",
       "insufficientBalance": "余额不足"
+    }
+  },
+  "academy": {
+    "tabs": {
+      "blackHorse": "黑马模型",
+      "learning": "学习资源",
+      "signals": "策略信号",
+      "live": "直播",
+      "unlock": "解锁课程",
+      "orders": "我的订单",
+      "practice": "实战课",
+      "advanced": "进阶"
+    },
+    "subtitle": {
+      "orders": "查看课程购买与支付状态",
+      "default": "掌握机构交易思维"
+    },
+    "banner": {
+      "title": "学习资源",
+      "subtitle": "掌握机构交易思维"
+    },
+    "section": {
+      "institute": "交易研究院",
+      "live": "直播"
+    },
+    "live": {
+      "subtitle": "加入社区，一起讨论学习",
+      "externalNotice": "*直播社区将要跳转到第三方平台"
+    },
+    "coreCurriculum": "核心课程体系",
+    "myCourses": "我的课程",
+    "lockedCourses": "待解锁课程",
+    "noCourses": "暂无课程可显示",
+    "noCommunity": "暂无社区可显示",
+    "course": {
+      "lessons": "课时：",
+      "lessonsUnit": "节",
+      "totalDuration": "总时长：",
+      "startLearning": "立即学习",
+      "unlock": "去解锁"
+    },
+    "targetAudience": "适用对象",
+    "instructor": {
+      "name": "Donato狐总",
+      "title": "WEB3职业交易员 · 数十年量化交易经验",
+      "description": "专注于机构级交易策略研究，擅长趋势交易和风险控制。通过系统化的交易方法论，帮助交易者建立稳定盈利的交易体系。"
+    },
+    "features": {
+      "trendLogic": {
+        "title": "趋势底层逻辑",
+        "description": "识别牛熊拐点、趋势起点、反转信号"
+      },
+      "institutionalModel": {
+        "title": "机构操盘模型",
+        "description": "精准制定买入点、止损点、卖出点"
+      },
+      "riskControl": {
+        "title": "仓位+风控模型",
+        "description": "科学资金管理，建立小亏大赚概率优势"
+      }
+    },
+    "targetAudience": {
+      "item1": "具备技术分析基础，想落地交易系统的操盘者",
+      "item2": "有策略框架但执行效率低、选币耗时的交易员",
+      "item3": "具备趋势交易思维，想提升胜率与纪律性的进阶用户"
+    },
+    "error": {
+      "fetchCoursesFailed": "获取课程失败，请稍后再试",
+      "fetchCommunityFailed": "获取社区数据失败，请稍后再试"
+    }
+  },
+  "signals": {
+    "title": "策略信号",
+    "subtitle": "基于机构行为的趋势系统+程序化工具，清晰捕捉中期趋势",
+    "unlockedSignals": "已解锁策略信号",
+    "lockedSignals": "待解锁信号",
+    "noSignals": "暂无策略信号可显示",
+    "noAvailable": "暂无可用信号策略",
+    "contactSupport": "请稍后再来查看，或联系客服了解详情",
+    "error": {
+      "fetchFailed": "获取策略信号数据失败，请稍后再试"
+    }
+  },
+  "unlock": {
+    "permissionGroup": "权限组",
+    "banner": {
+      "title": "解锁完整课程",
+      "subtitle": "程序化辅助工具：学员专属【筛选系统】，落地模型应用",
+      "button": "获得机构级策略"
+    },
+    "section": {
+      "courseContent": "课程包含内容",
+      "purchasePackage": "购买套餐",
+      "benefits": "学员专属权益"
+    },
+    "content": {
+      "system": {
+        "title": "完整交易系统",
+        "description": "包含入场、止损、止盈的完整交易决策框架"
+      },
+      "tools": {
+        "title": "专属筛选工具",
+        "description": "学员专属的程序化筛选系统，快速发现优质标的"
+      },
+      "cases": {
+        "title": "实战案例分析",
+        "description": "真实市场案例解析，理论与实践相结合"
+      },
+      "updates": {
+        "title": "持续更新支持",
+        "description": "根据市场变化持续更新策略和工具"
+      }
+    },
+    "benefits": {
+      "vip": {
+        "title": "VIP交流群",
+        "description": "与导师和优秀学员直接交流，分享交易心得"
+      },
+      "guidance": {
+        "title": "一对一指导",
+        "description": "针对个人交易问题提供专业指导建议"
+      },
+      "updates": {
+        "title": "实时策略更新",
+        "description": "第一时间获取最新的市场策略和信号提醒"
+      }
+    },
+    "noPackages": "暂无可购买的套餐",
+    "error": {
+      "loadFailed": "加载课程与套餐失败",
+      "createOrderFailed": "创建订单失败，请稍后重试"
+    }
+  },
+  "blackHorse": {
+    "title": "学习资源",
+    "unlocked": "已解锁学习资源",
+    "locked": "待解锁资源",
+    "noResources": "暂无学习资源可显示",
+    "noAvailableCourses": "暂无可用课程",
+    "error": {
+      "fetchFailed": "获取学习资源数据失败，请稍后再试"
+    }
+  },
+  "broker": {
+    "banner": {
+      "title": "经纪商",
+      "subtitle": "专属合作与权益"
+    },
+    "section": {
+      "purchasePackage": "购买经纪商套餐",
+      "materials": "经纪商资料"
+    },
+    "noPackages": "暂无可购买的套餐",
+    "error": {
+      "loadFailed": "加载经纪商内容失败",
+      "loadPackagesFailed": "加载套餐失败",
+      "createOrderFailed": "创建订单失败，请稍后重试"
+    }
+  },
+  "orders": {
+    "orderNumber": "订单#",
+    "packageAmount": "套餐金额",
+    "paidAmount": "实付金额",
+    "createdAt": "创建时间",
+    "noOrders": "暂无订单",
+    "status": {
+      "paid": "支付成功",
+      "pending": "待支付/待确认",
+      "closed": "已关闭"
+    },
+    "error": {
+      "fetchFailed": "获取订单失败"
+    }
+  },
+  "payment": {
+    "dialog": {
+      "title": "支付信息",
+      "description": "请严格按以下信息进行链上转账"
+    },
+    "address": "支付地址",
+    "amount": "支付金额",
+    "notice": {
+      "amount": "• 金额为系统分配的唯一识别值，请勿修改，否则无法自动识别。",
+      "confirmation": "• 支付完成后，后台需要时间确认，请耐心等待。",
+      "contact": "• 如有问题，请联系管理员并提供订单号："
     }
   }
 }

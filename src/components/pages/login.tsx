@@ -268,13 +268,13 @@ export function LoginPage({
               <div className="relative z-10 h-full flex items-center pr-48 md:pr-56">
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
-                    立刻加入
+                    {t('login.banner.title')}
                   </h1>
                   <h2 className="text-xl md:text-2xl font-semibold text-blue-600 mb-4">
-                    返佣创业平台
+                    {t('login.banner.subtitle')}
                   </h2>
                   <p className="text-slate-600 text-sm md:text-base">
-                    币安、OKX、BYBIT、GATE、Bitget 等严选交易所等现已加入平台
+                    {t('login.banner.description')}
                   </p>
                 </div>
               </div>
@@ -323,7 +323,7 @@ export function LoginPage({
                 aria-label={t('common.back')}
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
-                返回登录
+                {t('login.backToLogin')}
               </button>
             </div>
           )}
@@ -428,7 +428,7 @@ export function LoginPage({
                   onClick={openForgotDialog}
                   className="text-sm text-blue-600 hover:text-blue-700"
                 >
-                  忘记密码？
+                  {t('login.forgotPassword')}
                 </button>
               </div>
 
@@ -766,7 +766,7 @@ export function LoginPage({
                 className="text-blue-600 hover:text-blue-500 text-sm font-medium"
                 aria-label={t('common.back')}
               >
-                返回主界面
+                {t('login.backToHome')}
               </button>
             </div>
           )}
@@ -777,19 +777,19 @@ export function LoginPage({
       <Dialog open={showForgotDialog} onOpenChange={setShowForgotDialog}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px]">
           <DialogHeader>
-            <DialogTitle>找回密码</DialogTitle>
+            <DialogTitle>{t('login.dialog.recoverPassword')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-5">
             {/* 步骤一：发送重置码 */}
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-700">邮箱</div>
+              <div className="text-sm font-medium text-gray-700">{t('login.email.label')}</div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={fpEmail}
                   onChange={(e) => setFpEmail(e.target.value)}
                   type="email"
                   className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                  placeholder="请输入注册邮箱"
+                  placeholder={t('login.email.placeholder')}
                 />
               </div>
               <button
@@ -801,47 +801,47 @@ export function LoginPage({
                 {fpSending ? (
                   <Loader2 className="h-4 w-4 animate-spin inline mr-1" />
                 ) : null}
-                发送重置码
+                {t('login.sendResetCode')}
               </button>
             </div>
 
             {/* 步骤二：提交重置 */}
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-700">邮箱</div>
+              <div className="text-sm font-medium text-gray-700">{t('login.email.label')}</div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={rpEmail}
                   onChange={(e) => setRpEmail(e.target.value)}
                   type="email"
                   className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                  placeholder="请输入注册邮箱"
+                  placeholder={t('login.email.placeholder')}
                 />
               </div>
 
-              <div className="text-sm font-medium text-gray-700">重置码</div>
+              <div className="text-sm font-medium text-gray-700">{t('login.resetCode.label')}</div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={resetCode}
                   onChange={(e) => setResetCode(e.target.value)}
                   type="text"
                   className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                  placeholder="请输入邮箱收到的重置码"
+                  placeholder={t('login.resetCode.placeholder')}
                 />
               </div>
 
-              <div className="text-sm font-medium text-gray-700">新密码</div>
+              <div className="text-sm font-medium text-gray-700">{t('login.newPassword.label')}</div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={newPwd}
                   onChange={(e) => setNewPwd(e.target.value)}
                   type="password"
                   className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                  placeholder="请输入新密码（至少8位）"
+                  placeholder={t('login.newPassword.placeholder')}
                 />
               </div>
 
               <div className="text-sm font-medium text-gray-700">
-                确认新密码
+                {t('login.confirmNewPassword.label')}
               </div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
@@ -849,7 +849,7 @@ export function LoginPage({
                   onChange={(e) => setNewPwd2(e.target.value)}
                   type="password"
                   className="block w-full bg-transparent border-0 p-0 text-sm focus:outline-none focus:ring-0"
-                  placeholder="请再次输入新密码"
+                  placeholder={t('login.confirmNewPassword.placeholder')}
                 />
               </div>
 
@@ -862,7 +862,7 @@ export function LoginPage({
                 {rpSubmitting ? (
                   <Loader2 className="h-4 w-4 animate-spin inline mr-1" />
                 ) : null}
-                提交重置
+                {t('login.submitReset')}
               </button>
             </div>
           </div>

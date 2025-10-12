@@ -25,6 +25,7 @@ import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import Image from 'next/image'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function LearningResourcesPage({
   onReadingChange,
@@ -33,6 +34,7 @@ export function LearningResourcesPage({
   onReadingChange?: (reading: boolean) => void
   onNavigateTab?: (tabId: string) => void
 }) {
+  const { t } = useLanguage()
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -58,7 +60,7 @@ export function LearningResourcesPage({
         setLockedCourses(lockedCourses)
       } catch (err) {
         console.error('Failed to fetch courses:', err)
-        setError('获取课程失败，请稍后再试')
+        setError(t('academy.error.fetchCoursesFailed'))
       } finally {
         setLoading(false)
       }
@@ -84,25 +86,25 @@ export function LearningResourcesPage({
     if (!mins || Number.isNaN(mins)) return ''
     const h = Math.floor(mins / 60)
     const m = Math.floor(mins % 60)
-    if (h <= 0) return `${m}分`
-    return `${h}小时${m}分`
+    if (h <= 0) return `${m}${t('common.time.minutes')}`
+    return `${h}${t('common.time.hours')}${m}${t('common.time.minutes')}`
   }
 
   const features = [
     {
       icon: TrendingUp,
-      title: '趋势底层逻辑',
-      description: '识别牛熊拐点、趋势起点、反转信号'
+      title: t('academy.features.trendLogic.title'),
+      description: t('academy.features.trendLogic.description')
     },
     {
       icon: Target,
-      title: '机构操盘模型',
-      description: '精准制定买入点、止损点、卖出点'
+      title: t('academy.features.institutionalModel.title'),
+      description: t('academy.features.institutionalModel.description')
     },
     {
       icon: Shield,
-      title: '仓位+风控模型',
-      description: '科学资金管理，建立小亏大赚概率优势'
+      title: t('academy.features.riskControl.title'),
+      description: t('academy.features.riskControl.description')
     }
   ]
 
@@ -134,9 +136,9 @@ export function LearningResourcesPage({
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h3 className="font-bold text-lg">Donato狐总</h3>
+              <h3 className="font-bold text-lg">{t('academy.instructor.name')}</h3>
               <p className="text-white/90 text-sm mb-2">
-                WEB3职业交易员 · 数十年量化交易经验
+                {t('academy.instructor.title')}
               </p>
               <div className="flex items-center space-x-2">
                 <Button
@@ -151,14 +153,14 @@ export function LearningResourcesPage({
                   }
                 >
                   <ExternalLink className="w-4 h-4 mr-1" />
-                  关注+
+                  {t('common.follow')}
                 </Button>
               </div>
             </div>
           </div>
           <div className="rounded-lg p-4 border border-white/20 bg-white/10">
             <p className="text-sm leading-relaxed text-white/95">
-              专注于机构级交易策略研究，擅长趋势交易和风险控制。通过系统化的交易方法论，帮助交易者建立稳定盈利的交易体系。
+              {t('academy.instructor.description')}
             </p>
           </div>
         </CardContent>
@@ -176,7 +178,7 @@ export function LearningResourcesPage({
             }
             onClick={() => setFilterTab('practice')}
           >
-            实战课
+            {t('academy.tabs.practice')}
           </Button>
           <Button
             size="sm"
@@ -187,7 +189,7 @@ export function LearningResourcesPage({
             }
             onClick={() => setFilterTab('advanced')}
           >
-            进阶
+            {t('academy.tabs.advanced')}
           </Button>
         </div>
       </div>
@@ -198,7 +200,7 @@ export function LearningResourcesPage({
             <span className="bg-blue-100 text-blue-600 p-1 rounded-md mr-2">
               <GraduationCap className="w-5 h-5" />
             </span>
-            核心课程体系
+            {t('academy.coreCurriculum')}
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 pt-4">
@@ -229,7 +231,7 @@ export function LearningResourcesPage({
       {loading ? (
         <div className="flex justify-center items-center p-12">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-          <span className="ml-2 text-slate-600">加载课程中...</span>
+          <span className="ml-2 text-slate-600">{t('common.loading.courses')}</span>
         </div>
       ) : error ? (
         <div className="p-6 text-center">
@@ -238,7 +240,7 @@ export function LearningResourcesPage({
             onClick={() => window.location.reload()}
             className="mt-4 glass-card text-blue-600 hover:text-blue-700 border-blue-300 bg-blue-50/50"
           >
-            重试
+            {t('common.retry')}
           </Button>
         </div>
       ) : (
@@ -250,7 +252,7 @@ export function LearningResourcesPage({
                 <span className="bg-green-100 text-green-600 p-1 rounded-md mr-2">
                   <Play className="w-5 h-5" />
                 </span>
-                我的课程
+                {t('academy.myCourses')}
               </h2>
               {filteredUnlocked.map((course, index) => (
                 <Card
@@ -278,10 +280,10 @@ export function LearningResourcesPage({
                         {((course as any).lessonsCount ||
                           (course as any).totalDuration) && (
                           <p className="text-slate-500 text-xs">
-                            课时：
+                            {t('academy.course.lessons')}
                             {((course as any).lessonsCount as number) || '--'}{' '}
-                            节<span className="mx-2">|</span>
-                            总时长：
+                            {t('academy.course.lessonsUnit')}<span className="mx-2">|</span>
+                            {t('academy.course.totalDuration')}
                             {formatDuration(
                               (course as any).totalDuration as number
                             ) || '--'}
@@ -322,7 +324,7 @@ export function LearningResourcesPage({
                           }}
                         >
                           <Play className="w-4 h-4 mr-1" />
-                          立即学习
+                          {t('academy.course.startLearning')}
                         </Button>
                       </div>
                     </div>
@@ -339,7 +341,7 @@ export function LearningResourcesPage({
                 <span className="bg-blue-100 text-blue-600 p-1 rounded-md mr-2">
                   <Lock className="w-5 h-5" />
                 </span>
-                待解锁课程
+                {t('academy.lockedCourses')}
               </h2>
               {filteredLocked.map((course, index) => (
                 <Card
@@ -366,10 +368,10 @@ export function LearningResourcesPage({
                         {((course as any).lessonsCount ||
                           (course as any).totalDuration) && (
                           <p className="text-slate-500 text-xs">
-                            课时：
+                            {t('academy.course.lessons')}
                             {((course as any).lessonsCount as number) || '--'}{' '}
-                            节<span className="mx-2">|</span>
-                            总时长：
+                            {t('academy.course.lessonsUnit')}<span className="mx-2">|</span>
+                            {t('academy.course.totalDuration')}
                             {formatDuration(
                               (course as any).totalDuration as number
                             ) || '--'}
@@ -393,7 +395,7 @@ export function LearningResourcesPage({
                           onClick={() => onNavigateTab?.('unlock')}
                         >
                           <Lock className="w-4 h-4 mr-1" />
-                          去解锁
+                          {t('academy.course.unlock')}
                         </Button>
                       </div>
                     </div>
@@ -406,7 +408,7 @@ export function LearningResourcesPage({
           {/* Show message when no courses available */}
           {unlockedCourses.length === 0 && lockedCourses.length === 0 && (
             <div className="text-center p-8">
-              <p className="text-slate-600">暂无课程可显示</p>
+              <p className="text-slate-600">{t('academy.noCourses')}</p>
             </div>
           )}
         </>
@@ -414,25 +416,25 @@ export function LearningResourcesPage({
 
       <Card className="glass-card border-white/30">
         <CardHeader>
-          <CardTitle className="text-slate-800">适用对象</CardTitle>
+          <CardTitle className="text-slate-800">{t('academy.targetAudience')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center space-x-3">
             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
             <p className="text-slate-700 text-sm">
-              具备技术分析基础，想落地交易系统的操盘者
+              {t('academy.targetAudience.item1')}
             </p>
           </div>
           <div className="flex items-center space-x-3">
             <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
             <p className="text-slate-700 text-sm">
-              有策略框架但执行效率低、选币耗时的交易员
+              {t('academy.targetAudience.item2')}
             </p>
           </div>
           <div className="flex items-center space-x-3">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             <p className="text-slate-700 text-sm">
-              具备趋势交易思维，想提升胜率与纪律性的进阶用户
+              {t('academy.targetAudience.item3')}
             </p>
           </div>
         </CardContent>

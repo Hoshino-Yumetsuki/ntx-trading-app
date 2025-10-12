@@ -25,8 +25,10 @@ import Image from 'next/image'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import { UnlockCoursesPage } from './academy/unlock-courses'
 import { BlackHorseModelPage } from './academy/black-horse-model'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function AcademyPage() {
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<string | null>(null)
   const [communities, setCommunities] = useState<Course[]>([])
   const [loadingCommunities, setLoadingCommunities] = useState(true)
@@ -37,37 +39,37 @@ export function AcademyPage() {
   const tabs = [
     {
       id: 'model',
-      title: '黑马模型',
+      title: t('academy.tabs.blackHorse'),
       icon: BookOpen,
       component: LearningResourcesPage
     },
     {
       id: 'learning',
-      title: '学习资源',
+      title: t('academy.tabs.learning'),
       icon: TrendingUp,
       component: BlackHorseModelPage
     },
     {
       id: 'signals',
-      title: '策略信号',
+      title: t('academy.tabs.signals'),
       icon: Target,
       component: StrategySignalsPage
     },
     {
       id: 'loop',
-      title: '直播',
+      title: t('academy.tabs.live'),
       icon: Users,
       component: LoopCommunitiesPage
     },
     {
       id: 'unlock',
-      title: '解锁课程',
+      title: t('academy.tabs.unlock'),
       icon: Lock,
       component: UnlockCoursesPage
     },
     {
       id: 'orders',
-      title: '我的订单',
+      title: t('academy.tabs.orders'),
       icon: Lock,
       component: OrdersPage
     }
@@ -84,7 +86,7 @@ export function AcademyPage() {
         setCommunities(unlockedCourses)
       } catch (error) {
         console.error('Failed to fetch communities:', error)
-        setCommunityError('获取社区数据失败，请稍后再试')
+        setCommunityError(t('academy.error.fetchCommunityFailed'))
       } finally {
         setLoadingCommunities(false)
       }
@@ -135,7 +137,7 @@ export function AcademyPage() {
                   onClick={handleBack}
                   className="mr-3 text-slate-600 hover:text-slate-800"
                 >
-                  <ArrowLeft className="w-5 h-5 mr-2" /> 返回
+                  <ArrowLeft className="w-5 h-5 mr-2" /> {t('common.back')}
                 </Button>
                 <div className="relative w-28 h-9 md:w-32 md:h-10">
                   <Image
@@ -152,8 +154,8 @@ export function AcademyPage() {
               </h1>
               <p className="text-slate-600 text-sm">
                 {activeTab === 'orders'
-                  ? '查看课程购买与支付状态'
-                  : '掌握机构交易思维'}
+                  ? t('academy.subtitle.orders')
+                  : t('academy.subtitle.default')}
               </p>
             </div>
           </div>
@@ -203,8 +205,8 @@ export function AcademyPage() {
         >
           <div className="flex items-center h-full">
             <div>
-              <div className="text-2xl font-bold mb-1">学习资源</div>
-              <div className="opacity-90">掌握机构交易思维</div>
+              <div className="text-2xl font-bold mb-1">{t('academy.banner.title')}</div>
+              <div className="opacity-90">{t('academy.banner.subtitle')}</div>
             </div>
           </div>
         </div>
@@ -212,7 +214,7 @@ export function AcademyPage() {
 
       {/* 学习资源入口（标题+四宫格） */}
       <div className="px-4 mt-6">
-        <h2 className="text-slate-800 text-xl font-bold mb-3">交易研究院</h2>
+        <h2 className="text-slate-800 text-xl font-bold mb-3">{t('academy.section.institute')}</h2>
         <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
           {tabs
             .filter(
@@ -263,9 +265,9 @@ export function AcademyPage() {
       <div className="px-4 mt-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-slate-800 text-xl font-bold">直播</h2>
+            <h2 className="text-slate-800 text-xl font-bold">{t('academy.section.live')}</h2>
             <p className="text-slate-600 text-sm mt-1">
-              加入社区，一起讨论学习
+              {t('academy.live.subtitle')}
             </p>
           </div>
           {communities.length > 0 && (
@@ -275,7 +277,7 @@ export function AcademyPage() {
               className="text-slate-500 hover:text-slate-700 text-xs flex items-center h-6 -mt-1 px-2 py-0"
               onClick={() => setActiveTab('loop')}
             >
-              更多 <ChevronRight className="w-3 h-3 ml-1" />
+              {t('common.more')} <ChevronRight className="w-3 h-3 ml-1" />
             </Button>
           )}
         </div>
@@ -284,7 +286,7 @@ export function AcademyPage() {
           {loadingCommunities ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <span className="ml-2 text-slate-600">加载社区中...</span>
+              <span className="ml-2 text-slate-600">{t('common.loading.community')}</span>
             </div>
           ) : communityError ? (
             <div className="text-center py-6">
@@ -292,7 +294,7 @@ export function AcademyPage() {
             </div>
           ) : communities.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-slate-600">暂无社区可显示</p>
+              <p className="text-slate-600">{t('academy.noCommunity')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
@@ -342,7 +344,7 @@ export function AcademyPage() {
         </div>
         {/* 直播外跳提示 */}
         <p className="mt-2 text-right text-[11px] italic text-slate-500">
-          *直播社区将要跳转到第三方平台
+          {t('academy.live.externalNotice')}
         </p>
       </div>
     </div>

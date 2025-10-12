@@ -273,7 +273,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 />
               </div>
               <p className="text-slate-800 text-xl font-medium">
-                Web3 一站式服务
+                {t('home.slogan')}
               </p>
             </div>
             <div className="relative z-30">
@@ -363,7 +363,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         <div className="mt-4 mb-4 bg-white rounded-xl shadow-sm">
           <div className="p-3">
             <div className="text-center mb-1">
-              <h3 className="text-base font-semibold text-slate-800">已接入</h3>
+              <h3 className="text-base font-semibold text-slate-800">{t('home.exchanges.title')}</h3>
             </div>
             <div className="h-auto py-0.5">
               <div className="grid grid-cols-4 gap-1">
@@ -401,7 +401,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   }
                 }}
               >
-                绑定交易所，立刻开赚
+                {t('home.exchanges.bindButton')}
               </Button>
             </div>
           </div>
@@ -605,14 +605,14 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
       <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px]">
           <DialogHeader>
-            <DialogTitle>需要绑定交易所</DialogTitle>
+            <DialogTitle>{t('home.dialog.bindRequired')}</DialogTitle>
             <DialogDescription>
-              您需要先绑定交易所 UID 才能开始挖矿。请前往挖矿页面完成绑定。
+              {t('home.dialog.bindRequiredDesc')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowBindDialog(false)}>
-              稍后再说
+              {t('home.dialog.later')}
             </Button>
             <Button
               onClick={() => {
@@ -621,7 +621,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               }}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              前往绑定
+              {t('home.dialog.goToBind')}
             </Button>
           </DialogFooter>
         </DialogContent>

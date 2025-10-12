@@ -1,12 +1,20 @@
 {
   "login": {
     "title": "Login",
-    "subtitle": "Welcome back, please login to your account",
+    "subtitle": "Welcome back to NTX, please login to your account",
+    "forgotPassword": "Forgot Password?",
+    "backToLogin": "Back to Login",
+    "backToHome": "Back to Home",
+    "sendResetCode": "Send Reset Code",
+    "submitReset": "Submit Reset",
     "banner": {
       "joinNow": "Join Now",
-      "platform": "Global One-Stop Mining Rebate Platform",
+      "platform": "Global One-Stop Rebate Mining Service Platform",
       "exchanges": "Binance, OKX, BYBIT, Gate, bitget and more",
-      "joinedExchanges": "Selected exchanges have joined the platform"
+      "joinedExchanges": "Selected exchanges have joined the platform",
+      "title": "Join Now",
+      "subtitle": "Rebate Entrepreneurship Platform",
+      "description": "Selected exchanges including Binance, OKX, BYBIT, GATE, Bitget have joined the platform"
     },
     "register": {
       "title": "Register",
@@ -39,6 +47,18 @@
       "label": "Invite Code (Optional)",
       "placeholder": "Please enter invite code"
     },
+    "resetCode": {
+      "label": "Reset Code",
+      "placeholder": "Enter the reset code from your email"
+    },
+    "newPassword": {
+      "label": "New Password",
+      "placeholder": "Enter new password (min. 8 characters)"
+    },
+    "confirmNewPassword": {
+      "label": "Confirm New Password",
+      "placeholder": "Re-enter new password"
+    },
     "loginButton": "Login",
     "registerButton": "Register",
     "sendCode": "Send Code",
@@ -49,15 +69,26 @@
     "termsOfService": "Terms of Service",
     "and": "and",
     "privacyPolicy": "Privacy Policy",
+    "dialog": {
+      "recoverPassword": "Recover Password"
+    },
     "error": {
-      "loginFailed": "Login failed. Please check your email and password.",
-      "registerFailed": "Registration failed. Please try again later.",
+      "loginFailed": "Login failed, please check your email and password",
+      "registerFailed": "Registration failed, please try again later",
       "emailRequired": "Please enter a valid email address",
-      "sendCodeFailed": "Failed to send verification code. Please try again later."
+      "sendCodeFailed": "Failed to send verification code, please try again later",
+      "sendResetCodeFailed": "Failed to send reset code",
+      "resetCodeRequired": "Please enter reset code",
+      "newPasswordRequired": "Please enter new password",
+      "passwordMinLength": "New password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "resetPasswordFailed": "Failed to reset password"
     },
     "success": {
       "registerSuccess": "Registration successful",
-      "codesSent": "Verification code sent. Please check your email."
+      "codesSent": "Verification code sent, please check your email",
+      "resetCodeSent": "Reset code sent, please check your email",
+      "passwordReset": "Password reset successful, please login with new password"
     }
   },
   "validation": {
@@ -91,13 +122,54 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "save": "Save",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "back": "Back",
+    "retry": "Retry",
+    "more": "More",
+    "view": "View",
+    "unlock": "Unlock",
+    "locked": "Locked",
+    "copy": "Copy",
+    "copied": "Copied to clipboard",
+    "copyFailed": "Copy failed, please copy manually",
+    "price": "Price:",
+    "requires": "Requires:",
+    "ordering": "Ordering",
+    "purchase": "Purchase",
+    "viewOrder": "View Order",
+    "understood": "Understood",
+    "orderList": "Order List",
+    "edit": "Edit",
+    "confirmChange": "Confirm Change",
+    "changing": "Changing...",
+    "confirmUpdate": "Confirm Update",
+    "follow": "Follow+",
+    "time": {
+      "minutes": "min",
+      "hours": "hours"
+    },
+    "duration": {
+      "permanent": "Permanent",
+      "days": "days"
+    },
+    "error": {
+      "refreshPage": "Please refresh the page and try again later"
+    },
+    "loading": {
+      "courses": "Loading courses...",
+      "community": "Loading community...",
+      "packages": "Loading packages...",
+      "orders": "Loading orders...",
+      "signals": "Loading strategy signals...",
+      "learningResources": "Loading learning resources..."
+    }
   },
   "nav": {
     "home": "Home",
     "news": "News",
     "mining": "Mining",
-    "profile": "Profile"
+    "profile": "Profile",
+    "academy": "Academy"
   },
   "auth": {
     "login": "Login",
@@ -114,6 +186,8 @@
     "registerFailed": "Registration failed"
   },
   "security": {
+    "title": "Security Settings",
+    "subtitle": "Protect your account security, regularly check and update security settings",
     "changePassword": "Change Password",
     "oldPassword": "Old Password",
     "newPassword": "New Password",
@@ -122,7 +196,60 @@
     "passwordChangeFailed": "Failed to change password",
     "nickname": {
       "change": "Change Nickname",
-      "placeholder": "Enter new nickname"
+      "placeholder": "Enter new nickname",
+      "update": "Update Nickname",
+      "updateDescription": "Change your display nickname",
+      "label": "Nickname",
+      "required": "Please enter nickname",
+      "maxLength": "Nickname cannot exceed 50 characters",
+      "updateSuccess": "Nickname updated successfully",
+      "updateFailed": "Nickname update failed:"
+    },
+    "password": {
+      "change": "Change Password",
+      "changeDescription": "For account security, it is recommended to change your password regularly",
+      "changeSuccessMessage": "Password changed successfully! Please login with your new password.",
+      "current": "Current Password",
+      "currentRequired": "Please enter current password",
+      "currentPlaceholder": "Enter current password",
+      "new": "New Password",
+      "newPlaceholder": "Enter new password",
+      "confirm": "Confirm New Password",
+      "confirmPlaceholder": "Re-enter new password",
+      "confirmRequired": "Please confirm new password",
+      "minLength": "Password must be at least 8 characters",
+      "maxLength": "Password cannot exceed 32 characters",
+      "requireUppercase": "Password must contain at least one uppercase letter",
+      "mismatch": "Passwords do not match",
+      "updateSuccess": "Password updated successfully!",
+      "updateFailed": "Password update failed:",
+      "logoutCountdown": "Password changed successfully! For your account security, you will be logged out in"
+    },
+    "wallet": {
+      "connect": "Connect Wallet",
+      "connectFirst": "Please connect your wallet first.",
+      "bind": "Bind This Address",
+      "bound": "Address Bound",
+      "updateBind": "Update Bound Address",
+      "bindSuccess": "BSC address bound successfully!",
+      "bindFailed": "BSC address binding failed:",
+      "connected": "Wallet Connected:",
+      "switchOrDisconnect": "Switch/Disconnect"
+    },
+    "field": {
+      "nickname": "Nickname",
+      "notSet": "Not Set",
+      "uid": "User UID",
+      "notFetched": "Not Fetched",
+      "email": "Email",
+      "password": "Login Password",
+      "set": "Set",
+      "bscAddress": "BSC Wallet Address",
+      "notBound": "Not Bound"
+    },
+    "status": {
+      "title": "Security Status",
+      "description": "Protect your account security, regularly check and update security settings"
     }
   },
   "ui": {
@@ -139,45 +266,45 @@
   },
   "tutorial": {
     "title": "Tutorial",
-    "subtitle": "Learn how to use the NTX platform",
+    "subtitle": "Learn how to use the NexTrade DAO platform",
     "back": "Back",
     "overview": {
-      "title": "Platform Overview",
-      "content": "NTX is an innovative trading mining platform that rewards users with tokens through trading."
+      "title": "NexTrade DAO Overview",
+      "content": "Welcome to NextTrade DAO, a decentralized trading platform that connects traditional finance with Web3, allowing you to earn NTX tokens through trading rebates, staking dividends, and community governance! We aim to build a transparent, efficient, and mutually beneficial trading ecosystem by partnering with major exchanges worldwide (such as Bitget, Binance, Bybit, etc.) through blockchain technology, AI optimization, SocialFi incentives, and real-world asset (RWA) investment."
     },
     "audience": {
       "title": "Target Audience",
-      "content": "Suitable for all users interested in cryptocurrency trading."
+      "content": "\n- Cryptocurrency trading beginners\n- Users interested in blockchain, DeFi, and RWA investment\n- Investors looking to earn additional income through rebates and staking"
     },
     "account": {
-      "title": "Account Setup",
-      "content": "Complete your account information and set up security passwords."
+      "title": "Account Setup and Exchange Binding",
+      "content": "1. Bind Exchange Account: Click [Mining] in the home navigation, enter the [Exchange] page, select and [Bind]. Then [Register] to jump to the exchange page to complete registration (Note: You must fill in the NexTrade DAO platform invitation code).\n\n2. Get Exchange UID: Enter the exchange personal center page to get the UID, then return to the NexTrade DAO [Exchange] page to bind the UID, and you can start mining after completion.\n\n3. Create/Connect Wallet: Users connect BSC chain compatible wallets to deposit and withdraw."
     },
     "mining": {
-      "title": "Mining Tutorial",
-      "content": "Learn how to earn mining rewards through trading.\n\nMining calculation formula:\n\n$$\nM_a = \\left(\\frac{V_{0}}{V_{all}}\\right) \\times M \\times 0.9\n$$\n\nwhere M_a is the user's daily token reward, V_0 is the user's daily trading volume, V_{all} is the platform's total daily trading volume, and M is the platform's daily token output."
+      "title": "Trading Mining and Rebate Mechanism",
+      "content": "Token Production Rules:\n- Total Token Supply: 3 billion\n- Maximum Mining Output: 2.1 billion\n- Initial Daily Minting: 383,561.64 NTX\n- Daily Decrease: Years 1-20 deflation rate 5.48%;\n- Years 21-50 deflation rate 9.81%\n- Minting Duration: Approximately 50 years\n\nTrading Mining Calculation Formula:\n\n$$\nM_a = \\left(\\frac{V_{0}}{V_{all}}\\right) \\times M \\times 0.9\n$$\n\nwhere M_a is the user's daily token reward, V_0 is the user's daily trading volume, V_{all} is the platform's total daily trading volume, and M is the platform's daily token output.\n\nRegular users who register exchange accounts through NexTrade DAO and trade will receive rebates in NTX tokens the next day, with a portion of tokens distributed to the referrer."
     },
     "rebate": {
       "title": "Rebate System",
       "content": "Understand the mechanism of earning rebates by referring friends."
     },
     "staking": {
-      "title": "Staking Mining",
-      "content": "Earn additional rewards by staking tokens."
+      "title": "Staking and Dividends",
+      "content": "The platform offers two forms of staking: regular staking mining (repurchasing NTX to distribute interest) and liquidity provider (LP) staking (staking USDT and NTX in PancakeSwap V2 for weighted dividends) to enhance market liquidity."
     },
     "governance": {
-      "title": "Governance Mechanism",
-      "content": "Participate in platform governance and exercise voting rights."
+      "title": "Community Participation and Governance",
+      "content": "We encourage users to participate in SocialFi activities and community governance. Activity on Telegram and Discord can accumulate points for rewards. Consuming NTX can forge GNTX governance tokens for participating in community decision voting. Holding GNTX and meeting invitation conditions can apply to become a broker and enjoy higher rebates."
     },
     "academy": {
-      "title": "Academy Courses",
-      "content": "Learn more about blockchain and trading knowledge."
+      "title": "Academy System and Trading Strategies",
+      "content": "NexTrade DAO provides professional trading technology and marketing training, covering crypto trading strategies, Web3 marketing, and RWA investment knowledge. Users can exchange courses through USDT, NTX, or SocialFi contributions, aiming to improve user skills and enhance platform stickiness."
     }
   },
   "splash": {
-    "title": "NTX Trading",
-    "subtitle": "Smart Trading Mining Platform",
-    "description": "Earn token rewards through trading",
+    "title": "NTX",
+    "subtitle": "One-Stop Service",
+    "description": "Achieve your Web3 career",
     "loading": "Loading..."
   },
   "profile": {
@@ -185,6 +312,7 @@
     "loading": "Loading...",
     "email": "Email",
     "quickActions": "Quick Actions",
+    "contactus": "Contact Us",
     "copy": {
       "success": "Copied successfully",
       "address": "Address copied successfully",
@@ -256,6 +384,17 @@
     "welcome": "Welcome",
     "title": "NTX Trading",
     "subtitle": "Smart Trading Mining Platform",
+    "slogan": "Web3 One-Stop Service",
+    "exchanges": {
+      "title": "Integrated Exchanges",
+      "bindButton": "Bind Exchange & Start Earning"
+    },
+    "dialog": {
+      "bindRequired": "Exchange Binding Required",
+      "bindRequiredDesc": "You need to bind your exchange UID first to start mining. Please go to the mining page to complete the binding.",
+      "later": "Later",
+      "goToBind": "Go to Bind"
+    },
     "tutorial": {
       "title": "NTX Tutorial",
       "subtitle": "Learn how to use NTX",
@@ -263,13 +402,19 @@
     },
     "card": {
       "tutorial": {
-        "title": "Tutorial",
-        "subtitle": "Learn trading from scratch",
-        "desc": "Systematically learn cryptocurrency trading knowledge and master basic concepts and operational skills",
+        "title": "Beginner Package",
+        "subtitle": "Learn industry basics",
+        "desc": "Systematically learn cryptocurrency trading knowledge and master basic concepts and trading skills",
+        "button": "Start Learning"
+      },
+      "dark_horse": {
+        "title": "Academy",
+        "subtitle": "Professional technical training",
+        "desc": "Learn professional technical strategies to improve analysis and trading capabilities",
         "button": "Start Learning"
       },
       "ai": {
-        "title": "AI Analysis",
+        "title": "AI Smart Analysis",
         "subtitle": "Professional market insights",
         "desc": "Market analysis based on big data and machine learning, providing professional trading advice",
         "button": "View Analysis"
@@ -278,6 +423,16 @@
         "title": "Trading Mining",
         "subtitle": "Earn rewards while trading",
         "desc": "Earn NTX token rewards through trading activities and enjoy innovative mining experience"
+      },
+      "yinliu": {
+        "title": "Traffic Management",
+        "subtitle": "Standardized traffic acquisition",
+        "desc": "Managed social media accounts to help with traffic acquisition and follower growth"
+      },
+      "huibao": {
+        "title": "Continuous Returns",
+        "subtitle": "Every trade has returns forever",
+        "desc": "Establish long-term income model and achieve stable wealth growth"
       }
     }
   },
@@ -339,7 +494,7 @@
       "bindRequired": "Exchange Binding Required",
       "bindRequiredDesc": "You need to bind your exchange account first to start mining"
     },
-    "exchangelist": {
+    "exchangeList": {
       "title": "Exchange List"
     },
     "bindExchanges": {
@@ -411,6 +566,191 @@
       "addressRequired": "Please enter withdraw address",
       "invalidBscAddress": "Please enter a valid BSC address",
       "insufficientBalance": "Insufficient balance"
+    }
+  },
+  "academy": {
+    "tabs": {
+      "blackHorse": "Black Horse Model",
+      "learning": "Learning Resources",
+      "signals": "Strategy Signals",
+      "live": "Live",
+      "unlock": "Unlock Courses",
+      "orders": "My Orders",
+      "practice": "Practical Course",
+      "advanced": "Advanced"
+    },
+    "subtitle": {
+      "orders": "View course purchase and payment status",
+      "default": "Master institutional trading mindset"
+    },
+    "banner": {
+      "title": "Learning Resources",
+      "subtitle": "Master institutional trading mindset"
+    },
+    "section": {
+      "institute": "Trading Institute",
+      "live": "Live"
+    },
+    "live": {
+      "subtitle": "Join the community and learn together",
+      "externalNotice": "*Live community will redirect to third-party platform"
+    },
+    "coreCurriculum": "Core Curriculum System",
+    "myCourses": "My Courses",
+    "lockedCourses": "Locked Courses",
+    "noCourses": "No courses available",
+    "noCommunity": "No community available",
+    "course": {
+      "lessons": "Lessons:",
+      "lessonsUnit": "lessons",
+      "totalDuration": "Total Duration:",
+      "startLearning": "Start Learning",
+      "unlock": "Unlock"
+    },
+    "targetAudience": "Target Audience",
+    "instructor": {
+      "name": "Donato",
+      "title": "WEB3 Professional Trader · Decades of Quantitative Trading Experience",
+      "description": "Focuses on institutional-level trading strategy research, specializing in trend trading and risk control. Helps traders build a stable and profitable trading system through systematic trading methodology."
+    },
+    "features": {
+      "trendLogic": {
+        "title": "Trend Underlying Logic",
+        "description": "Identify bull-bear turning points, trend starting points, reversal signals"
+      },
+      "institutionalModel": {
+        "title": "Institutional Trading Model",
+        "description": "Precisely determine entry points, stop-loss points, exit points"
+      },
+      "riskControl": {
+        "title": "Position + Risk Control Model",
+        "description": "Scientific fund management, establish small loss and big gain probability advantage"
+      }
+    },
+    "targetAudience": {
+      "item1": "Traders with technical analysis foundation who want to implement trading systems",
+      "item2": "Traders with strategy framework but low execution efficiency and time-consuming coin selection",
+      "item3": "Advanced users with trend trading mindset who want to improve win rate and discipline"
+    },
+    "error": {
+      "fetchCoursesFailed": "Failed to fetch courses, please try again later",
+      "fetchCommunityFailed": "Failed to fetch community data, please try again later"
+    }
+  },
+  "signals": {
+    "title": "Strategy Signals",
+    "subtitle": "Trend system based on institutional behavior + programmatic tools, clearly capture mid-term trends",
+    "unlockedSignals": "Unlocked Strategy Signals",
+    "lockedSignals": "Locked Signals",
+    "noSignals": "No strategy signals available",
+    "noAvailable": "No available signal strategies",
+    "contactSupport": "Please check back later or contact customer service for details",
+    "error": {
+      "fetchFailed": "Failed to fetch strategy signal data, please try again later"
+    }
+  },
+  "unlock": {
+    "permissionGroup": "Permission Group",
+    "banner": {
+      "title": "Unlock Full Course",
+      "subtitle": "Programmatic auxiliary tools: Student-exclusive [Screening System], implement model applications",
+      "button": "Get Institutional-Level Strategy"
+    },
+    "section": {
+      "courseContent": "Course Content",
+      "purchasePackage": "Purchase Package",
+      "benefits": "Student Exclusive Benefits"
+    },
+    "content": {
+      "system": {
+        "title": "Complete Trading System",
+        "description": "Complete trading decision framework including entry, stop-loss, and take-profit"
+      },
+      "tools": {
+        "title": "Exclusive Screening Tools",
+        "description": "Student-exclusive programmatic screening system to quickly discover quality targets"
+      },
+      "cases": {
+        "title": "Real Case Analysis",
+        "description": "Real market case analysis, combining theory with practice"
+      },
+      "updates": {
+        "title": "Continuous Update Support",
+        "description": "Continuously update strategies and tools based on market changes"
+      }
+    },
+    "benefits": {
+      "vip": {
+        "title": "VIP Exchange Group",
+        "description": "Communicate directly with instructors and excellent students, share trading insights"
+      },
+      "guidance": {
+        "title": "One-on-One Guidance",
+        "description": "Provide professional guidance for personal trading issues"
+      },
+      "updates": {
+        "title": "Real-time Strategy Updates",
+        "description": "Get the latest market strategies and signal reminders first"
+      }
+    },
+    "noPackages": "No packages available for purchase",
+    "error": {
+      "loadFailed": "Failed to load courses and packages",
+      "createOrderFailed": "Failed to create order, please try again later"
+    }
+  },
+  "blackHorse": {
+    "title": "Learning Resources",
+    "unlocked": "Unlocked Learning Resources",
+    "locked": "Locked Resources",
+    "noResources": "No learning resources available",
+    "noAvailableCourses": "No available courses",
+    "error": {
+      "fetchFailed": "Failed to fetch learning resources data, please try again later"
+    }
+  },
+  "broker": {
+    "banner": {
+      "title": "Broker",
+      "subtitle": "Exclusive Cooperation and Benefits"
+    },
+    "section": {
+      "purchasePackage": "Purchase Broker Package",
+      "materials": "Broker Materials"
+    },
+    "noPackages": "No packages available for purchase",
+    "error": {
+      "loadFailed": "Failed to load broker content",
+      "loadPackagesFailed": "Failed to load packages",
+      "createOrderFailed": "Failed to create order, please try again later"
+    }
+  },
+  "orders": {
+    "orderNumber": "Order #",
+    "packageAmount": "Package Amount",
+    "paidAmount": "Paid Amount",
+    "createdAt": "Created At",
+    "noOrders": "No orders",
+    "status": {
+      "paid": "Payment Successful",
+      "pending": "Pending Payment/Confirmation",
+      "closed": "Closed"
+    },
+    "error": {
+      "fetchFailed": "Failed to fetch orders"
+    }
+  },
+  "payment": {
+    "dialog": {
+      "title": "Payment Information",
+      "description": "Please strictly follow the information below for on-chain transfer"
+    },
+    "address": "Payment Address",
+    "amount": "Payment Amount",
+    "notice": {
+      "amount": "• The amount is the unique identification value assigned by the system, please do not modify it, otherwise it cannot be automatically identified.",
+      "confirmation": "• After payment is completed, the backend needs time for confirmation, please wait patiently.",
+      "contact": "• If you have any questions, please contact the administrator and provide the order number:"
     }
   }
 }
