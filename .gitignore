@@ -35,7 +35,8 @@ next-env.d.ts
 .DS_Store
 
 .VSCodeCounter
-
+.vs/
+.claude/
 yarn.lock
 package-lock.json
 pnpm-lock.yaml
