@@ -231,7 +231,6 @@ export function SecuritySettings({
     },
   ];
 
-  // 动态计算绑定按钮的状态和文本
   const getBindButtonState = () => {
     if (!isConnected || !walletAddress) {
       return { text: "连接钱包", disabled: false, action: () => open() };

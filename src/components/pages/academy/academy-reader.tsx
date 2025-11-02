@@ -37,7 +37,6 @@ export function AcademyMarkdownReader({
 
   return (
     <div className="min-h-screen pb-6">
-      {/* Header */}
       <div className="px-6 pt-12 pb-4 relative z-10">
         <div className="flex items-start mb-2">
           <Button
@@ -54,13 +53,11 @@ export function AcademyMarkdownReader({
         </div>
       </div>
 
-      {/* Content */}
       <div className="px-6 mt-4">
         <Card className="glass-card border-white/30 shadow-lg rounded-3xl overflow-hidden">
           <CardContent className="p-6">
             <div
               className="markdown-content max-w-none"
-              // biome-ignore lint: false
               dangerouslySetInnerHTML={{ __html: sanitized }}
             />
           </CardContent>

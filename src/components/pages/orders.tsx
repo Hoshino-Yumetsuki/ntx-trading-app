@@ -39,7 +39,6 @@ export function OrdersPage() {
       setLoading(true)
       setError('')
       const data = await getMyOrders()
-      // Sort by created_at desc
       const sorted = [...data].sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -56,7 +55,6 @@ export function OrdersPage() {
     fetchOrders()
   }, [fetchOrders])
 
-  // 获取权限组/套餐，用于将 package_id -> 套餐名称（group.name）
   useEffect(() => {
     const run = async () => {
       try {
@@ -77,15 +75,12 @@ export function OrdersPage() {
     return map
   }, [groups])
 
-  // 仅待支付订单
   const _pendingOrders = useMemo(
     () => orders.filter((o) => o.status === 'pending'),
     [orders]
   )
 
-  // 打开支付弹窗
   const openPayDialog = async (order: Order) => {
-    // 打开弹窗后立即刷新订单，更新倒计时/地址等信息
     setSelectedOrder(order)
     setShowPayDialog(true)
     setTimeLeft(0)
@@ -100,12 +95,10 @@ export function OrdersPage() {
       setSelectedOrder(latest)
       setTimeLeft(latest.remainingTimeSeconds || 0)
     } catch (_) {
-      // 回退到旧数据
       setTimeLeft(order.remainingTimeSeconds || 0)
     }
   }
 
-  // 倒计时处理
   useEffect(() => {
     if (!showPayDialog) return
     if (!timeLeft) return
@@ -235,7 +228,6 @@ export function OrdersPage() {
         </Card>
       </div>
 
-      {/* 支付弹窗 */}
       <Dialog open={showPayDialog} onOpenChange={setShowPayDialog}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[460px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>

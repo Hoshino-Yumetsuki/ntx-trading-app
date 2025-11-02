@@ -2,20 +2,14 @@ import type { Course, PermissionGroupWithPackages } from '@/src/types/course'
 import { API_BASE_URL } from '@/src/services/config'
 import { AuthService } from '@/src/services/auth'
 
-/**
- * Fetches all courses from the API
- * If a valid JWT token is provided, it will also return unlock status for each course
- */
 export async function getAllCourses(): Promise<Course[]> {
   try {
-    // Get JWT token using AuthService (stored under 'auth_token')
     const token = AuthService.getToken()
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json'
     }
 
-    // Add authorization header if token exists
     if (token) {
       headers.Authorization = `Bearer ${token}`
     }
@@ -34,8 +28,6 @@ export async function getAllCourses(): Promise<Course[]> {
     }
 
     const data = await response.json()
-    // Normalize field names to match our Course type
-    // API may return `requiredGroups` (camelCase); map it to `required_groups`
     return (data || []).map((item: any) => ({
       ...item,
       required_groups: item?.required_groups ?? item?.requiredGroups ?? []
@@ -46,13 +38,8 @@ export async function getAllCourses(): Promise<Course[]> {
   }
 }
 
-/**
- * Fetches user's unlocked courses
- * Requires JWT token for authentication
- */
 export async function getUnlockedCourses(): Promise<Course[]> {
   try {
-    // Get JWT token using AuthService
     const token = AuthService.getToken()
 
     if (!token) {
@@ -83,9 +70,6 @@ export async function getUnlockedCourses(): Promise<Course[]> {
   }
 }
 
-/**
- * Fetches all permission groups and their available packages
- */
 export async function getPermissionGroups(): Promise<
   PermissionGroupWithPackages[]
 > {

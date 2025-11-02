@@ -31,7 +31,6 @@ export const InvitePoster = forwardRef<
       className="relative bg-white overflow-hidden mx-auto"
       style={{ width: 600, height: 800 }}
     >
-      {/* Background Image */}
       <Image
         src="/分享-bg.png"
         alt=""
@@ -41,9 +40,7 @@ export const InvitePoster = forwardRef<
         className="object-cover"
       />
 
-      {/* Content Container */}
       <div className="relative w-full h-full flex flex-col items-center">
-        {/* Logo */}
         <div className="mt-14 rounded-2xl overflow-hidden outline outline-4 outline-white">
           <Image
             src="/NTX-LOGO优化-7.png"
@@ -55,7 +52,6 @@ export const InvitePoster = forwardRef<
           />
         </div>
 
-        {/* Title */}
         <div
           className="mt-6 text-center text-gray-900 font-bold"
           style={{ fontSize: 28, lineHeight: '36px', fontFamily: 'sans-serif' }}
@@ -70,7 +66,6 @@ export const InvitePoster = forwardRef<
           享受高达60%手续费返佣和挖矿交易
         </div>
 
-        {/* Middle Banner */}
         <div
           className="mt-8 flex items-center justify-center"
           style={{ width: 243, height: 244 }}
@@ -85,7 +80,6 @@ export const InvitePoster = forwardRef<
           />
         </div>
 
-        {/* Bottom Card */}
         <div
           className="mt-auto mb-8 mx-8 rounded-2xl bg-blue-600 text-white relative"
           style={{ height: 190 }}
@@ -126,13 +120,8 @@ export const InvitePoster = forwardRef<
     </div>
   )
 })
-// Add display name for better debugging
 InvitePoster.displayName = 'InvitePoster'
 
-/**
- * Hook for generating the invite share image.
- * @param userInfo - User information
- */
 export function useInviteImageGenerator(userInfo: UserInfo | null) {
   const [qrDataUrl, setQrDataUrl] = useState<string>('')
 

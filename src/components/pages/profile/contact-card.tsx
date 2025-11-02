@@ -21,7 +21,6 @@ export function ContactCard() {
       </div>
 
       <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
-        {/* Twitter */}
         <div className="flex items-center justify-between p-4 hover:bg-white/40 transition-all border-b border-white/20">
           <a
             href="https://twitter.com/NexTradeDao"
@@ -58,7 +57,6 @@ export function ContactCard() {
           </div>
         </div>
 
-        {/* Telegram */}
         <div className="flex items-center justify-between p-4 hover:bg-white/40 transition-all">
           <a
             href="https://t.me/+eUGjIMUFdio2ODg1"

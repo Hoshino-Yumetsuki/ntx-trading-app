@@ -27,7 +27,6 @@ export function PlatformDataCard({
 
   return (
     <div className="space-y-8">
-      {/* 平台总数据区域 */}
       <div className="space-y-4">
         <h3 className="text-base font-medium text-slate-700 mb-3">
           {t('mining.platform.totalDataTitle') || '平台总数据'}
@@ -35,7 +34,6 @@ export function PlatformDataCard({
         <PlatformTotalDataCard platformData={platformData} loading={loading} />
       </div>
 
-      {/* 平台日数据区域 */}
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-1">
           <h3 className="text-base font-medium text-slate-700">

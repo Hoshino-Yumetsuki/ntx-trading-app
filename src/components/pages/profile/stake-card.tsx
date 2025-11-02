@@ -7,31 +7,20 @@ import Image from 'next/image'
 import { toast } from 'sonner'
 
 interface StakeCardProps {
-  // userInfo 可能为 null (在父组件数据加载时)
   userInfo: UserInfo | null
   onNavigate?: (page: 'assets' | 'security' | 'community' | 'broker') => void
 }
 
-// 为了代码清晰，我将 _userInfo 改回了 userInfo
 export function StakeCard({ userInfo }: StakeCardProps) {
   const _router = useRouter()
 
   const handleBroker = () => {
-    // 显示"暂未开放"提示
     toast.info('质押/释放功能暂未开放', {
       position: 'top-center',
       duration: 2000
     })
-
-    // 注释掉原有的导航逻辑
-    // if (onNavigate) {
-    //   onNavigate('broker')
-    //   return
-    // }
-    // router.push('/broker')
   }
 
-  // 1. 添加加载状态：如果 userInfo 还没传进来，显示一个骨架屏 (Skeleton)
   if (!userInfo) {
     return (
       <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
@@ -48,11 +37,9 @@ export function StakeCard({ userInfo }: StakeCardProps) {
     )
   }
 
-  // 2. 格式化余额数字，让其更易读
   const formatBalance = (balance: number | undefined) => {
     if (balance === undefined || balance === null) return '0'
 
-    // 对于非常大的数值，使用简化显示
     if (balance >= 1000000) {
       return `${(balance / 1000000).toLocaleString('en-US', {
         minimumFractionDigits: 1,
@@ -79,7 +66,6 @@ export function StakeCard({ userInfo }: StakeCardProps) {
         <h3 className="text-slate-900 font-semibold mb-5">我的质押</h3>
 
         <div className="flex justify-between items-center mb-6">
-          {/* NTX Section */}
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
               <Image
@@ -100,7 +86,6 @@ export function StakeCard({ userInfo }: StakeCardProps) {
                   textOverflow: 'ellipsis'
                 }}
               >
-                {/* 3. 使用格式化后的 ntxBalance */}
                 {ntxDisplayBalance}
               </p>
             </div>
@@ -113,7 +98,6 @@ export function StakeCard({ userInfo }: StakeCardProps) {
             </div>
           </div>
 
-          {/* GNTX Section */}
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
               <Image
@@ -134,7 +118,6 @@ export function StakeCard({ userInfo }: StakeCardProps) {
                   textOverflow: 'ellipsis'
                 }}
               >
-                {/* 3. 使用格式化后的 gntxBalance */}
                 {gntxDisplayBalance}
               </p>
             </div>

@@ -34,7 +34,6 @@ export function StrategySignalsPage({
         setLoading(true)
         const allCoursesData = await getAllCourses()
 
-        // Process courses to separate unlocked and locked, filter for signal only
         const { unlockedCourses, lockedCourses } = processCourses(
           allCoursesData,
           'signal'
@@ -97,7 +96,6 @@ export function StrategySignalsPage({
             </div>
           ) : (
             <div className="space-y-6">
-              {/* 已解锁的策略信号 */}
               {unlockedCourses.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
@@ -157,7 +155,6 @@ export function StrategySignalsPage({
                 </div>
               )}
 
-              {/* 待解锁的策略信号 */}
               {lockedCourses.length > 0 && (
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
@@ -187,7 +184,6 @@ export function StrategySignalsPage({
                               {course.description}
                             </p>
 
-                            {/* 显示需要的权限组 */}
                             {course.required_groups &&
                               course.required_groups.length > 0 && (
                                 <div className="mt-2">
@@ -231,7 +227,6 @@ export function StrategySignalsPage({
         </CardContent>
       </Card>
 
-      {/* 显示没有课程的提示 */}
       {unlockedCourses.length === 0 &&
         lockedCourses.length === 0 &&
         !loading &&

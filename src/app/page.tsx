@@ -8,7 +8,6 @@ import { LanguageProvider } from '@/src/contexts/language-context'
 import { Loader2 } from 'lucide-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// 创建一个 client
 const queryClient = new QueryClient()
 
 function AppContent() {
@@ -43,7 +42,6 @@ function AppContent() {
 
 export default function HomePage() {
   return (
-    // 在这里包裹 QueryClientProvider
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <AuthProvider>

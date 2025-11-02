@@ -44,7 +44,6 @@ export function UnlockCoursesPage({
   hideDescription?: boolean
 }) {
   const packagesSectionId = useId()
-  // 由课程 required_groups 反查得到的展示分组；permission_groups 仅用于查询套餐，不参与显示判断
   const [derivedGroups, setDerivedGroups] = useState<
     Array<{
       key: string
@@ -71,13 +70,11 @@ export function UnlockCoursesPage({
       try {
         setLoading(true)
         setError('')
-        // 并行请求：课程列表和权限组/套餐
         const [courses, allGroups] = await Promise.all([
           getAllCourses(),
           getPermissionGroups()
         ])
 
-        // 仅依据“未解锁且非 broker 课程”的 required_groups 决定需要展示哪些权限组
         const byKey = new Map<
           string,
           {
@@ -90,7 +87,6 @@ export function UnlockCoursesPage({
         >()
         for (const c of courses) {
           if (c?.course_type === 'broker') continue
-          // 仅处理“未解锁”的课程
           if (c?.isUnlocked || !Array.isArray(c?.required_groups)) continue
           for (const rg of c.required_groups) {
             const hasId = typeof rg?.id === 'number'
@@ -101,7 +97,6 @@ export function UnlockCoursesPage({
                 : ''
             if (!key) continue
             if (!byKey.has(key)) {
-              // 查找该组对应的套餐（如果存在），permission_groups 仅做查询用途
               const matched = allGroups.find((g) =>
                 hasId ? g.group.id === rg?.id : g.group.name === rg?.name
               )
@@ -116,7 +111,6 @@ export function UnlockCoursesPage({
           }
         }
 
-        // 仅展示有可购买套餐的权限组
         setDerivedGroups(
           Array.from(byKey.values()).filter((x) => x.packages.length > 0)
         )
@@ -130,7 +124,6 @@ export function UnlockCoursesPage({
   }, [])
 
   const handleBuy = async (packageId: number) => {
-    // 未登录则跳转到登录页
     if (!isAuthenticated) {
       router.push('/login')
       return
@@ -152,8 +145,6 @@ export function UnlockCoursesPage({
       await navigator.clipboard.writeText(text)
     } catch (_) {}
   }
-
-  // 不再依据 permission_groups 的 hidden 参与显示；完全由课程反查而来
 
   return (
     <div className="space-y-6">
@@ -241,7 +232,6 @@ export function UnlockCoursesPage({
         </Card>
       )}
 
-      {/* 购买套餐 */}
       <div id={packagesSectionId} className="mt-2" />
       <Card className="glass-card border-white/30">
         <CardHeader className="flex flex-row items-center justify-between">
@@ -366,7 +356,6 @@ export function UnlockCoursesPage({
         </Card>
       )}
 
-      {/* 支付弹窗 */}
       <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
         <DialogContent>
           <DialogHeader>

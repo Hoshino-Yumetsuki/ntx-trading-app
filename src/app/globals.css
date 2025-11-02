@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Alibaba PuHuiTi font faces */
 @font-face {
   font-family: "AlibabaPuHuiTi";
   src:
@@ -48,7 +47,6 @@
     text-wrap: balance;
   }
 
-  /* line-clamp without plugin */
   .line-clamp-1 {
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -76,7 +74,6 @@
     word-break: break-word;
   }
 
-  /* Alibaba PuHuiTi utilities */
   .font-alibaba-bold {
     font-weight: 700;
   }
@@ -86,7 +83,6 @@
   .font-alibaba-light {
     font-weight: 300;
   }
-  /* 横向无缝滚动工具类 */
   .marquee {
     overflow-x: hidden;
     overflow-y: visible;
@@ -180,13 +176,13 @@
   }
   body {
     @apply bg-background text-foreground font-sans h-full;
-    font-weight: 500; /* 默认正文使用 Medium */
-    background-color: #f0f8ff; /* 全局背景色 */
+    font-weight: 500;
+    background-color: #f0f8ff;
   }
   h1,
   h2,
   h3 {
-    font-weight: 700; /* 大标题使用 Bold */
+    font-weight: 700;
   }
 }
 
@@ -235,7 +231,6 @@
   }
 }
 
-/* 横向左移无缝滚动 */
 @keyframes marquee-left {
   0% {
     transform: translateX(0);
@@ -245,14 +240,12 @@
   }
 }
 
-/* 无障碍：尊重降低动态偏好 */
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
     animation: none;
   }
 }
 
-/* 浅蓝白玻璃拟态卡片 */
 .glass-card {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
@@ -266,26 +259,24 @@
 
 .glass-card-strong {
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(30px); /* Slightly more blur for smoother glass effect */
+  backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow:
     0 15px 45px rgba(135, 206, 250, 0.3),
-    /* Larger, more diffused outer shadow */ inset 0 1px 0
+    inset 0 1px 0
     rgba(255, 255, 255, 0.98),
-    /* Brighter top inner highlight */ inset 0 -2px 5px rgba(0, 0, 0, 0.05); /* Subtle bottom inner shadow for depth */
+    inset 0 -2px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* 浅蓝渐变文字效果 */
 .gradient-text {
-  background: none; /* Remove gradient background */
-  -webkit-background-clip: unset; /* Reset clip */
-  -webkit-text-fill-color: rgb(16, 48, 163); /* Set solid blue color */
-  background-clip: unset; /* Reset clip */
-  color: rgb(16, 48, 163); /* Fallback for non-webkit browsers and general text color */
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: rgb(16, 48, 163);
+  background-clip: unset;
+  color: rgb(16, 48, 163);
 }
 
-/* 浅蓝弥散按钮 */
 .diffused-button {
   background: linear-gradient(135deg, rgba(50, 80, 180, 0.9), rgb(16, 48, 163));
   backdrop-filter: blur(10px);
@@ -303,7 +294,6 @@
   transform: translateY(-1px);
 }
 
-/* 高级图标容器 */
 .premium-icon {
   position: relative;
   display: inline-flex;
@@ -316,12 +306,11 @@
   );
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.8);
-  /* 增强阴影，增加深度和高级感，模拟iOS图标的立体感 */
   box-shadow:
     0 4px 16px rgba(135, 206, 250, 0.25),
-    /* 外部阴影 */ inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    /* 顶部内高光 */ inset 0 -2px 4px rgba(0, 0, 0, 0.05),
-    /* 底部内阴影，增加微妙深度 */ inset 0 0 8px rgba(255, 255, 255, 0.2); /* 柔和的内部光晕，增加质感 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
 
@@ -347,32 +336,28 @@
   opacity: 1;
 }
 
-/* 隐藏滚动条但保留滚动功能 */
 .hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 和 Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari 和 Opera */
+  display: none;
 }
 
-/* 保证滚动体验更流畅 */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
 
 .premium-icon:hover {
   transform: translateY(-2px);
-  /* 增强悬停阴影，提供更明显的交互反馈 */
   box-shadow:
     0 8px 25px rgba(135, 206, 250, 0.35),
-    /* 悬停时更明显的外部阴影 */ inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    /* 悬停时更亮的顶部内高光 */ inset 0 -3px 6px rgba(0, 0, 0, 0.08),
-    /* 悬停时更明显的底部内阴影 */ inset 0 0 12px rgba(255, 255, 255, 0.3); /* 悬停时更强的内部光晕 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
-/* 数据卡片特效 */
 .data-card {
   background: white;
   backdrop-filter: blur(15px);
@@ -390,22 +375,8 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-/* @media (max-width: 639px) {
-  .scalable-content-area {
-    --scale-ratio: calc(100vw / var(--design-width));
-
-    width: calc(1px * var(--design-width));
-    transform: scale(var(--scale-ratio));
-    
-    margin-left: auto;  
-    margin-right: auto;
-    transform-origin: top center;
-  }
-} */
-
 @media (min-width: 768px) {
   body {
-    /* 设置一个深灰色背景，您可以换成 #000000 (纯黑) 或其他颜色 */
     display: flex;
     justify-content: center;
   }

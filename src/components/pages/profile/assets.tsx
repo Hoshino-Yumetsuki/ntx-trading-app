@@ -20,7 +20,7 @@ import type {
 interface AssetsPageProps {
   onBack: () => void;
   userInfo: UserInfo | null;
-  onNavigate?: (page: "security") => void; // 添加 onNavigate 属性
+  onNavigate?: (page: "security") => void;
 }
 
 export default function AssetsPage({

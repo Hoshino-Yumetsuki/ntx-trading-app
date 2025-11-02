@@ -10,7 +10,6 @@ import {
 } from '@/src/components/ui/card'
 import { Button } from '@/src/components/ui/button'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
-// import { UnlockCoursesPage } from '@/src/components/pages/academy/unlock-courses'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import type {
   Course,
@@ -48,7 +47,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [viewing, setViewing] = useState<Course | null>(null)
-  // 购买区数据
   const [pkgLoading, setPkgLoading] = useState(true)
   const [pkgError, setPkgError] = useState('')
   const [creatingOrder, setCreatingOrder] = useState<number | null>(null)
@@ -88,8 +86,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
     fetchData()
   }, [])
 
-  // 购买区：基于“未解锁的 broker 课程”直接展示课程卡片（标题=课程名）
-  // 从课程的 required_groups 聚合其对应权限组内的套餐（不再过滤 hidden=true）
   useEffect(() => {
     const fetchPackages = async () => {
       try {
@@ -109,7 +105,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
 
         for (const c of courses) {
           if (c?.course_type !== 'broker') continue
-          // 仅处理“未解锁”的课程用于购买区
           if (c?.isUnlocked || !Array.isArray(c?.required_groups)) continue
 
           const pkgMap = new Map<number, CoursePackage>()
@@ -121,7 +116,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
               hasId ? g.group.id === rg?.id : g.group.name === rg?.name
             )
             if (!matched) continue
-            // 不再过滤 hidden 组；但不显示组名，仅展示课程名
             if (!desc && matched.group?.description)
               desc = matched.group.description
             for (const p of matched.packages ?? []) {
@@ -181,7 +175,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
       return
     }
     if (!c.isUnlocked) {
-      // 未解锁的提示，引导下滑购买
       const anchor = document.getElementById(packagesAnchorId)
       if (anchor) anchor.scrollIntoView({ behavior: 'smooth' })
       return
@@ -226,7 +219,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
           <LanguageSwitcher />
         </div>
 
-        {/* 顶部 Banner */}
         <div
           className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
           style={{
@@ -245,7 +237,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         </div>
       </div>
 
-      {/* 购买经纪商套餐（仅从 broker 课程反查权限组，且隐藏 hidden=true 的组） */}
       <div id={packagesAnchorId} className="px-6 mt-6">
         <Card className="glass-card border-white/30">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -337,7 +328,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         </Card>
       </div>
 
-      {/* Markdown 资料入口 - 移动到下方 */}
       <div className="px-6 mt-6">
         <Card className="glass-card border-white/30 shadow-lg">
           <CardHeader>
@@ -383,7 +373,6 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         </Card>
       </div>
 
-      {/* 支付弹窗 */}
       <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
         <DialogContent>
           <DialogHeader>

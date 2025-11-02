@@ -14,7 +14,6 @@ interface ShareCardProps {
   source?: string
 }
 
-// 使用 forwardRef 包装组件，使其可以接收 ref
 export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
   ({ title, content, qrCodeDataUrl }, ref) => {
     const md = new MarkdownIt({
@@ -102,7 +101,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
 
     return (
       <div
-        ref={ref} // 将 ref 附加到根元素
+        ref={ref}
         className="relative overflow-hidden"
         style={{
           fontFamily:
@@ -115,7 +114,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           boxShadow: '0 10px 30px rgba(2, 6, 23, 0.08)'
         }}
       >
-        {/* 背景切片 */}
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 z-0"
@@ -147,38 +145,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             background: '#fefefe'
           }}
         />
-        {/* Header */}
-        <div className="absolute top-6 left-6 pointer-events-none select-none z-10">
-          <Image
-            src="/Frame17@3x.png"
-            alt="NTX Logo"
-            width={240}
-            height={240}
-            priority
-            loading="eager"
-            unoptimized
-          />
-          <style jsx>{`
-            .content :global(p) { margin: 0 0 1em 0; text-indent: 0; text-align: justify; text-justify: inter-ideograph; }
-            .content :global(p:last-child) { margin-bottom: 0; }
-            .content :global(*) { word-break: break-word; overflow-wrap: anywhere; }
-            .content :global(h1),
-            .content :global(h2),
-            .content :global(h3),
-            .content :global(h4),
-            .content :global(h5),
-            .content :global(h6) { font-size: 1em; line-height: inherit; margin: 0 0 1em 0; font-weight: 700; }
-            .content :global(blockquote),
-            .content :global(pre),
-            .content :global(code) { font-size: 1em; line-height: inherit; }
-            .content :global(ul), .content :global(ol) { margin: 0 0 1em 1.25em; }
-            .content :global(table) { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
-            .content :global(table), .content :global(th), .content :global(td) { font-size: 1em; }
-            .content :global(th), .content :global(td) { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
-            .content :global(th) { background-color: #f8fafc; font-weight: bold; }
-          `}</style>
-        </div>
-
         <div
           ref={titleContainerRef}
           className="absolute left-0 right-0 z-20 pointer-events-none overflow-visible px-8"
@@ -188,21 +154,17 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             {title}
           </h1>
         </div>
-
-        {/* Content */}
         <div
           ref={contentWrapperRef}
           className="relative z-10 px-8 pb-[220px]"
           style={{ marginTop: Math.max(160, titleHeight + 120) }}
         >
-          {/* 日期放到标题下方、正文上方的左侧 */}
           <div className="text-left text-slate-700 text-base select-none mb-2">
             {todayLabel}
           </div>
           <div className="content text-slate-700">
             <div
               ref={contentInnerRef}
-              // biome-ignore lint: false
               dangerouslySetInnerHTML={renderMarkdown(content)}
               style={{
                 fontSize: contentFontSize,
@@ -216,7 +178,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
         </div>
 
-        {/* Bottom overlay */}
         <div
           ref={footerRef}
           className="absolute left-8 right-8 bottom-12 flex items-center justify-between"
@@ -243,8 +204,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             <div className="text-slate-700 text-base font-medium">获取空投</div>
           </div>
         </div>
-
-        
       </div>
     )
   }

@@ -1,4 +1,3 @@
-// src/components/pages/mining.tsx
 
 'use client'
 
@@ -66,7 +65,6 @@ export function MiningPage() {
   const [showBindDialog, setShowBindDialog] = useState(false)
   const [_lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
-  // 获取平台数据
   const fetchPlatformData = useCallback(async () => {
     try {
       setLoading(true)
@@ -81,18 +79,16 @@ export function MiningPage() {
     }
   }, [])
 
-  // 获取用户数据
   const fetchUserData = useCallback(async () => {
     if (!token) return
 
     try {
       setUserLoading(true)
-      // 获取今天的日期（YYYY-MM-DD格式）
       const today = new Date().toISOString().split('T')[0]
 
       const [userDataResult, dailyDataResult] = await Promise.all([
         getUserData(token),
-        getDailyUserData(token, today) // 获取今日数据
+        getDailyUserData(token, today)
       ])
       setUserData(userDataResult)
       setDailyData(dailyDataResult)
@@ -104,7 +100,6 @@ export function MiningPage() {
     }
   }, [token, t])
 
-  // 获取排行榜数据
   const fetchLeaderboard = useCallback(async () => {
     try {
       setLeaderboardLoading(true)
@@ -118,7 +113,6 @@ export function MiningPage() {
     }
   }, [t])
 
-  // 获取交易所列表
   const fetchExchanges = useCallback(async () => {
     try {
       setExchangesLoading(true)
@@ -132,7 +126,6 @@ export function MiningPage() {
     }
   }, [t])
 
-  // 获取用户绑定的交易所
   const fetchUserExchanges = useCallback(async () => {
     if (!token) return
 
@@ -145,7 +138,6 @@ export function MiningPage() {
     }
   }, [token, t])
 
-  // 未登录则跳转到登录页，返回可用 token
   const getAuthTokenOrOpen = (): string | null => {
     if (!token) {
       toast.error(t('mining.error.notLoggedIn') || '请先登录')
@@ -155,7 +147,6 @@ export function MiningPage() {
     return token
   }
 
-  // 处理绑定交易所
   const handleBindExchange = (exchangeId: number, uid: string) => {
     const authToken = getAuthTokenOrOpen()
     if (!authToken) return
@@ -164,7 +155,6 @@ export function MiningPage() {
     setShowBindDialog(true)
   }
 
-  // 处理解绑交易所
   const handleUnbindExchange = async (exchangeId: number) => {
     const authToken = getAuthTokenOrOpen()
     if (!authToken) return
@@ -172,7 +162,6 @@ export function MiningPage() {
     try {
       await unbindExchange(authToken, exchangeId)
       toast.success(t('mining.success.unbindExchange') || '解绑成功')
-      // 刷新用户绑定的交易所列表
       await fetchUserExchanges()
     } catch (error) {
       console.error('解绑交易所失败:', error)
@@ -180,7 +169,6 @@ export function MiningPage() {
     }
   }
 
-  // 确认绑定交易所
   const confirmBindExchange = async () => {
     const authToken = getAuthTokenOrOpen()
     if (!authToken) return
@@ -200,7 +188,6 @@ export function MiningPage() {
       setBindingExchangeId(null)
       setBindingUid('')
 
-      // 刷新用户绑定的交易所列表
       await fetchUserExchanges()
     } catch (error) {
       console.error('绑定交易所失败:', error)
@@ -208,14 +195,12 @@ export function MiningPage() {
     }
   }
 
-  // 取消绑定对话框
   const cancelBindDialog = () => {
     setShowBindDialog(false)
     setBindingExchangeId(null)
     setBindingUid('')
   }
 
-  // 刷新所有数据
   const refreshAllData = useCallback(async () => {
     await Promise.all([
       fetchPlatformData(),
@@ -234,7 +219,6 @@ export function MiningPage() {
     token
   ])
 
-  // 组件挂载时获取数据
   useEffect(() => {
     fetchPlatformData()
     fetchLeaderboard()
@@ -283,7 +267,6 @@ export function MiningPage() {
         </div>
       </div>
 
-      {/* 标签页切换按钮 */}
       <div className="px-6 mt-4">
         <div className="flex space-x-1 p-1 rounded-xl">
           <button
@@ -312,14 +295,12 @@ export function MiningPage() {
       </div>
 
       <div className="px-6 mt-4">
-        {/* 挖矿数据标签页 */}
         {activeTab === 'mining' && (
           <div>
             <h2 className="text-base font-medium text-slate-700 mb-3">
               {t('mining.data.title') || '挖矿数据'}
             </h2>
 
-            {/* 挖矿数据子标签页切换按钮 */}
             <div className="mb-4">
               <div className="flex space-x-1 bg-slate-100/80 backdrop-blur-sm p-1 rounded-lg border border-slate-200/50">
                 <button
@@ -347,9 +328,7 @@ export function MiningPage() {
               </div>
             </div>
 
-            {/* 挖矿数据内容区域 */}
             <div>
-              {/* 平台数据组件 */}
               {miningSubTab === 'platform' && (
                 <PlatformDataCard
                   platformData={platformData}
@@ -357,7 +336,6 @@ export function MiningPage() {
                 />
               )}
 
-              {/* 用户数据组件 */}
               {miningSubTab === 'user' && (
                 <UserDataCard
                   user={user}
@@ -370,7 +348,6 @@ export function MiningPage() {
           </div>
         )}
 
-        {/* 交易所页面标签页 */}
         {activeTab === 'exchange' && (
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-xl overflow-hidden">
             <div className="p-6">
@@ -380,7 +357,6 @@ export function MiningPage() {
               </h2>
 
               <div className="grid grid-cols-1 gap-6">
-                {/* 交易所绑定组件 */}
                 <div>
                   <ExchangeCard
                     exchanges={exchanges}
@@ -390,24 +366,12 @@ export function MiningPage() {
                     onUnbindExchange={handleUnbindExchange}
                   />
                 </div>
-
-                {/* 挖矿排行榜组件 - 已隐藏 */}
-                {/* <div>
-                  <h3 className="text-base font-medium text-slate-700 mb-3">
-                    {t('mining.leaderboard.title') || '挖矿排行榜'}
-                  </h3>
-                  <LeaderboardCard
-                    leaderboard={leaderboard}
-                    leaderboardLoading={leaderboardLoading}
-                  />
-                </div> */}
               </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* 绑定交易所对话框 */}
       <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>

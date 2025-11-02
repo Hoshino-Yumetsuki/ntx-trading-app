@@ -95,12 +95,10 @@ export function useNewsImageGenerator(
       }
 
       try {
-        // 1) 从 DOM 收集图片并预加载（包括 Next/Image 渲染出的 <img>）
         const imgs = Array.from(node.querySelectorAll('img')) as HTMLImageElement[]
         const imageUrls = imgs.map((img) => img.currentSrc || img.src)
         await preloadImages(imageUrls)
 
-        // 2) 等待所有图片 complete+decode，避免截图过早
         await Promise.all(
           imgs.map(async (img) => {
             if (!img.complete) {
@@ -113,13 +111,11 @@ export function useNewsImageGenerator(
               try {
                 await (img as any).decode()
               } catch {
-                // ignore decode errors
               }
             }
           })
         )
 
-        // 3) 等待字体与两帧 rAF，使排版稳定
         const fontsReady = (document as any)?.fonts?.ready
         if (fontsReady && typeof fontsReady.then === 'function') {
           try { await fontsReady } catch {}
@@ -127,7 +123,6 @@ export function useNewsImageGenerator(
         await new Promise((r) => requestAnimationFrame(() => r(undefined)))
         await new Promise((r) => requestAnimationFrame(() => r(undefined)))
 
-        // 4) 等待高度稳定（连续多次高度一致）
         const waitForStableHeight = async (el: HTMLElement, tries = 20) => {
           let last = -1
           let stableCount = 0

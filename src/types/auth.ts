@@ -31,7 +31,6 @@ export interface SendVerificationCodeResponse {
   message: string
 }
 
-// 找回密码：请求重置码
 export interface ForgotPasswordRequest {
   email: string
 }
@@ -40,7 +39,6 @@ export interface ForgotPasswordResponse {
   message: string
 }
 
-// 找回密码：提交重置
 export interface ResetPasswordRequest {
   email: string
   reset_code: string

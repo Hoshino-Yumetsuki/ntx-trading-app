@@ -197,7 +197,6 @@ export async function getCommissionRecords(): Promise<CommissionRecord[]> {
   return response.json()
 }
 
-// 为了向后兼容，保留UserService对象
 export const UserService = {
   getUserInfo,
   getMyTeams,

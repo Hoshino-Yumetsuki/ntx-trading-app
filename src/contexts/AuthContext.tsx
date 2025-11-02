@@ -75,7 +75,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
   useEffect(() => {
-    // 恢复会话
     const token = AuthService.getToken()
     const userData = AuthService.getUser()
 
@@ -110,7 +109,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAdmin: response.isAdmin
       }
 
-      // 保存到本地存储
       AuthService.setToken(response.token)
       AuthService.setUser({
         userId: response.userId,
@@ -137,7 +135,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateUser = (userData: Partial<User>) => {
     dispatch({ type: 'UPDATE_USER', payload: userData })
-    // 同时更新本地存储
     if (state.user) {
       const updatedUser = { ...state.user, ...userData }
       AuthService.setUser({

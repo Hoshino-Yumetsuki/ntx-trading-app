@@ -91,13 +91,11 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 顶部：返回与标题 */}
       <div className="px-6 pt-12 pb-2 relative z-10">
         <div className="flex items-center space-x-3">
           <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          {/* 替换为 NTX 图标 */}
           <div className="relative w-28 h-9 md:w-32 md:h-10">
             <Image
               src="/Frame17@3x.png"
@@ -110,11 +108,9 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
         </div>
       </div>
 
-      {/* Header Banner：右图左文，图片可部分与文字重叠 */}
       <div className="px-6">
         <div className="relative mb-6 rounded-2xl overflow-visible">
           <div className="relative h-32">
-            {/* 左侧文字区域 */}
             <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
               <div>
                 <h2 className="text-2xl font-bold text-blue-600">
@@ -125,7 +121,6 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
                 </p>
               </div>
             </div>
-            {/* 右侧大图，允许在文字下方显示部分区域 */}
             <div className="absolute -right-2 md:-right-3 top-1/2 -translate-y-1/2 w-56 h-56 md:w-64 md:h-64 z-0 pointer-events-none">
               <Image
                 src="/Group34406@3x.png"
@@ -139,9 +134,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
         </div>
       </div>
 
-      {/* Content */}
       <div className="px-6 py-6 space-y-6">
-        {/* Introduction Card */}
         <Card className="glass-card border-white/50 shadow-xl">
           <CardHeader className="text-center pb-4">
             <div className="relative w-16 h-16 mx-auto mb-4">
@@ -162,7 +155,6 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
           </CardHeader>
         </Card>
 
-        {/* Tutorial Sections - Each section as a separate Card with math support */}
         <div className="grid gap-6">
           {tutorialSections.map((section) => (
             <Card
@@ -202,14 +194,12 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
 
                     return (
                       <div
-                        // biome-ignore lint/security/noDangerouslySetInnerHtml: 已通过 DOMPurify 清洗
                         dangerouslySetInnerHTML={{ __html: safe }}
                       />
                     )
                   })()}
                 </div>
 
-                {/* 图片部分 */}
                 {section.images && (
                   <div className="mt-6 space-y-4">
                     {section.images.map((image, imageIndex) => (

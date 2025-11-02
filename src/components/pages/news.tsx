@@ -170,7 +170,6 @@ export function NewsPage() {
     return (
       <div
         className="markdown-content"
-        // biome-ignore lint: false
         dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
     )
@@ -180,7 +179,6 @@ export function NewsPage() {
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-          {/* ...文章详情页UI, 保持不变... */}
           <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
@@ -296,7 +294,6 @@ export function NewsPage() {
   return (
     <>
       <div className="min-h-screen bg-white pb-6">
-        {/* ...列表页UI, 保持不变... */}
         <div className="px-6 pt-12 pb-8 relative z-10">
           <div className="flex items-center justify-between mb-6">
             <div className="flex flex-col">
@@ -367,7 +364,6 @@ export function NewsPage() {
             </div>
           ) : isError ? (
             <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4">
-              {/* ... */}
             </div>
           ) : filteredNewsItems.length > 0 ? (
             <div className="relative">

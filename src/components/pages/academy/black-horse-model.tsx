@@ -32,7 +32,6 @@ export function BlackHorseModelPage({
         setLoading(true)
         const allCoursesData = await getAllCourses()
 
-        // Process courses to separate unlocked and locked, filter for dark_horse only
         const { unlockedCourses, lockedCourses } = processCourses(
           allCoursesData,
           'dark_horse'
@@ -92,7 +91,6 @@ export function BlackHorseModelPage({
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Unlocked courses */}
               {unlockedCourses.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
@@ -152,7 +150,6 @@ export function BlackHorseModelPage({
                 </div>
               )}
 
-              {/* Locked courses */}
               {lockedCourses.length > 0 && (
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
@@ -182,7 +179,6 @@ export function BlackHorseModelPage({
                               {course.description}
                             </p>
 
-                            {/* Display required permission groups */}
                             {course.required_groups &&
                               course.required_groups.length > 0 && (
                                 <div className="mt-2">
@@ -226,7 +222,6 @@ export function BlackHorseModelPage({
         </CardContent>
       </Card>
 
-      {/* 显示没有课程的提示 */}
       {unlockedCourses.length === 0 &&
         lockedCourses.length === 0 &&
         !loading &&

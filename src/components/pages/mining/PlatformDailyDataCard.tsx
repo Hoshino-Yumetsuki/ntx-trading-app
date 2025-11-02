@@ -45,7 +45,6 @@ export function PlatformDailyDataCard({
   if (loading) {
     return (
       <div className="space-y-4">
-        {/* 列表加载状态 */}
         <Card className="glass-card border-white/50">
           <CardContent className="p-0">
             {[...Array(5)].map((_, i) => (
@@ -65,10 +64,8 @@ export function PlatformDailyDataCard({
 
   return (
     <div className="space-y-4">
-      {/* 日数据纵向列表（无图标，默认字体） */}
       <Card className="glass-card border-white/50 hover:shadow-lg transition-shadow">
         <CardContent className="p-0">
-          {/* 挖矿产出 */}
           <div className="flex items-center justify-between py-4 px-4 border-b">
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.miningOutput') || '挖矿产出'}
@@ -80,7 +77,6 @@ export function PlatformDailyDataCard({
             </span>
           </div>
 
-          {/* 销毁量 */}
           <div className="flex items-center justify-between py-4 px-4 border-b">
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.burned') || '销毁量'}
@@ -92,35 +88,6 @@ export function PlatformDailyDataCard({
             </span>
           </div>
 
-          {/* 佣金 - 已隐藏 */}
-          {/*
-          <div className="flex items-center justify-between py-4 px-4 border-b">
-            <span className="text-sm text-[#4D576A]">
-              {t('mining.daily.commission') || '佣金'}
-            </span>
-            <span className="text-sm text-slate-800">
-              {dailyData && dailyData.commission !== undefined
-                ? formatCurrency(dailyData.commission, 'USDT')
-                : '--'}
-            </span>
-          </div>
-          */}
-
-          {/* 交易量 - 已隐藏 */}
-          {/*
-          <div className="flex items-center justify-between py-4 px-4 border-b">
-            <span className="text-sm text-[#4D576A]">
-              {t('mining.daily.tradingVolume') || '交易量'}
-            </span>
-            <span className="text-sm text-slate-800">
-              {dailyData && dailyData.trading_volume !== undefined
-                ? formatCurrency(dailyData.trading_volume, 'USDT')
-                : '--'}
-            </span>
-          </div>
-          */}
-
-          {/* 挖矿人数 */}
           <div className="flex items-center justify-between py-4 px-4">
             <span className="text-sm text-[#4D576A]">
               {t('mining.daily.miners') || '挖矿人数'}

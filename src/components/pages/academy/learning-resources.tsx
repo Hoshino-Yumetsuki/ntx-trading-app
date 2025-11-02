@@ -50,7 +50,6 @@ export function LearningResourcesPage({
         setLoading(true)
         const allCoursesData = await getAllCourses()
 
-        // Process courses to separate unlocked and locked, filter for articles only
         const { unlockedCourses, lockedCourses } = processCourses(
           allCoursesData,
           'article'
@@ -69,13 +68,11 @@ export function LearningResourcesPage({
     fetchCourses()
   }, [])
 
-  // 过滤逻辑：实战课(默认) 与 进阶
   const matchesFilter = (course: Course) => {
     const level = (course.level || '').toLowerCase()
     if (filterTab === 'advanced') {
       return level.includes('进阶') || level.includes('advanced')
     }
-    // 实战：默认展示非进阶课程
     return !(level.includes('进阶') || level.includes('advanced'))
   }
 
@@ -123,9 +120,6 @@ export function LearningResourcesPage({
 
   return (
     <div className="space-y-6">
-      {/* 顶部标题与副标题：已移除 */}
-
-      {/* 导师卡片 - 绿色渐变 */}
       <Card className="rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#239419] to-[#025C03] text-white border-0">
         <CardContent className="p-6">
           <div className="flex items-center space-x-4 mb-4">
@@ -166,7 +160,6 @@ export function LearningResourcesPage({
         </CardContent>
       </Card>
 
-      {/* 课程类别筛选 Tabs */}
       <div className="px-1">
         <div className="inline-flex rounded-lg bg-slate-100 p-1">
           <Button
@@ -245,7 +238,6 @@ export function LearningResourcesPage({
         </div>
       ) : (
         <>
-          {/* Unlocked courses section */}
           {filteredUnlocked.length > 0 && (
             <div className="space-y-4">
               <h2 className="text-slate-800 text-xl font-bold flex items-center">
@@ -276,7 +268,6 @@ export function LearningResourcesPage({
                         <p className="text-slate-600 text-sm mb-3 leading-relaxed">
                           {course.description}
                         </p>
-                        {/* 元信息：课时与时长（若有） */}
                         {((course as any).lessonsCount ||
                           (course as any).totalDuration) && (
                           <p className="text-slate-500 text-xs">
@@ -334,7 +325,6 @@ export function LearningResourcesPage({
             </div>
           )}
 
-          {/* Locked courses section */}
           {filteredLocked.length > 0 && (
             <div className="space-y-4">
               <h2 className="text-slate-800 text-xl font-bold flex items-center">
@@ -405,7 +395,6 @@ export function LearningResourcesPage({
             </div>
           )}
 
-          {/* Show message when no courses available */}
           {unlockedCourses.length === 0 && lockedCourses.length === 0 && (
             <div className="text-center p-8">
               <p className="text-slate-600">{t('academy.noCourses')}</p>

@@ -147,7 +147,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
 
   const normalizeHref = (href?: string) => {
     if (!href) return ''
-    // If it's an internal link, don't add protocol
     if (href.startsWith('/')) return href
     if (/^https?:\/\//i.test(href)) return href
     return `https://${href}`
@@ -167,15 +166,12 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     fetchBanners()
   }, [])
 
-  // *** 新增的点击处理函数 ***
   const handleBannerClick = (url: string) => {
-    // 检查是否是外部链接
     const isExternal = url.startsWith('http://') || url.startsWith('https://')
 
     if (isExternal) {
       window.open(url, '_blank', 'noopener,noreferrer')
     } else {
-      // 内部链接使用 Next.js router
       router.push(url)
     }
   }
@@ -307,7 +303,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       />
                     </button>
                   ) : b.href ? (
-                    // *** 修改：从 <a> 标签改为 <button> 并使用新的点击处理器 ***
                     <button
                       key={`be-${i}`}
                       type="button"
@@ -359,7 +354,6 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           </div>
         </div>
 
-        {/* ...页面其余部分保持不变... */}
         <div className="mt-4 mb-4 bg-white rounded-xl shadow-sm">
           <div className="p-3">
             <div className="text-center mb-1">

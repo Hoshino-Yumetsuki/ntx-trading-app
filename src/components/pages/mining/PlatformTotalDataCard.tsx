@@ -22,7 +22,6 @@ export function PlatformTotalDataCard({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* 总挖矿量 */}
         <div
           className="data-card p-5 rounded-xl text-left"
           style={{
@@ -48,7 +47,6 @@ export function PlatformTotalDataCard({
           </p>
         </div>
 
-        {/* 总销毁量 */}
         <div
           className="data-card p-5 rounded-xl text-left"
           style={{
@@ -74,7 +72,6 @@ export function PlatformTotalDataCard({
           </p>
         </div>
 
-        {/* 平台用户数 */}
         <div
           className="data-card p-5 rounded-xl text-left"
           style={{

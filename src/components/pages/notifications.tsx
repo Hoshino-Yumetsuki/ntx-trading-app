@@ -42,7 +42,7 @@ export function NotificationsPage() {
   const searchParams = useSearchParams()
   const [consumedNewsId, setConsumedNewsId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const posterRef = useRef<HTMLDivElement>(null) // 为海报创建 ref
+  const posterRef = useRef<HTMLDivElement>(null)
 
   const getShareUrl = useCallback(
     (item: NewsItem | null) =>
@@ -52,7 +52,6 @@ export function NotificationsPage() {
     []
   )
 
-  // 使用 Hook
   const { generateImage, setOverrideQrText, qrCodeDataUrl, fullContent } =
     useNewsImageGenerator(shareNewsItem, getShareUrl(shareNewsItem))
 
@@ -202,7 +201,6 @@ export function NotificationsPage() {
     return (
       <div
         className="markdown-content"
-        // biome-ignore lint: false
         dangerouslySetInnerHTML={{ __html: safe }}
       />
     )
@@ -212,7 +210,6 @@ export function NotificationsPage() {
     return (
       <>
         <div className="min-h-screen bg-white pb-12">
-          {/* ...文章详情页UI, 保持不变... */}
           <div className="px-4 pt-12 pb-4">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
@@ -322,7 +319,6 @@ export function NotificationsPage() {
 
   return (
     <div className="min-h-screen bg-white pb-6">
-      {/* ...列表页UI, 保持不变... */}
       <div className="px-6 pt-12 pb-8 relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">

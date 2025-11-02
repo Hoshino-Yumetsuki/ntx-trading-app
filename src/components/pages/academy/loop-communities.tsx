@@ -19,7 +19,6 @@ export function LoopCommunitiesPage({
   const [error, setError] = useState('')
   const [viewingCommunity, setViewingCommunity] = useState<Course | null>(null)
 
-  // 获取社区数据
   useEffect(() => {
     const fetchCommunities = async () => {
       try {
@@ -39,7 +38,6 @@ export function LoopCommunitiesPage({
     fetchCommunities()
   }, [])
 
-  // 点击社区卡片：优先跳转外链，无 link 时以 Markdown 形式展示内容
   const handleCommunityClick = (community: Course) => {
     if (community.link) {
       window.open(community.link, '_blank', 'noopener,noreferrer')

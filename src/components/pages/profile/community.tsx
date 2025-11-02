@@ -25,7 +25,6 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
     const fetchData = async () => {
       try {
         setLoading(true)
-        // token 校验，避免无效请求
         const token = AuthService.getToken()
         if (!token) {
           toast.error('请先登录以查看社区信息')
@@ -48,7 +47,6 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
     fetchData()
   }, [])
 
-  // 获取用户信息，包括邀请人信息
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -69,7 +67,6 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center font-inter antialiased">
-      {/* 顶部应用栏 */}
       <div className="w-full bg-white shadow-md py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-10 rounded-b-xl">
         <button
           type="button"
@@ -82,9 +79,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         <div className="w-6" />
       </div>
 
-      {/* 社区总览 + 我的邀请人 + 社区用户 */}
       <div className="max-w-4xl w-full space-y-8 bg-transparent mt-8 mb-8 px-4 sm:px-6 lg:px-8">
-        {/* 社区总览 */}
         <div className="flex flex-col space-y-3 bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
           <div className="flex flex-row gap-4 bg-blue-50 rounded-[16pt] p-5 items-center justify-around border border-blue-100">
             <div className="flex flex-col items-center justify-center">
@@ -106,7 +101,6 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
           </div>
         </div>
 
-        {/* 我的邀请人 */}
         <div className="bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
           <div className="flex flex-row justify-between items-center mb-4 border-b pb-3 border-gray-100">
             <span className="text-gray-900 text-xl font-bold">我的邀请人</span>
@@ -137,7 +131,6 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
           )}
         </div>
 
-        {/* 社区用户 */}
         <div className="bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
           <div className="flex flex-row justify-between items-center mb-4 border-b pb-3 border-gray-100">
             <span className="text-gray-900 text-xl font-bold">社区用户</span>

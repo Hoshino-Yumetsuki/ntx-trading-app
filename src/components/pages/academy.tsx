@@ -75,7 +75,6 @@ export function AcademyPage() {
     }
   ]
 
-  // 获取社区数据
   useEffect(() => {
     const fetchCommunities = async () => {
       try {
@@ -95,7 +94,6 @@ export function AcademyPage() {
     fetchCommunities()
   }, [])
 
-  // 点击社区卡片：优先跳转外链；无 link 时以 Markdown 形式展示内容
   const handleCommunityClick = (community: Course) => {
     if (community.link) {
       window.open(community.link, '_blank', 'noopener,noreferrer')
@@ -112,7 +110,6 @@ export function AcademyPage() {
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component
   const activeTabData = tabs.find((tab) => tab.id === activeTab)
 
-  // 独立阅读视图：当社区只有内容时进入
   if (viewingCommunity?.content) {
     return (
       <AcademyMarkdownReader
@@ -123,7 +120,6 @@ export function AcademyPage() {
     )
   }
 
-  // 如果选择了某个tab，显示子页面
   if (activeTab && ActiveComponent) {
     return (
       <div className="min-h-screen pb-6">
@@ -176,7 +172,6 @@ export function AcademyPage() {
     )
   }
 
-  // 主页面：显示四个正方形按钮
   return (
     <div className="min-h-screen pb-6">
       <div className="px-4 pt-8 pb-6">
@@ -193,7 +188,6 @@ export function AcademyPage() {
           <LanguageSwitcher />
         </div>
 
-        {/* 顶部 Banner */}
         <div
           className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
           style={{
@@ -212,7 +206,6 @@ export function AcademyPage() {
         </div>
       </div>
 
-      {/* 学习资源入口（标题+四宫格） */}
       <div className="px-4 mt-6">
         <h2 className="text-slate-800 text-xl font-bold mb-3">{t('academy.section.institute')}</h2>
         <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
@@ -261,7 +254,6 @@ export function AcademyPage() {
         </div>
       </div>
 
-      {/* 直播（原 LOOP 社区） */}
       <div className="px-4 mt-6">
         <div className="flex justify-between items-center">
           <div>
@@ -342,7 +334,6 @@ export function AcademyPage() {
             </div>
           )}
         </div>
-        {/* 直播外跳提示 */}
         <p className="mt-2 text-right text-[11px] italic text-slate-500">
           {t('academy.live.externalNotice')}
         </p>
@@ -350,6 +341,3 @@ export function AcademyPage() {
     </div>
   )
 }
-
-// Markdown 内容弹窗（主页面）
-// 放在文件末尾不会渲染。需要在组件内部。将其插入到主页面返回的 JSX 中。

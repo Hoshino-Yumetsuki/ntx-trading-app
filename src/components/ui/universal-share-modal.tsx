@@ -103,52 +103,37 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
   return { fileInputRef, triggerUpload, handleFileChange };
 };
 
-// 将 HTML 和 Markdown 转换为纯文本的辅助函数
 const toPlainText = (formattedText: string): string => {
   if (!formattedText) return "";
 
   let text = formattedText;
 
-  // 1. 使用 DOM 解析器去除 HTML 标签
-  // 这是最可靠的方式，因为它能处理复杂的嵌套和属性
   try {
     if (typeof document !== "undefined") {
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = text;
       text = tempDiv.textContent || tempDiv.innerText || "";
     } else {
-      // 如果不在浏览器环境中，使用简单的正则表达式作为备用方案
       text = text.replace(/<[^>]*>?/gm, "");
     }
   } catch (e) {
-    // DOM 解析失败的备用方案
     text = text.replace(/<[^>]*>?/gm, "");
   }
 
-  // 2. 去除常见的 Markdown 格式
   text = text
-    // 移除图片: ![alt text](url)
     .replace(/!\[.*?\]\(.*?\)/g, "")
-    // 移除链接但保留文本: [link text](url) -> link text
     .replace(/\[(.*?)\]\(.*?\)/g, "$1")
-    // 移除标题标记: #, ##, ### 等
     .replace(/^#+\s*/gm, "")
-    // 移除分隔线
     .replace(/^(-{3,}|\*{3,}|_{3,})\s*$/gm, "")
-    // 移除引用块标记
     .replace(/^>\s*/gm, "")
-    // 移除列表标记
     .replace(/^\s*[-*+]\s+/gm, "")
-    // 移除粗体、斜体、删除线标记，但保留文本
     .replace(/(\*\*|__|\*|_|~~)(.*?)\1/g, "$2")
-    // 移除行内代码标记
     .replace(/`([^`]+)`/g, "$1");
 
-  // 3. 清理多余的空白和换行符
   text = text
-    .replace(/[ \t]+\n/g, "\n") // 移除行尾多余空格
-    .replace(/\n{3,}/g, "\n\n") // 将三个及以上的连续换行符压缩为两个
-    .trim(); // 移除开头和结尾的空白
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 
   return text;
 };
@@ -199,7 +184,6 @@ export function UniversalShareModal({
       }
 
       if (isIOS) {
-        // --- MODIFICATION START: New Enhanced iOS Share Page ---
         const newWindow = window.open();
         if (newWindow) {
           newWindow.document.write(`
@@ -271,9 +255,7 @@ export function UniversalShareModal({
           `);
           newWindow.document.close();
         }
-        // --- MODIFICATION END ---
       } else {
-        // Non-iOS devices standard download logic
         const link = document.createElement("a");
         link.href = imageToDownload;
         link.download = `${sharePayload.title}.png`;

@@ -41,33 +41,25 @@ export function ExchangeCard({
   const [isBindRequiredDialogOpen, setIsBindRequiredDialogOpen] =
     useState(false)
 
-  // 解析官网链接、邀请链接和邀请码
   const getUrls = (
     cexUrl: string | undefined
   ): { miningUrl: string; registerUrl: string; inviteCode: string } => {
     if (!cexUrl) {
       return { miningUrl: '#', registerUrl: '#', inviteCode: '' }
     }
-    // 新格式："https://官网:https://注册链接:邀请码"
     try {
       const firstScheme = cexUrl.indexOf('://')
       const secondScheme = cexUrl.indexOf('://', firstScheme + 3)
       if (firstScheme !== -1 && secondScheme !== -1) {
-        // 第二个 scheme 之前最近的冒号即为分隔符（避免把 http(s):// 的冒号当作分隔符）
         const sep = cexUrl.lastIndexOf(':', secondScheme - 1)
         const normalizeUrl = (u: string) => {
           let s = u.trim()
           if (!s) return s
-          // 完整协议
           if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s
-          // 修正类似 http:/example.com
           s = s.replace(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(?!\/)/, '$1://')
           if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)) return s
-          // 去掉异常的前缀 ':/'
           s = s.replace(/^:\/+/, '')
-          // 协议相对 //domain
           if (/^\/\//.test(s)) return `https:${s}`
-          // 去掉开头的斜杠，避免被当作相对路径
           s = s.replace(/^\/+/, '')
           return `https://${s}`
         }
@@ -84,11 +76,8 @@ export function ExchangeCard({
         }
         return { miningUrl, registerUrl: normalizeUrl(rest), inviteCode: '' }
       }
-    } catch (_e) {
-      // ignore and fallback
-    }
+    } catch (_e) {}
 
-    // 旧/异常格式兜底：尝试用 URL 解析邀请码
     try {
       const normalizeUrl = (u: string) => {
         let s = u.trim()
@@ -114,7 +103,6 @@ export function ExchangeCard({
       }
       return { miningUrl: single, registerUrl: single, inviteCode }
     } catch (_e) {
-      // 实在无法解析时，原样回退
       return { miningUrl: cexUrl, registerUrl: cexUrl, inviteCode: '' }
     }
   }
@@ -252,7 +240,6 @@ export function ExchangeCard({
         )}
       </div>
 
-      {/* 绑定对话框 (保持不变) */}
       <Dialog open={isBindDialogOpen} onOpenChange={setIsBindDialogOpen}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[480px] max-h-[80vh] overflow-y-auto">
           {bindingExchangeId &&
@@ -265,7 +252,6 @@ export function ExchangeCard({
                 <>
                   <DialogHeader className="text-center pb-6">
                     <div className="flex flex-col items-center space-y-4">
-                      {/* 交易所图标 */}
                       <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg border-2 border-gray-100 flex items-center justify-center">
                         {exchange.logo_url ? (
                           <Image
@@ -282,12 +268,10 @@ export function ExchangeCard({
                         )}
                       </div>
 
-                      {/* 交易所名称 */}
                       <DialogTitle className="text-xl font-bold text-slate-800">
                         {exchange.name}{' '}
                       </DialogTitle>
 
-                      {/* 描述 */}
                       <DialogDescription className="text-center text-slate-600">
                         {t('mining.exchange.bindSteps') ||
                           '绑定您的交易所账户以开始挖矿。'}
@@ -295,7 +279,6 @@ export function ExchangeCard({
                     </div>
                   </DialogHeader>
 
-                  {/* 绑定说明文案 */}
                   <div className="mb-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-slate-700">
                     <p className="font-medium mb-2">
                       请务必完成以下操作以开始挖矿收益：
@@ -313,7 +296,6 @@ export function ExchangeCard({
                     </p>
                   </div>
 
-                  {/* 挖矿效率显示 */}
                   <div className="flex justify-center mb-6">
                     <div className="bg-blue-50 rounded-xl p-4 text-center min-w-[120px]">
                       <div className="text-sm text-blue-600 font-medium mb-1">
@@ -326,7 +308,6 @@ export function ExchangeCard({
                   </div>
 
                   <div className="space-y-6">
-                    {/* 第一步：注册 */}
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
                         <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -347,7 +328,6 @@ export function ExchangeCard({
                           {t('mining.exchange.goRegister') || '去注册'}
                         </Button>
 
-                        {/* 显示邀请码 */}
                         {inviteCode && (
                           <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
                             <div className="text-xs text-blue-700 font-medium mb-1">
@@ -384,7 +364,6 @@ export function ExchangeCard({
                       </div>
                     </div>
 
-                    {/* 第二步：绑定UID */}
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
                         <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -442,7 +421,6 @@ export function ExchangeCard({
         </DialogContent>
       </Dialog>
 
-      {/* 未绑定提示对话框 (保持不变) */}
       <Dialog
         open={isBindRequiredDialogOpen}
         onOpenChange={setIsBindRequiredDialogOpen}

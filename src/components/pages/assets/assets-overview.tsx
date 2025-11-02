@@ -16,7 +16,7 @@ import type { UserInfo } from "@/src/types/user";
 interface AssetsOverviewProps {
   userInfo: UserInfo;
   onWithdraw: (type: "usdt" | "ntx") => void;
-  onNavigate?: (page: "security") => void; // 添加 onNavigate 属性
+  onNavigate?: (page: "security") => void;
 }
 
 export function AssetsOverview({
@@ -30,7 +30,6 @@ export function AssetsOverview({
   const formatBalance = (balance: number | undefined) => {
     if (balance === undefined || balance === null) return "0.00";
 
-    // 对于非常大的数值，使用简化显示
     if (balance >= 1000000) {
       return `${(balance / 1000000).toLocaleString("en-US", {
         minimumFractionDigits: 2,
@@ -64,9 +63,7 @@ export function AssetsOverview({
 
   return (
     <>
-      {/* 资产卡片 (无变化) */}
       <div className="space-y-4 mb-6">
-        {/* USDT */}
         <Card className="bg-white shadow-sm">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between">
@@ -109,7 +106,6 @@ export function AssetsOverview({
           </CardContent>
         </Card>
 
-        {/* NTX */}
         <Card className="bg-white shadow-sm">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between">
@@ -153,7 +149,6 @@ export function AssetsOverview({
         </Card>
       </div>
 
-      {/* BSC地址信息 (修改部分) */}
       <Card className="bg-white shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center">
@@ -187,7 +182,6 @@ export function AssetsOverview({
                 )}
               </Button>
             ) : (
-              // 如果没有地址，则显示绑定按钮
               <Button
                 size="sm"
                 onClick={() => onNavigate?.("security")}

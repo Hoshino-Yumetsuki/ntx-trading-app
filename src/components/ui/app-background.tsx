@@ -17,7 +17,6 @@ export function AppBackground() {
           />
         </div>
       </div>
-      {/* 添加统一背景色 #F0F8FF */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 -z-20 bg-[#F0F8FF]"

@@ -15,14 +15,12 @@ interface UserInfoCardProps {
 
 export function UserInfoCard({ userInfo }: UserInfoCardProps) {
   const invites = userInfo?.invitedUserCount ?? 0
-  // 经纪商进度：仅根据邀请人数计算，目标100人
   const brokerProgress = Math.min(invites / 100, 1)
   const brokerPercent = Math.floor(brokerProgress * 100)
   const remainingInvites = Math.max(0, 100 - invites)
 
   return (
     <Card className="glass-card border-white/30 relative rounded-[16pt]">
-      {/* 右上角装饰 */}
       <Image
         src="/Frame29@3x.png"
         alt=""
@@ -37,7 +35,6 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* 顶部信息：会员角色与GNTX持有 */}
         <div className="space-y-1">
           <div className="text-base font-medium text-slate-800">
             会员角色：
@@ -56,11 +53,7 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
           </div>
         </div>
 
-        {/* 经验和用户组 */}
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
-          {/* 经验值显示已移除 */}
-
-          {/* 距离成为经纪商 */}
           <div className="mt-4">
             <div className="text-sm text-slate-700 mb-1">距离成为经纪商：</div>
             <div className="h-2 bg-white/70 rounded-full overflow-hidden">

@@ -4,16 +4,13 @@ import { Card } from '@/src/components/ui/card'
 import { useRouter } from 'next/navigation'
 import type { UserInfo } from '@/src/types/user'
 import { ArrowRight } from 'lucide-react'
-import { useState, useRef, useLayoutEffect } from 'react' // 引入 React Hooks
+import { useState, useRef, useLayoutEffect } from 'react'
 
 interface RewardsCardProps {
   userInfo: UserInfo | null
   onNavigate?: (page: 'assets' | 'security' | 'community' | 'broker') => void
 }
 
-// 移除大数字缩写逻辑，改为完整数字显示（两位小数），并在需要时按比例缩放
-
-// 2. 创建一个可自适应字体大小的内部组件
 function AdaptiveBalance({
   balance,
   currency
@@ -24,12 +21,10 @@ function AdaptiveBalance({
   const pRef = useRef<HTMLParagraphElement>(null)
   const [scale, setScale] = useState(1)
 
-  // 在布局阶段计算是否需要缩放，避免闪烁
   useLayoutEffect(() => {
     const pElement = pRef.current
     const container = pElement?.parentElement
     if (pElement && container) {
-      // 重置缩放再测量真实宽度
       pElement.style.transform = 'scale(1)'
       const textWidth = pElement.scrollWidth
       const containerWidth = container.clientWidth
@@ -87,7 +82,6 @@ export function RewardsCard({ userInfo, onNavigate }: RewardsCardProps) {
         <h3 className="text-slate-900 font-semibold mb-5">我的资产</h3>
 
         <div className="grid grid-cols-2 gap-6 mb-6 md:mb-7">
-          {/* 3. 在主组件中使用新的 AdaptiveBalance 组件 */}
           <AdaptiveBalance balance={userInfo?.ntxBalance} currency="NTX" />
           <AdaptiveBalance balance={userInfo?.usdtBalance} currency="USDT" />
         </div>

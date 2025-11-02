@@ -1,5 +1,3 @@
-// Course types based on API schema
-
 export type CourseType =
   | 'article'
   | 'dark_horse'
@@ -20,7 +18,6 @@ export interface Course {
   content: string
   isUnlocked: boolean
   required_groups: RequiredGroup[]
-  // Additional fields for UI
   duration?: string
   level?: string
   videoUrl?: string
@@ -61,7 +58,6 @@ export interface Order {
   status: 'pending' | 'confirmed' | 'closed'
   created_at: string
   updated_at: string
-  // Optional fields present for pending orders
   paymentAddress?: string
   remainingTimeSeconds?: number
 }

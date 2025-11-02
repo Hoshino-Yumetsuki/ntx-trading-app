@@ -19,12 +19,10 @@ export function AssetsHeader({
   onViewChange
 }: AssetsHeaderProps) {
   const { t } = useLanguage()
-  // Mark as used to satisfy linter; refresh is provided by parent when needed
   void _onRefresh
 
   return (
     <div className="px-6 pt-12 pb-4 relative z-10">
-      {/* 顶部：返回与标识，与新手教程保持一致 */}
       <div className="flex items-center space-x-3 mb-3">
         <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
           <ArrowLeft className="w-5 h-5" />
@@ -40,16 +38,13 @@ export function AssetsHeader({
         </div>
       </div>
 
-      {/* Header Banner：左文右图 */}
       <div className="relative mb-4 rounded-2xl overflow-visible">
         <div className="relative h-28">
-          {/* 左侧标题 */}
           <div className="relative z-10 h-full flex items-center pl-1 pr-40">
             <h1 className="text-2xl font-bold text-blue-600">
               {t('assets.title')}
             </h1>
           </div>
-          {/* 右侧图标 */}
           <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-40 h-40 md:w-48 md:h-48 z-0 pointer-events-none">
             <Image
               src="/9481dc54cf0484575744a3a5008ed6911@3x.png"
@@ -62,7 +57,6 @@ export function AssetsHeader({
         </div>
       </div>
 
-      {/* 切换按钮 - 使用挖矿数据页面类似的样式 */}
       <div className="flex space-x-1 bg-slate-100/80 backdrop-blur-sm p-1 rounded-lg border border-slate-200/50">
         <button
           type="button"

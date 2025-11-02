@@ -67,7 +67,6 @@ export function QRCodeSVG({
     return (
       <div
         className={className}
-        // biome-ignore lint: false
         dangerouslySetInnerHTML={{ __html: svgString }}
         style={{ width, height }}
       />

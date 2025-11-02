@@ -131,7 +131,6 @@ export function removeUser(): void {
   localStorage.removeItem('user_data')
 }
 
-// 为了向后兼容，保留AuthService对象
 export const AuthService = {
   login,
   register,

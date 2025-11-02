@@ -85,7 +85,6 @@ export function CommissionHistory({
                 </span>
               </div>
             </div>
-            {/* 邀请人与邮箱信息已隐藏，仅保留时间显示 */}
           </CardContent>
         </Card>
       ))}

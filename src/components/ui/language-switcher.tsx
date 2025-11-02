@@ -44,7 +44,6 @@ export function LanguageSwitcher() {
 
       {isOpen && (
         <>
-          {/* Backdrop */}
           <button
             type="button"
             className="fixed inset-0 z-10 w-full h-full border-none bg-transparent cursor-default"
@@ -52,7 +51,6 @@ export function LanguageSwitcher() {
             aria-label="关闭语言选择"
           />
 
-          {/* Dropdown */}
           <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-xl shadow-lg border border-white/20 overflow-hidden min-w-[140px]">
             {languages.map((lang) => (
               <button

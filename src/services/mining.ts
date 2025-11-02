@@ -1,7 +1,6 @@
 import { API_BASE_URL } from './config'
 import { AuthService } from '@/src/services/auth'
 
-// 平台数据接口
 export interface PlatformData {
   total_mined: number
   total_commission: number
@@ -10,7 +9,6 @@ export interface PlatformData {
   platform_users: number
 }
 
-// 平台日数据接口
 export interface DailyPlatformData {
   mining_output: number
   burned: number
@@ -19,19 +17,16 @@ export interface DailyPlatformData {
   miners: number
 }
 
-// 用户总数据接口
 export interface UserData {
   total_mining: number
   total_trading_cost: number
 }
 
-// 用户每日数据接口
 export interface DailyUserData {
   mining_output: number
   total_trading_cost: number
 }
 
-// 挖矿排行榜项目接口
 export interface LeaderboardItem {
   nickname: string
   email_masked: string
@@ -46,7 +41,6 @@ export interface Exchange {
   cex_url: string
 }
 
-// 用户绑定的交易所（实际API返回格式）
 export interface UserExchange {
   id: number
   name: string
@@ -60,7 +54,6 @@ export interface BindExchangeRequest {
   exchange_uid: string
 }
 
-// 获取平台数据
 export async function getPlatformData(): Promise<PlatformData> {
   const response = await fetch(`${API_BASE_URL}/mining/platform_data`)
 
@@ -75,11 +68,9 @@ export async function getPlatformData(): Promise<PlatformData> {
   return response.json()
 }
 
-// 获取平台日数据
 export async function getDailyPlatformData(
   date?: string
 ): Promise<DailyPlatformData> {
-  // 如果没有提供日期，使用今天的日期
   const targetDate = date || new Date().toISOString().split('T')[0]
   const response = await fetch(
     `${API_BASE_URL}/mining/daily_platform_data?date=${targetDate}`
@@ -96,7 +87,6 @@ export async function getDailyPlatformData(
   return response.json()
 }
 
-// 获取用户总数据
 export async function getUserData(token: string): Promise<UserData> {
   const response = await fetch(`${API_BASE_URL}/mining/user_data`, {
     headers: {
@@ -116,7 +106,6 @@ export async function getUserData(token: string): Promise<UserData> {
   return response.json()
 }
 
-// 获取用户每日数据
 export async function getDailyUserData(
   token: string,
   date?: string
@@ -144,7 +133,6 @@ export async function getDailyUserData(
   return response.json()
 }
 
-// 获取挖矿排行榜
 export async function getMiningLeaderboard(): Promise<LeaderboardItem[]> {
   const response = await fetch(`${API_BASE_URL}/mining/mining_leaderboard`)
 
@@ -159,7 +147,6 @@ export async function getMiningLeaderboard(): Promise<LeaderboardItem[]> {
   return response.json()
 }
 
-// 格式化数字显示
 export function formatNumber(num: number | undefined | null): string {
   if (num === undefined || num === null || Number.isNaN(num)) {
     return '0.00'
@@ -182,7 +169,6 @@ export function formatCurrency(
   return `${formatNumber(num)} ${currency}`
 }
 
-// 获取交易所列表
 export async function getExchanges(): Promise<Exchange[]> {
   const response = await fetch(`${API_BASE_URL}/mining/get_exchanges`)
 
@@ -197,7 +183,6 @@ export async function getExchanges(): Promise<Exchange[]> {
   return response.json()
 }
 
-// 绑定交易所
 export async function bindExchange(
   token: string,
   data: BindExchangeRequest
@@ -222,7 +207,6 @@ export async function bindExchange(
   return response.json()
 }
 
-// 解绑交易所
 export async function unbindExchange(
   token: string,
   exchangeId: number
@@ -250,7 +234,6 @@ export async function unbindExchange(
   return response.json()
 }
 
-// 获取用户绑定的交易所
 export async function getUserExchanges(token: string): Promise<UserExchange[]> {
   const response = await fetch(`${API_BASE_URL}/mining/user_exchanges`, {
     headers: {
@@ -270,7 +253,6 @@ export async function getUserExchanges(token: string): Promise<UserExchange[]> {
   return response.json()
 }
 
-// MiningService对象，保持向后兼容
 export const MiningService = {
   getPlatformData,
   getDailyPlatformData,

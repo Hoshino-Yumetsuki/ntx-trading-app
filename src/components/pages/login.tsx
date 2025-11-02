@@ -4,7 +4,6 @@ import { useState, useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-// 移除不再使用的UI组件导入
 import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/src/contexts/AuthContext'
 import {
@@ -69,7 +68,6 @@ export function LoginPage({
   initialMode = 'login',
   initialInviteCode = ''
 }: LoginPageProps) {
-  // 生成唯一ID
   const emailId = useId()
   const passwordId = useId()
   const nicknameId = useId()
@@ -90,7 +88,6 @@ export function LoginPage({
   const [termsModalType, setTermsModalType] = useState<'terms' | 'privacy'>(
     'terms'
   )
-  // 忘记密码对话框状态
   const [showForgotDialog, setShowForgotDialog] = useState(false)
   const [fpEmail, setFpEmail] = useState('')
   const [fpSending, setFpSending] = useState(false)
@@ -120,20 +117,16 @@ export function LoginPage({
     defaultValues: { invite_code: initialInviteCode }
   })
 
-  // 移除动态表单切换，直接在JSX中使用对应的表单
-
   const onLoginSubmit = async (data: LoginFormData) => {
     try {
       setError(null)
       await login(data.email, data.password)
-      // 登录成功：根据 next 参数决定默认标签
       const next = searchParams.get('next')
       if (next === 'profile') {
         try {
           localStorage.setItem('ntx-active-tab', 'profile')
         } catch {}
       }
-      // 返回首页
       router.push('/')
     } catch (err) {
       setError(
@@ -157,14 +150,12 @@ export function LoginPage({
       setIsRegisterMode(false)
       registerForm.reset()
       loginForm.reset()
-      // 注册成功：根据 next 参数决定默认标签
       const next = searchParams.get('next')
       if (next === 'profile') {
         try {
           localStorage.setItem('ntx-active-tab', 'profile')
         } catch {}
       }
-      // 返回首页
       router.push('/')
     } catch (err) {
       setError(
@@ -203,7 +194,6 @@ export function LoginPage({
     registerForm.reset()
   }
 
-  // 打开找回密码弹窗
   const openForgotDialog = () => {
     const loginEmail = loginForm.getValues('email')
     setFpEmail(loginEmail || '')
@@ -211,7 +201,6 @@ export function LoginPage({
     setShowForgotDialog(true)
   }
 
-  // 发送重置码
   const handleSendResetCode = async () => {
     const email = fpEmail.trim()
     if (!email) {
@@ -229,7 +218,6 @@ export function LoginPage({
     }
   }
 
-  // 提交重置密码
   const handleSubmitReset = async () => {
     const email = rpEmail.trim()
     if (!email) return toast.error('请输入邮箱')
@@ -246,7 +234,6 @@ export function LoginPage({
       })
       toast.success('密码重置成功，请使用新密码登录')
       setShowForgotDialog(false)
-      // 清空字段
       setResetCode('')
       setNewPwd('')
       setNewPwd2('')
@@ -259,12 +246,10 @@ export function LoginPage({
 
   return (
     <div className="min-h-screen">
-      {/* 顶部 Banner 区域 */}
       <div className="relative overflow-visible">
         <div className="px-6 pt-12 pb-8">
           <div className="max-w-6xl mx-auto">
             <div className="relative h-48 md:h-56 overflow-visible">
-              {/* 左侧文案 */}
               <div className="relative z-10 h-full flex items-center pr-48 md:pr-56">
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
@@ -278,7 +263,6 @@ export function LoginPage({
                   </p>
                 </div>
               </div>
-              {/* 右侧插画 */}
               <div
                 className={`absolute top-1/2 -translate-y-1/2 z-0 pointer-events-none ${
                   isRegisterMode
@@ -304,10 +288,8 @@ export function LoginPage({
         </div>
       </div>
 
-      {/* 登录表单区域 */}
       <div className="px-4 pb-8">
         <div className="max-w-md mx-auto">
-          {/* 注册模式返回按钮 */}
           {isRegisterMode && (
             <div className="mb-6">
               <button
@@ -340,13 +322,11 @@ export function LoginPage({
           </div>
 
           {!isRegisterMode ? (
-            // 登录表单
             <form
               className="mt-8 space-y-8"
               onSubmit={loginForm.handleSubmit(onLoginSubmit)}
             >
               <div className="space-y-6">
-                {/* 邮箱字段 */}
                 <div>
                   <label
                     htmlFor="email"
@@ -376,7 +356,6 @@ export function LoginPage({
                   )}
                 </div>
 
-                {/* 密码字段 */}
                 <div>
                   <label
                     htmlFor="password"
@@ -446,13 +425,11 @@ export function LoginPage({
               </div>
             </form>
           ) : (
-            // 注册表单
             <form
               className="mt-8 space-y-8"
               onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
             >
               <div className="space-y-6">
-                {/* 邮箱字段 */}
                 <div>
                   <label
                     htmlFor="email"
@@ -482,7 +459,6 @@ export function LoginPage({
                   )}
                 </div>
 
-                {/* 昵称字段 */}
                 <div>
                   <label
                     htmlFor="nickname"
@@ -512,7 +488,6 @@ export function LoginPage({
                   )}
                 </div>
 
-                {/* 验证码字段 */}
                 <div>
                   <label
                     htmlFor="verification_code"
@@ -560,7 +535,6 @@ export function LoginPage({
                   )}
                 </div>
 
-                {/* 邀请码字段 */}
                 <div>
                   <label
                     htmlFor="invite_code"
@@ -590,7 +564,6 @@ export function LoginPage({
                   )}
                 </div>
 
-                {/* 密码字段 */}
                 <div>
                   <label
                     htmlFor="password"
@@ -631,7 +604,6 @@ export function LoginPage({
                   )}
                 </div>
 
-                {/* 确认密码字段 */}
                 <div>
                   <label
                     htmlFor="confirmPassword"
@@ -679,7 +651,6 @@ export function LoginPage({
                 <div className="text-red-600 text-sm text-center">{error}</div>
               )}
 
-              {/* 同意条款勾选框 */}
               <div className="mt-4 flex items-start">
                 <div className="flex items-center h-5">
                   <input
@@ -742,10 +713,8 @@ export function LoginPage({
               type="button"
               onClick={() => {
                 if (isRegisterMode) {
-                  // 注册页切到登录：跳首页
                   router.push('/')
                 } else {
-                  // 登录页切到注册：跳注册路由
                   router.push('/register')
                 }
               }}
@@ -757,7 +726,6 @@ export function LoginPage({
             </button>
           </div>
 
-          {/* 登录模式：在“去注册”按钮下方放置“返回主界面” */}
           {!isRegisterMode && (
             <div className="text-center mt-3">
               <button
@@ -773,14 +741,12 @@ export function LoginPage({
         </div>
       </div>
 
-      {/* 找回密码弹窗 */}
       <Dialog open={showForgotDialog} onOpenChange={setShowForgotDialog}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px]">
           <DialogHeader>
             <DialogTitle>{t('login.dialog.recoverPassword')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-5">
-            {/* 步骤一：发送重置码 */}
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-700">{t('login.email.label')}</div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
@@ -805,7 +771,6 @@ export function LoginPage({
               </button>
             </div>
 
-            {/* 步骤二：提交重置 */}
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-700">{t('login.email.label')}</div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
@@ -869,7 +834,6 @@ export function LoginPage({
         </DialogContent>
       </Dialog>
 
-      {/* 服务条款和隐私政策模态框 */}
       <TermsModal
         isOpen={showTermsModal}
         onClose={() => setShowTermsModal(false)}
