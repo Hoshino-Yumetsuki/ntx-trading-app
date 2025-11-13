@@ -6,12 +6,14 @@ import { ChevronLeft, User } from 'lucide-react'
 import { UserService } from '@/src/services/user'
 import { AuthService } from '@/src/services/auth'
 import type { CommunityResponse, UserInfo } from '@/src/types/user'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface CommunityPageProps {
   onBack: () => void
 }
 
 export default function CommunityPage({ onBack }: CommunityPageProps) {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [userInfoLoading, setUserInfoLoading] = useState(true)
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
@@ -27,7 +29,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         setLoading(true)
         const token = AuthService.getToken()
         if (!token) {
-          toast.error('请先登录以查看社区信息')
+          toast.error(t('common.pleaseLoginToView'))
           setCommunityData({
             communityUserCount: 0,
             directInviteCount: 0,
@@ -75,7 +77,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-xl font-bold text-gray-800">我的社区</h1>
+        <h1 className="text-xl font-bold text-gray-800">{t('profile.community.title')}</h1>
         <div className="w-6" />
       </div>
 
@@ -84,7 +86,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
           <div className="flex flex-row gap-4 bg-blue-50 rounded-[16pt] p-5 items-center justify-around border border-blue-100">
             <div className="flex flex-col items-center justify-center">
               <span className="text-gray-700 text-sm font-medium">
-                社区用户
+                {t('profile.community.communityUsers')}
               </span>
               <div className="text-blue-600 text-2xl leading-6 font-bold mt-1">
                 {communityData.communityUserCount.toLocaleString()}
@@ -92,7 +94,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
             </div>
             <div className="flex flex-col items-center justify-center">
               <span className="text-gray-700 text-sm font-medium">
-                直邀用户
+                {t('profile.community.directInviteUsers')}
               </span>
               <div className="text-blue-600 text-2xl leading-6 font-bold mt-1">
                 {communityData.directInviteCount.toLocaleString()}
@@ -103,12 +105,12 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
 
         <div className="bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
           <div className="flex flex-row justify-between items-center mb-4 border-b pb-3 border-gray-100">
-            <span className="text-gray-900 text-xl font-bold">我的邀请人</span>
+            <span className="text-gray-900 text-xl font-bold">{t('profile.community.myInviter')}</span>
           </div>
 
           {userInfoLoading ? (
             <div className="text-center text-gray-500 text-base py-6">
-              加载中...
+              {t('profile.loading')}
             </div>
           ) : userInfo?.invitedBy ? (
             <div className="flex items-center p-4 bg-gray-50 rounded-[16pt] border border-gray-100 shadow-sm">
@@ -120,25 +122,25 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
                   {userInfo.invitedBy}
                 </p>
                 <p className="text-gray-600 text-sm">
-                  邀请码: {userInfo.myInviteCode}
+                  {t('profile.community.inviteCode')}: {userInfo.myInviteCode}
                 </p>
               </div>
             </div>
           ) : (
             <div className="text-center text-gray-500 text-base py-6">
-              暂无邀请人信息
+              {t('profile.community.noInviter')}
             </div>
           )}
         </div>
 
         <div className="bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
           <div className="flex flex-row justify-between items-center mb-4 border-b pb-3 border-gray-100">
-            <span className="text-gray-900 text-xl font-bold">社区用户</span>
+            <span className="text-gray-900 text-xl font-bold">{t('profile.community.communityUsers')}</span>
           </div>
 
           {loading ? (
             <div className="text-center text-gray-500 text-base py-10">
-              加载中...
+              {t('profile.loading')}
             </div>
           ) : communityData.communityUsers.length > 0 ? (
             <div className="flex flex-col space-y-4">
@@ -157,16 +159,16 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
                       </span>
                       {user.isDirectInvite && (
                         <span className="text-xs text-green-600 mt-1">
-                          直邀用户
+                          {t('profile.community.directInviteUsers')}
                         </span>
                       )}
                     </div>
                   </div>
                   <div className="flex justify-between items-center text-gray-600 text-sm">
-                    <span>邮箱: {user.email}</span>
+                    <span>{t('profile.community.email')}: {user.email}</span>
                     {user.joined_at && (
                       <span>
-                        加入时间: {new Date(user.joined_at).toLocaleString()}
+                        {t('profile.community.joinTime')}: {new Date(user.joined_at).toLocaleString()}
                       </span>
                     )}
                   </div>
@@ -175,7 +177,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
             </div>
           ) : (
             <div className="text-center text-gray-500 text-base py-10">
-              暂无社区用户
+              {t('profile.community.noCommunityUsers')}
             </div>
           )}
         </div>

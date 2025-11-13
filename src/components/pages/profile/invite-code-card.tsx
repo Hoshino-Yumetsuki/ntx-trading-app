@@ -37,7 +37,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
       const origin = typeof window !== 'undefined' ? window.location.origin : ''
       const inviteUrl = `${origin}/register?invite=${userInfo.myInviteCode}`
       navigator.clipboard.writeText(inviteUrl)
-      toast.success('邀请链接已复制到剪贴板')
+      toast.success(t('profile.share.inviteLinkCopied'))
     }
   }
 
@@ -70,7 +70,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
               disabled={!userInfo?.myInviteCode}
             >
               <Copy className="w-4 h-4 mr-1" />
-              复制链接
+              {t('profile.share.copyLink')}
             </Button>
             <Button
               size="sm"
@@ -79,7 +79,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
               disabled={!userInfo?.myInviteCode}
             >
               <Share2 className="w-4 h-4 mr-1" />
-              分享海报
+              {t('profile.share.sharePoster')}
             </Button>
           </div>
         </div>
@@ -88,10 +88,10 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
       <UniversalShareModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
-        title="分享邀请海报"
+        title={t('profile.share.shareInvitePoster')}
         shareData={{
-          title: '注册 NTX DAO',
-          text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n享受高达50%手续费返佣和交易挖矿\n\n邀请码：${userInfo?.myInviteCode || ''}`,
+          title: t('profile.inviteCode.registerTitle'),
+          text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n${t('profile.inviteCode.benefit')}\n\n${t('profile.inviteCode.inviteCodeLabel')}${userInfo?.myInviteCode || ''}`,
           url: userInfo?.myInviteCode
             ? `${typeof window !== 'undefined' ? window.location.origin : ''}/register?invite=${userInfo.myInviteCode}`
             : ''
@@ -104,14 +104,14 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         showCustomQrUpload={false}
         customActions={[
           {
-            label: '复制邀请链接',
+            label: t('profile.share.copyInviteLink'),
             icon: Copy,
             onClick: copyInviteLink,
             variant: 'outline',
             className: 'w-full'
           },
           {
-            label: '复制邀请码',
+            label: t('profile.share.copyInviteCode'),
             icon: Copy,
             onClick: copyInviteCode,
             variant: 'outline',

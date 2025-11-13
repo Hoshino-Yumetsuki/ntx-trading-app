@@ -8,12 +8,14 @@ import {
 } from '@/src/components/ui/card'
 import type { UserInfo } from '@/src/types/user'
 import Image from 'next/image'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface UserInfoCardProps {
   userInfo: UserInfo | null
 }
 
 export function UserInfoCard({ userInfo }: UserInfoCardProps) {
+  const { t } = useLanguage()
   const invites = userInfo?.invitedUserCount ?? 0
   const brokerProgress = Math.min(invites / 100, 1)
   const brokerPercent = Math.floor(brokerProgress * 100)
@@ -37,16 +39,16 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
       <CardContent className="space-y-4">
         <div className="space-y-1">
           <div className="text-base font-medium text-slate-800">
-            会员角色：
+            {t('profile.userInfo.memberRole')}：
             <span className="text-green-600">
               {userInfo?.role || 'Normal User'}
             </span>
           </div>
           <div className="text-sm text-slate-700">
-            当前 GNTX 持有：{userInfo?.gntxBalance?.toLocaleString() || '0'}
+            {t('profile.userInfo.gntxHolding')}：{userInfo?.gntxBalance?.toLocaleString() || '0'}
           </div>
           <div className="text-sm text-slate-700">
-            已邀请人数：
+            {t('profile.userInfo.invitedCount')}：
             <span className="text-blue-600">
               {(userInfo?.invitedUserCount ?? 0).toLocaleString()}
             </span>
@@ -55,7 +57,7 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
 
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
           <div className="mt-4">
-            <div className="text-sm text-slate-700 mb-1">距离成为经纪商：</div>
+            <div className="text-sm text-slate-700 mb-1">{t('profile.userInfo.toBroker')}</div>
             <div className="h-2 bg-white/70 rounded-full overflow-hidden">
               <div
                 className="h-full bg-blue-600 rounded-full"
@@ -63,14 +65,14 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
               ></div>
             </div>
             <div className="text-xs text-slate-600 mt-1">
-              {brokerPercent}% 完成
+              {brokerPercent}% {t('profile.userInfo.completed')}
             </div>
             <div className="text-xs text-slate-600 mt-1 text-right">
-              还需要邀请{' '}
+              {t('profile.userInfo.needMore')}{' '}
               <span className="text-blue-600">
                 {remainingInvites.toLocaleString()}
               </span>{' '}
-              人
+              {t('profile.userInfo.people')}
             </div>
           </div>
         </div>

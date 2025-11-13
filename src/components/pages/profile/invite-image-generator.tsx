@@ -7,6 +7,7 @@ import type { UserInfo } from '@/src/types/user'
 import { preloadImages } from '@/src/utils/image'
 import { QRCodeCanvas } from '@/src/components/ui/qr-code-canvas'
 import { generateImageWithRetry } from '@/src/utils/image-generation'
+import { useLanguage } from '@/src/contexts/language-context'
 
 function getBaseUrl(): string {
   if (typeof window !== 'undefined' && window.location.origin)
@@ -21,6 +22,8 @@ export const InvitePoster = forwardRef<
     qrDataUrl: string
   }
 >(({ userInfo, qrDataUrl }, ref) => {
+  const { t } = useLanguage()
+  
   if (!userInfo) return null
 
   const code = String(userInfo.myInviteCode || '').toUpperCase()
@@ -56,14 +59,14 @@ export const InvitePoster = forwardRef<
           className="mt-6 text-center text-gray-900 font-bold"
           style={{ fontSize: 28, lineHeight: '36px', fontFamily: 'sans-serif' }}
         >
-          <div>注册 NTX DAO，连接用户聚合资源，</div>
-          <div>挖掘你的 Web3 机会</div>
+          <div>{t('profile.inviteCode.slogan1')}</div>
+          <div>{t('profile.inviteCode.slogan2')}</div>
         </div>
         <div
           className="mt-2 text-center text-gray-600"
           style={{ fontSize: 16, fontFamily: 'sans-serif' }}
         >
-          享受高达60%手续费返佣和挖矿交易
+          {t('profile.inviteCode.benefit')}
         </div>
 
         <div
@@ -90,13 +93,13 @@ export const InvitePoster = forwardRef<
                 className="text-white"
                 style={{ fontSize: 20, fontFamily: 'sans-serif' }}
               >
-                扫描二维码, 注册 NTX DAO
+                {t('profile.inviteCode.scanQrToRegister')}
               </div>
               <div
                 className="mt-2 font-bold"
                 style={{ fontSize: 30, fontFamily: 'sans-serif' }}
               >
-                邀请码： {code}
+                {t('profile.inviteCode.inviteCodeLabel')} {code}
               </div>
             </div>
             <div className="w-[168px] flex items-center justify-center pr-6">

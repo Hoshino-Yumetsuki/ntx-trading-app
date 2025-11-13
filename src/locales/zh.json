@@ -138,6 +138,10 @@
     "purchase": "购买",
     "viewOrder": "查看订单",
     "understood": "我已知晓",
+    "clickToEnter": "点击进入",
+    "loggedOut": "已退出登录",
+    "pleaseLogin": "请先登录",
+    "pleaseLoginToView": "请先登录以查看社区信息",
     "orderList": "订单列表",
     "edit": "修改",
     "confirmChange": "确认修改",
@@ -321,7 +325,13 @@
     "inviteCode": {
       "title": "邀请码",
       "description": "邀请好友注册获得返佣",
-      "invitedBy": "邀请人"
+      "invitedBy": "邀请人",
+      "scanQrToRegister": "扫描二维码, 注册 NTX DAO",
+      "registerTitle": "注册 NTX DAO",
+      "inviteCodeLabel": "邀请码：",
+      "slogan1": "注册 NTX DAO，连接用户聚合资源，",
+      "slogan2": "挖掘你的 Web3 机会",
+      "benefit": "享受高达60%手续费返佣和挖矿交易"
     },
     "stats": {
       "ntxBalance": "NTX余额",
@@ -345,11 +355,47 @@
       },
       "security": {
         "title": "安全设置",
-        "description": "修改密码和安全设置"
+        "description": "修改密码和安全设置",
+        "header": "安全设置",
+        "subtitle": "保护您的账户安全，定期检查和更新安全设置",
+        "securityStatus": "安全状态",
+        "nickname": "用户昵称",
+        "uid": "用户UID",
+        "email": "电子邮箱",
+        "password": "登录密码",
+        "passwordSet": "已设置",
+        "bscAddress": "BSC钱包地址",
+        "connectWallet": "连接钱包",
+        "walletConnected": "已连接钱包:"
       },
       "orders": {
         "title": "我的订单",
-        "description": "查看购买记录与支付状态"
+        "description": "查看购买记录与支付状态",
+        "subtitle": "查看课程购买与支付状态",
+        "orderList": "订单列表",
+        "closed": "已关闭",
+        "completed": "已完成",
+        "pending": "待支付",
+        "createdAt": "创建时间",
+        "packageAmount": "套餐金额",
+        "paidAmount": "实付金额",
+        "remainingTime": "剩余时间",
+        "goPay": "去支付",
+        "fetchOrdersFailed": "获取订单失败",
+        "copiedToClipboard": "已复制到剪贴板",
+        "copyFailed": "复制失败",
+        "loadingOrders": "加载订单中...",
+        "noOrders": "暂无订单",
+        "paymentInfo": "支付信息",
+        "paymentDescription": "请使用支持 USDT 的钱包进行链上转账",
+        "paymentAddress": "支付地址",
+        "paymentAmount": "支付金额",
+        "notice": "注意",
+        "paymentExpireWarning": "未在有效期内完成支付将导致订单关闭。",
+        "paymentCountdown": "支付倒计时",
+        "close": "关闭",
+        "order": "订单",
+        "packageName": "套餐名称"
       }
     },
     "wallet": {
@@ -369,9 +415,72 @@
     },
     "logout": {
       "title": "退出登录"
+    },
+    "community": {
+      "title": "我的社区",
+      "communityUsers": "社区用户",
+      "directInviteUsers": "直邀用户",
+      "myInviter": "我的邀请人",
+      "inviteCode": "邀请码",
+      "email": "邮箱",
+      "noInviter": "暂无邀请人信息",
+      "noCommunityUsers": "暂无社区用户",
+      "joinTime": "加入时间"
+    },
+    "share": {
+      "copyLink": "复制链接",
+      "sharePoster": "分享海报",
+      "generating": "正在处理...",
+      "savePoster": "保存/分享海报",
+      "copyInviteLink": "复制邀请链接",
+      "copyInviteCode": "复制邀请码",
+      "inviteLinkCopied": "邀请链接已复制到剪贴板",
+      "linkCopied": "链接已复制到剪贴板",
+      "qrScanned": "二维码识别成功",
+      "qrScannedDesc": "将使用自定义二维码内容",
+      "scanFailed": "识别失败",
+      "qrNotFound": "未能识别到二维码",
+      "scanError": "处理图片时发生错误",
+      "downloadSuccess": "下载成功",
+      "imageSaved": "图片已保存到您的设备",
+      "generateFailed": "生成失败",
+      "cannotGenerate": "无法生成分享图片",
+      "qrRestored": "已还原默认二维码",
+      "generatingHD": "正在生成高清图...",
+      "shareTo": "分享到",
+      "more": "更多",
+      "uploadCustomQr": "上传自定义二维码",
+      "restoreDefault": "还原默认",
+      "qrUploadTip": "提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。",
+      "shareInvitePoster": "分享邀请海报"
+    },
+    "withdraw": {
+      "button": "立即提现"
+    },
+    "stake": {
+      "title": "质押 / 释放",
+      "myStake": "我的质押",
+      "notAvailable": "质押/释放功能暂未开放"
+    },
+    "userInfo": {
+      "memberRole": "会员角色",
+      "gntxHolding": "当前 GNTX 持有",
+      "invitedCount": "已邀请人数",
+      "toBroker": "距离成为经纪商：",
+      "completed": "完成",
+      "needMore": "还需要邀请",
+      "people": "人"
+    }
+  },
+  "notifications": {
+    "search": {
+      "placeholder": "搜索通知标题或内容..."
     }
   },
   "news": {
+    "search": {
+      "placeholder": "搜索文章标题或内容..."
+    },
     "title": "最新资讯",
     "latest": "文章列表",
     "loading": "加载中...",

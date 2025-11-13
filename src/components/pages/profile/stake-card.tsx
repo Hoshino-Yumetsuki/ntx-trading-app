@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { UserInfo } from '@/src/types/user'
 import Image from 'next/image'
 import { toast } from 'sonner'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface StakeCardProps {
   userInfo: UserInfo | null
@@ -13,9 +14,10 @@ interface StakeCardProps {
 
 export function StakeCard({ userInfo }: StakeCardProps) {
   const _router = useRouter()
+  const { t } = useLanguage()
 
   const handleBroker = () => {
-    toast.info('质押/释放功能暂未开放', {
+    toast.info(t('profile.stake.notAvailable'), {
       position: 'top-center',
       duration: 2000
     })
@@ -63,7 +65,7 @@ export function StakeCard({ userInfo }: StakeCardProps) {
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
       <div className="p-5 md:p-6">
-        <h3 className="text-slate-900 font-semibold mb-5">我的质押</h3>
+        <h3 className="text-slate-900 font-semibold mb-5">{t('profile.stake.myStake')}</h3>
 
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
@@ -133,7 +135,7 @@ export function StakeCard({ userInfo }: StakeCardProps) {
           }}
           onClick={handleBroker}
         >
-          质押 / 释放
+          {t('profile.stake.title')}
         </button>
       </div>
     </Card>

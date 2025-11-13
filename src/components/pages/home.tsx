@@ -385,7 +385,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-md shadow-sm text-sm"
                 onClick={() => {
                   if (!isAuthenticated) {
-                    toast.error('请先登录')
+                    toast.error(t('common.pleaseLogin'))
                     return
                   }
                   if (hasBindedExchange === false) {

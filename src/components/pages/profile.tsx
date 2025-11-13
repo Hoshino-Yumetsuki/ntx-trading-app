@@ -7,6 +7,7 @@ import { useAuth } from "@/src/contexts/AuthContext";
 import { UserService } from "@/src/services/user";
 import type { UserInfo } from "@/src/types/user";
 import { toast } from "sonner";
+import { useLanguage } from "@/src/contexts/language-context";
 import { SecuritySettings } from "@/src/components/pages/profile/security-settings";
 import AssetsPage from "@/src/components/pages/profile/assets";
 import CommunityPage from "@/src/components/pages/profile/community";
@@ -24,6 +25,7 @@ import {
 
 export function ProfilePage() {
   const { logout, user } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const communityArrowId = useId();
@@ -56,7 +58,7 @@ export function ProfilePage() {
   const handleLogout = async () => {
     try {
       await logout();
-      toast.success("已退出登录");
+      toast.success(t('common.loggedOut'));
       try {
         localStorage.setItem("ntx-active-tab", "home");
       } catch {}
@@ -130,7 +132,7 @@ export function ProfilePage() {
           <div className="pt-[21%]"></div>
           <Image
             src="/Group34385@3x.png"
-            alt="我的社区"
+            alt={t('profile.community.title')}
             fill
             priority
             className="object-cover"
@@ -139,12 +141,12 @@ export function ProfilePage() {
           <div className="absolute inset-0 flex items-center justify-between">
             <div className="pl-4 md:pl-6">
               <span className="text-white text-lg font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
-                我的社区
+                {t('profile.community.title')}
               </span>
             </div>
             <div className="pr-4 md:pr-6 flex items-center">
               <span className="text-white text-sm font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] mr-1">
-                点击进入
+                {t('common.clickToEnter', '点击进入')}
               </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

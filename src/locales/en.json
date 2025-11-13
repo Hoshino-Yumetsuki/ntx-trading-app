@@ -138,6 +138,10 @@
     "purchase": "Purchase",
     "viewOrder": "View Order",
     "understood": "Understood",
+    "clickToEnter": "Click to Enter",
+    "loggedOut": "Logged out successfully",
+    "pleaseLogin": "Please login first",
+    "pleaseLoginToView": "Please login to view community information",
     "orderList": "Order List",
     "edit": "Edit",
     "confirmChange": "Confirm Change",
@@ -321,7 +325,13 @@
     "inviteCode": {
       "title": "Invite Code",
       "description": "Invite friends to register and earn rebates",
-      "invitedBy": "Invited by"
+      "invitedBy": "Invited by",
+      "scanQrToRegister": "Scan QR Code to Register NTX DAO",
+      "registerTitle": "Register NTX DAO",
+      "inviteCodeLabel": "Invite Code:",
+      "slogan1": "Register NTX DAO, connect users and aggregate resources,",
+      "slogan2": "Discover your Web3 opportunities",
+      "benefit": "Enjoy up to 60% fee rebates and mining rewards"
     },
     "stats": {
       "ntxBalance": "NTX Balance",
@@ -345,11 +355,47 @@
       },
       "security": {
         "title": "Security Settings",
-        "description": "Change password and security settings"
+        "description": "Change password and security settings",
+        "header": "Security Settings",
+        "subtitle": "Protect your account security, regularly check and update security settings",
+        "securityStatus": "Security Status",
+        "nickname": "Nickname",
+        "uid": "User UID",
+        "email": "Email",
+        "password": "Login Password",
+        "passwordSet": "Set",
+        "bscAddress": "BSC Wallet Address",
+        "connectWallet": "Connect Wallet",
+        "walletConnected": "Wallet Connected:"
       },
       "orders": {
         "title": "My Orders",
-        "description": "View purchase history and payment status"
+        "description": "View purchase history and payment status",
+        "subtitle": "View course purchases and payment status",
+        "orderList": "Order List",
+        "closed": "Closed",
+        "completed": "Completed",
+        "pending": "Pending Payment",
+        "createdAt": "Created at",
+        "packageAmount": "Package Amount",
+        "paidAmount": "Paid Amount",
+        "remainingTime": "Remaining Time",
+        "goPay": "Pay Now",
+        "fetchOrdersFailed": "Failed to fetch orders",
+        "copiedToClipboard": "Copied to clipboard",
+        "copyFailed": "Copy failed",
+        "loadingOrders": "Loading orders...",
+        "noOrders": "No orders yet",
+        "paymentInfo": "Payment Information",
+        "paymentDescription": "Please use a wallet that supports USDT for on-chain transfer",
+        "paymentAddress": "Payment Address",
+        "paymentAmount": "Payment Amount",
+        "notice": "Notice",
+        "paymentExpireWarning": "Failure to complete payment within the valid period will result in order closure.",
+        "paymentCountdown": "Payment Countdown",
+        "close": "Close",
+        "order": "Order",
+        "packageName": "Package Name"
       }
     },
     "wallet": {
@@ -369,10 +415,73 @@
     },
     "logout": {
       "title": "Logout"
+    },
+    "community": {
+      "title": "My Community",
+      "communityUsers": "Community Users",
+      "directInviteUsers": "Direct Invites",
+      "myInviter": "My Inviter",
+      "inviteCode": "Invite Code",
+      "email": "Email",
+      "noInviter": "No inviter information",
+      "noCommunityUsers": "No community users",
+      "joinTime": "Join Time"
+    },
+    "share": {
+      "copyLink": "Copy Link",
+      "sharePoster": "Share Poster",
+      "generating": "Generating...",
+      "savePoster": "Save/Share Poster",
+      "copyInviteLink": "Copy Invite Link",
+      "copyInviteCode": "Copy Invite Code",
+      "inviteLinkCopied": "Invite link copied to clipboard",
+      "linkCopied": "Link copied to clipboard",
+      "qrScanned": "QR Code Scanned Successfully",
+      "qrScannedDesc": "Custom QR code content will be used",
+      "scanFailed": "Scan Failed",
+      "qrNotFound": "QR code not found",
+      "scanError": "Error processing image",
+      "downloadSuccess": "Download Successful",
+      "imageSaved": "Image saved to your device",
+      "generateFailed": "Generation Failed",
+      "cannotGenerate": "Cannot generate share image",
+      "qrRestored": "Default QR code restored",
+      "generatingHD": "Generating HD image...",
+      "shareTo": "Share to",
+      "more": "More",
+      "uploadCustomQr": "Upload Custom QR Code",
+      "restoreDefault": "Restore Default",
+      "qrUploadTip": "Tip: Upload an image with QR code, the system will automatically parse and replace the QR code in the share image.",
+      "shareInvitePoster": "Share Invite Poster"
+    },
+    "withdraw": {
+      "button": "Withdraw Now"
+    },
+    "stake": {
+      "title": "Stake / Release",
+      "myStake": "My Stake",
+      "notAvailable": "Stake/Release function is not yet available"
+    },
+    "userInfo": {
+      "memberRole": "Member Role",
+      "gntxHolding": "Current GNTX Holding",
+      "invitedCount": "Invited Count",
+      "toBroker": "To become a broker:",
+      "completed": "Completed",
+      "needMore": "Need to invite",
+      "people": "more"
+    }
+  },
+  "notifications": {
+    "search": {
+      "placeholder": "Search notification title or content..."
     }
   },
   "news": {
     "title": "Latest News",
+    "search": {
+      "placeholder": "Search article title or content..."
+    },
     "latest": "Article List",
     "loading": "Loading...",
     "error": "Loading failed",

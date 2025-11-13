@@ -35,6 +35,7 @@ import { useAuth } from "@/src/contexts/AuthContext";
 import { toast } from "sonner";
 import { useWeb3Modal, useWeb3ModalAccount } from "@/src/contexts/WalletContext";
 import type { UserInfo } from "@/src/types/user";
+import { useLanguage } from "@/src/contexts/language-context";
 
 const passwordSchema = z
   .object({
@@ -76,6 +77,7 @@ export function SecuritySettings({
   const confirmPasswordId = useId();
   const nicknameId = useId();
 
+  const { t } = useLanguage();
   const { user, updateUser, logout } = useAuth();
   const { open } = useWeb3Modal();
   const { address: walletAddress, isConnected } = useWeb3ModalAccount();
@@ -186,16 +188,16 @@ export function SecuritySettings({
   const securityItems = [
     {
       icon: User,
-      title: "用户昵称",
+      title: t('profile.menu.security.nickname'),
       description: userInfo?.nickname || "未设置",
       status: userInfo?.nickname ? "completed" : "pending",
-      action: "修改",
+      action: t('common.edit'),
       onClick: () => setEditMode("nickname"),
       copyable: false,
     },
     {
       icon: Hash,
-      title: "用户UID",
+      title: t('profile.menu.security.uid'),
       description: userInfo?.id?.toString() || "未获取",
       status: userInfo?.id ? "completed" : "pending",
       action: "",
@@ -204,7 +206,7 @@ export function SecuritySettings({
     },
     {
       icon: Mail,
-      title: "电子邮箱",
+      title: t('profile.menu.security.email'),
       description: userInfo?.email || "未设置",
       status: userInfo?.email ? "completed" : "pending",
       action: "",
@@ -213,16 +215,16 @@ export function SecuritySettings({
     },
     {
       icon: Key,
-      title: "登录密码",
-      description: "已设置",
+      title: t('profile.menu.security.password'),
+      description: t('profile.menu.security.passwordSet'),
       status: "completed",
-      action: "修改",
+      action: t('common.edit'),
       onClick: () => setEditMode("password"),
       copyable: false,
     },
     {
       icon: Wallet,
-      title: "BSC钱包地址",
+      title: t('profile.menu.security.bscAddress'),
       description: userInfo?.bscAddress || "未绑定",
       status: userInfo?.bscAddress ? "completed" : "pending",
       action: "",
@@ -233,7 +235,7 @@ export function SecuritySettings({
 
   const getBindButtonState = () => {
     if (!isConnected || !walletAddress) {
-      return { text: "连接钱包", disabled: false, action: () => open() };
+      return { text: t('profile.menu.security.connectWallet'), disabled: false, action: () => open() };
     }
 
     const isSameAddress =
@@ -285,9 +287,9 @@ export function SecuritySettings({
           <div className="relative h-32">
             <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
               <div>
-                <h2 className="text-2xl font-bold text-blue-600">安全设置</h2>
+                <h2 className="text-2xl font-bold text-blue-600">{t('profile.menu.security.header')}</h2>
                 <p className="text-slate-500 text-sm mt-1">
-                  保护您的账户安全，定期检查和更新安全设置
+                  {t('profile.menu.security.subtitle')}
                 </p>
               </div>
             </div>
@@ -324,10 +326,10 @@ export function SecuritySettings({
           <CardHeader>
             <CardTitle className="text-slate-800 flex items-center space-x-2">
               <Shield className="w-5 h-5 text-green-600" />
-              <span>安全状态</span>
+              <span>{t('profile.menu.security.securityStatus')}</span>
             </CardTitle>
             <CardDescription>
-              保护您的账户安全，定期检查和更新安全设置
+              {t('profile.menu.security.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -354,7 +356,7 @@ export function SecuritySettings({
                         <CheckCircle className="w-5 h-5 text-green-500" />
                       )}
                       {item.status === "pending" &&
-                        item.title !== "BSC钱包地址" && (
+                        item.title !== t('profile.menu.security.bscAddress') && (
                           <AlertCircle className="w-5 h-5 text-yellow-500" />
                         )}
                       {item.copyable &&
@@ -393,12 +395,12 @@ export function SecuritySettings({
               {!isConnected ? (
                 <Button onClick={() => open()} className="w-full">
                   <Wallet className="w-4 h-4 mr-2" />
-                  连接钱包
+                  {t('profile.menu.security.connectWallet')}
                 </Button>
               ) : (
                 <div className="space-y-3">
                   <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs text-blue-700">已连接钱包:</p>
+                    <p className="text-xs text-blue-700">{t('profile.menu.security.walletConnected')}</p>
                     <p className="text-sm font-mono text-blue-900 break-all">
                       {walletAddress}
                     </p>

@@ -21,6 +21,7 @@ import { Download, Share2, Copy, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import NextImage from "next/image";
 import jsqr from "jsqr";
+import { useLanguage } from "@/src/contexts/language-context";
 
 export interface ShareData {
   title: string;
@@ -53,7 +54,7 @@ interface UniversalShareModalProps {
   showCustomQrUpload?: boolean;
 }
 
-const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
+const useQrCodeScanner = (onQrScanSuccess: (text: string) => void, t: (key: string) => string) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const triggerUpload = () => fileInputRef.current?.click();
@@ -80,24 +81,24 @@ const useQrCodeScanner = (onQrScanSuccess: (text: string) => void) => {
 
         if (result?.data) {
           onQrScanSuccess(result.data);
-          toast.success("二维码识别成功", {
-            description: "将使用自定义二维码内容",
+          toast.success(t('profile.share.qrScanned'), {
+            description: t('profile.share.qrScannedDesc'),
           });
         } else {
-          toast.error("识别失败", {
-            description: "未能识别到二维码",
+          toast.error(t('profile.share.scanFailed'), {
+            description: t('profile.share.qrNotFound'),
           });
         }
       } catch (error) {
         console.error("二维码识别异常:", error);
-        toast.error("识别失败", {
-          description: "处理图片时发生错误",
+        toast.error(t('profile.share.scanFailed'), {
+          description: t('profile.share.scanError'),
         });
       } finally {
         if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
-    [onQrScanSuccess],
+    [onQrScanSuccess, t],
   );
 
   return { fileInputRef, triggerUpload, handleFileChange };
@@ -153,6 +154,7 @@ export function UniversalShareModal({
   onQrOverride,
   showCustomQrUpload = true,
 }: UniversalShareModalProps) {
+  const { t } = useLanguage();
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const posterRef = useRef<HTMLDivElement>(null);
@@ -262,12 +264,12 @@ export function UniversalShareModal({
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        toast.success("下载成功", {
-          description: "图片已保存到您的设备",
+        toast.success(t('profile.share.downloadSuccess'), {
+          description: t('profile.share.imageSaved'),
         });
       }
     },
-    [isIOS],
+    [isIOS, t],
   );
 
   useEffect(() => {
@@ -301,19 +303,19 @@ export function UniversalShareModal({
         setGeneratedImage(imageDataUrl);
         downloadImage(imageDataUrl, shareData);
       } else {
-        toast.error("生成失败", {
-          description: "无法生成分享图片",
+        toast.error(t('profile.share.generateFailed'), {
+          description: t('profile.share.cannotGenerate'),
         });
       }
     } catch (error) {
       console.error("Failed to generate image:", error);
-      toast.error("生成失败", {
-        description: "无法生成分享图片",
+      toast.error(t('profile.share.generateFailed'), {
+        description: t('profile.share.cannotGenerate'),
       });
     } finally {
       setIsGenerating(false);
     }
-  }, [imageGenerator, generatedImage, downloadImage, shareData]);
+  }, [imageGenerator, generatedImage, downloadImage, shareData, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -323,8 +325,8 @@ export function UniversalShareModal({
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareData.url);
-    toast.success("复制成功", {
-      description: "链接已复制到剪贴板",
+    toast.success(t('profile.copy.success'), {
+      description: t('profile.share.linkCopied'),
     });
   };
 
@@ -337,11 +339,11 @@ export function UniversalShareModal({
 
   const restoreDefaultQr = () => {
     onQrOverride?.("");
-    toast.success("已还原默认二维码");
+    toast.success(t('profile.share.qrRestored'));
   };
 
   const { fileInputRef, triggerUpload, handleFileChange } =
-    useQrCodeScanner(onQrScanSuccess);
+    useQrCodeScanner(onQrScanSuccess, t);
 
   const posterWithRef =
     posterComponent && isValidElement(posterComponent)
@@ -438,7 +440,7 @@ export function UniversalShareModal({
                 <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
                   <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
                   <p className="mt-2 text-sm text-slate-600">
-                    正在生成高清图...
+                    {t('profile.share.generatingHD')}
                   </p>
                 </div>
               )}
@@ -453,14 +455,14 @@ export function UniversalShareModal({
                 className="w-full"
               >
                 <Download className="w-4 h-4 mr-2" />
-                {isGenerating ? "正在处理..." : "保存/分享海报"}
+                {isGenerating ? t('profile.share.generating') : t('profile.share.savePoster')}
               </Button>
             )}
 
             {showCopyLinkButton && (
               <Button variant="outline" onClick={copyLink} className="w-full">
                 <Copy className="w-4 h-4 mr-2" />
-                复制链接
+                {t('profile.share.copyLink')}
               </Button>
             )}
 
@@ -487,7 +489,7 @@ export function UniversalShareModal({
 
             {showDefaultShareButtons && (
               <div className="space-y-2">
-                <p className="text-sm text-gray-600 text-center">分享到</p>
+                <p className="text-sm text-gray-600 text-center">{t('profile.share.shareTo')}</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     variant="outline"
@@ -533,7 +535,7 @@ export function UniversalShareModal({
                     className="flex items-center justify-center"
                   >
                     <Share2 className="w-4 h-4 mr-2" />
-                    更多
+                    {t('profile.share.more')}
                   </Button>
                 </div>
               </div>
@@ -556,18 +558,18 @@ export function UniversalShareModal({
                     onClick={triggerUpload}
                     className="w-full"
                   >
-                    上传自定义二维码
+                    {t('profile.share.uploadCustomQr')}
                   </Button>
                   <Button
                     variant="ghost"
                     className="w-full"
                     onClick={restoreDefaultQr}
                   >
-                    还原默认
+                    {t('profile.share.restoreDefault')}
                   </Button>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。
+                  {t('profile.share.qrUploadTip')}
                 </p>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { UserInfo } from '@/src/types/user'
 import { ArrowRight } from 'lucide-react'
 import { useState, useRef, useLayoutEffect } from 'react'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface RewardsCardProps {
   userInfo: UserInfo | null
@@ -67,6 +68,7 @@ function AdaptiveBalance({
 
 export function RewardsCard({ userInfo, onNavigate }: RewardsCardProps) {
   const router = useRouter()
+  const { t } = useLanguage()
 
   const handleWithdraw = () => {
     if (onNavigate) {
@@ -79,7 +81,7 @@ export function RewardsCard({ userInfo, onNavigate }: RewardsCardProps) {
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
       <div className="p-5 md:p-6">
-        <h3 className="text-slate-900 font-semibold mb-5">我的资产</h3>
+        <h3 className="text-slate-900 font-semibold mb-5">{t('profile.menu.assets.title')}</h3>
 
         <div className="grid grid-cols-2 gap-6 mb-6 md:mb-7">
           <AdaptiveBalance balance={userInfo?.ntxBalance} currency="NTX" />
@@ -95,7 +97,7 @@ export function RewardsCard({ userInfo, onNavigate }: RewardsCardProps) {
           }}
           onClick={handleWithdraw}
         >
-          立即提现 <ArrowRight className="ml-2 w-4 h-4" />
+          {t('profile.withdraw.button')} <ArrowRight className="ml-2 w-4 h-4" />
         </button>
       </div>
     </Card>

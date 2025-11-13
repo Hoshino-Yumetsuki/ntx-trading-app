@@ -23,8 +23,10 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { getPermissionGroups } from '@/src/services/courseService'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function OrdersPage() {
+  const { t } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -45,7 +47,7 @@ export function OrdersPage() {
       )
       setOrders(sorted)
     } catch (e: any) {
-      setError(e.message || '获取订单失败')
+      setError(e.message || t('profile.menu.orders.fetchOrdersFailed'))
     } finally {
       setLoading(false)
     }
@@ -118,9 +120,9 @@ export function OrdersPage() {
     if (!text) return
     try {
       await navigator.clipboard.writeText(text)
-      toast.success('已复制到剪贴板')
+      toast.success(t('profile.menu.orders.copiedToClipboard'))
     } catch {
-      toast.error('复制失败')
+      toast.error(t('profile.menu.orders.copyFailed'))
     }
   }
 
@@ -134,14 +136,14 @@ export function OrdersPage() {
             onClick={() => router.push('/')}
             className="mr-3 text-slate-600 hover:text-slate-800"
           >
-            <ArrowLeft className="w-5 h-5 mr-2" /> 返回
+            <ArrowLeft className="w-5 h-5 mr-2" /> {t('common.back')}
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-slate-800">我的订单</h1>
-            <p className="text-slate-600 text-sm">查看课程购买与支付状态</p>
+            <h1 className="text-2xl font-bold text-slate-800">{t('profile.menu.orders.title')}</h1>
+            <p className="text-slate-600 text-sm">{t('profile.menu.orders.subtitle')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={fetchOrders}>
-            <RefreshCw className="w-4 h-4 mr-2" /> 刷新
+            <RefreshCw className="w-4 h-4 mr-2" /> {t('common.refresh')}
           </Button>
         </div>
       </div>
@@ -150,14 +152,14 @@ export function OrdersPage() {
         <Card className="glass-card border-white/30 shadow-lg">
           <CardHeader>
             <CardTitle className="text-slate-800 text-xl font-bold">
-              订单列表
+              {t('profile.menu.orders.orderList')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
               <div className="flex justify-center items-center py-12">
                 <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-                <span className="ml-2 text-slate-600">加载订单中...</span>
+                <span className="ml-2 text-slate-600">{t('profile.menu.orders.loadingOrders')}</span>
               </div>
             ) : error ? (
               <div className="text-center py-6">
@@ -165,7 +167,7 @@ export function OrdersPage() {
               </div>
             ) : orders.length === 0 ? (
               <div className="text-center py-6">
-                <p className="text-slate-600">暂无订单</p>
+                <p className="text-slate-600">{t('profile.menu.orders.noOrders')}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -176,25 +178,25 @@ export function OrdersPage() {
                   >
                     <div className="space-y-1">
                       <div className="text-slate-800 font-medium">
-                        订单 #{format(new Date(o.created_at), 'yyyyMMdd')}0000
+                        {t('profile.menu.orders.order')} #{format(new Date(o.created_at), 'yyyyMMdd')}0000
                         {o.id}
                         <span className="ml-2 text-xs text-slate-500">
-                          套餐名称 {packageNameMap[o.package_id] ?? '-'}
+                          {t('profile.menu.orders.packageName')} {packageNameMap[o.package_id] ?? '-'}
                         </span>
                         <span className="ml-2 text-xs px-1.5 py-0.5 rounded border border-white/40 bg-white/60 text-slate-600">
                           {o.status === 'pending'
-                            ? '待支付'
+                            ? t('profile.menu.orders.pending')
                             : o.status === 'confirmed'
-                              ? '已完成'
-                              : '已关闭'}
+                              ? t('profile.menu.orders.completed')
+                              : t('profile.menu.orders.closed')}
                         </span>
                       </div>
                       <div className="text-sm text-slate-600">
-                        套餐金额 {o.amount} {o.currency} · 实付金额{' '}
+                        {t('profile.menu.orders.packageAmount')} {o.amount} {o.currency} · {t('profile.menu.orders.paidAmount')}{' '}
                         {o.paymentAmount} {o.currency}
                       </div>
                       <div className="text-xs text-slate-500">
-                        创建时间 {new Date(o.created_at).toLocaleString()}
+                        {t('profile.menu.orders.createdAt')} {new Date(o.created_at).toLocaleString()}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -202,7 +204,7 @@ export function OrdersPage() {
                         typeof o.remainingTimeSeconds === 'number' && (
                           <div className="flex items-center text-xs text-slate-600 bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">
                             <Clock className="w-3 h-3 mr-1" />
-                            剩余时间{' '}
+                            {t('profile.menu.orders.remainingTime')}{' '}
                             {formatTime(Math.max(0, o.remainingTimeSeconds))}
                           </div>
                         )}
@@ -212,11 +214,11 @@ export function OrdersPage() {
                           className="diffused-button"
                           onClick={() => openPayDialog(o)}
                         >
-                          去支付
+                          {t('profile.menu.orders.goPay')}
                         </Button>
                       ) : (
                         <div className="text-xs text-slate-500">
-                          {o.status === 'confirmed' ? '已完成' : '已关闭'}
+                          {o.status === 'confirmed' ? t('profile.menu.orders.completed') : t('profile.menu.orders.closed')}
                         </div>
                       )}
                     </div>
@@ -231,15 +233,15 @@ export function OrdersPage() {
       <Dialog open={showPayDialog} onOpenChange={setShowPayDialog}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[460px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>支付信息</DialogTitle>
+            <DialogTitle>{t('profile.menu.orders.paymentInfo')}</DialogTitle>
             <DialogDescription>
-              请使用支持 USDT 的钱包进行链上转账
+              {t('profile.menu.orders.paymentDescription')}
             </DialogDescription>
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                <div className="text-xs text-blue-700 mb-1">支付地址</div>
+                <div className="text-xs text-blue-700 mb-1">{t('profile.menu.orders.paymentAddress')}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm break-all font-mono text-blue-900">
                     {selectedOrder.paymentAddress || '-'}
@@ -252,13 +254,13 @@ export function OrdersPage() {
                     }
                     className="ml-2"
                   >
-                    <Copy className="w-4 h-4 mr-1" /> 复制
+                    <Copy className="w-4 h-4 mr-1" /> {t('common.copy')}
                   </Button>
                 </div>
               </div>
 
               <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
-                <div className="text-xs text-amber-700 mb-1">支付金额</div>
+                <div className="text-xs text-amber-700 mb-1">{t('profile.menu.orders.paymentAmount')}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-semibold text-amber-900">
                     {selectedOrder.paymentAmount} {selectedOrder.currency}
@@ -271,24 +273,24 @@ export function OrdersPage() {
                     }
                     className="ml-2"
                   >
-                    <Copy className="w-4 h-4 mr-1" /> 复制
+                    <Copy className="w-4 h-4 mr-1" /> {t('common.copy')}
                   </Button>
                 </div>
               </div>
 
               <div className="p-3 rounded-lg bg-red-50 border border-red-200">
                 <div className="text-xs text-red-700 mb-1 font-semibold">
-                  注意
+                  {t('profile.menu.orders.notice')}
                 </div>
                 <div className="text-sm text-red-700 font-bold">
-                  未在有效期内完成支付将导致订单关闭。
+                  {t('profile.menu.orders.paymentExpireWarning')}
                 </div>
               </div>
 
               {typeof timeLeft === 'number' && (
                 <div className="flex items-center justify-between text-sm text-slate-700">
                   <div className="flex items-center">
-                    <Clock className="w-4 h-4 mr-1" /> 支付倒计时
+                    <Clock className="w-4 h-4 mr-1" /> {t('profile.menu.orders.paymentCountdown')}
                   </div>
                   <div
                     className={`font-mono ${timeLeft <= 60 ? 'text-red-600' : 'text-slate-800'}`}
@@ -301,7 +303,7 @@ export function OrdersPage() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowPayDialog(false)}>
-              关闭
+              {t('profile.menu.orders.close')}
             </Button>
           </DialogFooter>
         </DialogContent>
