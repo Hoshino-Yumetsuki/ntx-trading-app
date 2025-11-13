@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { SplashScreen } from '@/src/components/pages/splash-screen'
 import { MainApp } from '@/src/components/main'
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext'
-import { LanguageProvider } from '@/src/contexts/language-context'
+import { LanguageProvider, useLanguage } from '@/src/contexts/language-context'
 import { Loader2 } from 'lucide-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -13,6 +13,7 @@ const queryClient = new QueryClient()
 function AppContent() {
   const [showSplash, setShowSplash] = useState(true)
   const { isLoading } = useAuth()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -31,7 +32,7 @@ function AppContent() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">加载中...</p>
+          <p className="text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     )
