@@ -146,6 +146,18 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           }}
         />
         <div
+          className="absolute left-8 top-6 z-30 flex items-center gap-2"
+        >
+          <Image
+            src="/Frame17@3x.png"
+            alt="NTX Logo"
+            width={240}
+            height={80}
+            className="object-contain"
+            priority
+          />
+        </div>
+        <div
           ref={titleContainerRef}
           className="absolute left-0 right-0 z-20 pointer-events-none overflow-visible px-8"
           style={{ top: '96px' }}
