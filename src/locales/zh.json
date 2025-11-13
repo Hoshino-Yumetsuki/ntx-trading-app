@@ -607,7 +607,6 @@
       "startLearning": "立即学习",
       "unlock": "去解锁"
     },
-    "targetAudience": "适用对象",
     "instructor": {
       "name": "Donato狐总",
       "title": "WEB3职业交易员 · 数十年量化交易经验",
@@ -628,6 +627,7 @@
       }
     },
     "targetAudience": {
+      "title": "适用对象",
       "item1": "具备技术分析基础，想落地交易系统的操盘者",
       "item2": "有策略框架但执行效率低、选币耗时的交易员",
       "item3": "具备趋势交易思维，想提升胜率与纪律性的进阶用户"

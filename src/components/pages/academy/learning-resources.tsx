@@ -405,7 +405,7 @@ export function LearningResourcesPage({
 
       <Card className="glass-card border-white/30">
         <CardHeader>
-          <CardTitle className="text-slate-800">{t('academy.targetAudience')}</CardTitle>
+          <CardTitle className="text-slate-800">{t('academy.targetAudience.title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center space-x-3">

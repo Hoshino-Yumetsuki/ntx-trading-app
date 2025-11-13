@@ -607,7 +607,6 @@
       "startLearning": "Start Learning",
       "unlock": "Unlock"
     },
-    "targetAudience": "Target Audience",
     "instructor": {
       "name": "Donato",
       "title": "WEB3 Professional Trader · Decades of Quantitative Trading Experience",
@@ -628,6 +627,7 @@
       }
     },
     "targetAudience": {
+      "title": "Target Audience",
       "item1": "Traders with technical analysis foundation who want to implement trading systems",
       "item2": "Traders with strategy framework but low execution efficiency and time-consuming coin selection",
       "item3": "Advanced users with trend trading mindset who want to improve win rate and discipline"
