@@ -3,15 +3,13 @@
 import { Card } from '@/src/components/ui/card'
 import { Shield, ChevronRight, DollarSign, FileText } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
-import { useRouter } from 'next/navigation'
 
 interface QuickActionsCardProps {
-  onNavigate: (page: 'assets' | 'security') => void
+  onNavigate: (page: 'assets' | 'security' | 'orders') => void
 }
 
 export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
   const { t } = useLanguage()
-  const router = useRouter()
 
   const menuItems = [
     {
@@ -31,7 +29,7 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
       label: t('profile.menu.orders.title') || '我的订单',
       description:
         t('profile.menu.orders.description') || '查看购买记录与支付状态',
-      onClick: () => router.push('/orders')
+      onClick: () => onNavigate('orders')
     }
   ]
 

@@ -12,6 +12,7 @@ import { SecuritySettings } from "@/src/components/pages/profile/security-settin
 import AssetsPage from "@/src/components/pages/profile/assets";
 import CommunityPage from "@/src/components/pages/profile/community";
 import { BrokerPage } from "@/src/components/pages/broker";
+import { OrdersPage } from "@/src/components/pages/orders";
 import {
   ProfileHeader,
   InviteCodeCard,
@@ -31,7 +32,7 @@ export function ProfilePage() {
   const communityArrowId = useId();
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<
-    "profile" | "security" | "assets" | "community" | "broker"
+    "profile" | "security" | "assets" | "community" | "broker" | "orders"
   >("profile");
 
   const fetchUserInfo = useCallback(async () => {
@@ -69,7 +70,7 @@ export function ProfilePage() {
   };
 
   const handleNavigate = (
-    page: "assets" | "security" | "community" | "broker",
+    page: "assets" | "security" | "community" | "broker" | "orders",
   ) => {
     setCurrentPage(page);
   };
@@ -111,6 +112,10 @@ export function ProfilePage() {
 
   if (currentPage === "broker") {
     return <BrokerPage onBack={() => setCurrentPage("profile")} />;
+  }
+
+  if (currentPage === "orders") {
+    return <OrdersPage onBack={() => setCurrentPage("profile")} />;
   }
 
   return (

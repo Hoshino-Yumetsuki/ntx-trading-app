@@ -25,13 +25,25 @@ import { format } from 'date-fns'
 import { getPermissionGroups } from '@/src/services/courseService'
 import { useLanguage } from '@/src/contexts/language-context'
 
-export function OrdersPage() {
+interface OrdersPageProps {
+  onBack?: () => void
+}
+
+export function OrdersPage({ onBack }: OrdersPageProps = {}) {
   const { t } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const router = useRouter()
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack()
+    } else {
+      router.push('/?tab=profile')
+    }
+  }
   const [showPayDialog, setShowPayDialog] = useState(false)
   const [timeLeft, setTimeLeft] = useState<number>(0)
   const [groups, setGroups] = useState<PermissionGroupWithPackages[]>([])
@@ -133,7 +145,7 @@ export function OrdersPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push('/')}
+            onClick={handleBack}
             className="mr-3 text-slate-600 hover:text-slate-800"
           >
             <ArrowLeft className="w-5 h-5 mr-2" /> {t('common.back')}
