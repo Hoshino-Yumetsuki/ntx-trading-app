@@ -26,7 +26,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <Providers>
-          <div className="relative mx-auto flex h-screen w-full flex-col bg-[#F0F8FF] md:max-w-md md:shadow-2xl md:border-gray-800">
+          <div className="relative mx-auto flex min-h-screen w-full flex-col bg-[#F0F8FF] md:max-w-md md:shadow-2xl md:border-gray-800">
             {children}
           </div>
           <Toaster position="top-center" richColors closeButton />

@@ -98,7 +98,7 @@ export function MainApp() {
   }
 
   return (
-    <div className="relative flex flex-1 flex-col overflow-hidden">
+    <div className="relative flex h-screen flex-1 flex-col overflow-hidden">
       <AppBackground />
 
       <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar pb-24">
