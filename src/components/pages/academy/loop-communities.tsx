@@ -8,12 +8,14 @@ import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import Image from 'next/image'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function LoopCommunitiesPage({
   onReadingChange
 }: {
   onReadingChange?: (reading: boolean) => void
 }) {
+  const { t } = useLanguage()
   const [communities, setCommunities] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -29,7 +31,7 @@ export function LoopCommunitiesPage({
         setCommunities(unlockedCourses)
       } catch (error) {
         console.error('Failed to fetch communities:', error)
-        setError('获取社区数据失败，请稍后再试')
+        setError(t('academy.error.fetchCommunityFailed'))
       } finally {
         setLoading(false)
       }
@@ -64,7 +66,7 @@ export function LoopCommunitiesPage({
     return (
       <div className="flex justify-center items-center py-12">
         <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-        <span className="ml-2 text-slate-600">加载社区中...</span>
+        <span className="ml-2 text-slate-600">{t('academy.communities.loading')}</span>
       </div>
     )
   }
@@ -80,7 +82,7 @@ export function LoopCommunitiesPage({
   if (communities.length === 0) {
     return (
       <div className="text-center py-6">
-        <p className="text-slate-600">暂无社区可显示</p>
+        <p className="text-slate-600">{t('academy.communities.noData')}</p>
       </div>
     )
   }

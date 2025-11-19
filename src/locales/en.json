@@ -741,14 +741,95 @@
       "item2": "Traders with strategy framework but low execution efficiency and time-consuming coin selection",
       "item3": "Advanced users with trend trading mindset who want to improve win rate and discipline"
     },
+    "blackHorse": {
+      "title": "Learning Resources",
+      "loading": "Loading learning resources...",
+      "noData": "No learning resources to display",
+      "unlocked": "Unlocked Learning Resources"
+    },
+    "communities": {
+      "loading": "Loading communities...",
+      "noData": "No communities to display"
+    },
+    "orders": {
+      "loading": "Loading orders...",
+      "noData": "No orders",
+      "status": {
+        "success": "Payment Successful",
+        "pending": "Pending Payment/Confirmation",
+        "closed": "Closed"
+      },
+      "orderNo": "Order #",
+      "packageAmount": "Package Amount",
+      "paymentAmount": "Paid Amount",
+      "createTime": "Created Time"
+    },
+    "unlock": {
+      "title": "Unlock Full Course",
+      "subtitle": "Programmatic tools: Student exclusive [Screening System], practical model application",
+      "cta": "Get Institutional Strategy",
+      "includes": {
+        "title": "Course Includes",
+        "system": {
+          "title": "Complete Trading System",
+          "desc": "Complete trading decision framework including entry, stop loss, and take profit"
+        },
+        "tools": {
+          "title": "Exclusive Screening Tools",
+          "desc": "Student exclusive programmatic screening system to quickly find high-quality targets"
+        },
+        "cases": {
+          "title": "Practical Case Analysis",
+          "desc": "Real market case analysis, combining theory with practice"
+        },
+        "support": {
+          "title": "Continuous Update Support",
+          "desc": "Continuously update strategies and tools based on market changes"
+        }
+      },
+      "packages": {
+        "title": "Purchase Package",
+        "list": "Order List",
+        "loading": "Loading packages...",
+        "noData": "No packages available for purchase"
+      },
+      "benefits": {
+        "title": "Student Exclusive Benefits",
+        "vipGroup": {
+          "title": "VIP Community",
+          "desc": "Communicate directly with mentors and excellent students, share trading insights"
+        },
+        "guidance": {
+          "title": "1-on-1 Guidance",
+          "desc": "Provide professional guidance suggestions for personal trading problems"
+        },
+        "updates": {
+          "title": "Real-time Strategy Updates",
+          "desc": "Get the latest market strategies and signal alerts immediately"
+        }
+      },
+      "payment": {
+        "title": "Payment Information",
+        "desc": "Please strictly follow the information below for on-chain transfer",
+        "address": "Payment Address",
+        "amount": "Payment Amount",
+        "notice1": "• The amount is a unique identifier assigned by the system, please do not modify it, otherwise it cannot be automatically identified.",
+        "notice2": "• After payment is completed, the backend needs time to confirm, please wait patiently.",
+        "notice3": "• If you have any questions, please contact the administrator and provide the order number: "
+      }
+    },
     "error": {
       "fetchCoursesFailed": "Failed to fetch courses, please try again later",
-      "fetchCommunityFailed": "Failed to fetch community data, please try again later"
+      "fetchCommunityFailed": "Failed to fetch community data, please try again later",
+      "fetchOrdersFailed": "Failed to fetch orders",
+      "fetchPackagesFailed": "Failed to load courses and packages",
+      "createOrderFailed": "Failed to create order, please try again later"
     }
   },
   "signals": {
     "title": "Strategy Signals",
     "subtitle": "Trend system based on institutional behavior + programmatic tools, clearly capture mid-term trends",
+    "loading": "Loading strategy signals...",
     "unlockedSignals": "Unlocked Strategy Signals",
     "lockedSignals": "Locked Signals",
     "noSignals": "No strategy signals available",

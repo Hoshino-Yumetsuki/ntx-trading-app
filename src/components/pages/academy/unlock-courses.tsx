@@ -32,6 +32,7 @@ import { createOrder } from '@/src/services/payment'
 import type { CoursePackage, CreateOrderResponse } from '@/src/types/course'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function UnlockCoursesPage({
   onNavigateTab,
@@ -43,6 +44,7 @@ export function UnlockCoursesPage({
   hideInfoCards?: boolean
   hideDescription?: boolean
 }) {
+  const { t } = useLanguage()
   const packagesSectionId = useId()
   const [derivedGroups, setDerivedGroups] = useState<
     Array<{
@@ -115,7 +117,7 @@ export function UnlockCoursesPage({
           Array.from(byKey.values()).filter((x) => x.packages.length > 0)
         )
       } catch (e: any) {
-        setError(e.message || '加载课程与套餐失败')
+        setError(e.message || t('academy.error.fetchPackagesFailed'))
       } finally {
         setLoading(false)
       }
@@ -134,7 +136,7 @@ export function UnlockCoursesPage({
       setPaymentInfo(res)
       setPaymentOpen(true)
     } catch (e: any) {
-      alert(e.message || '创建订单失败，请稍后重试')
+      alert(e.message || t('academy.error.createOrderFailed'))
     } finally {
       setCreatingOrder(null)
     }
@@ -155,10 +157,10 @@ export function UnlockCoursesPage({
               <Lock className="h-6 w-6 text-slate-700" />
             </div>
             <h3 className="gradient-text font-bold text-lg mb-2">
-              解锁完整课程
+              {t('academy.unlock.title')}
             </h3>
             <p className="text-slate-600 text-sm mb-4">
-              程序化辅助工具：学员专属【筛选系统】，落地模型应用
+              {t('academy.unlock.subtitle')}
             </p>
             <Button
               className="diffused-button text-white font-semibold border-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
@@ -167,7 +169,7 @@ export function UnlockCoursesPage({
                 if (el) el.scrollIntoView({ behavior: 'smooth' })
               }}
             >
-              获得机构级策略
+              {t('academy.unlock.cta')}
             </Button>
           </CardContent>
         </Card>
@@ -180,17 +182,17 @@ export function UnlockCoursesPage({
               <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-blue-100">
                 <BookOpen className="h-4 w-4 text-blue-600" />
               </div>
-              <h4 className="text-slate-800 font-semibold">课程包含内容</h4>
+              <h4 className="text-slate-800 font-semibold">{t('academy.unlock.includes.title')}</h4>
             </div>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                 <div>
                   <h5 className="text-slate-800 font-medium text-sm">
-                    完整交易系统
+                    {t('academy.unlock.includes.system.title')}
                   </h5>
                   <p className="text-slate-600 text-xs">
-                    包含入场、止损、止盈的完整交易决策框架
+                    {t('academy.unlock.includes.system.desc')}
                   </p>
                 </div>
               </div>
@@ -198,10 +200,10 @@ export function UnlockCoursesPage({
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                 <div>
                   <h5 className="text-slate-800 font-medium text-sm">
-                    专属筛选工具
+                    {t('academy.unlock.includes.tools.title')}
                   </h5>
                   <p className="text-slate-600 text-xs">
-                    学员专属的程序化筛选系统，快速发现优质标的
+                    {t('academy.unlock.includes.tools.desc')}
                   </p>
                 </div>
               </div>
@@ -209,10 +211,10 @@ export function UnlockCoursesPage({
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                 <div>
                   <h5 className="text-slate-800 font-medium text-sm">
-                    实战案例分析
+                    {t('academy.unlock.includes.cases.title')}
                   </h5>
                   <p className="text-slate-600 text-xs">
-                    真实市场案例解析，理论与实践相结合
+                    {t('academy.unlock.includes.cases.desc')}
                   </p>
                 </div>
               </div>
@@ -220,10 +222,10 @@ export function UnlockCoursesPage({
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                 <div>
                   <h5 className="text-slate-800 font-medium text-sm">
-                    持续更新支持
+                    {t('academy.unlock.includes.support.title')}
                   </h5>
                   <p className="text-slate-600 text-xs">
-                    根据市场变化持续更新策略和工具
+                    {t('academy.unlock.includes.support.desc')}
                   </p>
                 </div>
               </div>
@@ -236,7 +238,7 @@ export function UnlockCoursesPage({
       <Card className="glass-card border-white/30">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-slate-800 text-xl font-bold">
-            购买套餐
+            {t('academy.unlock.packages.title')}
           </CardTitle>
           <Button
             variant="outline"
@@ -244,14 +246,14 @@ export function UnlockCoursesPage({
             onClick={() => onNavigateTab?.('orders')}
             className="text-slate-600 hover:text-slate-800"
           >
-            <ExternalLink className="w-4 h-4 mr-1" /> 订单列表
+            <ExternalLink className="w-4 h-4 mr-1" /> {t('academy.unlock.packages.list')}
           </Button>
         </CardHeader>
         <CardContent className="pb-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <span className="ml-2 text-slate-600">加载套餐中...</span>
+              <span className="ml-2 text-slate-600">{t('academy.unlock.packages.loading')}</span>
             </div>
           ) : error ? (
             <div className="text-center py-6">
@@ -259,7 +261,7 @@ export function UnlockCoursesPage({
             </div>
           ) : derivedGroups.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-slate-600">暂无可购买的套餐</p>
+              <p className="text-slate-600">{t('academy.unlock.packages.noData')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -283,11 +285,11 @@ export function UnlockCoursesPage({
                           <div className="min-w-0 flex-1">
                             <div className="text-slate-800 font-medium">
                               {p.duration_days > 10000
-                                ? '永久'
-                                : `${p.duration_days} 天`}
+                                ? t('common.permanent')
+                                : `${p.duration_days} ${t('common.days')}`}
                             </div>
                             <div className="text-sm text-slate-600">
-                              价格：{p.price} {p.currency}
+                              {t('common.price')} {p.price} {p.currency}
                             </div>
                             {!hideDescription &&
                               (p.description || g.groupDescription) && (
@@ -304,11 +306,11 @@ export function UnlockCoursesPage({
                             {creatingOrder === p.id ? (
                               <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                下单中
+                                {t('common.ordering')}
                               </>
                             ) : (
                               <>
-                                <ShoppingCart className="w-4 h-4 mr-2" /> 购买
+                                <ShoppingCart className="w-4 h-4 mr-2" /> {t('common.buy')}
                               </>
                             )}
                           </Button>
@@ -330,25 +332,25 @@ export function UnlockCoursesPage({
               <div className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-indigo-100">
                 <BadgeCheck className="h-4 w-4 text-indigo-600" />
               </div>
-              <h4 className="text-slate-800 font-semibold">学员专属权益</h4>
+              <h4 className="text-slate-800 font-semibold">{t('academy.unlock.benefits.title')}</h4>
             </div>
             <div className="grid grid-cols-1 gap-3">
               <div className="p-4 rounded-lg bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white shadow-sm">
-                <h5 className="font-medium text-sm mb-1">VIP交流群</h5>
+                <h5 className="font-medium text-sm mb-1">{t('academy.unlock.benefits.vipGroup.title')}</h5>
                 <p className="text-xs text-white/90">
-                  与导师和优秀学员直接交流，分享交易心得
+                  {t('academy.unlock.benefits.vipGroup.desc')}
                 </p>
               </div>
               <div className="p-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-sm">
-                <h5 className="font-medium text-sm mb-1">一对一指导</h5>
+                <h5 className="font-medium text-sm mb-1">{t('academy.unlock.benefits.guidance.title')}</h5>
                 <p className="text-xs text-white/90">
-                  针对个人交易问题提供专业指导建议
+                  {t('academy.unlock.benefits.guidance.desc')}
                 </p>
               </div>
               <div className="p-4 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-sm">
-                <h5 className="font-medium text-sm mb-1">实时策略更新</h5>
+                <h5 className="font-medium text-sm mb-1">{t('academy.unlock.benefits.updates.title')}</h5>
                 <p className="text-xs text-white/90">
-                  第一时间获取最新的市场策略和信号提醒
+                  {t('academy.unlock.benefits.updates.desc')}
                 </p>
               </div>
             </div>
@@ -359,13 +361,13 @@ export function UnlockCoursesPage({
       <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>支付信息</DialogTitle>
-            <DialogDescription>请严格按以下信息进行链上转账</DialogDescription>
+            <DialogTitle>{t('academy.unlock.payment.title')}</DialogTitle>
+            <DialogDescription>{t('academy.unlock.payment.desc')}</DialogDescription>
           </DialogHeader>
           {paymentInfo && (
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                <div className="text-xs text-blue-700 mb-1">支付地址</div>
+                <div className="text-xs text-blue-700 mb-1">{t('academy.unlock.payment.address')}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm break-all font-mono text-blue-900">
                     {paymentInfo.paymentAddress}
@@ -376,13 +378,13 @@ export function UnlockCoursesPage({
                     onClick={() => copyToClipboard(paymentInfo.paymentAddress)}
                     className="ml-2"
                   >
-                    <Copy className="w-4 h-4 mr-1" /> 复制
+                    <Copy className="w-4 h-4 mr-1" /> {t('common.copy')}
                   </Button>
                 </div>
               </div>
 
               <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
-                <div className="text-xs text-amber-700 mb-1">支付金额</div>
+                <div className="text-xs text-amber-700 mb-1">{t('academy.unlock.payment.amount')}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-semibold text-amber-900">
                     {paymentInfo.paymentAmount} {paymentInfo.currency}
@@ -397,18 +399,18 @@ export function UnlockCoursesPage({
                     }
                     className="ml-2"
                   >
-                    <Copy className="w-4 h-4 mr-1" /> 复制
+                    <Copy className="w-4 h-4 mr-1" /> {t('common.copy')}
                   </Button>
                 </div>
               </div>
 
               <div className="text-xs text-slate-600 space-y-1">
                 <p>
-                  • 金额为系统分配的唯一识别值，请勿修改，否则无法自动识别。
+                  {t('academy.unlock.payment.notice1')}
                 </p>
-                <p>• 支付完成后，后台需要时间确认，请耐心等待。</p>
+                <p>{t('academy.unlock.payment.notice2')}</p>
                 <p>
-                  • 如有问题，请联系管理员并提供订单号：{paymentInfo.orderId}
+                  {t('academy.unlock.payment.notice3')}{paymentInfo.orderId}
                 </p>
               </div>
 
@@ -420,14 +422,14 @@ export function UnlockCoursesPage({
                     onNavigateTab?.('orders')
                   }}
                 >
-                  <ExternalLink className="w-4 h-4 mr-2" /> 查看订单
+                  <ExternalLink className="w-4 h-4 mr-2" /> {t('common.viewOrder')}
                 </Button>
                 <Button
                   variant="outline"
                   className="flex-1"
                   onClick={() => setPaymentOpen(false)}
                 >
-                  我已知晓
+                  {t('common.known')}
                 </Button>
               </div>
             </div>

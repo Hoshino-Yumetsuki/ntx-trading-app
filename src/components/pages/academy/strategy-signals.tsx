@@ -14,6 +14,7 @@ import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function StrategySignalsPage({
   onReadingChange,
@@ -22,6 +23,7 @@ export function StrategySignalsPage({
   onReadingChange?: (reading: boolean) => void
   onNavigateTab?: (tabId: string) => void
 }) {
+  const { t } = useLanguage()
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -43,7 +45,7 @@ export function StrategySignalsPage({
         setLockedCourses(lockedCourses)
       } catch (err) {
         console.error('Failed to fetch courses:', err)
-        setError('获取策略信号数据失败，请稍后再试')
+        setError(t('signals.error.fetchFailed'))
       } finally {
         setLoading(false)
       }
@@ -73,26 +75,26 @@ export function StrategySignalsPage({
             <div className="premium-icon w-8 h-8 rounded-lg mr-3">
               <Target className="w-4 h-4 text-blue-600" />
             </div>
-            策略信号
+            {t('signals.title')}
           </CardTitle>
           <p className="text-slate-600 text-sm ml-11">
-            基于机构行为的趋势系统+程序化工具，清晰捕捉中期趋势
+            {t('signals.subtitle')}
           </p>
         </CardHeader>
         <CardContent className="p-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <span className="ml-2 text-slate-600">加载策略信号中...</span>
+              <span className="ml-2 text-slate-600">{t('signals.loading')}</span>
             </div>
           ) : error ? (
             <div className="text-center py-8">
               <p className="text-red-500 mb-4">{error}</p>
-              <p className="text-slate-600">请稍后刷新页面重试</p>
+              <p className="text-slate-600">{t('common.retry')}</p>
             </div>
           ) : unlockedCourses.length === 0 && lockedCourses.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-slate-600">暂无策略信号可显示</p>
+              <p className="text-slate-600">{t('signals.noSignals')}</p>
             </div>
           ) : (
             <div className="space-y-6">

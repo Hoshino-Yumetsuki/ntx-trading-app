@@ -7,8 +7,10 @@ import { Loader2 } from 'lucide-react'
 import type { Order } from '@/src/types/course'
 import { getMyOrders } from '@/src/services/payment'
 import { getPermissionGroups } from '@/src/services/courseService'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function OrdersPage() {
+  const { t } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
@@ -37,13 +39,13 @@ export function OrdersPage() {
           ;(pg?.packages || []).forEach((p: any) => {
             const name =
               (p?.description?.trim?.() as string) ||
-              `${groupName} · ${p?.duration_days ?? ''}天`
+              `${groupName} · ${p?.duration_days ?? ''}${t('common.days')}`
             if (p?.id) map[p.id as number] = name
           })
         })
         setPackageNameMap(map)
       } catch (e: any) {
-        setError(e.message || '获取订单失败')
+        setError(e.message || t('academy.error.fetchOrdersFailed'))
       } finally {
         setLoading(false)
       }
@@ -59,7 +61,7 @@ export function OrdersPage() {
         <span
           className={`${base} bg-green-100 text-green-700 border border-green-200`}
         >
-          支付成功
+          {t('academy.orders.status.success')}
         </span>
       )
     }
@@ -68,7 +70,7 @@ export function OrdersPage() {
         <span
           className={`${base} bg-amber-100 text-amber-700 border border-amber-200`}
         >
-          待支付/待确认
+          {t('academy.orders.status.pending')}
         </span>
       )
     }
@@ -76,7 +78,7 @@ export function OrdersPage() {
       <span
         className={`${base} bg-slate-100 text-slate-700 border border-slate-200`}
       >
-        已关闭
+        {t('academy.orders.status.closed')}
       </span>
     )
   }
@@ -110,14 +112,14 @@ export function OrdersPage() {
             }
           }}
         >
-          刷新
+          {t('common.refresh')}
         </Button>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-          <span className="ml-2 text-slate-600">加载订单中...</span>
+          <span className="ml-2 text-slate-600">{t('academy.orders.loading')}</span>
         </div>
       ) : error ? (
         <div className="text-center py-8">
@@ -125,7 +127,7 @@ export function OrdersPage() {
         </div>
       ) : orders.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-slate-600">暂无订单</p>
+          <p className="text-slate-600">{t('academy.orders.noData')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -137,20 +139,20 @@ export function OrdersPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-1">
                   <div className="text-slate-800 font-semibold">
-                    订单#{formatOrderNo(o)}
+                    {t('academy.orders.orderNo')}{formatOrderNo(o)}
                   </div>
                   <div className="text-slate-400 text-sm">
                     {packageNameMap[o.package_id] ?? '-'}
                   </div>
                 </div>
                 <div className="text-slate-700 text-sm">
-                  套餐金额 {o.amount} {o.currency}
+                  {t('academy.orders.packageAmount')} {o.amount} {o.currency}
                 </div>
                 <div className="text-blue-600 text-sm font-semibold mt-1">
-                  实付金额 {o.paymentAmount} {o.currency}
+                  {t('academy.orders.paymentAmount')} {o.paymentAmount} {o.currency}
                 </div>
                 <div className="text-slate-500 text-xs mt-1">
-                  创建时间 {new Date(o.created_at).toLocaleString()}
+                  {t('academy.orders.createTime')} {new Date(o.created_at).toLocaleString()}
                 </div>
                 <div className="mt-3">{renderStatus(o)}</div>
               </CardContent>

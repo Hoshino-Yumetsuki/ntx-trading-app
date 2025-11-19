@@ -14,12 +14,14 @@ import type { Course } from '@/src/types/course'
 import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function BlackHorseModelPage({
   onReadingChange
 }: {
   onReadingChange?: (reading: boolean) => void
 }) {
+  const { t } = useLanguage()
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -41,7 +43,7 @@ export function BlackHorseModelPage({
         setLockedCourses(lockedCourses)
       } catch (err) {
         console.error('Failed to fetch courses:', err)
-        setError('获取学习资源数据失败，请稍后再试')
+        setError(t('academy.error.fetchCoursesFailed'))
       } finally {
         setLoading(false)
       }
@@ -71,23 +73,23 @@ export function BlackHorseModelPage({
             <div className="premium-icon w-8 h-8 rounded-lg mr-3">
               <TrendingUp className="w-4 h-4 text-blue-600" />
             </div>
-            学习资源
+            {t('academy.blackHorse.title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <span className="ml-2 text-slate-600">加载学习资源中...</span>
+              <span className="ml-2 text-slate-600">{t('academy.blackHorse.loading')}</span>
             </div>
           ) : error ? (
             <div className="text-center py-8">
               <p className="text-red-500 mb-4">{error}</p>
-              <p className="text-slate-600">请稍后刷新页面重试</p>
+              <p className="text-slate-600">{t('common.retry')}</p>
             </div>
           ) : unlockedCourses.length === 0 && lockedCourses.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-slate-600">暂无学习资源可显示</p>
+              <p className="text-slate-600">{t('academy.blackHorse.noData')}</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -95,7 +97,7 @@ export function BlackHorseModelPage({
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
                     <div className="w-1 h-6 bg-green-500 mr-3 rounded"></div>
-                    已解锁学习资源
+                    {t('academy.blackHorse.unlocked')}
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     {unlockedCourses.map((course) => (

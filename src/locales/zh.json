@@ -741,14 +741,95 @@
       "item2": "有策略框架但执行效率低、选币耗时的交易员",
       "item3": "具备趋势交易思维，想提升胜率与纪律性的进阶用户"
     },
+    "blackHorse": {
+      "title": "学习资源",
+      "loading": "加载学习资源中...",
+      "noData": "暂无学习资源可显示",
+      "unlocked": "已解锁学习资源"
+    },
+    "communities": {
+      "loading": "加载社区中...",
+      "noData": "暂无社区可显示"
+    },
+    "orders": {
+      "loading": "加载订单中...",
+      "noData": "暂无订单",
+      "status": {
+        "success": "支付成功",
+        "pending": "待支付/待确认",
+        "closed": "已关闭"
+      },
+      "orderNo": "订单#",
+      "packageAmount": "套餐金额",
+      "paymentAmount": "实付金额",
+      "createTime": "创建时间"
+    },
+    "unlock": {
+      "title": "解锁完整课程",
+      "subtitle": "程序化辅助工具：学员专属【筛选系统】，落地模型应用",
+      "cta": "获得机构级策略",
+      "includes": {
+        "title": "课程包含内容",
+        "system": {
+          "title": "完整交易系统",
+          "desc": "包含入场、止损、止盈的完整交易决策框架"
+        },
+        "tools": {
+          "title": "专属筛选工具",
+          "desc": "学员专属的程序化筛选系统，快速发现优质标的"
+        },
+        "cases": {
+          "title": "实战案例分析",
+          "desc": "真实市场案例解析，理论与实践相结合"
+        },
+        "support": {
+          "title": "持续更新支持",
+          "desc": "根据市场变化持续更新策略和工具"
+        }
+      },
+      "packages": {
+        "title": "购买套餐",
+        "list": "订单列表",
+        "loading": "加载套餐中...",
+        "noData": "暂无可购买的套餐"
+      },
+      "benefits": {
+        "title": "学员专属权益",
+        "vipGroup": {
+          "title": "VIP交流群",
+          "desc": "与导师和优秀学员直接交流，分享交易心得"
+        },
+        "guidance": {
+          "title": "一对一指导",
+          "desc": "针对个人交易问题提供专业指导建议"
+        },
+        "updates": {
+          "title": "实时策略更新",
+          "desc": "第一时间获取最新的市场策略和信号提醒"
+        }
+      },
+      "payment": {
+        "title": "支付信息",
+        "desc": "请严格按以下信息进行链上转账",
+        "address": "支付地址",
+        "amount": "支付金额",
+        "notice1": "• 金额为系统分配的唯一识别值，请勿修改，否则无法自动识别。",
+        "notice2": "• 支付完成后，后台需要时间确认，请耐心等待。",
+        "notice3": "• 如有问题，请联系管理员并提供订单号："
+      }
+    },
     "error": {
       "fetchCoursesFailed": "获取课程失败，请稍后再试",
-      "fetchCommunityFailed": "获取社区数据失败，请稍后再试"
+      "fetchCommunityFailed": "获取社区数据失败，请稍后再试",
+      "fetchOrdersFailed": "获取订单失败",
+      "fetchPackagesFailed": "加载课程与套餐失败",
+      "createOrderFailed": "创建订单失败，请稍后重试"
     }
   },
   "signals": {
     "title": "策略信号",
     "subtitle": "基于机构行为的趋势系统+程序化工具，清晰捕捉中期趋势",
+    "loading": "加载策略信号中...",
     "unlockedSignals": "已解锁策略信号",
     "lockedSignals": "待解锁信号",
     "noSignals": "暂无策略信号可显示",
