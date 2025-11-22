@@ -942,5 +942,29 @@
       "confirmation": "• After payment is completed, the backend needs time for confirmation, please wait patiently.",
       "contact": "• If you have any questions, please contact the administrator and provide the order number:"
     }
+  },
+  "mission": {
+    "title": "Mission Center",
+    "loading": "Loading missions...",
+    "empty": "No missions available",
+    "daily": "Daily",
+    "reward": "Reward",
+    "progress": "Progress",
+    "status": {
+      "claimed": "Claimed",
+      "claim": "Claim Reward",
+      "pending": "Pending"
+    },
+    "section": {
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "error": {
+      "fetchFailed": "Failed to fetch missions",
+      "claimFailed": "Failed to claim reward"
+    },
+    "success": {
+      "claimed": "Reward claimed successfully"
+    }
   }
 }

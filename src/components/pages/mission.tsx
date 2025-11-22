@@ -28,7 +28,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
       setMissions(data)
     } catch (error) {
       console.error('Failed to fetch missions:', error)
-      toast.error('获取任务列表失败')
+      toast.error(t('mission.error.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -43,11 +43,11 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
     try {
       setClaimingId(mission.id)
       const res = await MissionService.claimReward(mission.id)
-      toast.success(res.message || '领取成功')
+      toast.success(res.message || t('mission.success.claimed'))
       // Refresh list to update status
       fetchMissions()
     } catch (error: any) {
-      toast.error(error.message || '领取失败')
+      toast.error(error.message || t('mission.error.claimFailed'))
     } finally {
       setClaimingId(null)
     }
@@ -111,7 +111,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
     if (mission.status === 'CLAIMED') {
       return (
         <Button disabled variant="secondary" className="w-24 bg-slate-100 text-slate-400">
-          已领取
+          {t('mission.status.claimed')}
         </Button>
       )
     }
@@ -124,7 +124,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
           disabled={claimingId === mission.id}
           className="w-24 bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all active:scale-95"
         >
-          {claimingId === mission.id ? <Loader2 className="w-4 h-4 animate-spin" /> : '领取奖励'}
+          {claimingId === mission.id ? <Loader2 className="w-4 h-4 animate-spin" /> : t('mission.status.claim')}
         </Button>
       )
     }
@@ -136,7 +136,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
         variant="outline"
         className="w-24 border-slate-200 text-slate-400 bg-slate-50"
       >
-        待完成
+        {t('mission.status.pending')}
       </Button>
     )
   }
@@ -157,7 +157,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
                 <h3 className="font-bold text-slate-800 truncate">{mission.name}</h3>
                 {mission.is_daily && (
                   <span className="px-1.5 py-0.5 bg-orange-100 text-orange-600 text-[10px] rounded font-medium">
-                    每日
+                    {t('mission.daily')}
                   </span>
                 )}
               </div>
@@ -167,12 +167,12 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
 
               <div className="mt-3 flex items-center gap-4">
                 <div className="flex items-center text-sm font-medium text-orange-500">
-                    <span className="text-xs mr-1">奖励</span>
+                    <span className="text-xs mr-1">{t('mission.reward')}</span>
                     {mission.reward_amount} <span className="text-[10px] ml-0.5">NTX</span>
                 </div>
                 {mission.condition_value > 1 && mission.progress < mission.condition_value && mission.status !== 'COMPLETED' && mission.status !== 'CLAIMED' && (
                       <div className="text-xs text-slate-400">
-                        进度: {mission.progress} / {mission.condition_value}
+                        {t('mission.progress')}: {mission.progress} / {mission.condition_value}
                       </div>
                 )}
               </div>
@@ -203,7 +203,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
             >
               <ArrowLeft className="w-6 h-6" />
             </Button>
-            <h1 className="text-xl font-bold text-slate-800">任务中心</h1>
+            <h1 className="text-xl font-bold text-slate-800">{t('mission.title')}</h1>
           </div>
           <div className="relative w-24 h-8">
             <Image
@@ -221,19 +221,19 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-12 text-slate-400">
             <Loader2 className="w-8 h-8 animate-spin mb-2" />
-            <p>加载任务中...</p>
+            <p>{t('mission.loading')}</p>
           </div>
         ) : missions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-slate-400">
                 <Gift className="w-12 h-12 mb-2 opacity-20" />
-                <p>暂无任务</p>
+                <p>{t('mission.empty')}</p>
             </div>
         ) : (
           <>
             {/* 未完成/可领取的部分 */}
             {activeMissions.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">进行中</h2>
+                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">{t('mission.section.active')}</h2>
                 {activeMissions.map(renderMissionCard)}
               </div>
             )}
@@ -241,7 +241,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
             {/* 已完成/已领取的部分 */}
             {claimedMissions.length > 0 && (
               <div>
-                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">已完成</h2>
+                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">{t('mission.section.completed')}</h2>
                 {claimedMissions.map(renderMissionCard)}
               </div>
             )}
