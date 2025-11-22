@@ -39,6 +39,7 @@ import {
 import { toast } from 'sonner'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { useLanguage } from '@/src/contexts/language-context'
+import { MissionService } from '@/src/services/mission'
 
 export function MiningPage() {
   const exchangeUidId = useId()
@@ -187,6 +188,9 @@ export function MiningPage() {
       setShowBindDialog(false)
       setBindingExchangeId(null)
       setBindingUid('')
+
+      // Report bind_exchange task
+      MissionService.reportAction('bind_exchange')
 
       await fetchUserExchanges()
     } catch (error) {

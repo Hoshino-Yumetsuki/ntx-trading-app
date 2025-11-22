@@ -13,6 +13,7 @@ import { NotificationsPage } from '@/src/components/pages/notifications'
 import { useLanguage } from '@/src/contexts/language-context'
 import { AppBackground } from '@/src/components/ui/app-background'
 import { useAuth } from '@/src/contexts/AuthContext'
+import { MissionPage } from './pages/mission'
 
 export function MainApp() {
   const [activeTab, setActiveTab] = useState('home')
@@ -88,6 +89,8 @@ export function MainApp() {
   let ActiveComponent: any
   if (activeTab === 'broker') {
     ActiveComponent = BrokerPage
+  } else if (activeTab === 'mission') {
+    ActiveComponent = MissionPage
   } else if (activeTab === 'notifications') {
     ActiveComponent = NotificationsPage
   } else {
@@ -105,7 +108,7 @@ export function MainApp() {
         {activeTab === 'home' ? (
           <HomePage onNavigate={setActiveTab} />
         ) : (
-          <ActiveComponent />
+          <ActiveComponent onNavigate={setActiveTab} />
         )}
       </main>
 

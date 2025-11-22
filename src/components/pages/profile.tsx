@@ -70,8 +70,12 @@ export function ProfilePage() {
   };
 
   const handleNavigate = (
-    page: "assets" | "security" | "community" | "broker" | "orders",
+    page: "assets" | "security" | "community" | "broker" | "orders" | "mission",
   ) => {
+    if (page === 'mission') {
+      router.push('/?tab=mission')
+      return
+    }
     setCurrentPage(page);
   };
 

@@ -52,6 +52,7 @@ interface UniversalShareModalProps {
   showCopyLinkButton?: boolean;
   onQrOverride?: (text: string) => void;
   showCustomQrUpload?: boolean;
+  onShare?: () => void;
 }
 
 const useQrCodeScanner = (onQrScanSuccess: (text: string) => void, t: (key: string) => string) => {
@@ -153,6 +154,7 @@ export function UniversalShareModal({
   showCopyLinkButton = true,
   onQrOverride,
   showCustomQrUpload = true,
+  onShare,
 }: UniversalShareModalProps) {
   const { t } = useLanguage();
   const [generatedImage, setGeneratedImage] = useState<string>("");
@@ -231,7 +233,7 @@ export function UniversalShareModal({
                     const dataUrl = "${imageToDownload}";
                     const title = \`${sharePayload.title.replace(/`/g, "\\`")}\`;
                     const text = \`${sharePayload.text.replace(/`/g, "\\`")}\`;
-                    
+
                     try {
                       const response = await fetch(dataUrl);
                       const blob = await response.blob();
@@ -368,33 +370,37 @@ export function UniversalShareModal({
   }, [shareData.title, shareData.text, shareData.fullText, shareData.url]);
 
   const shareToTelegram = () => {
-    const payload = buildSharePayload()
-    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
-    const shareUrl = `https://t.me/share/url?text=${encodeURIComponent(shareText)}`
+    onShare?.();
+    const payload = buildSharePayload();
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`;
+    const shareUrl = `https://t.me/share/url?text=${encodeURIComponent(shareText)}`;
     window.open(shareUrl, "_blank");
   };
 
   const shareToTwitter = () => {
-    const payload = buildSharePayload()
-    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
-    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`
+    onShare?.();
+    const payload = buildSharePayload();
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`;
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(shareUrl, "_blank");
   };
 
   const shareToWhatsApp = () => {
-    const payload = buildSharePayload()
-    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
-    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
+    onShare?.();
+    const payload = buildSharePayload();
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`;
+    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(shareUrl, "_blank");
   };
 
   const shareNative = async () => {
-    const shareDataPayload = buildSharePayload()
+    onShare?.();
+    const shareDataPayload = buildSharePayload();
     try {
       if (navigator.share) {
         await navigator.share({
           title: shareDataPayload.title,
-          text: `${shareDataPayload.title}\n\n${shareDataPayload.text}\n\n${shareDataPayload.url}`
+          text: `${shareDataPayload.title}\n\n${shareDataPayload.text}\n\n${shareDataPayload.url}`,
         });
       } else {
         copyLink();

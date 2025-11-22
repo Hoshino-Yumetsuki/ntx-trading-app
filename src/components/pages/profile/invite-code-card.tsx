@@ -14,6 +14,7 @@ import { useLanguage } from '@/src/contexts/language-context'
 import { toast } from 'sonner'
 import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useInviteImageGenerator, InvitePoster } from './invite-image-generator'
+import { MissionService } from '@/src/services/mission'
 
 interface InviteCodeCardProps {
   userInfo: UserInfo | null
@@ -43,6 +44,11 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
 
   const openShareModal = () => {
     setShowShareModal(true)
+  }
+
+  const handleShare = () => {
+    // 上报每日分享任务
+    MissionService.reportAction('daily_share')
   }
 
   return (
@@ -89,6 +95,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
         title={t('profile.share.shareInvitePoster')}
+        onShare={handleShare}
         shareData={{
           title: t('profile.inviteCode.registerTitle'),
           text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n${t('profile.inviteCode.benefit')}\n\n${t('profile.inviteCode.inviteCodeLabel')}${userInfo?.myInviteCode || ''}`,

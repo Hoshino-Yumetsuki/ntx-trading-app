@@ -9,6 +9,7 @@ import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import Image from 'next/image'
 import { useLanguage } from '@/src/contexts/language-context'
+import { MissionService } from '@/src/services/mission'
 
 export function LoopCommunitiesPage({
   onReadingChange
@@ -41,6 +42,9 @@ export function LoopCommunitiesPage({
   }, [])
 
   const handleCommunityClick = (community: Course) => {
+    // 上报每日直播任务
+    MissionService.reportAction('daily_live')
+
     if (community.link) {
       window.open(community.link, '_blank', 'noopener,noreferrer')
     } else if (community.content) {

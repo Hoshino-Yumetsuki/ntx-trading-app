@@ -1,11 +1,11 @@
 'use client'
 
 import { Card } from '@/src/components/ui/card'
-import { Shield, ChevronRight, DollarSign, FileText } from 'lucide-react'
+import { Shield, ChevronRight, DollarSign, FileText, Gift } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 
 interface QuickActionsCardProps {
-  onNavigate: (page: 'assets' | 'security' | 'orders') => void
+  onNavigate: (page: 'assets' | 'security' | 'orders' | 'mission') => void
 }
 
 export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
@@ -30,6 +30,12 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
       description:
         t('profile.menu.orders.description') || '查看购买记录与支付状态',
       onClick: () => onNavigate('orders')
+    },
+    {
+      icon: Gift,
+      label: '任务中心',
+      description: '完成任务领取奖励',
+      onClick: () => onNavigate('mission')
     }
   ]
 

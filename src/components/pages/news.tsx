@@ -12,6 +12,7 @@ import { UniversalShareModal } from '@/src/components/ui/universal-share-modal'
 import { useNewsImageGenerator } from './news/news-image-generator'
 import type { NewsItem } from '@/src/types/news'
 import { ShareCard } from '@/src/components/ui/share-card'
+import { MissionService } from '@/src/services/mission'
 
 import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -286,6 +287,7 @@ export function NewsPage() {
             />
           }
           onQrOverride={setOverrideQrText}
+          onShare={() => MissionService.reportAction('daily_share')}
         />
       </>
     )
@@ -450,6 +452,7 @@ export function NewsPage() {
           />
         }
         onQrOverride={setOverrideQrText}
+        onShare={() => MissionService.reportAction('daily_share')}
       />
     </>
   )

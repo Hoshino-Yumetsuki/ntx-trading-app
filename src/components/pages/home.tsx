@@ -459,7 +459,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
               {t('home.card.dark_horse.desc')}
             </p>
             <Button
-              onClick={() => onNavigate?.('academy')}
+              onClick={() => onNavigate?.('mission')}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-6 rounded-lg shadow-md h-8"
             >
               {t('home.card.dark_horse.button')}

@@ -26,6 +26,7 @@ import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import { UnlockCoursesPage } from './academy/unlock-courses'
 import { BlackHorseModelPage } from './academy/black-horse-model'
 import { useLanguage } from '@/src/contexts/language-context'
+import { MissionService } from '@/src/services/mission'
 
 export function AcademyPage() {
   const { t } = useLanguage()
@@ -95,6 +96,9 @@ export function AcademyPage() {
   }, [])
 
   const handleCommunityClick = (community: Course) => {
+    // 上报每日直播任务
+    MissionService.reportAction('daily_live')
+
     if (community.link) {
       window.open(community.link, '_blank', 'noopener,noreferrer')
     } else if (community.content) {
