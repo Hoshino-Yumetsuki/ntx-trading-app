@@ -33,8 +33,8 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
     },
     {
       icon: Gift,
-      label: '任务中心',
-      description: '完成任务领取奖励',
+      label: t('profile.menu.mission.title'),
+      description: t('profile.menu.mission.description'),
       onClick: () => onNavigate('mission')
     }
   ]

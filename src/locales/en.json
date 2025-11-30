@@ -116,8 +116,19 @@
     }
   },
   "common": {
-    "loading": "Loading...",
-    "error": "Error",
+    "loading": {
+      "default": "Loading...",
+      "courses": "Loading courses...",
+      "community": "Loading community...",
+      "packages": "Loading packages...",
+      "orders": "Loading orders...",
+      "signals": "Loading strategy signals...",
+      "learningResources": "Loading learning resources..."
+    },
+    "error": {
+      "default": "Error",
+      "refreshPage": "Please refresh the page and try again later"
+    },
     "success": "Success",
     "cancel": "Cancel",
     "confirm": "Confirm",
@@ -136,8 +147,12 @@
     "requires": "Requires:",
     "ordering": "Ordering",
     "purchase": "Purchase",
+    "buy": "Buy",
     "viewOrder": "View Order",
     "understood": "Understood",
+    "known": "Got it",
+    "permanent": "Permanent",
+    "days": "days",
     "clickToEnter": "Click to Enter",
     "loggedOut": "Logged out successfully",
     "pleaseLogin": "Please login first",
@@ -155,17 +170,6 @@
     "duration": {
       "permanent": "Permanent",
       "days": "days"
-    },
-    "error": {
-      "refreshPage": "Please refresh the page and try again later"
-    },
-    "loading": {
-      "courses": "Loading courses...",
-      "community": "Loading community...",
-      "packages": "Loading packages...",
-      "orders": "Loading orders...",
-      "signals": "Loading strategy signals...",
-      "learningResources": "Loading learning resources..."
     }
   },
   "nav": {
@@ -396,6 +400,10 @@
         "close": "Close",
         "order": "Order",
         "packageName": "Package Name"
+      },
+      "mission": {
+        "title": "Mission Center",
+        "description": "Complete missions to earn rewards"
       }
     },
     "wallet": {

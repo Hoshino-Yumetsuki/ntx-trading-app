@@ -3,10 +3,11 @@
 import type React from 'react'
 import { createContext, useContext, useState, useEffect } from 'react'
 import type {
-  Translations,
   SupportedLanguage,
   TranslationKey
 } from '@/src/types/i18n'
+
+type Translations = Record<string, any>
 
 import zhTranslations from '@/src/locales/zh.json'
 import enTranslations from '@/src/locales/en.json'

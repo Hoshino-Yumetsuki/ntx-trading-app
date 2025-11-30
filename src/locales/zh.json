@@ -116,8 +116,19 @@
     }
   },
   "common": {
-    "loading": "加载中...",
-    "error": "错误",
+    "loading": {
+      "default": "加载中...",
+      "courses": "加载课程中...",
+      "community": "加载社区中...",
+      "packages": "加载套餐中...",
+      "orders": "加载订单中...",
+      "signals": "加载策略信号中...",
+      "learningResources": "加载学习资源中..."
+    },
+    "error": {
+      "default": "错误",
+      "refreshPage": "请稍后刷新页面重试"
+    },
     "success": "成功",
     "cancel": "取消",
     "confirm": "确认",
@@ -136,8 +147,12 @@
     "requires": "需要：",
     "ordering": "下单中",
     "purchase": "购买",
+    "buy": "购买",
     "viewOrder": "查看订单",
     "understood": "我已知晓",
+    "known": "我知道了",
+    "permanent": "永久",
+    "days": "天",
     "clickToEnter": "点击进入",
     "loggedOut": "已退出登录",
     "pleaseLogin": "请先登录",
@@ -155,17 +170,6 @@
     "duration": {
       "permanent": "永久",
       "days": "天"
-    },
-    "error": {
-      "refreshPage": "请稍后刷新页面重试"
-    },
-    "loading": {
-      "courses": "加载课程中...",
-      "community": "加载社区中...",
-      "packages": "加载套餐中...",
-      "orders": "加载订单中...",
-      "signals": "加载策略信号中...",
-      "learningResources": "加载学习资源中..."
     }
   },
   "nav": {
@@ -396,6 +400,10 @@
         "close": "关闭",
         "order": "订单",
         "packageName": "套餐名称"
+      },
+      "mission": {
+        "title": "任务中心",
+        "description": "完成任务领取奖励"
       }
     },
     "wallet": {
@@ -687,6 +695,17 @@
       "orders": "我的订单",
       "practice": "实战课",
       "advanced": "进阶"
+    },
+    "level": {
+      "基础": "基础",
+      "进阶": "进阶",
+      "高级": "高级"
+    },
+    "category": {
+      "交易策略": "交易策略",
+      "技术分析": "技术分析",
+      "风险管理": "风险管理",
+      "市场分析": "市场分析"
     },
     "subtitle": {
       "orders": "查看课程购买与支付状态",
