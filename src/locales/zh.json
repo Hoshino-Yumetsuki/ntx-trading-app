@@ -495,7 +495,16 @@
     "error": "加载失败",
     "empty": "暂无资讯",
     "readMore": "阅读更多",
-    "back": "返回"
+    "back": "返回",
+    "share": "分享",
+    "shareArticle": "分享文章",
+    "noSearchResults": "没有找到与 \"{query}\" 相关的文章",
+    "shareCard": {
+      "slogan1": "连接用户 聚合资源",
+      "slogan2": "挖掘你的 Web3 机会",
+      "qrLabel": "获取空投",
+      "qrAlt": "二维码"
+    }
   },
   "home": {
     "welcome": "欢迎使用",

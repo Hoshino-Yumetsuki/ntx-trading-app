@@ -4,6 +4,7 @@ import { forwardRef, useEffect, useRef, useState } from 'react'
 import MarkdownIt from 'markdown-it'
 import multimdTable from 'markdown-it-multimd-table'
 import Image from 'next/image'
+import { useLanguage } from '@/src/contexts/language-context'
 
 interface ShareCardProps {
   title: string
@@ -16,6 +17,7 @@ interface ShareCardProps {
 
 export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
   ({ title, content, qrCodeDataUrl }, ref) => {
+    const { t, language } = useLanguage()
     const md = new MarkdownIt({
       html: true,
       linkify: true,
@@ -95,7 +97,10 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
       const y = d.getFullYear()
       const m = String(d.getMonth() + 1).padStart(2, '0')
       const day = String(d.getDate()).padStart(2, '0')
-      return `${y}年${m}月${day}日`
+      if (language === 'zh') {
+        return `${y}年${m}月${day}日`
+      }
+      return `${y}-${m}-${day}`
     }
     const todayLabel = formatDateYMD(new Date())
 
@@ -196,24 +201,24 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         >
           <div className="text-left w-[280px] flex flex-col justify-center h-[170px]">
             <div className="flex justify-between text-[#1C55FF] font-bold text-[32px] leading-tight">
-              <span>连接用户 聚合资源</span>
+              <span>{t('news.shareCard.slogan1')}</span>
             </div>
             <div className="text-gray-600 text-[20px] mt-2 leading-tight w-full">
-              挖掘你的 Web3 机会
+              {t('news.shareCard.slogan2')}
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="bg-white p-2 rounded-xl border border-[#E2E8F0] shadow-sm">
               <Image
                 src={qrSrc}
-                alt="二维码"
+                alt={t('news.shareCard.qrAlt')}
                 width={150}
                 height={150}
                 className="w-[150px] h-[150px]"
                 priority
               />
             </div>
-            <div className="text-slate-700 text-base font-medium">获取空投</div>
+            <div className="text-slate-700 text-base font-medium">{t('news.shareCard.qrLabel')}</div>
           </div>
         </div>
       </div>

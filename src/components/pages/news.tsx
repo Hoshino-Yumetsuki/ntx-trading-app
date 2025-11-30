@@ -18,9 +18,10 @@ import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { Input } from '@/src/components/ui/input'
+import type { SupportedLanguage } from '@/src/contexts/language-context'
 
-const fetchRssNews = async (): Promise<NewsItem[]> => {
-  const response = await fetch('https://rss.ntxdao.com/rss/clist')
+const fetchRssNews = async (language: SupportedLanguage): Promise<NewsItem[]> => {
+  const response = await fetch('https://rss.ntxdao.com/rss/hybrid')
   if (!response.ok) {
     throw new Error('网络响应错误，无法获取RSS源')
   }
@@ -31,7 +32,8 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
       item: [
         ['content:encoded', 'contentEncoded'],
         ['media:content', 'mediaContent'],
-        ['media:thumbnail', 'mediaThumbnail']
+        ['media:thumbnail', 'mediaThumbnail'],
+        ['language', 'language']
       ]
     }
   })
@@ -43,7 +45,16 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
     return match ? match[1] : null
   }
 
+  // 根据当前语言筛选对应的文章
+  // RSS 中语言标识: zh-cn, en-us
+  // App 中语言标识: zh, en
+  const targetLanguage = language === 'zh' ? 'zh-cn' : 'en-us'
+
   return feed.items
+    .filter((item: any) => {
+      const itemLanguage = item?.language || ''
+      return itemLanguage === targetLanguage
+    })
     .map((item: any) => {
       const contentEncoded: string =
         item?.contentEncoded || item?.['content:encoded'] || ''
@@ -74,7 +85,7 @@ const fetchRssNews = async (): Promise<NewsItem[]> => {
 }
 
 export function NewsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const router = useRouter()
   const searchParams = useSearchParams()
   const posterRef = useRef<HTMLDivElement>(null) // 为海报创建 ref
@@ -91,8 +102,8 @@ export function NewsPage() {
     isError,
     isSuccess
   } = useQuery<NewsItem[]>({
-    queryKey: ['rssNews'],
-    queryFn: fetchRssNews,
+    queryKey: ['rssNews', language],
+    queryFn: () => fetchRssNews(language),
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false
   })
@@ -189,7 +200,7 @@ export function NewsPage() {
                   onClick={handleBackToList}
                   className="mr-2"
                 >
-                  <Image src="/back.png" alt="返回" width={20} height={20} />
+                  <Image src="/back.png" alt={t('common.back')} width={20} height={20} />
                 </Button>
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
                   <Image
@@ -208,9 +219,9 @@ export function NewsPage() {
               >
                 <div className="flex items-center gap-x-1">
                   <span className="text-xs font-medium text-[#1C55FF]">
-                    分享
+                    {t('news.share')}
                   </span>
-                  <Image src="/share.png" alt="分享" width={16} height={13} />
+                  <Image src="/share.png" alt={t('news.share')} width={16} height={13} />
                 </div>
               </Button>
             </div>
@@ -254,7 +265,7 @@ export function NewsPage() {
                 className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
                 onClick={() => handleShare(currentArticle)}
               >
-                <span className="mr-2 font-semibold">分享</span>
+                <span className="mr-2 font-semibold">{t('news.share')}</span>
                 <Share2 className="w-4 h-4" />
               </Button>
             </div>
@@ -267,7 +278,7 @@ export function NewsPage() {
             setShowShareModal(false)
             setOverrideQrText('')
           }}
-          title="分享文章"
+          title={t('news.shareArticle')}
           shareData={{
             title: shareNewsItem?.title || '',
             text: shareNewsItem?.summary || '',
@@ -420,8 +431,8 @@ export function NewsPage() {
           ) : (
             <div className="text-center py-8 text-slate-500">
               {searchQuery
-                ? `没有找到与 "${searchQuery}" 相关的文章`
-                : t('news.empty') || '暂无新闻'}
+                ? t('news.noSearchResults').replace('{query}', searchQuery)
+                : t('news.empty')}
             </div>
           )}
         </div>
@@ -432,7 +443,7 @@ export function NewsPage() {
           setShowShareModal(false)
           setOverrideQrText('')
         }}
-        title="分享文章"
+        title={t('news.shareArticle')}
         shareData={{
           title: shareNewsItem?.title || '',
           text: shareNewsItem?.summary || '',

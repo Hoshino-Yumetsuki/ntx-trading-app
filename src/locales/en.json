@@ -495,7 +495,16 @@
     "error": "Loading failed",
     "empty": "No news available",
     "readMore": "Read More",
-    "back": "Back"
+    "back": "Back",
+    "share": "Share",
+    "shareArticle": "Share Article",
+    "noSearchResults": "No articles found for \"{query}\"",
+    "shareCard": {
+      "slogan1": "Connect Users, Aggregate Resources",
+      "slogan2": "Discover Your Web3 Opportunities",
+      "qrLabel": "Get Airdrop",
+      "qrAlt": "QR Code"
+    }
   },
   "home": {
     "welcome": "Welcome",
