@@ -25,12 +25,12 @@ export function CommissionHistory({
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('zh-CN', {
+    // 处理只有日期的格式 (YYYY-MM-DD)
+    const date = new Date(dateString + 'T00:00:00')
+    return date.toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: '2-digit'
     })
   }
 
@@ -62,8 +62,8 @@ export function CommissionHistory({
 
   return (
     <div className="space-y-3">
-      {records.map((record) => (
-        <Card key={record.id} className="bg-white shadow-sm">
+      {records.map((record, index) => (
+        <Card key={`${record.date}-${record.currency}-${index}`} className="bg-white shadow-sm">
           <CardContent className="p-3">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
@@ -75,13 +75,13 @@ export function CommissionHistory({
                     {t('assets.inviteCommission')}
                   </h4>
                   <p className="text-xs text-slate-600">
-                    {formatDate(record.created_at)}
+                    {formatDate(record.date)}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <span className="text-base font-bold text-green-600">
-                  +{formatBalance(record.amount)} USDT
+                  +{formatBalance(record.amount)} {record.currency}
                 </span>
               </div>
             </div>

@@ -47,9 +47,8 @@ export interface WithdrawalRecord {
 }
 
 export interface CommissionRecord {
-  id: number
-  invitee_email: string
-  invitee_nickname: string
   amount: number
-  created_at: string
+  currency: string
+  date: string
+  invitedUserNickname: string
 }
