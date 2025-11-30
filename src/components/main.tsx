@@ -42,7 +42,8 @@ export function MainApp() {
       'academy',
       'mining',
       'profile',
-      'broker'
+      'broker',
+      'mission'
     ]
     if (tab && validTabs.includes(tab)) {
       setActiveTab(tab)
@@ -54,8 +55,13 @@ export function MainApp() {
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem('ntx-active-tab', activeTab)
+      // 清除 URL 中的 tab 参数，避免刷新时跳转到旧页面
+      const currentTab = searchParams?.get('tab')
+      if (currentTab && currentTab !== activeTab) {
+        router.replace('/', { scroll: false })
+      }
     }
-  }, [activeTab, isInitialized])
+  }, [activeTab, isInitialized, searchParams, router])
 
   useEffect(() => {
     if (activeTab === 'profile' && !isAuthenticated) {

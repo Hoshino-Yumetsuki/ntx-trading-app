@@ -74,7 +74,12 @@ export function CommissionHistory({
                   <h4 className="text-sm font-medium text-slate-800">
                     {t('assets.inviteCommission')}
                   </h4>
-                  <p className="text-xs text-slate-600">
+                  {record.invitedUserNickname && (
+                    <p className="text-xs text-slate-500">
+                      {t('assets.invitee')}: {record.invitedUserNickname}
+                    </p>
+                  )}
+                  <p className="text-xs text-slate-400">
                     {formatDate(record.date)}
                   </p>
                 </div>

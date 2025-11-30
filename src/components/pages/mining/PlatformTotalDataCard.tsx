@@ -3,7 +3,7 @@
 import { Hammer, Database, User } from 'lucide-react'
 import {
   formatCurrency,
-  formatNumber,
+  formatInteger,
   type PlatformData
 } from '@/src/services/mining'
 import { useLanguage } from '@/src/contexts/language-context'
@@ -92,7 +92,7 @@ export function PlatformTotalDataCard({
             {loading
               ? ''
               : platformData && platformData.platform_users !== undefined
-                ? formatNumber(platformData.platform_users)
+                ? formatInteger(platformData.platform_users)
                 : '--'}
           </p>
         </div>

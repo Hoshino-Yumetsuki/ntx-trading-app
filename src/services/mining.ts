@@ -159,6 +159,13 @@ export function formatNumber(num: number | undefined | null): string {
   return num.toFixed(2)
 }
 
+export function formatInteger(num: number | undefined | null): string {
+  if (num === undefined || num === null || Number.isNaN(num)) {
+    return '0'
+  }
+  return Math.floor(num).toLocaleString()
+}
+
 export function formatCurrency(
   num: number | undefined | null,
   currency = 'USDT'
@@ -264,5 +271,6 @@ export const MiningService = {
   bindExchange,
   unbindExchange,
   formatNumber,
+  formatInteger,
   formatCurrency
 }

@@ -24,7 +24,11 @@ import {
   StakeCard,
 } from "@/src/components/pages/profile/index";
 
-export function ProfilePage() {
+interface ProfilePageProps {
+  onNavigate?: (tab: string) => void
+}
+
+export function ProfilePage({ onNavigate }: ProfilePageProps) {
   const { logout, user } = useAuth();
   const { t } = useLanguage();
   const router = useRouter();
@@ -73,7 +77,11 @@ export function ProfilePage() {
     page: "assets" | "security" | "community" | "broker" | "orders" | "mission",
   ) => {
     if (page === 'mission') {
-      router.push('/?tab=mission')
+      if (onNavigate) {
+        onNavigate('mission')
+      } else {
+        router.push('/?tab=mission')
+      }
       return
     }
     setCurrentPage(page);

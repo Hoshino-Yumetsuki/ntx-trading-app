@@ -530,6 +530,12 @@
         "desc": "Learn professional technical strategies to improve analysis and trading capabilities",
         "button": "Start Learning"
       },
+      "mission": {
+        "title": "Mission Center",
+        "subtitle": "Complete missions to earn rewards",
+        "desc": "Complete daily and growth missions to earn generous NTX token rewards",
+        "button": "View Missions"
+      },
       "ai": {
         "title": "AI Smart Analysis",
         "subtitle": "Professional market insights",

@@ -442,27 +442,27 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <div className="flex items-center justify-center gap-x-2 mb-3">
               <Image
                 src="/dh.png"
-                alt="学习资源图标"
+                alt="任务中心图标"
                 width={15}
                 height={15}
                 className="w-[15px] h-[15px]"
               />
               <h3 className="text-slate-800 font-semibold text-base">
-                {t('home.card.dark_horse.title')}
+                {t('home.card.mission.title')}
               </h3>
             </div>
 
             <p className="text-slate-500 text-sm mb-3">
-              {t('home.card.dark_horse.subtitle')}
+              {t('home.card.mission.subtitle')}
             </p>
             <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-[244px]">
-              {t('home.card.dark_horse.desc')}
+              {t('home.card.mission.desc')}
             </p>
             <Button
               onClick={() => onNavigate?.('mission')}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-6 rounded-lg shadow-md h-8"
             >
-              {t('home.card.dark_horse.button')}
+              {t('home.card.mission.button')}
               <ArrowRight className="w-3 h-3 ml-1.5" />
             </Button>
           </CardContent>

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent } from '@/src/components/ui/card'
 import {
   formatCurrency,
-  formatNumber,
+  formatInteger,
   getDailyPlatformData,
   type DailyPlatformData
 } from '@/src/services/mining'
@@ -94,7 +94,7 @@ export function PlatformDailyDataCard({
             </span>
             <span className="text-sm text-slate-800">
               {dailyData && dailyData.miners !== undefined
-                ? formatNumber(dailyData.miners)
+                ? formatInteger(dailyData.miners)
                 : '--'}
             </span>
           </div>
