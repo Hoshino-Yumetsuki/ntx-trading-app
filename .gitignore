@@ -41,9 +41,5 @@ next-env.d.ts
 .VSCodeCounter
 .vs/
 .claude/
-yarn.lock
-package-lock.json
-pnpm-lock.yaml
-pnpm-workspace.yaml
 
 android/
