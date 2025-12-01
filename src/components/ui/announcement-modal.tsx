@@ -124,11 +124,12 @@ export function AnnouncementModal({ onViewAnnouncement }: AnnouncementModalProps
     markAsReadAndRemove(announcement.id)
   }, [markAsReadAndRemove])
 
-  // 点击"查看公告"，标记已读并跳转查看
+  // 点击"查看公告"，标记已读、关闭弹窗并跳转查看
   const handleViewAnnouncement = useCallback((announcement: Announcement) => {
-    markAsReadAndRemove(announcement.id)
+    saveReadId(announcement.id)
+    setIsOpen(false)
     onViewAnnouncement?.(announcement.id)
-  }, [markAsReadAndRemove, onViewAnnouncement])
+  }, [saveReadId, onViewAnnouncement])
 
   if (!isOpen || unreadAnnouncements.length === 0) {
     return null
