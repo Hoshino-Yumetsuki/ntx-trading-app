@@ -39,6 +39,9 @@ jobs:
       - name: Initialize Capacitor iOS
         run: npx cap add ios || true
 
+      - name: Generate App Icons
+        run: npx @capacitor/assets generate --ios
+
       - name: Sync Capacitor
         run: npx cap sync ios
 
