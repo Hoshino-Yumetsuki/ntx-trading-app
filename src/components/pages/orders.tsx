@@ -24,6 +24,7 @@ import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { getPermissionGroups } from '@/src/services/courseService'
 import { useLanguage } from '@/src/contexts/language-context'
+import Image from 'next/image'
 
 interface OrdersPageProps {
   onBack?: () => void
@@ -139,28 +140,36 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
   }
 
   return (
-    <div className="min-h-screen pb-6">
-      <div className="px-6 pt-12 pb-8 relative z-10">
-        <div className="flex items-start mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            className="mr-3 text-slate-600 hover:text-slate-800"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" /> {t('common.back')}
-          </Button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-slate-800">
+    <div className="min-h-screen pb-6 bg-slate-50/50">
+      <div className="px-4 pt-8 pb-4 bg-white shadow-sm sticky top-0 z-10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              className="mr-2 text-slate-600 hover:text-slate-800 -ml-2"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </Button>
+            <h1 className="text-xl font-bold text-slate-800">
               {t('profile.menu.orders.title')}
             </h1>
-            <p className="text-slate-600 text-sm">
-              {t('profile.menu.orders.subtitle')}
-            </p>
           </div>
-          <Button variant="outline" size="sm" onClick={fetchOrders}>
-            <RefreshCw className="w-4 h-4 mr-2" /> {t('common.refresh')}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={fetchOrders}>
+              <RefreshCw className="w-4 h-4" />
+            </Button>
+            <div className="relative w-24 h-8">
+              <Image
+                src="/logo.png"
+                alt="NTX Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </div>
 

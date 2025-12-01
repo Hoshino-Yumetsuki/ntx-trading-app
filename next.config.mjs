@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  eslint: {
-    ignoreDuringBuilds: true
-  },
   typescript: {
     ignoreBuildErrors: true
   },
@@ -12,6 +9,7 @@ const nextConfig = {
     loaderFile: './image-loader.js',
   },
   transpilePackages: ['next-image-export-optimizer'],
+  serverExternalPackages: ['thread-stream', 'pino'],
   env: {
     nextImageExportOptimizer_imageFolderPath: 'public',
     nextImageExportOptimizer_exportFolderPath: 'out',

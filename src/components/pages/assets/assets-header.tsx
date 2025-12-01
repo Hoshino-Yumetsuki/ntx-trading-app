@@ -29,7 +29,7 @@ export function AssetsHeader({
         </Button>
         <div className="relative w-28 h-9 md:w-32 md:h-10">
           <Image
-            src="/Frame17@3x.png"
+            src="/logo.png"
             alt="NTX Logo"
             fill
             className="object-contain"
