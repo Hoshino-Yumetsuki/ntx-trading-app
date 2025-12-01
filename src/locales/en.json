@@ -272,6 +272,12 @@
       "viewMore": "View More"
     }
   },
+  "announcement": {
+    "title": "Announcements",
+    "tag": "New",
+    "dismiss": "Got it",
+    "view": "View Details"
+  },
   "tutorial": {
     "title": "Tutorial",
     "subtitle": "Learn how to use the NexTrade DAO platform",

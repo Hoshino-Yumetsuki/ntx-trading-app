@@ -272,6 +272,12 @@
       "viewMore": "查看更多"
     }
   },
+  "announcement": {
+    "title": "平台公告",
+    "tag": "公告",
+    "dismiss": "我知道了",
+    "view": "查看公告"
+  },
   "tutorial": {
     "title": "新手教程",
     "subtitle": "了解如何使用 NexTrade DAO 平台",

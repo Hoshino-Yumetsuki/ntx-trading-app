@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Home, Coins, User, Newspaper, BookOpen } from 'lucide-react'
 import { HomePage } from '@/src/components/pages/home'
@@ -14,6 +14,7 @@ import { useLanguage } from '@/src/contexts/language-context'
 import { AppBackground } from '@/src/components/ui/app-background'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { MissionPage } from './pages/mission'
+import { AnnouncementModal } from '@/src/components/ui/announcement-modal'
 
 export function MainApp() {
   const [activeTab, setActiveTab] = useState('home')
@@ -69,6 +70,12 @@ export function MainApp() {
     }
   }, [isAuthenticated, activeTab])
 
+  // 处理查看公告的回调
+  const handleViewAnnouncement = useCallback((newsId: number) => {
+    setActiveTab('notifications')
+    router.push(`/?tab=notifications&news=${newsId}`, { scroll: false })
+  }, [router])
+
   const tabs = [
     { id: 'home', label: t('nav.home'), icon: Home, component: HomePage },
     { id: 'news', label: t('nav.news'), icon: Newspaper, component: NewsPage },
@@ -109,6 +116,9 @@ export function MainApp() {
   return (
     <div className="relative flex h-screen flex-1 flex-col overflow-hidden">
       <AppBackground />
+
+      {/* 公告弹窗 */}
+      <AnnouncementModal onViewAnnouncement={handleViewAnnouncement} />
 
       <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar pb-24">
         {activeTab === 'home' ? (
