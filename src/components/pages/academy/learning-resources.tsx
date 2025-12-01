@@ -124,7 +124,7 @@ export function LearningResourcesPage({
         <CardContent className="p-6">
           <div className="flex items-center space-x-4 mb-4">
             <Avatar className="w-16 h-16 ring-2 ring-emerald-300 ring-offset-2 ring-offset-emerald-500/30">
-              <AvatarImage src="_nze4inj_400x400.jpg" />
+              <AvatarImage src="/avatar-author.jpg" />
               <AvatarFallback className="bg-white/20 text-white font-bold">
                 DT
               </AvatarFallback>

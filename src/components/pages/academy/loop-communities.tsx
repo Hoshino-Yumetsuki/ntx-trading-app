@@ -101,7 +101,7 @@ export function LoopCommunitiesPage({
           className="data-card hover:shadow-lg transition-all duration-200 cursor-pointer group"
           style={{
             border: 'none',
-            backgroundImage: 'url(/Group69@3x.png)',
+            backgroundImage: 'url(/card-glow-bg.png)',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'right top',
             backgroundSize: '40%',

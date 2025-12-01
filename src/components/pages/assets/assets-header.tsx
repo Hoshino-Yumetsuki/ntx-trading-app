@@ -47,7 +47,7 @@ export function AssetsHeader({
           </div>
           <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-40 h-40 md:w-48 md:h-48 z-0 pointer-events-none">
             <Image
-              src="/9481dc54cf0484575744a3a5008ed6911@3x.png"
+              src="/assets-decoration.png"
               alt="Assets Header"
               fill
               className="object-contain object-right"

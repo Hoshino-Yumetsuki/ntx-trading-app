@@ -203,7 +203,7 @@ export function NewsPage() {
                   className="mr-2"
                 >
                   <Image
-                    src="/back.png"
+                    src="/icon-back.png"
                     alt={t('common.back')}
                     width={20}
                     height={20}
@@ -211,7 +211,7 @@ export function NewsPage() {
                 </Button>
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
                   <Image
-                    src="/Frame17@3x.png"
+                    src="/logo.png"
                     alt="NTX Logo"
                     fill
                     className="object-contain"
@@ -229,7 +229,7 @@ export function NewsPage() {
                     {t('news.share')}
                   </span>
                   <Image
-                    src="/share.png"
+                    src="/icon-share.png"
                     alt={t('news.share')}
                     width={16}
                     height={13}
@@ -324,7 +324,7 @@ export function NewsPage() {
             <div className="flex flex-col">
               <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
                 <Image
-                  src="/Frame17@3x.png"
+                  src="/logo.png"
                   alt="NTX Logo"
                   fill
                   className="object-contain"
@@ -340,7 +340,7 @@ export function NewsPage() {
           <div
             className="relative overflow-hidden rounded-2xl h-32 flex items-center p-6"
             style={{
-              backgroundImage: "url('/Group35@3x.png')",
+              backgroundImage: "url('/news-bg.png')",
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
               backgroundSize: 'cover',

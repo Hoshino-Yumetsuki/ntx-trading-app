@@ -98,7 +98,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
           </Button>
           <div className="relative w-28 h-9 md:w-32 md:h-10">
             <Image
-              src="/Frame17@3x.png"
+              src="/logo.png"
               alt="NTX Logo"
               fill
               className="object-contain"
@@ -123,7 +123,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
             </div>
             <div className="absolute -right-2 md:-right-3 top-1/2 -translate-y-1/2 w-56 h-56 md:w-64 md:h-64 z-0 pointer-events-none">
               <Image
-                src="/Group34406@3x.png"
+                src="/tutorial-decoration.png"
                 alt="Tutorial Header"
                 fill
                 className="object-contain object-right"
@@ -139,7 +139,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
           <CardHeader className="text-center pb-4">
             <div className="relative w-16 h-16 mx-auto mb-4">
               <Image
-                src="/Frame48@3x.png"
+                src="/tutorial-icon.png"
                 alt="Welcome Icon"
                 fill
                 className="object-contain"

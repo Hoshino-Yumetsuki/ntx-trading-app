@@ -9,7 +9,7 @@ export function AppBackground() {
       >
         <div className="relative w-full h-full">
           <Image
-            src="/Frame24@3x.png"
+            src="/app-bg.png"
             alt=""
             fill
             priority

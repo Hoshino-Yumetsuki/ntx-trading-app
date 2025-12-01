@@ -24,7 +24,7 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
   return (
     <Card className="glass-card border-white/30 relative rounded-[16pt]">
       <Image
-        src="/Frame29@3x.png"
+        src="/avatar-placeholder.png"
         alt=""
         width={444}
         height={96}

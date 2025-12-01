@@ -17,7 +17,7 @@ export function SplashScreen() {
     <div
       className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
       style={{
-        backgroundImage: "url('/加载页-bg.png')",
+        backgroundImage: "url('/splash-bg.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
@@ -29,7 +29,7 @@ export function SplashScreen() {
         <div className="mb-8 relative">
           <div className="relative w-72 h-72 mx-auto flex items-center justify-center mb-6">
             <Image
-              src="/Frame68@3x.png"
+              src="/splash-logo.png"
               alt="Loading Illustration"
               fill
               className="object-contain p-2"
@@ -41,7 +41,7 @@ export function SplashScreen() {
         <div className="mb-4 flex items-center justify-center">
           <div className="relative w-28 h-9 md:w-32 md:h-10">
             <Image
-              src="/Frame17@3x.png"
+              src="/logo.png"
               alt="NTX Logo"
               fill
               className="object-contain"

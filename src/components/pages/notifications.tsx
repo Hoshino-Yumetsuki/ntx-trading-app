@@ -219,11 +219,11 @@ export function NotificationsPage() {
                   onClick={handleBackToList}
                   className="mr-2"
                 >
-                  <Image src="/back.png" alt="返回" width={20} height={20} />
+                  <Image src="/icon-back.png" alt="返回" width={20} height={20} />
                 </Button>
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
                   <Image
-                    src="/Frame17@3x.png"
+                    src="/logo.png"
                     alt="NTX Logo"
                     fill
                     className="object-contain"
@@ -240,7 +240,7 @@ export function NotificationsPage() {
                   <span className="text-xs font-medium text-[#1C55FF]">
                     分享
                   </span>
-                  <Image src="/share.png" alt="分享" width={16} height={13} />
+                  <Image src="/icon-share.png" alt="分享" width={16} height={13} />
                 </div>
               </Button>
             </div>
@@ -324,7 +324,7 @@ export function NotificationsPage() {
           <div className="flex flex-col">
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
               <Image
-                src="/Frame17@3x.png"
+                src="/logo.png"
                 alt="NTX Logo"
                 fill
                 className="object-contain"
@@ -341,7 +341,7 @@ export function NotificationsPage() {
           <div
             className="h-32 w-full bg-cover bg-center flex items-center p-6"
             style={{
-              backgroundImage: 'url(/Group35@3x.png)',
+              backgroundImage: 'url(/news-bg.png)',
               backgroundColor: '#0262f4',
               borderRadius: '16px'
             }}

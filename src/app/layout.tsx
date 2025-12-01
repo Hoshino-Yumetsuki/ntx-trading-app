@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: 'NTX Trading | 掌握机构操盘体系，提升你的交易能力',
   description: '掌握机构操盘体系，提升你的交易能力',
   icons: {
-    icon: '/NTX-LOGO优化-7.png',
-    shortcut: '/NTX-LOGO优化-7.png',
-    apple: '/NTX-LOGO优化-7.png'
+    icon: '/ntx-logo.png',
+    shortcut: '/ntx-logo.png',
+    apple: '/ntx-logo.png'
   }
 }
 

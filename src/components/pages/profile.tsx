@@ -148,7 +148,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
         >
           <div className="pt-[21%]"></div>
           <Image
-            src="/Group34385@3x.png"
+            src="/profile-decoration.png"
             alt={t('profile.community.title')}
             fill
             priority

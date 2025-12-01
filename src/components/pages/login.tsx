@@ -272,7 +272,7 @@ export function LoginPage({
               >
                 <Image
                   src={
-                    isRegisterMode ? '/Frame49@3x.png' : '/Group34575@3x.png'
+                    isRegisterMode ? '/register-bg.png' : '/login-bg.png'
                   }
                   alt={
                     isRegisterMode

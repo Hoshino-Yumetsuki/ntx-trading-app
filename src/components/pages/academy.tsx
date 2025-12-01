@@ -141,7 +141,7 @@ export function AcademyPage() {
                 </Button>
                 <div className="relative w-28 h-9 md:w-32 md:h-10">
                   <Image
-                    src="/Frame17@3x.png"
+                    src="/logo.png"
                     alt="NTX Logo"
                     fill
                     className="object-contain"
@@ -182,7 +182,7 @@ export function AcademyPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
             <Image
-              src="/Frame17@3x.png"
+              src="/logo.png"
               alt="NTX Logo"
               fill
               className="object-contain"
@@ -195,7 +195,7 @@ export function AcademyPage() {
         <div
           className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
           style={{
-            backgroundImage: "url('/Group81@3x.png')",
+            backgroundImage: "url('/academy-bg.png')",
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
             backgroundSize: 'cover'
@@ -231,7 +231,7 @@ export function AcademyPage() {
                   style={{
                     border: 'none',
                     aspectRatio: '4 / 3',
-                    backgroundImage: 'url(/Group69@3x.png)', // 应用参考范例的背景图
+                    backgroundImage: 'url(/card-glow-bg.png)', // 应用参考范例的背景图
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'right top',
                     backgroundSize: '40%',
@@ -309,7 +309,7 @@ export function AcademyPage() {
                   style={{
                     aspectRatio: '6 / 7',
                     border: 'none',
-                    backgroundImage: 'url(/Group69@3x.png)',
+                    backgroundImage: 'url(/card-glow-bg.png)',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'right top',
                     backgroundSize: '40%',

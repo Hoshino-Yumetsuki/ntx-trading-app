@@ -30,7 +30,7 @@ export function ContactCard() {
           >
             <div className="premium-icon w-10 h-10 rounded-[12pt] relative overflow-hidden">
               <Image
-                src="/twitter.png"
+                src="/icon-twitter.png"
                 alt="Twitter Icon"
                 fill
                 className="object-cover"
@@ -66,7 +66,7 @@ export function ContactCard() {
           >
             <div className="premium-icon w-10 h-10 rounded-[12pt] relative overflow-hidden">
               <Image
-                src="/telegram.png"
+                src="/icon-telegram.png"
                 alt="Telegram Icon"
                 fill
                 className="object-cover"

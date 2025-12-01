@@ -124,7 +124,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="absolute inset-x-0 top-0 z-0"
           style={{
             height: `${TOP_SLICE}px`,
-            backgroundImage: 'url(/Frame35.png)',
+            backgroundImage: 'url(/share-card-bg.png)',
             backgroundSize: '600px 1068px',
             backgroundPosition: 'top center',
             backgroundRepeat: 'no-repeat'
@@ -135,7 +135,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="absolute inset-x-0 bottom-0 z-0"
           style={{
             height: `${BOTTOM_SLICE}px`,
-            backgroundImage: 'url(/Frame35.png)',
+            backgroundImage: 'url(/share-card-bg.png)',
             backgroundSize: '600px 1068px',
             backgroundPosition: 'bottom center',
             backgroundRepeat: 'no-repeat'
@@ -152,7 +152,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         />
         <div className="absolute left-8 top-6 z-30 flex items-center gap-2">
           <Image
-            src="/Frame17@3x.png"
+            src="/logo.png"
             alt="NTX Logo"
             width={240}
             height={80}

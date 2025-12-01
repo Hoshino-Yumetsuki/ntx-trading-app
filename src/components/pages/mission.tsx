@@ -242,7 +242,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
           </div>
           <div className="relative w-24 h-8">
             <Image
-              src="/Frame17@3x.png"
+              src="/logo.png"
               alt="NTX Logo"
               fill
               className="object-contain"

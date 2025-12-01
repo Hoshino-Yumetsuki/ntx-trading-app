@@ -43,7 +43,7 @@ export function UserDataCard({
               className="data-card p-5 rounded-xl text-left"
               style={{
                 border: 'none',
-                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundImage: 'url(/card-glow-bg.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right top',
                 backgroundSize: '96px'
@@ -67,7 +67,7 @@ export function UserDataCard({
               className="data-card p-5 rounded-xl text-left"
               style={{
                 border: 'none',
-                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundImage: 'url(/card-glow-bg.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right top',
                 backgroundSize: '96px'
@@ -93,7 +93,7 @@ export function UserDataCard({
               className="data-card p-5 rounded-xl text-left"
               style={{
                 border: 'none',
-                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundImage: 'url(/card-glow-bg.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right top',
                 backgroundSize: '96px'
@@ -117,7 +117,7 @@ export function UserDataCard({
               className="data-card p-5 rounded-xl text-left"
               style={{
                 border: 'none',
-                backgroundImage: 'url(/Group69@3x.png)',
+                backgroundImage: 'url(/card-glow-bg.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right top',
                 backgroundSize: '96px'

@@ -35,7 +35,7 @@ export const InvitePoster = forwardRef<
       style={{ width: 600, height: 800 }}
     >
       <Image
-        src="/分享-bg.png"
+        src="/share-bg.png"
         alt=""
         fill
         priority
@@ -46,7 +46,7 @@ export const InvitePoster = forwardRef<
       <div className="relative w-full h-full flex flex-col items-center">
         <div className="mt-14 rounded-2xl overflow-hidden outline outline-4 outline-white">
           <Image
-            src="/NTX-LOGO优化-7.png"
+            src="/ntx-logo.png"
             alt="NTX"
             width={84}
             height={84}
@@ -74,7 +74,7 @@ export const InvitePoster = forwardRef<
           style={{ width: 243, height: 244 }}
         >
           <Image
-            src="/share_p1.png"
+            src="/invite-share-bg.png"
             alt=""
             width={243}
             height={244}
@@ -158,9 +158,9 @@ export function useInviteImageGenerator(userInfo: UserInfo | null) {
 
       try {
         const staticImageUrls = [
-          '/分享-bg.png',
-          '/NTX-LOGO优化-7.png',
-          '/share_p1.png'
+          '/share-bg.png',
+          '/ntx-logo.png',
+          '/invite-share-bg.png'
         ]
         const allImageUrls = [...staticImageUrls, qrDataUrl]
 

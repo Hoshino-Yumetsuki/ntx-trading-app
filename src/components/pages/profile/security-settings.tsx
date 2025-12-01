@@ -278,7 +278,7 @@ export function SecuritySettings({
           </Button>
           <div className="relative w-28 h-9 md:w-32 md:h-10">
             <Image
-              src="/Frame17@3x.png"
+              src="/logo.png"
               alt="NTX Logo"
               fill
               className="object-contain"
@@ -303,7 +303,7 @@ export function SecuritySettings({
             </div>
             <div className="absolute -right-2 md:-right-3 top-1/2 -translate-y-1/2 w-56 h-56 md:w-64 md:h-64 z-0 pointer-events-none">
               <Image
-                src="/Group34393@3x.png"
+                src="/security-icon.png"
                 alt="Security Header"
                 fill
                 className="object-contain object-right"

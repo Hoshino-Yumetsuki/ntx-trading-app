@@ -208,7 +208,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
             </Button>
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
               <Image
-                src="/Frame17@3x.png"
+                src="/logo.png"
                 alt="NTX Logo"
                 fill
                 className="object-contain"
@@ -222,7 +222,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         <div
           className="relative overflow-hidden rounded-2xl h-32 p-5 text-white"
           style={{
-            backgroundImage: "url('/Group81@3x.png')",
+            backgroundImage: "url('/academy-bg.png')",
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
             backgroundSize: 'cover'

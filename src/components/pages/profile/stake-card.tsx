@@ -73,7 +73,7 @@ export function StakeCard({ userInfo }: StakeCardProps) {
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
               <Image
-                src="/image42@3x.png"
+                src="/stake-icon-1.png"
                 alt="NTX"
                 fill
                 className="object-contain"
@@ -105,7 +105,7 @@ export function StakeCard({ userInfo }: StakeCardProps) {
           <div className="flex items-center">
             <div className="relative w-10 h-10 md:w-12 md:h-12 mr-3 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
               <Image
-                src="/image43@3x.png"
+                src="/stake-icon-2.png"
                 alt="GNTX"
                 fill
                 className="object-contain"

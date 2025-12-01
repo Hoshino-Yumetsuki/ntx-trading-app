@@ -125,13 +125,13 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const builtInBanners = [
     {
       type: 'internal' as const,
-      src: '/p01.png',
+      src: '/banner-2.png',
       alt: '新手教程',
       onClick: () => openTutorial()
     },
     {
       type: 'internal' as const,
-      src: '/p00.png',
+      src: '/banner-1.png',
       alt: '成为经济商',
       onClick: goBroker
     }
@@ -229,7 +229,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   return (
     <div className="min-h-screen relative">
       <Image
-        src="/FigmaDDSSlicePNG073d40ed32eb293f261f340b011653b3.png"
+        src="/home-glow-1.png"
         alt=""
         aria-hidden="true"
         width={112}
@@ -238,7 +238,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         style={{ left: -20, top: '16.6667%', transform: 'translateY(-50%)' }}
       />
       <Image
-        src="/FigmaDDSSlicePNGdf68e4790d973f6ba8dd73779c028ed4.png"
+        src="/home-glow-2.png"
         alt=""
         aria-hidden="true"
         width={174}
@@ -247,7 +247,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         style={{ left: 282, top: '33.3333%', transform: 'translateY(-50%)' }}
       />
       <Image
-        src="/FigmaDDSSlicePNG89310c4605f81ae570df5b14121e66db.png"
+        src="/home-glow-3.png"
         alt=""
         aria-hidden="true"
         width={171}
@@ -261,7 +261,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <div className="flex flex-col">
               <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
                 <Image
-                  src="/Frame17@3x.png"
+                  src="/logo.png"
                   alt="NTX Logo"
                   fill
                   className="object-contain"
@@ -408,7 +408,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           <CardContent className="p-6 flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-x-2 mb-3">
               <Image
-                src="/tur.png"
+                src="/icon-tutorial.png"
                 alt="新手礼包图标"
                 width={15}
                 height={15}
@@ -443,7 +443,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
           <CardContent className="p-6 flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-x-2 mb-3">
               <Image
-                src="/dh.png"
+                src="/icon-exchange.png"
                 alt="任务中心图标"
                 width={15}
                 height={15}

@@ -17,7 +17,7 @@ const metadata = {
   name: 'NTX Trading',
   description: 'NTX Trading App - Your Web3 Gateway',
   url: 'https://ntxdao.com',
-  icons: ['https://ntxdao.com/NTX-LOGO优化-7.png']
+  icons: ['https://ntxdao.com/ntx-logo.png']
 }
 
 createWeb3Modal({

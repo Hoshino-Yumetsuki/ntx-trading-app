@@ -23,7 +23,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
       <div
         className="text-white rounded-[16pt] p-6 shadow-lg mb-4 relative"
         style={{
-          backgroundImage: 'url(/Group72@3x.png)',
+          backgroundImage: 'url(/profile-header-bg.png)',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'right center',
           backgroundSize: 'cover',
@@ -31,7 +31,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
         }}
       >
         <Image
-          src="/Frame29@3x.png"
+          src="/avatar-placeholder.png"
           alt=""
           width={444}
           height={96}
