@@ -748,7 +748,9 @@ export function LoginPage({
           </DialogHeader>
           <div className="space-y-5">
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-700">{t('login.email.label')}</div>
+              <div className="text-sm font-medium text-gray-700">
+                {t('login.email.label')}
+              </div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={fpEmail}
@@ -772,7 +774,9 @@ export function LoginPage({
             </div>
 
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-700">{t('login.email.label')}</div>
+              <div className="text-sm font-medium text-gray-700">
+                {t('login.email.label')}
+              </div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={rpEmail}
@@ -783,7 +787,9 @@ export function LoginPage({
                 />
               </div>
 
-              <div className="text-sm font-medium text-gray-700">{t('login.resetCode.label')}</div>
+              <div className="text-sm font-medium text-gray-700">
+                {t('login.resetCode.label')}
+              </div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={resetCode}
@@ -794,7 +800,9 @@ export function LoginPage({
                 />
               </div>
 
-              <div className="text-sm font-medium text-gray-700">{t('login.newPassword.label')}</div>
+              <div className="text-sm font-medium text-gray-700">
+                {t('login.newPassword.label')}
+              </div>
               <div className="glass-card rounded-[12px] border px-3 h-11 flex items-center border-white/30">
                 <input
                   value={newPwd}

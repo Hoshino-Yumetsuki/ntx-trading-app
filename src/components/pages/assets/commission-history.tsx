@@ -26,7 +26,7 @@ export function CommissionHistory({
 
   const formatDate = (dateString: string) => {
     // 处理只有日期的格式 (YYYY-MM-DD)
-    const date = new Date(dateString + 'T00:00:00')
+    const date = new Date(`${dateString}T00:00:00`)
     return date.toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: '2-digit',
@@ -63,7 +63,10 @@ export function CommissionHistory({
   return (
     <div className="space-y-3">
       {records.map((record, index) => (
-        <Card key={`${record.date}-${record.currency}-${index}`} className="bg-white shadow-sm">
+        <Card
+          key={`${record.date}-${record.currency}-${index}`}
+          className="bg-white shadow-sm"
+        >
           <CardContent className="p-3">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">

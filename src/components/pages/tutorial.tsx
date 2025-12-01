@@ -192,11 +192,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
                     const html = md.render(section.content || '')
                     const safe = DOMPurify.sanitize(html)
 
-                    return (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: safe }}
-                      />
-                    )
+                    return <div dangerouslySetInnerHTML={{ __html: safe }} />
                   })()}
                 </div>
 

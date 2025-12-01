@@ -52,7 +52,7 @@ export function StrategySignalsPage({
     }
 
     fetchCourses()
-  }, [])
+  }, [t])
 
   if (viewingCourse?.content) {
     return (
@@ -85,7 +85,9 @@ export function StrategySignalsPage({
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <span className="ml-2 text-slate-600">{t('signals.loading')}</span>
+              <span className="ml-2 text-slate-600">
+                {t('signals.loading')}
+              </span>
             </div>
           ) : error ? (
             <div className="text-center py-8">

@@ -71,10 +71,13 @@ export function MainApp() {
   }, [isAuthenticated, activeTab])
 
   // 处理查看公告的回调
-  const handleViewAnnouncement = useCallback((newsId: number) => {
-    setActiveTab('notifications')
-    router.push(`/?tab=notifications&news=${newsId}`, { scroll: false })
-  }, [router])
+  const handleViewAnnouncement = useCallback(
+    (newsId: number) => {
+      setActiveTab('notifications')
+      router.push(`/?tab=notifications&news=${newsId}`, { scroll: false })
+    },
+    [router]
+  )
 
   const tabs = [
     { id: 'home', label: t('nav.home'), icon: Home, component: HomePage },

@@ -1,97 +1,94 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useCallback } from "react";
-import { useLanguage } from "@/src/contexts/language-context";
-import {
-  getWithdrawalRecords,
-  getCommissionRecords,
-} from "@/src/services/user";
-import { AssetsHeader } from "@/src/components/pages/assets/assets-header";
-import { AssetsOverview } from "@/src/components/pages/assets/assets-overview";
-import { WithdrawalHistory } from "@/src/components/pages/assets/withdrawal-history";
-import { CommissionHistory } from "@/src/components/pages/assets/commission-history";
-import { WithdrawDialog } from "@/src/components/pages/assets/withdraw-dialog";
+import { useState, useCallback } from 'react'
+import { useLanguage } from '@/src/contexts/language-context'
+import { getWithdrawalRecords, getCommissionRecords } from '@/src/services/user'
+import { AssetsHeader } from '@/src/components/pages/assets/assets-header'
+import { AssetsOverview } from '@/src/components/pages/assets/assets-overview'
+import { WithdrawalHistory } from '@/src/components/pages/assets/withdrawal-history'
+import { CommissionHistory } from '@/src/components/pages/assets/commission-history'
+import { WithdrawDialog } from '@/src/components/pages/assets/withdraw-dialog'
 import type {
   UserInfo,
   WithdrawalRecord,
-  CommissionRecord,
-} from "@/src/types/user";
+  CommissionRecord
+} from '@/src/types/user'
 
 interface AssetsPageProps {
-  onBack: () => void;
-  userInfo: UserInfo | null;
-  onNavigate?: (page: "security") => void;
+  onBack: () => void
+  userInfo: UserInfo | null
+  onNavigate?: (page: 'security') => void
 }
 
 export default function AssetsPage({
   onBack,
   userInfo,
-  onNavigate,
+  onNavigate
 }: AssetsPageProps) {
-  const { t } = useLanguage();
+  useLanguage()
   const [withdrawalRecords, setWithdrawalRecords] = useState<
     WithdrawalRecord[]
-  >([]);
+  >([])
   const [commissionRecords, setCommissionRecords] = useState<
     CommissionRecord[]
-  >([]);
-  const [loadingRecords, setLoadingRecords] = useState(false);
-  const [loadingCommission, setLoadingCommission] = useState(false);
-  const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
-  const [withdrawType, setWithdrawType] = useState<"usdt" | "ntx">("usdt");
+  >([])
+  const [loadingRecords, setLoadingRecords] = useState(false)
+  const [loadingCommission, setLoadingCommission] = useState(false)
+  const [showWithdrawDialog, setShowWithdrawDialog] = useState(false)
+  const [withdrawType, setWithdrawType] = useState<'usdt' | 'ntx'>('usdt')
   const [currentView, setCurrentView] = useState<
-    "assets" | "history" | "commission"
-  >("assets");
+    'assets' | 'history' | 'commission'
+  >('assets')
 
   const loadWithdrawalRecords = useCallback(async () => {
     try {
-      setLoadingRecords(true);
-      const data = await getWithdrawalRecords();
-      setWithdrawalRecords(data);
+      setLoadingRecords(true)
+      const data = await getWithdrawalRecords()
+      setWithdrawalRecords(data)
     } catch (error) {
-      console.error("获取提现记录失败:", error);
+      console.error('获取提现记录失败:', error)
     } finally {
-      setLoadingRecords(false);
+      setLoadingRecords(false)
     }
-  }, []);
+  }, [])
 
   const loadCommissionRecords = useCallback(async () => {
     try {
-      setLoadingCommission(true);
-      const records = await getCommissionRecords();
-      setCommissionRecords(records);
+      setLoadingCommission(true)
+      const records = await getCommissionRecords()
+      setCommissionRecords(records)
     } catch (error) {
-      console.error("获取佣金记录失败:", error);
+      console.error('获取佣金记录失败:', error)
     } finally {
-      setLoadingCommission(false);
+      setLoadingCommission(false)
     }
-  }, []);
+  }, [])
 
-  const handleWithdraw = (type: "usdt" | "ntx") => {
-    setWithdrawType(type);
-    setShowWithdrawDialog(true);
-  };
+  const handleWithdraw = (type: 'usdt' | 'ntx') => {
+    setWithdrawType(type)
+    setShowWithdrawDialog(true)
+  }
 
   const handleWithdrawSuccess = () => {
-    loadWithdrawalRecords();
-  };
+    loadWithdrawalRecords()
+  }
 
   const handleRefresh = () => {
-    if (currentView === "history") {
-      loadWithdrawalRecords();
-    } else if (currentView === "commission") {
-      loadCommissionRecords();
+    if (currentView === 'history') {
+      loadWithdrawalRecords()
+    } else if (currentView === 'commission') {
+      loadCommissionRecords()
     }
-  };
+  }
 
-  const handleViewChange = (view: "assets" | "history" | "commission") => {
-    setCurrentView(view);
-    if (view === "history" && withdrawalRecords.length === 0) {
-      loadWithdrawalRecords();
-    } else if (view === "commission" && commissionRecords.length === 0) {
-      loadCommissionRecords();
+  const handleViewChange = (view: 'assets' | 'history' | 'commission') => {
+    setCurrentView(view)
+    if (view === 'history' && withdrawalRecords.length === 0) {
+      loadWithdrawalRecords()
+    } else if (view === 'commission' && commissionRecords.length === 0) {
+      loadCommissionRecords()
     }
-  };
+  }
 
   if (!userInfo) {
     return (
@@ -115,7 +112,7 @@ export default function AssetsPage({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -129,13 +126,13 @@ export default function AssetsPage({
 
       <div className="p-4">
         <div className="max-w-md mx-auto">
-          {currentView === "assets" ? (
+          {currentView === 'assets' ? (
             <AssetsOverview
               userInfo={userInfo}
               onWithdraw={handleWithdraw}
               onNavigate={onNavigate}
             />
-          ) : currentView === "history" ? (
+          ) : currentView === 'history' ? (
             <WithdrawalHistory
               records={withdrawalRecords}
               loading={loadingRecords}
@@ -157,5 +154,5 @@ export default function AssetsPage({
         onSuccess={handleWithdrawSuccess}
       />
     </div>
-  );
+  )
 }

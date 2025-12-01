@@ -66,7 +66,7 @@ export function LearningResourcesPage({
     }
 
     fetchCourses()
-  }, [])
+  }, [t])
 
   const matchesFilter = (course: Course) => {
     const level = (course.level || '').toLowerCase()
@@ -130,7 +130,9 @@ export function LearningResourcesPage({
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h3 className="font-bold text-lg">{t('academy.instructor.name')}</h3>
+              <h3 className="font-bold text-lg">
+                {t('academy.instructor.name')}
+              </h3>
               <p className="text-white/90 text-sm mb-2">
                 {t('academy.instructor.title')}
               </p>
@@ -224,7 +226,9 @@ export function LearningResourcesPage({
       {loading ? (
         <div className="flex justify-center items-center p-12">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-          <span className="ml-2 text-slate-600">{t('common.loading.courses')}</span>
+          <span className="ml-2 text-slate-600">
+            {t('common.loading.courses')}
+          </span>
         </div>
       ) : error ? (
         <div className="p-6 text-center">
@@ -273,7 +277,8 @@ export function LearningResourcesPage({
                           <p className="text-slate-500 text-xs">
                             {t('academy.course.lessons')}
                             {((course as any).lessonsCount as number) || '--'}{' '}
-                            {t('academy.course.lessonsUnit')}<span className="mx-2">|</span>
+                            {t('academy.course.lessonsUnit')}
+                            <span className="mx-2">|</span>
                             {t('academy.course.totalDuration')}
                             {formatDuration(
                               (course as any).totalDuration as number
@@ -360,7 +365,8 @@ export function LearningResourcesPage({
                           <p className="text-slate-500 text-xs">
                             {t('academy.course.lessons')}
                             {((course as any).lessonsCount as number) || '--'}{' '}
-                            {t('academy.course.lessonsUnit')}<span className="mx-2">|</span>
+                            {t('academy.course.lessonsUnit')}
+                            <span className="mx-2">|</span>
                             {t('academy.course.totalDuration')}
                             {formatDuration(
                               (course as any).totalDuration as number
@@ -405,7 +411,9 @@ export function LearningResourcesPage({
 
       <Card className="glass-card border-white/30">
         <CardHeader>
-          <CardTitle className="text-slate-800">{t('academy.targetAudience.title')}</CardTitle>
+          <CardTitle className="text-slate-800">
+            {t('academy.targetAudience.title')}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center space-x-3">

@@ -93,7 +93,7 @@ export function AcademyPage() {
     }
 
     fetchCommunities()
-  }, [])
+  }, [t])
 
   const handleCommunityClick = (community: Course) => {
     // 上报每日直播任务
@@ -203,7 +203,9 @@ export function AcademyPage() {
         >
           <div className="flex items-center h-full">
             <div>
-              <div className="text-2xl font-bold mb-1">{t('academy.banner.title')}</div>
+              <div className="text-2xl font-bold mb-1">
+                {t('academy.banner.title')}
+              </div>
               <div className="opacity-90">{t('academy.banner.subtitle')}</div>
             </div>
           </div>
@@ -211,7 +213,9 @@ export function AcademyPage() {
       </div>
 
       <div className="px-4 mt-6">
-        <h2 className="text-slate-800 text-xl font-bold mb-3">{t('academy.section.institute')}</h2>
+        <h2 className="text-slate-800 text-xl font-bold mb-3">
+          {t('academy.section.institute')}
+        </h2>
         <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
           {tabs
             .filter(
@@ -261,7 +265,9 @@ export function AcademyPage() {
       <div className="px-4 mt-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-slate-800 text-xl font-bold">{t('academy.section.live')}</h2>
+            <h2 className="text-slate-800 text-xl font-bold">
+              {t('academy.section.live')}
+            </h2>
             <p className="text-slate-600 text-sm mt-1">
               {t('academy.live.subtitle')}
             </p>
@@ -282,7 +288,9 @@ export function AcademyPage() {
           {loadingCommunities ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <span className="ml-2 text-slate-600">{t('common.loading.community')}</span>
+              <span className="ml-2 text-slate-600">
+                {t('common.loading.community')}
+              </span>
             </div>
           ) : communityError ? (
             <div className="text-center py-6">

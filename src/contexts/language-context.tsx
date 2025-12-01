@@ -2,10 +2,7 @@
 
 import type React from 'react'
 import { createContext, useContext, useState, useEffect } from 'react'
-import type {
-  SupportedLanguage,
-  TranslationKey
-} from '@/src/types/i18n'
+import type { SupportedLanguage, TranslationKey } from '@/src/types/i18n'
 
 type Translations = Record<string, any>
 

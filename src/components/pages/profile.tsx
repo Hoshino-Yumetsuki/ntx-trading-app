@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useCallback, useId } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { useAuth } from "@/src/contexts/AuthContext";
-import { UserService } from "@/src/services/user";
-import type { UserInfo } from "@/src/types/user";
-import { toast } from "sonner";
-import { useLanguage } from "@/src/contexts/language-context";
-import { SecuritySettings } from "@/src/components/pages/profile/security-settings";
-import AssetsPage from "@/src/components/pages/profile/assets";
-import CommunityPage from "@/src/components/pages/profile/community";
-import { BrokerPage } from "@/src/components/pages/broker";
-import { OrdersPage } from "@/src/components/pages/orders";
+import { useState, useEffect, useCallback, useId } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import { useAuth } from '@/src/contexts/AuthContext'
+import { UserService } from '@/src/services/user'
+import type { UserInfo } from '@/src/types/user'
+import { toast } from 'sonner'
+import { useLanguage } from '@/src/contexts/language-context'
+import { SecuritySettings } from '@/src/components/pages/profile/security-settings'
+import AssetsPage from '@/src/components/pages/profile/assets'
+import CommunityPage from '@/src/components/pages/profile/community'
+import { BrokerPage } from '@/src/components/pages/broker'
+import { OrdersPage } from '@/src/components/pages/orders'
 import {
   ProfileHeader,
   InviteCodeCard,
@@ -21,60 +21,60 @@ import {
   ContactCard,
   LogoutCard,
   RewardsCard,
-  StakeCard,
-} from "@/src/components/pages/profile/index";
+  StakeCard
+} from '@/src/components/pages/profile/index'
 
 interface ProfilePageProps {
   onNavigate?: (tab: string) => void
 }
 
 export function ProfilePage({ onNavigate }: ProfilePageProps) {
-  const { logout, user } = useAuth();
-  const { t } = useLanguage();
-  const router = useRouter();
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const communityArrowId = useId();
-  const [loading, setLoading] = useState(true);
+  const { logout, user } = useAuth()
+  const { t } = useLanguage()
+  const router = useRouter()
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
+  const communityArrowId = useId()
+  const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState<
-    "profile" | "security" | "assets" | "community" | "broker" | "orders"
-  >("profile");
+    'profile' | 'security' | 'assets' | 'community' | 'broker' | 'orders'
+  >('profile')
 
   const fetchUserInfo = useCallback(async () => {
     if (!user) {
-      setLoading(false);
-      return;
+      setLoading(false)
+      return
     }
     try {
-      setLoading(true);
-      const info = await UserService.getUserInfo();
-      setUserInfo(info);
+      setLoading(true)
+      const info = await UserService.getUserInfo()
+      setUserInfo(info)
     } catch (error) {
-      console.error("获取用户信息失败:", error);
-      toast.error("获取用户信息失败");
+      console.error('获取用户信息失败:', error)
+      toast.error('获取用户信息失败')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [user]);
+  }, [user])
 
   useEffect(() => {
-    fetchUserInfo();
-  }, [fetchUserInfo]);
+    fetchUserInfo()
+  }, [fetchUserInfo])
 
   const handleLogout = async () => {
     try {
-      await logout();
-      toast.success(t('common.loggedOut'));
+      await logout()
+      toast.success(t('common.loggedOut'))
       try {
-        localStorage.setItem("ntx-active-tab", "home");
+        localStorage.setItem('ntx-active-tab', 'home')
       } catch {}
-      router.push("/");
-    } catch (error) {
-      toast.error("退出登录失败");
+      router.push('/')
+    } catch (_error) {
+      toast.error('退出登录失败')
     }
-  };
+  }
 
   const handleNavigate = (
-    page: "assets" | "security" | "community" | "broker" | "orders" | "mission",
+    page: 'assets' | 'security' | 'community' | 'broker' | 'orders' | 'mission'
   ) => {
     if (page === 'mission') {
       if (onNavigate) {
@@ -84,8 +84,8 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
       }
       return
     }
-    setCurrentPage(page);
-  };
+    setCurrentPage(page)
+  }
 
   if (loading) {
     return (
@@ -95,39 +95,39 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
           <p className="text-gray-600">加载中...</p>
         </div>
       </div>
-    );
+    )
   }
 
-  if (currentPage === "security") {
+  if (currentPage === 'security') {
     return (
       <SecuritySettings
-        onBack={() => setCurrentPage("profile")}
+        onBack={() => setCurrentPage('profile')}
         userInfo={userInfo}
         refetchUserInfo={fetchUserInfo}
       />
-    );
+    )
   }
 
-  if (currentPage === "assets") {
+  if (currentPage === 'assets') {
     return (
       <AssetsPage
-        onBack={() => setCurrentPage("profile")}
+        onBack={() => setCurrentPage('profile')}
         userInfo={userInfo}
         onNavigate={handleNavigate}
       />
-    );
+    )
   }
 
-  if (currentPage === "community") {
-    return <CommunityPage onBack={() => setCurrentPage("profile")} />;
+  if (currentPage === 'community') {
+    return <CommunityPage onBack={() => setCurrentPage('profile')} />
   }
 
-  if (currentPage === "broker") {
-    return <BrokerPage onBack={() => setCurrentPage("profile")} />;
+  if (currentPage === 'broker') {
+    return <BrokerPage onBack={() => setCurrentPage('profile')} />
   }
 
-  if (currentPage === "orders") {
-    return <OrdersPage onBack={() => setCurrentPage("profile")} />;
+  if (currentPage === 'orders') {
+    return <OrdersPage onBack={() => setCurrentPage('profile')} />
   }
 
   return (
@@ -138,11 +138,11 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
         <button
           type="button"
           className="relative w-full rounded-[16pt] overflow-hidden cursor-pointer select-none transition active:scale-[.99]"
-          onClick={() => handleNavigate("community")}
+          onClick={() => handleNavigate('community')}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              handleNavigate("community");
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              handleNavigate('community')
             }
           }}
         >
@@ -194,5 +194,5 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
         <LogoutCard onLogout={handleLogout} />
       </div>
     </div>
-  );
+  )
 }

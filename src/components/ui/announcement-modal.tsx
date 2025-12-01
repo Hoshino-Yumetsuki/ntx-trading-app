@@ -22,9 +22,13 @@ interface AnnouncementModalProps {
 
 const ANNOUNCEMENT_READ_KEY = 'ntx-announcement-read-ids'
 
-export function AnnouncementModal({ onViewAnnouncement }: AnnouncementModalProps) {
+export function AnnouncementModal({
+  onViewAnnouncement
+}: AnnouncementModalProps) {
   const { t } = useLanguage()
-  const [unreadAnnouncements, setUnreadAnnouncements] = useState<Announcement[]>([])
+  const [unreadAnnouncements, setUnreadAnnouncements] = useState<
+    Announcement[]
+  >([])
   const [isOpen, setIsOpen] = useState(false)
 
   // 获取已读公告ID列表
@@ -39,26 +43,32 @@ export function AnnouncementModal({ onViewAnnouncement }: AnnouncementModalProps
   }, [])
 
   // 标记公告为已读并保存到 localStorage
-  const saveReadId = useCallback((id: number) => {
-    const readIds = getReadAnnouncementIds()
-    if (!readIds.includes(id)) {
-      const newReadIds = [...readIds, id]
-      localStorage.setItem(ANNOUNCEMENT_READ_KEY, JSON.stringify(newReadIds))
-    }
-  }, [getReadAnnouncementIds])
+  const saveReadId = useCallback(
+    (id: number) => {
+      const readIds = getReadAnnouncementIds()
+      if (!readIds.includes(id)) {
+        const newReadIds = [...readIds, id]
+        localStorage.setItem(ANNOUNCEMENT_READ_KEY, JSON.stringify(newReadIds))
+      }
+    },
+    [getReadAnnouncementIds]
+  )
 
   // 标记单条公告为已读并从列表中移除
-  const markAsReadAndRemove = useCallback((id: number) => {
-    saveReadId(id)
-    setUnreadAnnouncements((prev) => {
-      const newList = prev.filter((item) => item.id !== id)
-      // 如果没有未读公告了，关闭弹窗
-      if (newList.length === 0) {
-        setIsOpen(false)
-      }
-      return newList
-    })
-  }, [saveReadId])
+  const markAsReadAndRemove = useCallback(
+    (id: number) => {
+      saveReadId(id)
+      setUnreadAnnouncements((prev) => {
+        const newList = prev.filter((item) => item.id !== id)
+        // 如果没有未读公告了，关闭弹窗
+        if (newList.length === 0) {
+          setIsOpen(false)
+        }
+        return newList
+      })
+    },
+    [saveReadId]
+  )
 
   // 标记所有公告为已读
   const markAllAsRead = useCallback(() => {
@@ -120,16 +130,22 @@ export function AnnouncementModal({ onViewAnnouncement }: AnnouncementModalProps
   }, [markAllAsRead])
 
   // 点击"我知道了"，只标记当前公告为已读
-  const handleDismiss = useCallback((announcement: Announcement) => {
-    markAsReadAndRemove(announcement.id)
-  }, [markAsReadAndRemove])
+  const handleDismiss = useCallback(
+    (announcement: Announcement) => {
+      markAsReadAndRemove(announcement.id)
+    },
+    [markAsReadAndRemove]
+  )
 
   // 点击"查看公告"，标记已读、关闭弹窗并跳转查看
-  const handleViewAnnouncement = useCallback((announcement: Announcement) => {
-    saveReadId(announcement.id)
-    setIsOpen(false)
-    onViewAnnouncement?.(announcement.id)
-  }, [saveReadId, onViewAnnouncement])
+  const handleViewAnnouncement = useCallback(
+    (announcement: Announcement) => {
+      saveReadId(announcement.id)
+      setIsOpen(false)
+      onViewAnnouncement?.(announcement.id)
+    },
+    [saveReadId, onViewAnnouncement]
+  )
 
   if (!isOpen || unreadAnnouncements.length === 0) {
     return null
@@ -139,8 +155,16 @@ export function AnnouncementModal({ onViewAnnouncement }: AnnouncementModalProps
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* 背景遮罩 + 高斯模糊 */}
       <div
+        role="button"
+        tabIndex={0}
         className="absolute inset-0 bg-black/40 backdrop-blur-md"
         onClick={handleClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleClose()
+          }
+        }}
       />
 
       {/* 弹窗容器 */}
@@ -173,21 +197,22 @@ export function AnnouncementModal({ onViewAnnouncement }: AnnouncementModalProps
                 className="bg-slate-50 rounded-xl overflow-hidden border border-slate-100 transition-all duration-300"
               >
                 {/* 公告配图 */}
-                {announcement.imageUrl && announcement.imageUrl !== '/placeholder.png' && (
-                  <div className="relative w-full h-36 overflow-hidden">
-                    <Image
-                      src={announcement.imageUrl}
-                      alt={announcement.title}
-                      fill
-                      className="object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none'
-                      }}
-                    />
-                    {/* 渐变遮罩 */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                  </div>
-                )}
+                {announcement.imageUrl &&
+                  announcement.imageUrl !== '/placeholder.png' && (
+                    <div className="relative w-full h-36 overflow-hidden">
+                      <Image
+                        src={announcement.imageUrl}
+                        alt={announcement.title}
+                        fill
+                        className="object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                      {/* 渐变遮罩 */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </div>
+                  )}
 
                 {/* 公告内容 */}
                 <div className="p-4">

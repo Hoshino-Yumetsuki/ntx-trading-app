@@ -45,7 +45,8 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
             </span>
           </div>
           <div className="text-sm text-slate-700">
-            {t('profile.userInfo.gntxHolding')}：{userInfo?.gntxBalance?.toLocaleString() || '0'}
+            {t('profile.userInfo.gntxHolding')}：
+            {userInfo?.gntxBalance?.toLocaleString() || '0'}
           </div>
           <div className="text-sm text-slate-700">
             {t('profile.userInfo.invitedCount')}：
@@ -57,7 +58,9 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
 
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
           <div className="mt-4">
-            <div className="text-sm text-slate-700 mb-1">{t('profile.userInfo.toBroker')}</div>
+            <div className="text-sm text-slate-700 mb-1">
+              {t('profile.userInfo.toBroker')}
+            </div>
             <div className="h-2 bg-white/70 rounded-full overflow-hidden">
               <div
                 className="h-full bg-blue-600 rounded-full"

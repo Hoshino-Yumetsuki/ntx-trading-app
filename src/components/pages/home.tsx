@@ -357,7 +357,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         <div className="mt-4 mb-4 bg-white rounded-xl shadow-sm">
           <div className="p-3">
             <div className="text-center mb-1">
-              <h3 className="text-base font-semibold text-slate-800">{t('home.exchanges.title')}</h3>
+              <h3 className="text-base font-semibold text-slate-800">
+                {t('home.exchanges.title')}
+              </h3>
             </div>
             <div className="h-auto py-0.5">
               <div className="grid grid-cols-4 gap-1">

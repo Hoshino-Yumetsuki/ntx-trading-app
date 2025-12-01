@@ -150,9 +150,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             background: '#fefefe'
           }}
         />
-        <div
-          className="absolute left-8 top-6 z-30 flex items-center gap-2"
-        >
+        <div className="absolute left-8 top-6 z-30 flex items-center gap-2">
           <Image
             src="/Frame17@3x.png"
             alt="NTX Logo"
@@ -189,7 +187,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
                 textAlign: 'justify',
                 textJustify: 'inter-ideograph' as any,
                 wordBreak: 'break-word' as any,
-                overflowWrap: 'anywhere' as any,
+                overflowWrap: 'anywhere' as any
               }}
             />
           </div>
@@ -218,7 +216,9 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
                 priority
               />
             </div>
-            <div className="text-slate-700 text-base font-medium">{t('news.shareCard.qrLabel')}</div>
+            <div className="text-slate-700 text-base font-medium">
+              {t('news.shareCard.qrLabel')}
+            </div>
           </div>
         </div>
       </div>

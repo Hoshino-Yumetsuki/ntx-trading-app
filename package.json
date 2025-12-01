@@ -5,7 +5,9 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "lint": "biome check && biome lint ",
+    "lint-fix": "biome format --write && biome lint --write"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",
@@ -60,6 +62,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.8",
     "@capacitor/assets": "^3.0.5",
     "@types/node": "^22.19.1",
     "@types/react": "^19.2.4",

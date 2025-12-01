@@ -17,13 +17,13 @@ function getBaseUrl(): string {
 
 export function useNewsImageGenerator(
   newsItem: NewsItem | null,
-  shareUrl?: string
+  _shareUrl?: string
 ) {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('')
   const [fullContent, setFullContent] = useState<string>('')
   const [isLoadingContent, setIsLoadingContent] = useState<boolean>(false)
   const [overrideQrText, setOverrideQrText] = useState<string>('')
-  const { user } = useAuth()
+  useAuth()
   const [inviteCode, setInviteCode] = useState<string>('')
 
   const fetchFullContent = useCallback(async () => {
@@ -66,13 +66,14 @@ export function useNewsImageGenerator(
       }
     }
     loadInvite()
-  }, [user?.id])
+  }, [])
 
   useEffect(() => {
     const generateQRCode = async () => {
       if (!newsItem) return
       try {
-        const textToEncode = overrideQrText ||
+        const textToEncode =
+          overrideQrText ||
           `${getBaseUrl()}/register${inviteCode ? `?invite=${inviteCode}` : ''}`
         const qrDataUrl = await QRCode.toDataURL(textToEncode, {
           width: 120,
@@ -95,7 +96,9 @@ export function useNewsImageGenerator(
       }
 
       try {
-        const imgs = Array.from(node.querySelectorAll('img')) as HTMLImageElement[]
+        const imgs = Array.from(
+          node.querySelectorAll('img')
+        ) as HTMLImageElement[]
         const imageUrls = imgs.map((img) => img.currentSrc || img.src)
         await preloadImages(imageUrls)
 
@@ -110,15 +113,16 @@ export function useNewsImageGenerator(
             if ('decode' in img && typeof (img as any).decode === 'function') {
               try {
                 await (img as any).decode()
-              } catch {
-              }
+              } catch {}
             }
           })
         )
 
         const fontsReady = (document as any)?.fonts?.ready
         if (fontsReady && typeof fontsReady.then === 'function') {
-          try { await fontsReady } catch {}
+          try {
+            await fontsReady
+          } catch {}
         }
         await new Promise((r) => requestAnimationFrame(() => r(undefined)))
         await new Promise((r) => requestAnimationFrame(() => r(undefined)))

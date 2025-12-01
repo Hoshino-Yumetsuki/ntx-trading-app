@@ -6,9 +6,7 @@ import { Web3ModalProvider } from '@/src/contexts/WalletContext'
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Web3ModalProvider>
-      <LanguageProvider>
-        {children}
-      </LanguageProvider>
+      <LanguageProvider>{children}</LanguageProvider>
     </Web3ModalProvider>
   )
 }

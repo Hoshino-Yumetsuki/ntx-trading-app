@@ -39,7 +39,7 @@ export function LoopCommunitiesPage({
     }
 
     fetchCommunities()
-  }, [])
+  }, [t])
 
   const handleCommunityClick = (community: Course) => {
     // 上报每日直播任务
@@ -70,7 +70,9 @@ export function LoopCommunitiesPage({
     return (
       <div className="flex justify-center items-center py-12">
         <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-        <span className="ml-2 text-slate-600">{t('academy.communities.loading')}</span>
+        <span className="ml-2 text-slate-600">
+          {t('academy.communities.loading')}
+        </span>
       </div>
     )
   }

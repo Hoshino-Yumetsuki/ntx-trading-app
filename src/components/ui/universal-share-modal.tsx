@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   useState,
@@ -8,138 +8,140 @@ import {
   type ChangeEvent,
   type ComponentType,
   cloneElement,
-  isValidElement,
-} from "react";
-import { Button } from "@/src/components/ui/button";
+  isValidElement
+} from 'react'
+import { Button } from '@/src/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from "@/src/components/ui/dialog";
-import { Download, Share2, Copy, Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import NextImage from "next/image";
-import jsqr from "jsqr";
-import { useLanguage } from "@/src/contexts/language-context";
+  DialogTitle
+} from '@/src/components/ui/dialog'
+import { Download, Share2, Copy, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
+import NextImage from 'next/image'
+import jsqr from 'jsqr'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export interface ShareData {
-  title: string;
-  text: string;
-  url: string;
-  qrCodeUrl?: string;
-  fullText?: string;
+  title: string
+  text: string
+  url: string
+  qrCodeUrl?: string
+  fullText?: string
 }
 
 export interface ShareAction {
-  label: string;
-  icon?: ComponentType<{ className?: string }>;
-  onClick: () => void;
-  variant?: "default" | "outline" | "ghost";
-  className?: string;
+  label: string
+  icon?: ComponentType<{ className?: string }>
+  onClick: () => void
+  variant?: 'default' | 'outline' | 'ghost'
+  className?: string
 }
 
 interface UniversalShareModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  shareData: ShareData;
-  imageGenerator?: (node: HTMLDivElement | null) => Promise<string | null>;
-  posterComponent?: React.ReactElement;
-  showImagePreview?: boolean;
-  customActions?: ShareAction[];
-  showDefaultShareButtons?: boolean;
-  showCopyLinkButton?: boolean;
-  onQrOverride?: (text: string) => void;
-  showCustomQrUpload?: boolean;
-  onShare?: () => void;
+  isOpen: boolean
+  onClose: () => void
+  title: string
+  shareData: ShareData
+  imageGenerator?: (node: HTMLDivElement | null) => Promise<string | null>
+  posterComponent?: React.ReactElement
+  showImagePreview?: boolean
+  customActions?: ShareAction[]
+  showDefaultShareButtons?: boolean
+  showCopyLinkButton?: boolean
+  onQrOverride?: (text: string) => void
+  showCustomQrUpload?: boolean
+  onShare?: () => void
 }
 
-const useQrCodeScanner = (onQrScanSuccess: (text: string) => void, t: (key: string) => string) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+const useQrCodeScanner = (
+  onQrScanSuccess: (text: string) => void,
+  t: (key: string) => string
+) => {
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const triggerUpload = () => fileInputRef.current?.click();
+  const triggerUpload = () => fileInputRef.current?.click()
 
   const handleFileChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+      const file = e.target.files?.[0]
+      if (!file) return
 
       try {
-        const img = new window.Image();
-        img.src = URL.createObjectURL(file);
-        await img.decode();
+        const img = new window.Image()
+        img.src = URL.createObjectURL(file)
+        await img.decode()
 
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext("2d", { willReadFrequently: true });
-        if (!ctx) throw new Error("无法获取 canvas 上下文");
+        const canvas = document.createElement('canvas')
+        canvas.width = img.naturalWidth
+        canvas.height = img.naturalHeight
+        const ctx = canvas.getContext('2d', { willReadFrequently: true })
+        if (!ctx) throw new Error('无法获取 canvas 上下文')
 
-        ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const result = jsqr(imageData.data, imageData.width, imageData.height);
+        ctx.drawImage(img, 0, 0)
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const result = jsqr(imageData.data, imageData.width, imageData.height)
 
         if (result?.data) {
-          onQrScanSuccess(result.data);
+          onQrScanSuccess(result.data)
           toast.success(t('profile.share.qrScanned'), {
-            description: t('profile.share.qrScannedDesc'),
-          });
+            description: t('profile.share.qrScannedDesc')
+          })
         } else {
           toast.error(t('profile.share.scanFailed'), {
-            description: t('profile.share.qrNotFound'),
-          });
+            description: t('profile.share.qrNotFound')
+          })
         }
       } catch (error) {
-        console.error("二维码识别异常:", error);
+        console.error('二维码识别异常:', error)
         toast.error(t('profile.share.scanFailed'), {
-          description: t('profile.share.scanError'),
-        });
+          description: t('profile.share.scanError')
+        })
       } finally {
-        if (fileInputRef.current) fileInputRef.current.value = "";
+        if (fileInputRef.current) fileInputRef.current.value = ''
       }
     },
-    [onQrScanSuccess, t],
-  );
+    [onQrScanSuccess, t]
+  )
 
-  return { fileInputRef, triggerUpload, handleFileChange };
-};
+  return { fileInputRef, triggerUpload, handleFileChange }
+}
 
 const toPlainText = (formattedText: string): string => {
-  if (!formattedText) return "";
+  if (!formattedText) return ''
 
-  let text = formattedText;
+  let text = formattedText
 
   try {
-    if (typeof document !== "undefined") {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = text;
-      text = tempDiv.textContent || tempDiv.innerText || "";
+    if (typeof document !== 'undefined') {
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = text
+      text = tempDiv.textContent || tempDiv.innerText || ''
     } else {
-      text = text.replace(/<[^>]*>?/gm, "");
+      text = text.replace(/<[^>]*>?/gm, '')
     }
-  } catch (e) {
-    text = text.replace(/<[^>]*>?/gm, "");
+  } catch (_e) {
+    text = text.replace(/<[^>]*>?/gm, '')
   }
 
   text = text
-    .replace(/!\[.*?\]\(.*?\)/g, "")
-    .replace(/\[(.*?)\]\(.*?\)/g, "$1")
-    .replace(/^#+\s*/gm, "")
-    .replace(/^(-{3,}|\*{3,}|_{3,})\s*$/gm, "")
-    .replace(/^>\s*/gm, "")
-    .replace(/^\s*[-*+]\s+/gm, "")
-    .replace(/(\*\*|__|\*|_|~~)(.*?)\1/g, "$2")
-    .replace(/`([^`]+)`/g, "$1");
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/^#+\s*/gm, '')
+    .replace(/^(-{3,}|\*{3,}|_{3,})\s*$/gm, '')
+    .replace(/^>\s*/gm, '')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/(\*\*|__|\*|_|~~)(.*?)\1/g, '$2')
+    .replace(/`([^`]+)`/g, '$1')
 
   text = text
-    .replace(/[ \t]+\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
 
-  return text;
-};
-
+  return text
+}
 
 export function UniversalShareModal({
   isOpen,
@@ -154,41 +156,41 @@ export function UniversalShareModal({
   showCopyLinkButton = true,
   onQrOverride,
   showCustomQrUpload = true,
-  onShare,
+  onShare
 }: UniversalShareModalProps) {
-  const { t } = useLanguage();
-  const [generatedImage, setGeneratedImage] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const posterRef = useRef<HTMLDivElement>(null);
-  const [previewContainerHeight, setPreviewContainerHeight] = useState(400);
+  const { t } = useLanguage()
+  const [generatedImage, setGeneratedImage] = useState<string>('')
+  const [isGenerating, setIsGenerating] = useState(false)
+  const posterRef = useRef<HTMLDivElement>(null)
+  const [previewContainerHeight, setPreviewContainerHeight] = useState(400)
 
-  const [isIOS, setIsIOS] = useState(false);
+  const [isIOS, setIsIOS] = useState(false)
   useEffect(() => {
-    const platform = navigator.platform;
-    const userAgent = navigator.userAgent;
+    const platform = navigator.platform
+    const userAgent = navigator.userAgent
 
     let isIOSDevice =
       /iPad|iPhone|iPod/.test(platform) ||
-      (platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      (platform === 'MacIntel' && navigator.maxTouchPoints > 1)
 
     if (!isIOSDevice) {
-      isIOSDevice = /iPhone|iPad|iPod/.test(userAgent);
+      isIOSDevice = /iPhone|iPad|iPod/.test(userAgent)
     }
 
-    setIsIOS(isIOSDevice);
-  }, []);
+    setIsIOS(isIOSDevice)
+  }, [])
 
   const downloadImage = useCallback(
     (imageToDownload: string, sharePayload: ShareData) => {
       if (!imageToDownload) {
-        toast.error("图片尚未生成", {
-          description: "请稍后再试",
-        });
-        return;
+        toast.error('图片尚未生成', {
+          description: '请稍后再试'
+        })
+        return
       }
 
       if (isIOS) {
-        const newWindow = window.open();
+        const newWindow = window.open()
         if (newWindow) {
           newWindow.document.write(`
             <html>
@@ -231,8 +233,8 @@ export function UniversalShareModal({
                 <script>
                   async function shareImage() {
                     const dataUrl = "${imageToDownload}";
-                    const title = \`${sharePayload.title.replace(/`/g, "\\`")}\`;
-                    const text = \`${sharePayload.text.replace(/`/g, "\\`")}\`;
+                    const title = \`${sharePayload.title.replace(/`/g, '\\`')}\`;
+                    const text = \`${sharePayload.text.replace(/`/g, '\\`')}\`;
 
                     try {
                       const response = await fetch(dataUrl);
@@ -256,160 +258,179 @@ export function UniversalShareModal({
                 </script>
               </body>
             </html>
-          `);
-          newWindow.document.close();
+          `)
+          newWindow.document.close()
         }
       } else {
-        const link = document.createElement("a");
-        link.href = imageToDownload;
-        link.download = `${sharePayload.title}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const link = document.createElement('a')
+        link.href = imageToDownload
+        link.download = `${sharePayload.title}.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
         toast.success(t('profile.share.downloadSuccess'), {
-          description: t('profile.share.imageSaved'),
-        });
+          description: t('profile.share.imageSaved')
+        })
       }
     },
-    [isIOS, t],
-  );
+    [isIOS, t]
+  )
+
+  // 计算预览高度的函数
+  const updatePreviewHeight = useCallback(() => {
+    if (posterRef.current) {
+      const fullHeight = posterRef.current.scrollHeight
+      setPreviewContainerHeight(fullHeight * 0.5)
+    }
+  }, [])
+
+  // 监听 posterComponent 变化并更新高度
+  useEffect(() => {
+    // 使用 posterComponent 来触发更新（检查是否存在）
+    if (!posterComponent) return
+    // 延迟更新以等待 DOM 渲染
+    const timeoutId = setTimeout(updatePreviewHeight, 50)
+    return () => clearTimeout(timeoutId)
+  }, [posterComponent, updatePreviewHeight])
 
   useEffect(() => {
     if (isOpen && posterRef.current) {
-      const posterElement = posterRef.current;
+      const posterElement = posterRef.current
       const observer = new ResizeObserver((entries) => {
-        const entry = entries[0];
+        const entry = entries[0]
         if (entry) {
-          const fullHeight = entry.target.scrollHeight;
-          setPreviewContainerHeight(fullHeight * 0.5);
+          const fullHeight = entry.target.scrollHeight
+          setPreviewContainerHeight(fullHeight * 0.5)
         }
-      });
-      observer.observe(posterElement);
+      })
+      observer.observe(posterElement)
       return () => {
-        observer.disconnect();
-      };
+        observer.disconnect()
+      }
     }
-  }, [isOpen, posterComponent]);
+  }, [isOpen])
 
   const handleGenerateAndSave = useCallback(async () => {
     if (generatedImage) {
-      downloadImage(generatedImage, shareData);
-      return;
+      downloadImage(generatedImage, shareData)
+      return
     }
 
-    if (!imageGenerator) return;
-    setIsGenerating(true);
+    if (!imageGenerator) return
+    setIsGenerating(true)
     try {
-      const imageDataUrl = await imageGenerator(posterRef.current);
+      const imageDataUrl = await imageGenerator(posterRef.current)
       if (imageDataUrl) {
-        setGeneratedImage(imageDataUrl);
-        downloadImage(imageDataUrl, shareData);
+        setGeneratedImage(imageDataUrl)
+        downloadImage(imageDataUrl, shareData)
       } else {
         toast.error(t('profile.share.generateFailed'), {
-          description: t('profile.share.cannotGenerate'),
-        });
+          description: t('profile.share.cannotGenerate')
+        })
       }
     } catch (error) {
-      console.error("Failed to generate image:", error);
+      console.error('Failed to generate image:', error)
       toast.error(t('profile.share.generateFailed'), {
-        description: t('profile.share.cannotGenerate'),
-      });
+        description: t('profile.share.cannotGenerate')
+      })
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  }, [imageGenerator, generatedImage, downloadImage, shareData, t]);
+  }, [imageGenerator, generatedImage, downloadImage, shareData, t])
 
   useEffect(() => {
     if (isOpen) {
-      setGeneratedImage("");
+      setGeneratedImage('')
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const copyLink = () => {
-    navigator.clipboard.writeText(shareData.url);
+    navigator.clipboard.writeText(shareData.url)
     toast.success(t('profile.copy.success'), {
-      description: t('profile.share.linkCopied'),
-    });
-  };
+      description: t('profile.share.linkCopied')
+    })
+  }
 
   const onQrScanSuccess = useCallback(
     (qrText: string) => {
-      onQrOverride?.(qrText);
+      onQrOverride?.(qrText)
     },
-    [onQrOverride],
-  );
+    [onQrOverride]
+  )
 
   const restoreDefaultQr = () => {
-    onQrOverride?.("");
-    toast.success(t('profile.share.qrRestored'));
-  };
+    onQrOverride?.('')
+    toast.success(t('profile.share.qrRestored'))
+  }
 
-  const { fileInputRef, triggerUpload, handleFileChange } =
-    useQrCodeScanner(onQrScanSuccess, t);
+  const { fileInputRef, triggerUpload, handleFileChange } = useQrCodeScanner(
+    onQrScanSuccess,
+    t
+  )
 
   const posterWithRef =
     posterComponent && isValidElement(posterComponent)
       ? cloneElement(
           posterComponent as React.ReactElement<{
-            ref: React.Ref<HTMLDivElement>;
+            ref: React.Ref<HTMLDivElement>
           }>,
-          { ref: posterRef },
+          { ref: posterRef }
         )
-      : null;
+      : null
 
   const buildSharePayload = useCallback(() => {
-    const rawTitle = (shareData.title || "").trim();
-    const rawContent = (shareData.fullText || shareData.text || "").trim();
-    const plainTextContent = toPlainText(rawContent);
+    const rawTitle = (shareData.title || '').trim()
+    const rawContent = (shareData.fullText || shareData.text || '').trim()
+    const plainTextContent = toPlainText(rawContent)
 
     return {
-      title: rawTitle || document.title || "",
+      title: rawTitle || document.title || '',
       text: plainTextContent,
-      url: shareData.url,
-    };
-  }, [shareData.title, shareData.text, shareData.fullText, shareData.url]);
+      url: shareData.url
+    }
+  }, [shareData.title, shareData.text, shareData.fullText, shareData.url])
 
   const shareToTelegram = () => {
-    onShare?.();
-    const payload = buildSharePayload();
-    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`;
-    const shareUrl = `https://t.me/share/url?text=${encodeURIComponent(shareText)}`;
-    window.open(shareUrl, "_blank");
-  };
+    onShare?.()
+    const payload = buildSharePayload()
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
+    const shareUrl = `https://t.me/share/url?text=${encodeURIComponent(shareText)}`
+    window.open(shareUrl, '_blank')
+  }
 
   const shareToTwitter = () => {
-    onShare?.();
-    const payload = buildSharePayload();
-    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`;
-    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-    window.open(shareUrl, "_blank");
-  };
+    onShare?.()
+    const payload = buildSharePayload()
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`
+    window.open(shareUrl, '_blank')
+  }
 
   const shareToWhatsApp = () => {
-    onShare?.();
-    const payload = buildSharePayload();
-    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`;
-    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-    window.open(shareUrl, "_blank");
-  };
+    onShare?.()
+    const payload = buildSharePayload()
+    const shareText = `${payload.title}\n\n${payload.text}\n${payload.url}`
+    const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
+    window.open(shareUrl, '_blank')
+  }
 
   const shareNative = async () => {
-    onShare?.();
-    const shareDataPayload = buildSharePayload();
+    onShare?.()
+    const shareDataPayload = buildSharePayload()
     try {
       if (navigator.share) {
         await navigator.share({
           title: shareDataPayload.title,
-          text: `${shareDataPayload.title}\n\n${shareDataPayload.text}\n\n${shareDataPayload.url}`,
-        });
+          text: `${shareDataPayload.title}\n\n${shareDataPayload.text}\n\n${shareDataPayload.url}`
+        })
       } else {
-        copyLink();
+        copyLink()
       }
     } catch (error) {
-      console.error("分享失败:", error);
-      copyLink();
+      console.error('分享失败:', error)
+      copyLink()
     }
-  };
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -423,19 +444,19 @@ export function UniversalShareModal({
             <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
               <div
                 style={{
-                  width: "300px",
+                  width: '300px',
                   height: `${previewContainerHeight}px`,
-                  position: "relative",
-                  transition: "height 0.2s ease-in-out",
+                  position: 'relative',
+                  transition: 'height 0.2s ease-in-out'
                 }}
               >
                 <div
                   style={{
-                    position: "absolute",
+                    position: 'absolute',
                     top: 0,
                     left: 0,
-                    transform: "scale(0.5)",
-                    transformOrigin: "top left",
+                    transform: 'scale(0.5)',
+                    transformOrigin: 'top left'
                   }}
                 >
                   {posterWithRef}
@@ -461,7 +482,9 @@ export function UniversalShareModal({
                 className="w-full"
               >
                 <Download className="w-4 h-4 mr-2" />
-                {isGenerating ? t('profile.share.generating') : t('profile.share.savePoster')}
+                {isGenerating
+                  ? t('profile.share.generating')
+                  : t('profile.share.savePoster')}
               </Button>
             )}
 
@@ -475,27 +498,29 @@ export function UniversalShareModal({
             {customActions.length > 0 && (
               <div className="space-y-2">
                 {customActions.map((action, index) => {
-                  const IconComponent = action.icon;
+                  const IconComponent = action.icon
                   return (
                     <Button
                       key={index}
-                      variant={action.variant || "outline"}
+                      variant={action.variant || 'outline'}
                       onClick={action.onClick}
-                      className={action.className || "w-full"}
+                      className={action.className || 'w-full'}
                     >
                       {IconComponent && (
                         <IconComponent className="w-4 h-4 mr-2" />
                       )}
                       {action.label}
                     </Button>
-                  );
+                  )
                 })}
               </div>
             )}
 
             {showDefaultShareButtons && (
               <div className="space-y-2">
-                <p className="text-sm text-gray-600 text-center">{t('profile.share.shareTo')}</p>
+                <p className="text-sm text-gray-600 text-center">
+                  {t('profile.share.shareTo')}
+                </p>
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     variant="outline"
@@ -583,5 +608,5 @@ export function UniversalShareModal({
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

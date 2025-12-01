@@ -1,12 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
-import { ArrowLeft, CheckCircle2, Gift, Loader2, Share2, Video, Users, CreditCard, UserPlus } from 'lucide-react'
+import {
+  ArrowLeft,
+  Gift,
+  Loader2,
+  Share2,
+  Video,
+  Users,
+  CreditCard,
+  UserPlus
+} from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
 import Image from 'next/image'
-import { Mission, MissionService } from '@/src/services/mission'
+import { type Mission, MissionService } from '@/src/services/mission'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -21,7 +30,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
   const [loading, setLoading] = useState(true)
   const [claimingId, setClaimingId] = useState<number | null>(null)
 
-  const fetchMissions = async () => {
+  const fetchMissions = useCallback(async () => {
     try {
       setLoading(true)
       const data = await MissionService.getMissionList()
@@ -32,11 +41,11 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [t])
 
   useEffect(() => {
     fetchMissions()
-  }, [])
+  }, [fetchMissions])
 
   const handleClaim = async (mission: Mission) => {
     if (claimingId) return
@@ -53,7 +62,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
     }
   }
 
-  const handleAction = async (mission: Mission) => {
+  const _handleAction = async (mission: Mission) => {
     // Report action if needed
     if (mission.task_type === 'DAILY_SHARE') {
       MissionService.reportAction('daily_share')
@@ -61,13 +70,13 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
       // But maybe we should open a share sheet if possible?
       if (navigator.share) {
         try {
-            await navigator.share({
-                title: 'NTX Trading',
-                text: 'Come join me on NTX Trading!',
-                url: window.location.origin
-            })
-        } catch (e) {
-            // ignore share error
+          await navigator.share({
+            title: 'NTX Trading',
+            text: 'Come join me on NTX Trading!',
+            url: window.location.origin
+          })
+        } catch (_e) {
+          // ignore share error
         }
       }
     } else if (mission.task_type === 'DAILY_LIVE') {
@@ -81,13 +90,13 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
 
     // Navigation for other tasks
     if (mission.task_type === 'REGISTER') {
-        // Already registered if seeing this?
+      // Already registered if seeing this?
     } else if (mission.task_type === 'BIND_EXCHANGE') {
-        // Open bind dialog? Or go to mining page?
-        // Since we are in a standalone page, we might need to use router or onNavigate
-        // onNavigate is passed from MainApp usually.
-        // But we are not sure if MissionPage will be used inside MainApp structure or standalone.
-        // If it is used as a tab component, it gets onNavigate.
+      // Open bind dialog? Or go to mining page?
+      // Since we are in a standalone page, we might need to use router or onNavigate
+      // onNavigate is passed from MainApp usually.
+      // But we are not sure if MissionPage will be used inside MainApp structure or standalone.
+      // If it is used as a tab component, it gets onNavigate.
     }
 
     // Refresh to see if progress updated (though server might not update immediately for some types)
@@ -96,13 +105,19 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'REGISTER': return <UserPlus className="w-6 h-6 text-blue-500" />
-      case 'BIND_EXCHANGE': return <CreditCard className="w-6 h-6 text-purple-500" />
+      case 'REGISTER':
+        return <UserPlus className="w-6 h-6 text-blue-500" />
+      case 'BIND_EXCHANGE':
+        return <CreditCard className="w-6 h-6 text-purple-500" />
       case 'REFERRAL_COUNT':
-      case 'TEAM_SIZE': return <Users className="w-6 h-6 text-orange-500" />
-      case 'DAILY_LIVE': return <Video className="w-6 h-6 text-red-500" />
-      case 'DAILY_SHARE': return <Share2 className="w-6 h-6 text-green-500" />
-      default: return <Gift className="w-6 h-6 text-blue-500" />
+      case 'TEAM_SIZE':
+        return <Users className="w-6 h-6 text-orange-500" />
+      case 'DAILY_LIVE':
+        return <Video className="w-6 h-6 text-red-500" />
+      case 'DAILY_SHARE':
+        return <Share2 className="w-6 h-6 text-green-500" />
+      default:
+        return <Gift className="w-6 h-6 text-blue-500" />
     }
   }
 
@@ -110,7 +125,11 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
     // 已领取：灰色禁用状态
     if (mission.status === 'CLAIMED') {
       return (
-        <Button disabled variant="secondary" className="w-24 bg-slate-100 text-slate-400">
+        <Button
+          disabled
+          variant="secondary"
+          className="w-24 bg-slate-100 text-slate-400"
+        >
           {t('mission.status.claimed')}
         </Button>
       )
@@ -124,7 +143,11 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
           disabled={claimingId === mission.id}
           className="w-24 bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all active:scale-95"
         >
-          {claimingId === mission.id ? <Loader2 className="w-4 h-4 animate-spin" /> : t('mission.status.claim')}
+          {claimingId === mission.id ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            t('mission.status.claim')
+          )}
         </Button>
       )
     }
@@ -141,11 +164,14 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
     )
   }
 
-  const activeMissions = missions.filter(m => m.status !== 'CLAIMED')
-  const claimedMissions = missions.filter(m => m.status === 'CLAIMED')
+  const activeMissions = missions.filter((m) => m.status !== 'CLAIMED')
+  const claimedMissions = missions.filter((m) => m.status === 'CLAIMED')
 
   const renderMissionCard = (mission: Mission) => (
-    <Card key={mission.id} className="border-none shadow-sm bg-white rounded-xl overflow-hidden mb-4">
+    <Card
+      key={mission.id}
+      className="border-none shadow-sm bg-white rounded-xl overflow-hidden mb-4"
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -154,7 +180,9 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-slate-800 truncate">{mission.name}</h3>
+                <h3 className="font-bold text-slate-800 truncate">
+                  {mission.name}
+                </h3>
                 {mission.is_daily && (
                   <span className="px-1.5 py-0.5 bg-orange-100 text-orange-600 text-[10px] rounded font-medium">
                     {t('mission.daily')}
@@ -167,14 +195,19 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
 
               <div className="mt-3 flex items-center gap-4">
                 <div className="flex items-center text-sm font-medium text-orange-500">
-                    <span className="text-xs mr-1">{t('mission.reward')}</span>
-                    {mission.reward_amount} <span className="text-[10px] ml-0.5">NTX</span>
+                  <span className="text-xs mr-1">{t('mission.reward')}</span>
+                  {mission.reward_amount}{' '}
+                  <span className="text-[10px] ml-0.5">NTX</span>
                 </div>
-                {mission.condition_value > 1 && mission.progress < mission.condition_value && mission.status !== 'COMPLETED' && mission.status !== 'CLAIMED' && (
-                      <div className="text-xs text-slate-400">
-                        {t('mission.progress')}: {mission.progress} / {mission.condition_value}
-                      </div>
-                )}
+                {mission.condition_value > 1 &&
+                  mission.progress < mission.condition_value &&
+                  mission.status !== 'COMPLETED' &&
+                  mission.status !== 'CLAIMED' && (
+                    <div className="text-xs text-slate-400">
+                      {t('mission.progress')}: {mission.progress} /{' '}
+                      {mission.condition_value}
+                    </div>
+                  )}
               </div>
             </div>
           </div>
@@ -196,14 +229,16 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
               variant="ghost"
               size="sm"
               onClick={() => {
-                  if (onNavigate) onNavigate('home')
-                  else router.push('/')
+                if (onNavigate) onNavigate('home')
+                else router.push('/')
               }}
               className="mr-2 text-slate-600 hover:text-slate-800 -ml-2"
             >
               <ArrowLeft className="w-6 h-6" />
             </Button>
-            <h1 className="text-xl font-bold text-slate-800">{t('mission.title')}</h1>
+            <h1 className="text-xl font-bold text-slate-800">
+              {t('mission.title')}
+            </h1>
           </div>
           <div className="relative w-24 h-8">
             <Image
@@ -224,16 +259,18 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
             <p>{t('mission.loading')}</p>
           </div>
         ) : missions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-slate-400">
-                <Gift className="w-12 h-12 mb-2 opacity-20" />
-                <p>{t('mission.empty')}</p>
-            </div>
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+            <Gift className="w-12 h-12 mb-2 opacity-20" />
+            <p>{t('mission.empty')}</p>
+          </div>
         ) : (
           <>
             {/* 未完成/可领取的部分 */}
             {activeMissions.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">{t('mission.section.active')}</h2>
+                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">
+                  {t('mission.section.active')}
+                </h2>
                 {activeMissions.map(renderMissionCard)}
               </div>
             )}
@@ -241,7 +278,9 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
             {/* 已完成/已领取的部分 */}
             {claimedMissions.length > 0 && (
               <div>
-                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">{t('mission.section.completed')}</h2>
+                <h2 className="text-sm font-bold text-slate-500 mb-3 px-1">
+                  {t('mission.section.completed')}
+                </h2>
                 {claimedMissions.map(renderMissionCard)}
               </div>
             )}

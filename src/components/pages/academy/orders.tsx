@@ -51,7 +51,7 @@ export function OrdersPage() {
       }
     }
     fetchAll()
-  }, [])
+  }, [t])
 
   const renderStatus = (o: Order) => {
     const base =
@@ -119,7 +119,9 @@ export function OrdersPage() {
       {loading ? (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-          <span className="ml-2 text-slate-600">{t('academy.orders.loading')}</span>
+          <span className="ml-2 text-slate-600">
+            {t('academy.orders.loading')}
+          </span>
         </div>
       ) : error ? (
         <div className="text-center py-8">
@@ -139,7 +141,8 @@ export function OrdersPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-1">
                   <div className="text-slate-800 font-semibold">
-                    {t('academy.orders.orderNo')}{formatOrderNo(o)}
+                    {t('academy.orders.orderNo')}
+                    {formatOrderNo(o)}
                   </div>
                   <div className="text-slate-400 text-sm">
                     {packageNameMap[o.package_id] ?? '-'}
@@ -149,10 +152,12 @@ export function OrdersPage() {
                   {t('academy.orders.packageAmount')} {o.amount} {o.currency}
                 </div>
                 <div className="text-blue-600 text-sm font-semibold mt-1">
-                  {t('academy.orders.paymentAmount')} {o.paymentAmount} {o.currency}
+                  {t('academy.orders.paymentAmount')} {o.paymentAmount}{' '}
+                  {o.currency}
                 </div>
                 <div className="text-slate-500 text-xs mt-1">
-                  {t('academy.orders.createTime')} {new Date(o.created_at).toLocaleString()}
+                  {t('academy.orders.createTime')}{' '}
+                  {new Date(o.created_at).toLocaleString()}
                 </div>
                 <div className="mt-3">{renderStatus(o)}</div>
               </CardContent>

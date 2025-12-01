@@ -65,7 +65,9 @@ export function StakeCard({ userInfo }: StakeCardProps) {
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
       <div className="p-5 md:p-6">
-        <h3 className="text-slate-900 font-semibold mb-5">{t('profile.stake.myStake')}</h3>
+        <h3 className="text-slate-900 font-semibold mb-5">
+          {t('profile.stake.myStake')}
+        </h3>
 
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">

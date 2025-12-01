@@ -81,7 +81,9 @@ export function RewardsCard({ userInfo, onNavigate }: RewardsCardProps) {
   return (
     <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
       <div className="p-5 md:p-6">
-        <h3 className="text-slate-900 font-semibold mb-5">{t('profile.menu.assets.title')}</h3>
+        <h3 className="text-slate-900 font-semibold mb-5">
+          {t('profile.menu.assets.title')}
+        </h3>
 
         <div className="grid grid-cols-2 gap-6 mb-6 md:mb-7">
           <AdaptiveBalance balance={userInfo?.ntxBalance} currency="NTX" />

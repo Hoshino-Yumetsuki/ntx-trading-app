@@ -20,7 +20,9 @@ import { useQuery } from '@tanstack/react-query'
 import { Input } from '@/src/components/ui/input'
 import type { SupportedLanguage } from '@/src/contexts/language-context'
 
-const fetchRssNews = async (language: SupportedLanguage): Promise<NewsItem[]> => {
+const fetchRssNews = async (
+  language: SupportedLanguage
+): Promise<NewsItem[]> => {
   const response = await fetch('https://rss.ntxdao.com/rss/hybrid')
   if (!response.ok) {
     throw new Error('网络响应错误，无法获取RSS源')
@@ -200,7 +202,12 @@ export function NewsPage() {
                   onClick={handleBackToList}
                   className="mr-2"
                 >
-                  <Image src="/back.png" alt={t('common.back')} width={20} height={20} />
+                  <Image
+                    src="/back.png"
+                    alt={t('common.back')}
+                    width={20}
+                    height={20}
+                  />
                 </Button>
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
                   <Image
@@ -221,7 +228,12 @@ export function NewsPage() {
                   <span className="text-xs font-medium text-[#1C55FF]">
                     {t('news.share')}
                   </span>
-                  <Image src="/share.png" alt={t('news.share')} width={16} height={13} />
+                  <Image
+                    src="/share.png"
+                    alt={t('news.share')}
+                    width={16}
+                    height={13}
+                  />
                 </div>
               </Button>
             </div>
@@ -376,8 +388,7 @@ export function NewsPage() {
               ))}
             </div>
           ) : isError ? (
-            <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4">
-            </div>
+            <div className="text-center py-8 text-slate-500 flex flex-col items-center gap-4"></div>
           ) : filteredNewsItems.length > 0 ? (
             <div className="relative">
               <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-[#EBF0FF]"></div>

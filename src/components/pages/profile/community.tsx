@@ -47,7 +47,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
       }
     }
     fetchData()
-  }, [])
+  }, [t])
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -77,7 +77,9 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-xl font-bold text-gray-800">{t('profile.community.title')}</h1>
+        <h1 className="text-xl font-bold text-gray-800">
+          {t('profile.community.title')}
+        </h1>
         <div className="w-6" />
       </div>
 
@@ -105,7 +107,9 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
 
         <div className="bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
           <div className="flex flex-row justify-between items-center mb-4 border-b pb-3 border-gray-100">
-            <span className="text-gray-900 text-xl font-bold">{t('profile.community.myInviter')}</span>
+            <span className="text-gray-900 text-xl font-bold">
+              {t('profile.community.myInviter')}
+            </span>
           </div>
 
           {userInfoLoading ? (
@@ -135,7 +139,9 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
 
         <div className="bg-white p-6 rounded-[16pt] shadow-xl border border-gray-100">
           <div className="flex flex-row justify-between items-center mb-4 border-b pb-3 border-gray-100">
-            <span className="text-gray-900 text-xl font-bold">{t('profile.community.communityUsers')}</span>
+            <span className="text-gray-900 text-xl font-bold">
+              {t('profile.community.communityUsers')}
+            </span>
           </div>
 
           {loading ? (
@@ -165,10 +171,13 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
                     </div>
                   </div>
                   <div className="flex justify-between items-center text-gray-600 text-sm">
-                    <span>{t('profile.community.email')}: {user.email}</span>
+                    <span>
+                      {t('profile.community.email')}: {user.email}
+                    </span>
                     {user.joined_at && (
                       <span>
-                        {t('profile.community.joinTime')}: {new Date(user.joined_at).toLocaleString()}
+                        {t('profile.community.joinTime')}:{' '}
+                        {new Date(user.joined_at).toLocaleString()}
                       </span>
                     )}
                   </div>

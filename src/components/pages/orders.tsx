@@ -63,7 +63,7 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     fetchOrders()
@@ -151,8 +151,12 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
             <ArrowLeft className="w-5 h-5 mr-2" /> {t('common.back')}
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-slate-800">{t('profile.menu.orders.title')}</h1>
-            <p className="text-slate-600 text-sm">{t('profile.menu.orders.subtitle')}</p>
+            <h1 className="text-2xl font-bold text-slate-800">
+              {t('profile.menu.orders.title')}
+            </h1>
+            <p className="text-slate-600 text-sm">
+              {t('profile.menu.orders.subtitle')}
+            </p>
           </div>
           <Button variant="outline" size="sm" onClick={fetchOrders}>
             <RefreshCw className="w-4 h-4 mr-2" /> {t('common.refresh')}
@@ -171,7 +175,9 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
             {loading ? (
               <div className="flex justify-center items-center py-12">
                 <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-                <span className="ml-2 text-slate-600">{t('profile.menu.orders.loadingOrders')}</span>
+                <span className="ml-2 text-slate-600">
+                  {t('profile.menu.orders.loadingOrders')}
+                </span>
               </div>
             ) : error ? (
               <div className="text-center py-6">
@@ -179,7 +185,9 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
               </div>
             ) : orders.length === 0 ? (
               <div className="text-center py-6">
-                <p className="text-slate-600">{t('profile.menu.orders.noOrders')}</p>
+                <p className="text-slate-600">
+                  {t('profile.menu.orders.noOrders')}
+                </p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -190,10 +198,12 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
                   >
                     <div className="space-y-1">
                       <div className="text-slate-800 font-medium">
-                        {t('profile.menu.orders.order')} #{format(new Date(o.created_at), 'yyyyMMdd')}0000
+                        {t('profile.menu.orders.order')} #
+                        {format(new Date(o.created_at), 'yyyyMMdd')}0000
                         {o.id}
                         <span className="ml-2 text-xs text-slate-500">
-                          {t('profile.menu.orders.packageName')} {packageNameMap[o.package_id] ?? '-'}
+                          {t('profile.menu.orders.packageName')}{' '}
+                          {packageNameMap[o.package_id] ?? '-'}
                         </span>
                         <span className="ml-2 text-xs px-1.5 py-0.5 rounded border border-white/40 bg-white/60 text-slate-600">
                           {o.status === 'pending'
@@ -204,11 +214,13 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
                         </span>
                       </div>
                       <div className="text-sm text-slate-600">
-                        {t('profile.menu.orders.packageAmount')} {o.amount} {o.currency} · {t('profile.menu.orders.paidAmount')}{' '}
+                        {t('profile.menu.orders.packageAmount')} {o.amount}{' '}
+                        {o.currency} · {t('profile.menu.orders.paidAmount')}{' '}
                         {o.paymentAmount} {o.currency}
                       </div>
                       <div className="text-xs text-slate-500">
-                        {t('profile.menu.orders.createdAt')} {new Date(o.created_at).toLocaleString()}
+                        {t('profile.menu.orders.createdAt')}{' '}
+                        {new Date(o.created_at).toLocaleString()}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -230,7 +242,9 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
                         </Button>
                       ) : (
                         <div className="text-xs text-slate-500">
-                          {o.status === 'confirmed' ? t('profile.menu.orders.completed') : t('profile.menu.orders.closed')}
+                          {o.status === 'confirmed'
+                            ? t('profile.menu.orders.completed')
+                            : t('profile.menu.orders.closed')}
                         </div>
                       )}
                     </div>
@@ -253,7 +267,9 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
           {selectedOrder && (
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                <div className="text-xs text-blue-700 mb-1">{t('profile.menu.orders.paymentAddress')}</div>
+                <div className="text-xs text-blue-700 mb-1">
+                  {t('profile.menu.orders.paymentAddress')}
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm break-all font-mono text-blue-900">
                     {selectedOrder.paymentAddress || '-'}
@@ -272,7 +288,9 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
               </div>
 
               <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
-                <div className="text-xs text-amber-700 mb-1">{t('profile.menu.orders.paymentAmount')}</div>
+                <div className="text-xs text-amber-700 mb-1">
+                  {t('profile.menu.orders.paymentAmount')}
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-semibold text-amber-900">
                     {selectedOrder.paymentAmount} {selectedOrder.currency}
@@ -302,7 +320,8 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
               {typeof timeLeft === 'number' && (
                 <div className="flex items-center justify-between text-sm text-slate-700">
                   <div className="flex items-center">
-                    <Clock className="w-4 h-4 mr-1" /> {t('profile.menu.orders.paymentCountdown')}
+                    <Clock className="w-4 h-4 mr-1" />{' '}
+                    {t('profile.menu.orders.paymentCountdown')}
                   </div>
                   <div
                     className={`font-mono ${timeLeft <= 60 ? 'text-red-600' : 'text-slate-800'}`}

@@ -23,7 +23,7 @@ export const InvitePoster = forwardRef<
   }
 >(({ userInfo, qrDataUrl }, ref) => {
   const { t } = useLanguage()
-  
+
   if (!userInfo) return null
 
   const code = String(userInfo.myInviteCode || '').toUpperCase()
