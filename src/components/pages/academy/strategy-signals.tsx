@@ -127,7 +127,7 @@ export function StrategySignalsPage({
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
                     <div className="w-1 h-6 bg-green-500 mr-3 rounded"></div>
-                    已解锁策略信号
+                    {t('signals.unlockedSignals')}
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     {unlockedCourses.map((course) => (
@@ -171,7 +171,7 @@ export function StrategySignalsPage({
                                 }}
                               >
                                 <ExternalLink className="w-4 h-4 mr-1" />
-                                查看
+                                {t('common.view')}
                               </Button>
                             )}
                           </div>
@@ -186,7 +186,7 @@ export function StrategySignalsPage({
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
                     <div className="w-1 h-6 bg-slate-400 mr-3 rounded"></div>
-                    待解锁信号
+                    {t('signals.lockedSignals')}
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     {lockedCourses.map((course) => (
@@ -215,7 +215,7 @@ export function StrategySignalsPage({
                               course.required_groups.length > 0 && (
                                 <div className="mt-2">
                                   <p className="text-xs text-slate-500">
-                                    需要：
+                                    {t('common.requires')}
                                     {course.required_groups.map((group, i) => (
                                       <span
                                         key={group.id}
@@ -240,7 +240,7 @@ export function StrategySignalsPage({
                               onClick={() => onNavigateTab?.('unlock')}
                             >
                               <Lock className="w-4 h-4 mr-1" />
-                              去解锁
+                              {t('common.unlock')}
                             </Button>
                           </div>
                         </CardContent>
@@ -262,10 +262,10 @@ export function StrategySignalsPage({
             <CardContent className="p-6">
               <div className="text-center py-8">
                 <h3 className="text-slate-700 font-medium mb-2">
-                  暂无可用信号策略
+                  {t('signals.noAvailable')}
                 </h3>
                 <p className="text-slate-500 text-sm">
-                  请稍后再来查看，或联系客服了解详情
+                  {t('signals.contactSupport')}
                 </p>
               </div>
             </CardContent>

@@ -52,16 +52,16 @@ export function SplashScreen() {
 
         <div className="space-y-3 mb-10">
           <p className="text-lg md:text-xl font-medium text-slate-800">
-            {t('splash.subtitle') || '一站式服务'}
+            {t('splash.subtitle')}
           </p>
           <p className="text-xl md:text-2xl font-bold text-[#1C55FF] max-w-xs mx-auto leading-relaxed">
-            {t('splash.description') || '成就你的Web3事业'}
+            {t('splash.description')}
           </p>
         </div>
 
         <div className="flex items-center justify-center space-x-2 text-slate-600">
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-sm">{t('splash.loading') || '加载中...'}</span>
+          <span className="text-sm">{t('splash.loading')}</span>
         </div>
       </div>
     </div>

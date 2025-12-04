@@ -37,27 +37,16 @@ import { useWeb3Modal, useWeb3ModalAccount } from '@/src/contexts/WalletContext'
 import type { UserInfo } from '@/src/types/user'
 import { useLanguage } from '@/src/contexts/language-context'
 
-const passwordSchema = z
-  .object({
-    oldPassword: z.string().min(1, '请输入当前密码'),
-    newPassword: z
-      .string()
-      .min(8, '密码至少8个字符')
-      .max(32, '密码最多32个字符')
-      .regex(/[A-Z]/, '密码必须包含至少一个大写字母'),
-    confirmPassword: z.string().min(1, '请确认新密码')
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: '两次输入的密码不一致',
-    path: ['confirmPassword']
-  })
+// Schema will be created inside component to use i18n
+type PasswordFormData = {
+  oldPassword: string
+  newPassword: string
+  confirmPassword: string
+}
 
-const nicknameSchema = z.object({
-  nickname: z.string().min(1, '请输入昵称').max(50, '昵称最多50个字符')
-})
-
-type PasswordFormData = z.infer<typeof passwordSchema>
-type NicknameFormData = z.infer<typeof nicknameSchema>
+type NicknameFormData = {
+  nickname: string
+}
 
 interface SecuritySettingsProps {
   onBack: () => void
@@ -81,6 +70,26 @@ export function SecuritySettings({
   const { user, updateUser, logout } = useAuth()
   const { open } = useWeb3Modal()
   const { address: walletAddress, isConnected } = useWeb3ModalAccount()
+
+  // Create schemas with i18n messages
+  const passwordSchema = z
+    .object({
+      oldPassword: z.string().min(1, t('security.password.currentRequired')),
+      newPassword: z
+        .string()
+        .min(8, t('security.password.minLength'))
+        .max(32, t('security.password.maxLength'))
+        .regex(/[A-Z]/, t('security.password.requireUppercase')),
+      confirmPassword: z.string().min(1, t('security.password.confirmRequired'))
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t('security.password.mismatch'),
+      path: ['confirmPassword']
+    })
+
+  const nicknameSchema = z.object({
+    nickname: z.string().min(1, t('security.nickname.required')).max(50, t('security.nickname.maxLength'))
+  })
 
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
@@ -122,9 +131,9 @@ export function SecuritySettings({
   const handleCopy = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text)
-      toast.success(`${label}已复制到剪贴板`)
+      toast.success(`${label}${t('common.copied')}`)
     } catch (_error) {
-      toast.error('复制失败，请手动复制')
+      toast.error(t('common.copyFailed'))
     }
   }
 
@@ -143,12 +152,12 @@ export function SecuritySettings({
       setSuccess(true)
       passwordForm.reset()
       setEditMode('none')
-      toast.success('密码修改成功！')
+      toast.success(t('security.password.updateSuccess'))
       setLogoutCountdown(3)
     } catch (error) {
       toast.error(
-        '密码修改失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
+        t('security.password.updateFailed') +
+          (error instanceof Error ? error.message : t('common.error.refreshPage'))
       )
     } finally {
       setIsSubmitting(false)
@@ -160,29 +169,29 @@ export function SecuritySettings({
       await UserService.updateNickname(data.nickname)
       updateUser({ nickname: data.nickname })
       setEditMode('none')
-      toast.success('昵称更新成功')
+      toast.success(t('security.nickname.updateSuccess'))
       nicknameForm.reset()
     } catch (error) {
       toast.error(
-        '昵称更新失败：' +
-          (error instanceof Error ? error.message : '请稍后重试')
+        t('security.nickname.updateFailed') +
+          (error instanceof Error ? error.message : t('common.error.refreshPage'))
       )
     }
   }
 
   const handleBindBscAddress = async () => {
     if (!walletAddress) {
-      toast.error('请先连接您的钱包。')
+      toast.error(t('security.wallet.connectFirst'))
       return
     }
     try {
       await UserService.bindBscAddress(walletAddress)
-      toast.success('BSC 地址绑定成功！')
+      toast.success(t('security.wallet.bindSuccess'))
       refetchUserInfo()
     } catch (error) {
       toast.error(
-        'BSC 地址绑定失败: ' +
-          (error instanceof Error ? error.message : '请重试。')
+        t('security.wallet.bindFailed') +
+          (error instanceof Error ? error.message : t('common.error.refreshPage'))
       )
     }
   }
@@ -191,7 +200,7 @@ export function SecuritySettings({
     {
       icon: User,
       title: t('profile.menu.security.nickname'),
-      description: userInfo?.nickname || '未设置',
+      description: userInfo?.nickname || t('security.field.notSet'),
       status: userInfo?.nickname ? 'completed' : 'pending',
       action: t('common.edit'),
       onClick: () => setEditMode('nickname'),
@@ -200,7 +209,7 @@ export function SecuritySettings({
     {
       icon: Hash,
       title: t('profile.menu.security.uid'),
-      description: userInfo?.id?.toString() || '未获取',
+      description: userInfo?.id?.toString() || t('security.field.notFetched'),
       status: userInfo?.id ? 'completed' : 'pending',
       action: '',
       onClick: () => {},
@@ -209,7 +218,7 @@ export function SecuritySettings({
     {
       icon: Mail,
       title: t('profile.menu.security.email'),
-      description: userInfo?.email || '未设置',
+      description: userInfo?.email || t('security.field.notSet'),
       status: userInfo?.email ? 'completed' : 'pending',
       action: '',
       onClick: () => {},
@@ -227,7 +236,7 @@ export function SecuritySettings({
     {
       icon: Wallet,
       title: t('profile.menu.security.bscAddress'),
-      description: userInfo?.bscAddress || '未绑定',
+      description: userInfo?.bscAddress || t('security.field.notBound'),
       status: userInfo?.bscAddress ? 'completed' : 'pending',
       action: '',
       onClick: () => {},
@@ -249,19 +258,19 @@ export function SecuritySettings({
       userInfo.bscAddress.toLowerCase() === walletAddress.toLowerCase()
 
     if (isSameAddress) {
-      return { text: '地址已绑定', disabled: true, action: () => {} }
+      return { text: t('security.wallet.bound'), disabled: true, action: () => {} }
     }
 
     if (userInfo?.bscAddress) {
       return {
-        text: '更新绑定地址',
+        text: t('security.wallet.updateBind'),
         disabled: false,
         action: handleBindBscAddress
       }
     }
 
     return {
-      text: '绑定此地址',
+      text: t('security.wallet.bind'),
       disabled: false,
       action: handleBindBscAddress
     }
@@ -319,11 +328,11 @@ export function SecuritySettings({
           <Alert className="border-orange-200 bg-orange-50">
             <AlertCircle className="h-4 w-4 text-orange-600" />
             <AlertDescription className="text-orange-800">
-              密码修改成功！为了您的账户安全，将在{' '}
+              {t('security.password.logoutCountdown')}{' '}
               <span className="font-bold text-orange-900">
                 {logoutCountdown}
               </span>{' '}
-              秒后自动退出登录。
+              {t('common.time.seconds')}
             </AlertDescription>
           </Alert>
         </div>
@@ -370,8 +379,8 @@ export function SecuritySettings({
                         )}
                       {item.copyable &&
                         item.description &&
-                        item.description !== '未设置' &&
-                        item.description !== '未获取' && (
+                        item.description !== t('security.field.notSet') &&
+                        item.description !== t('security.field.notFetched') && (
                           <Button
                             size="sm"
                             variant="ghost"
@@ -429,7 +438,7 @@ export function SecuritySettings({
                       variant="outline"
                       className="flex-1"
                     >
-                      切换/断开
+                      {t('security.wallet.switchOrDisconnect')}
                     </Button>
                   </div>
                 </div>
@@ -443,16 +452,16 @@ export function SecuritySettings({
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
                 <Key className="w-5 h-5 text-blue-600" />
-                <span>修改密码</span>
+                <span>{t('security.password.change')}</span>
               </CardTitle>
-              <CardDescription>为了账户安全，建议定期更换密码</CardDescription>
+              <CardDescription>{t('security.password.changeDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               {success && (
                 <Alert className="mb-4 border-green-200 bg-green-50">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <AlertDescription className="text-green-800">
-                    密码修改成功！请使用新密码登录。
+                    {t('security.password.changeSuccessMessage')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -462,12 +471,12 @@ export function SecuritySettings({
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <Label htmlFor={oldPasswordId}>当前密码</Label>
+                  <Label htmlFor={oldPasswordId}>{t('security.password.current')}</Label>
                   <div className="relative">
                     <Input
                       id={oldPasswordId}
                       type={showOldPassword ? 'text' : 'password'}
-                      placeholder="输入当前密码"
+                      placeholder={t('security.password.currentPlaceholder')}
                       autoComplete="current-password"
                       {...passwordForm.register('oldPassword')}
                       className={
@@ -498,12 +507,12 @@ export function SecuritySettings({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={newPasswordId}>新密码</Label>
+                  <Label htmlFor={newPasswordId}>{t('security.password.new')}</Label>
                   <div className="relative">
                     <Input
                       id={newPasswordId}
                       type={showNewPassword ? 'text' : 'password'}
-                      placeholder="输入新密码"
+                      placeholder={t('security.password.newPlaceholder')}
                       autoComplete="new-password"
                       {...passwordForm.register('newPassword')}
                       className={
@@ -534,12 +543,12 @@ export function SecuritySettings({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={confirmPasswordId}>确认新密码</Label>
+                  <Label htmlFor={confirmPasswordId}>{t('security.password.confirm')}</Label>
                   <div className="relative">
                     <Input
                       id={confirmPasswordId}
                       type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder="再次输入新密码"
+                      placeholder={t('security.password.confirmPlaceholder')}
                       autoComplete="new-password"
                       {...passwordForm.register('confirmPassword')}
                       className={
@@ -578,14 +587,14 @@ export function SecuritySettings({
                     className="flex-1"
                     onClick={handleCancelEdit}
                   >
-                    取消
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     type="submit"
                     className="flex-1 premium-gradient text-white"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? '修改中...' : '确认修改'}
+                    {isSubmitting ? t('common.changing') : t('common.confirmChange')}
                   </Button>
                 </div>
               </form>
@@ -598,9 +607,9 @@ export function SecuritySettings({
             <CardHeader>
               <CardTitle className="text-slate-800 flex items-center space-x-2">
                 <User className="w-5 h-5 text-blue-600" />
-                <span>更新昵称</span>
+                <span>{t('security.nickname.update')}</span>
               </CardTitle>
-              <CardDescription>修改您的显示昵称</CardDescription>
+              <CardDescription>{t('security.nickname.updateDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               <form
@@ -608,11 +617,11 @@ export function SecuritySettings({
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <Label htmlFor={nicknameId}>昵称</Label>
+                  <Label htmlFor={nicknameId}>{t('security.nickname.label')}</Label>
                   <Input
                     id={nicknameId}
                     type="text"
-                    placeholder="输入新昵称"
+                    placeholder={t('security.nickname.placeholder')}
                     defaultValue={user?.nickname || ''}
                     {...nicknameForm.register('nickname')}
                     className={
@@ -635,13 +644,13 @@ export function SecuritySettings({
                     className="flex-1"
                     onClick={handleCancelEdit}
                   >
-                    取消
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     type="submit"
                     className="flex-1 premium-gradient text-white"
                   >
-                    确认更新
+                    {t('common.confirmUpdate')}
                   </Button>
                 </div>
               </form>

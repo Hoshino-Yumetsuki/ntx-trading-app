@@ -17,7 +17,7 @@ export function ProfileHeader({ userInfo }: ProfileHeaderProps) {
   return (
     <div className="px-6 pt-8 pb-4">
       <h1 className="text-2xl font-bold text-slate-800 mb-4">
-        {t('profile.title') || '个人中心'}
+        {t('profile.title')}
       </h1>
 
       <div

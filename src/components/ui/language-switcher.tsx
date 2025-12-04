@@ -6,7 +6,7 @@ import { useLanguage } from '@/src/contexts/language-context'
 import { Globe, ChevronDown } from 'lucide-react'
 
 export function LanguageSwitcher() {
-  const { language, setLanguage } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
 
   const languages = [
@@ -48,7 +48,7 @@ export function LanguageSwitcher() {
             type="button"
             className="fixed inset-0 z-10 w-full h-full border-none bg-transparent cursor-default"
             onClick={() => setIsOpen(false)}
-            aria-label="关闭语言选择"
+            aria-label={t('common.ariaLabel.closeLanguageSelect')}
           />
 
           <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-xl shadow-lg border border-white/20 overflow-hidden min-w-[140px]">

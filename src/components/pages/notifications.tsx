@@ -85,13 +85,13 @@ export function NotificationsPage() {
           }
         } else {
           toast({
-            title: '获取最新通知失败',
-            description: '请稍后再试',
+            title: t('notifications.error.fetchFailed'),
+            description: t('common.error.tryLater'),
             variant: 'destructive'
           })
         }
       } catch (error) {
-        console.error('获取API新闻出错:', error)
+        console.error('Error fetching API news:', error)
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -129,16 +129,16 @@ export function NotificationsPage() {
         setViewingArticle(true)
       } else {
         toast({
-          title: '获取文章详情失败',
-          description: '请稍后再试',
+          title: t('notifications.error.articleFailed'),
+          description: t('common.error.tryLater'),
           variant: 'destructive'
         })
       }
     } catch (error) {
-      console.error('获取文章出错:', error)
+      console.error('Error fetching article:', error)
       toast({
-        title: '获取文章详情失败',
-        description: '请检查您的网络连接',
+        title: t('notifications.error.articleFailed'),
+        description: t('common.error.checkNetwork'),
         variant: 'destructive'
       })
     }
@@ -202,7 +202,7 @@ export function NotificationsPage() {
     if (!content) {
       return (
         <div className="text-slate-500 text-center py-10">
-          {t('news.no.content') || '文章内容为空'}
+          {t('news.no.content')}
         </div>
       )
     }
@@ -247,7 +247,7 @@ export function NotificationsPage() {
                 >
                   <Image
                     src="/icon-back.png"
-                    alt="返回"
+                    alt={t('common.back')}
                     width={20}
                     height={20}
                   />
@@ -269,11 +269,11 @@ export function NotificationsPage() {
               >
                 <div className="flex items-center gap-x-1">
                   <span className="text-xs font-medium text-[#1C55FF]">
-                    分享
+                    {t('common.share')}
                   </span>
                   <Image
                     src="/icon-share.png"
-                    alt="分享"
+                    alt={t('common.share')}
                     width={16}
                     height={13}
                   />
@@ -316,7 +316,7 @@ export function NotificationsPage() {
                 className="bg-[#5EC16A] hover:bg-[#5EC16A]/90 text-white rounded-lg px-8 py-3"
                 onClick={() => handleShare(currentArticle)}
               >
-                <span className="mr-2 font-semibold">分享</span>
+                <span className="mr-2 font-semibold">{t('common.share')}</span>
                 <Share2 className="w-4 h-4" />
               </Button>
             </div>
@@ -328,7 +328,7 @@ export function NotificationsPage() {
             setShowShareModal(false)
             setOverrideQrText('')
           }}
-          title="分享文章"
+          title={t('notifications.shareArticle')}
           shareData={{
             title: processText(shareNewsItem?.title || ''),
             text: processText(shareNewsItem?.summary || ''),
@@ -368,7 +368,7 @@ export function NotificationsPage() {
               />
             </div>
             <p className="text-slate-800 text-xl font-medium">
-              WEB3 一站式服务
+              {t('notifications.web3Service')}
             </p>
           </div>
           <LanguageSwitcher />
@@ -383,7 +383,7 @@ export function NotificationsPage() {
             }}
           >
             <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
-              {t('ui.notifications.title') || '最新通知'}
+              {t('ui.notifications.title')}
             </h2>
           </div>
         </div>
@@ -413,7 +413,7 @@ export function NotificationsPage() {
 
         {loading ? (
           <div className="text-center py-8 text-slate-500">
-            {t('news.loading') || '加载中...'}
+            {t('news.loading')}
           </div>
         ) : filteredNewsItems.length > 0 ? (
           <div className="relative">
@@ -462,8 +462,8 @@ export function NotificationsPage() {
         ) : (
           <div className="text-center py-8 text-slate-500">
             {searchQuery
-              ? `没有找到与 "${searchQuery}" 相关的通知`
-              : t('news.empty') || '暂无通知'}
+              ? `${t('notifications.noSearchResults')} "${searchQuery}"`
+              : t('news.empty')}
           </div>
         )}
       </div>
@@ -473,7 +473,7 @@ export function NotificationsPage() {
           setShowShareModal(false)
           setOverrideQrText('')
         }}
-        title="分享文章"
+        title={t('notifications.shareArticle')}
         shareData={{
           title: processText(shareNewsItem?.title || ''),
           text: processText(shareNewsItem?.summary || ''),

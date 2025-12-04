@@ -273,33 +273,31 @@ export function ExchangeCard({
                       </DialogTitle>
 
                       <DialogDescription className="text-center text-slate-600">
-                        {t('mining.exchange.bindSteps') ||
-                          '绑定您的交易所账户以开始挖矿。'}
+                        {t('mining.exchange.bindSteps')}
                       </DialogDescription>
                     </div>
                   </DialogHeader>
 
                   <div className="mb-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-slate-700">
                     <p className="font-medium mb-2">
-                      请务必完成以下操作以开始挖矿收益：
+                      {t('mining.exchange.bindInstructions')}
                     </p>
                     <ol className="list-decimal pl-5 space-y-1">
                       <li>
-                        打开 {exchange.name || 'HTX'} 交易所 APP/Web
-                        的「个人中心」
+                        {t('mining.exchange.bindStep1').replace('{name}', exchange.name || 'HTX')}
                       </li>
-                      <li>找到并复制您的 UID</li>
-                      <li>回到 NTXTrade DAO，粘贴 UID 完成绑定！</li>
+                      <li>{t('mining.exchange.bindStep2')}</li>
+                      <li>{t('mining.exchange.bindStep3')}</li>
                     </ol>
                     <p className="mt-3 font-bold text-red-600">
-                      未绑定 UID 将无法参与挖矿！
+                      {t('mining.exchange.bindWarning')}
                     </p>
                   </div>
 
                   <div className="flex justify-center mb-6">
                     <div className="bg-blue-50 rounded-xl p-4 text-center min-w-[120px]">
                       <div className="text-sm text-blue-600 font-medium mb-1">
-                        {t('mining.exchange.efficiency') || '挖矿效率'}
+                        {t('mining.exchange.efficiency')}
                       </div>
                       <div className="text-2xl font-bold text-blue-600">
                         {exchange.mining_efficiency.toFixed(2)}%
@@ -314,7 +312,7 @@ export function ExchangeCard({
                           1
                         </div>
                         <h3 className="font-semibold text-slate-800">
-                          {t('mining.exchange.step1') || '第一步：通过链接注册'}
+                          {t('mining.exchange.step1')}
                         </h3>
                       </div>
 
@@ -325,13 +323,13 @@ export function ExchangeCard({
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                         >
                           <ExternalLink className="w-4 h-4 mr-2" />
-                          {t('mining.exchange.goRegister') || '去注册'}
+                          {t('mining.exchange.goRegister')}
                         </Button>
 
                         {inviteCode && (
                           <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
                             <div className="text-xs text-blue-700 font-medium mb-1">
-                              邀请码
+                              {t('mining.exchange.inviteCode')}
                             </div>
                             <div className="flex items-center justify-between">
                               <div className="font-mono font-medium text-blue-800">
@@ -343,12 +341,12 @@ export function ExchangeCard({
                                 size="sm"
                                 onClick={() => {
                                   navigator.clipboard.writeText(inviteCode)
-                                  toast({ description: '邀请码已复制' })
+                                  toast({ description: t('mining.exchange.inviteCodeCopied') })
                                 }}
                                 className="h-7 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-100"
                               >
                                 <Copy className="w-3 h-3 mr-1" />
-                                复制
+                                {t('common.copy')}
                               </Button>
                             </div>
                           </div>
@@ -357,8 +355,7 @@ export function ExchangeCard({
                         <p className="text-xs text-orange-600 flex items-start space-x-1">
                           <span>⚠️</span>
                           <span>
-                            {t('mining.exchange.registerWarning') ||
-                              '仅通过本链接注册的新用户可以进行绑定'}
+                            {t('mining.exchange.registerWarning')}
                           </span>
                         </p>
                       </div>
@@ -370,17 +367,13 @@ export function ExchangeCard({
                           2
                         </div>
                         <h3 className="font-semibold text-slate-800">
-                          {t('mining.exchange.step2') ||
-                            '第二步：绑定交易所UID：绑定UID'}
+                          {t('mining.exchange.step2')}
                         </h3>
                       </div>
 
                       <div className="ml-8 space-y-3">
                         <Input
-                          placeholder={
-                            t('mining.exchange.uidPlaceholder') ||
-                            '请输入交易所UID'
-                          }
+                          placeholder={t('mining.exchange.uidPlaceholder')}
                           value={uid}
                           onChange={(e) => setUid(e.target.value)}
                           className="w-full"
@@ -389,8 +382,7 @@ export function ExchangeCard({
                         <p className="text-xs text-orange-600 flex items-start space-x-1">
                           <span>⚠️</span>
                           <span>
-                            {t('mining.exchange.uidWarning') ||
-                              '仅绑定通过本链接注册的交易所UID，其他UID无法参与挖矿'}
+                            {t('mining.exchange.uidWarning')}
                           </span>
                         </p>
                       </div>
@@ -404,7 +396,7 @@ export function ExchangeCard({
                       onClick={() => setIsBindDialogOpen(false)}
                       className="flex-1"
                     >
-                      {t('common.cancel') || '取消'}
+                      {t('common.cancel')}
                     </Button>
                     <Button
                       type="button"
@@ -412,7 +404,7 @@ export function ExchangeCard({
                       disabled={!uid.trim()}
                       className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      {t('mining.exchange.bind') || '绑定'}
+                      {t('mining.exchange.bind')}
                     </Button>
                   </DialogFooter>
                 </>
@@ -428,7 +420,7 @@ export function ExchangeCard({
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[400px]">
           <DialogHeader>
             <DialogTitle className="text-center text-xl font-bold text-slate-800">
-              {t('mining.exchange.bindRequired') || '需要绑定交易所'}
+              {t('mining.exchange.bindRequired')}
             </DialogTitle>
           </DialogHeader>
 
@@ -437,8 +429,7 @@ export function ExchangeCard({
               <UserPlus className="w-16 h-16 text-blue-500" />
             </div>
             <p className="text-slate-700 mb-4">
-              {t('mining.exchange.bindRequiredDesc') ||
-                '您需要先绑定交易所账户才能开始挖矿'}
+              {t('mining.exchange.bindRequiredDesc')}
             </p>
           </div>
 
@@ -448,7 +439,7 @@ export function ExchangeCard({
               variant="outline"
               className="flex-1"
             >
-              {t('common.cancel') || '取消'}
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={() => {
@@ -459,7 +450,7 @@ export function ExchangeCard({
               }}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {t('mining.exchange.bind') || '立即绑定'}
+              {t('mining.exchange.bind')}
             </Button>
           </DialogFooter>
         </DialogContent>

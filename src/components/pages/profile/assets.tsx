@@ -46,7 +46,7 @@ export default function AssetsPage({
       const data = await getWithdrawalRecords()
       setWithdrawalRecords(data)
     } catch (error) {
-      console.error('获取提现记录失败:', error)
+      console.error('Failed to fetch withdrawal records:', error)
     } finally {
       setLoadingRecords(false)
     }
@@ -58,7 +58,7 @@ export default function AssetsPage({
       const records = await getCommissionRecords()
       setCommissionRecords(records)
     } catch (error) {
-      console.error('获取佣金记录失败:', error)
+      console.error('Failed to fetch commission records:', error)
     } finally {
       setLoadingCommission(false)
     }

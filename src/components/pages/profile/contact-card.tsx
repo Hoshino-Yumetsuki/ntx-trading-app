@@ -49,7 +49,7 @@ export function ContactCard() {
             <span className="text-slate-600 text-sm">@NexTradeDao</span>
             <button
               type="button"
-              onClick={() => copyToClipboard('@NexTradeDao', '已复制到剪贴板')}
+              onClick={() => copyToClipboard('@NexTradeDao', t('common.copied'))}
               className="p-1 hover:bg-white/50 rounded transition-colors"
             >
               <Copy className="w-4 h-4 text-slate-500" />
@@ -88,7 +88,7 @@ export function ContactCard() {
               onClick={() =>
                 copyToClipboard(
                   'https://t.me/+eUGjIMUFdio2ODg1',
-                  '已复制到剪贴板'
+                  t('common.copied')
                 )
               }
               className="p-1 hover:bg-white/50 rounded transition-colors"

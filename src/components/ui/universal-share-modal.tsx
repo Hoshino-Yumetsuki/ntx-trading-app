@@ -77,7 +77,7 @@ const useQrCodeScanner = (
         canvas.width = img.naturalWidth
         canvas.height = img.naturalHeight
         const ctx = canvas.getContext('2d', { willReadFrequently: true })
-        if (!ctx) throw new Error('无法获取 canvas 上下文')
+        if (!ctx) throw new Error('Unable to get canvas context')
 
         ctx.drawImage(img, 0, 0)
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
@@ -94,7 +94,7 @@ const useQrCodeScanner = (
           })
         }
       } catch (error) {
-        console.error('二维码识别异常:', error)
+        console.error('QR code recognition failed:', error)
         toast.error(t('profile.share.scanFailed'), {
           description: t('profile.share.scanError')
         })
@@ -183,19 +183,27 @@ export function UniversalShareModal({
   const downloadImage = useCallback(
     (imageToDownload: string, sharePayload: ShareData) => {
       if (!imageToDownload) {
-        toast.error('图片尚未生成', {
-          description: '请稍后再试'
+        toast.error(t('profile.share.imageNotReady'), {
+          description: t('profile.share.pleaseWait')
         })
         return
       }
 
       if (isIOS) {
+        // Get translated strings for iOS popup
+        const iosTitle = t('profile.share.iosTitle')
+        const iosSaveTip = t('profile.share.iosSaveTip')
+        const iosDownload = t('profile.share.iosDownload')
+        const iosShare = t('profile.share.iosShare')
+        const iosBrowserNotSupport = t('profile.share.iosBrowserNotSupport')
+        const iosShareFailed = t('profile.share.iosShareFailed')
+        
         const newWindow = window.open()
         if (newWindow) {
           newWindow.document.write(`
             <html>
               <head>
-                <title>分享海报</title>
+                <title>${iosTitle}</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
                 <style>
                   body { margin: 0; background-color: #F0F8FF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100vh; padding: 20px; box-sizing: border-box; }
@@ -211,21 +219,21 @@ export function UniversalShareModal({
               </head>
               <body>
                 <div class="poster-container">
-                  <img src="${imageToDownload}" alt="分享海报" class="poster">
+                  <img src="${imageToDownload}" alt="${iosTitle}" class="poster">
                 </div>
 
                 <div class="actions-container">
-                  <p class="tip">如果要保存到相册，请长按图片，选择“保存图片”</p>
+                  <p class="tip">${iosSaveTip}</p>
                     <div class="actions">
                         <a id="downloadLink" href="${imageToDownload}" download="${sharePayload.title}.png" style="text-decoration: none;">
                             <button>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                                <span>下载图片</span>
+                                <span>${iosDownload}</span>
                             </button>
                         </a>
                         <button class="primary" onclick="shareImage()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                            <span>分享海报</span>
+                            <span>${iosShare}</span>
                         </button>
                     </div>
                 </div>
@@ -235,6 +243,8 @@ export function UniversalShareModal({
                     const dataUrl = "${imageToDownload}";
                     const title = \`${sharePayload.title.replace(/`/g, '\\`')}\`;
                     const text = \`${sharePayload.text.replace(/`/g, '\\`')}\`;
+                    const browserNotSupport = "${iosBrowserNotSupport}";
+                    const shareFailed = "${iosShareFailed}";
 
                     try {
                       const response = await fetch(dataUrl);
@@ -248,11 +258,11 @@ export function UniversalShareModal({
                           text: text,
                         });
                       } else {
-                        alert('您的浏览器不支持分享文件，请长按图片保存。');
+                        alert(browserNotSupport);
                       }
                     } catch (err) {
-                      console.error('分享失败:', err);
-                      alert('分享失败，您可以尝试长按图片进行保存。');
+                      console.error('Share failed:', err);
+                      alert(shareFailed);
                     }
                   }
                 </script>
@@ -427,7 +437,7 @@ export function UniversalShareModal({
         copyLink()
       }
     } catch (error) {
-      console.error('分享失败:', error)
+      console.error('Share failed:', error)
       copyLink()
     }
   }

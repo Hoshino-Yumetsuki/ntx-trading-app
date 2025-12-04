@@ -127,7 +127,9 @@
     },
     "error": {
       "default": "错误",
-      "refreshPage": "请稍后刷新页面重试"
+      "refreshPage": "请稍后刷新页面重试",
+      "tryLater": "请稍后再试",
+      "checkNetwork": "请检查您的网络连接"
     },
     "success": "成功",
     "cancel": "取消",
@@ -148,6 +150,7 @@
     "ordering": "下单中",
     "purchase": "购买",
     "buy": "购买",
+    "share": "分享",
     "viewOrder": "查看订单",
     "understood": "我已知晓",
     "known": "我知道了",
@@ -165,11 +168,15 @@
     "follow": "关注+",
     "time": {
       "minutes": "分",
-      "hours": "小时"
+      "hours": "小时",
+      "seconds": "秒后自动退出登录。"
     },
     "duration": {
       "permanent": "永久",
       "days": "天"
+    },
+    "ariaLabel": {
+      "closeLanguageSelect": "关闭语言选择"
     }
   },
   "nav": {
@@ -262,7 +269,8 @@
   },
   "ui": {
     "terms": {
-      "title": "服务条款"
+      "title": "服务条款",
+      "understood": "我已阅读并理解"
     },
     "privacy": {
       "title": "隐私政策"
@@ -314,7 +322,12 @@
     "academy": {
       "title": "学院系统与交易策略",
       "content": "NexTrade DAO 提供专业的交易技术和营销培训，涵盖加密交易策略、Web3 营销和 RWA 投资知识。用户可通过 USDT、NTX 或 SocialFi 贡献兑换课程，旨在提升用户技能，增强平台粘性。"
-    }
+    },
+    "welcome": {
+      "title": "欢迎来到 NexTrade DAO",
+      "subtitle": "全球首家一站式Web3返佣创业服务平台"
+    },
+    "imageAlt": "图"
   },
   "splash": {
     "title": "NTX",
@@ -342,7 +355,8 @@
       "inviteCodeLabel": "邀请码：",
       "slogan1": "注册 NTX DAO，连接用户聚合资源，",
       "slogan2": "挖掘你的 Web3 机会",
-      "benefit": "享受高达60%手续费返佣和挖矿交易"
+      "benefit": "享受高达60%手续费返佣和挖矿交易",
+      "shareText": "Web3 金融聚合返佣工具，快来参与交易挖矿！"
     },
     "stats": {
       "ntxBalance": "NTX余额",
@@ -440,7 +454,13 @@
       "email": "邮箱",
       "noInviter": "暂无邀请人信息",
       "noCommunityUsers": "暂无社区用户",
-      "joinTime": "加入时间"
+      "joinTime": "加入时间",
+      "enterPage": "进入社区页面",
+      "fetchFailed": "获取社区数据失败"
+    },
+    "error": {
+      "fetchUserInfo": "获取用户信息失败",
+      "logoutFailed": "退出登录失败"
     },
     "share": {
       "copyLink": "复制链接",
@@ -467,7 +487,15 @@
       "uploadCustomQr": "上传自定义二维码",
       "restoreDefault": "还原默认",
       "qrUploadTip": "提示：可上传包含二维码的图片，系统会自动解析并替换分享图中的二维码指向。",
-      "shareInvitePoster": "分享邀请海报"
+      "shareInvitePoster": "分享邀请海报",
+      "imageNotReady": "图片尚未生成",
+      "pleaseWait": "请稍后再试",
+      "iosTitle": "分享海报",
+      "iosSaveTip": "如果要保存到相册，请长按图片，选择\"保存图片\"",
+      "iosDownload": "下载图片",
+      "iosShare": "分享海报",
+      "iosBrowserNotSupport": "您的浏览器不支持分享文件，请长按图片保存。",
+      "iosShareFailed": "分享失败，您可以尝试长按图片进行保存。"
     },
     "withdraw": {
       "button": "立即提现"
@@ -490,6 +518,13 @@
   "notifications": {
     "search": {
       "placeholder": "搜索通知标题或内容..."
+    },
+    "web3Service": "WEB3 一站式服务",
+    "shareArticle": "分享文章",
+    "noSearchResults": "没有找到相关的通知",
+    "error": {
+      "fetchFailed": "获取最新通知失败",
+      "articleFailed": "获取文章详情失败"
     }
   },
   "news": {
@@ -518,6 +553,14 @@
     "title": "NTX Trading",
     "subtitle": "智能交易挖矿平台",
     "slogan": "Web3 一站式服务",
+    "viewArticle": "查看文章",
+    "banner": {
+      "tutorial": "新手教程",
+      "broker": "成为经纪商",
+      "custom": "自定义横幅",
+      "carousel": "首页横幅轮播",
+      "switchTo": "切换到横幅"
+    },
     "exchanges": {
       "title": "已接入",
       "bindButton": "绑定交易所，立刻开赚"
@@ -538,7 +581,8 @@
         "title": "新手礼包",
         "subtitle": "学习行业基础知识",
         "desc": "系统性学习数字货币交易知识，掌握基础概念和交易技巧",
-        "button": "立即学习"
+        "button": "立即学习",
+        "iconAlt": "新手礼包图标"
       },
       "dark_horse": {
         "title": "学院",
@@ -550,7 +594,8 @@
         "title": "任务中心",
         "subtitle": "完成任务领取奖励",
         "desc": "完成每日任务和成长任务，领取丰厚的NTX代币奖励",
-        "button": "查看任务"
+        "button": "查看任务",
+        "iconAlt": "任务中心图标"
       },
       "ai": {
         "title": "AI智能分析",
@@ -622,6 +667,13 @@
       "goMining": "去挖矿",
       "exchange": "交易所",
       "bindSteps": "绑定您的交易所账户以开始挖矿。",
+      "bindInstructions": "请务必完成以下操作以开始挖矿收益：",
+      "bindStep1": "打开 {name} 交易所 APP/Web 的「个人中心」",
+      "bindStep2": "找到并复制您的 UID",
+      "bindStep3": "回到 NTXTrade DAO，粘贴 UID 完成绑定！",
+      "bindWarning": "未绑定 UID 将无法参与挖矿！",
+      "inviteCode": "邀请码",
+      "inviteCodeCopied": "邀请码已复制",
       "step1": "第一步：通过链接注册",
       "step2": "第二步：绑定交易所UID",
       "goRegister": "去注册",
@@ -646,6 +698,7 @@
       "tryLater": "请稍后再试"
     },
     "error": {
+      "fetchPlatformData": "获取平台数据失败",
       "fetchUserData": "获取用户数据失败",
       "fetchLeaderboard": "获取排行榜数据失败",
       "fetchExchanges": "获取交易所列表失败",

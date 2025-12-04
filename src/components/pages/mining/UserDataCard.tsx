@@ -36,7 +36,7 @@ export function UserDataCard({
       ) : (
         <>
           <h3 className="text-base font-medium text-slate-700 mb-3">
-            {t('mining.user.title') || '我的数据'}
+            {t('mining.user.title')}
           </h3>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div

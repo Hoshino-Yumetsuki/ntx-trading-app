@@ -38,9 +38,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/src/components/ui/dialog'
+import { useLanguage } from '@/src/contexts/language-context'
 
 export function BrokerPage({ onBack }: { onBack?: () => void }) {
   const router = useRouter()
+  const { t } = useLanguage()
   const packagesAnchorId = useId()
   const [unlocked, setUnlocked] = useState<Course[]>([])
   const [locked, setLocked] = useState<Course[]>([])
@@ -78,7 +80,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         setUnlocked(unlockedCourses)
         setLocked(lockedCourses)
       } catch (e: any) {
-        setError(e.message || '加载经纪商内容失败')
+        setError(e.message || t('broker.error.loadFailed'))
       } finally {
         setLoading(false)
       }
@@ -98,7 +100,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         const list: Array<{
           key: string
           groupId?: number
-          groupName: string // 复用字段，显示“课程名”
+          groupName: string
           groupDescription?: string
           packages: CoursePackage[]
         }> = []
@@ -136,7 +138,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
 
         setDerivedGroups(list)
       } catch (e: any) {
-        setPkgError(e.message || '加载套餐失败')
+        setPkgError(e.message || t('broker.error.loadPackagesFailed'))
       } finally {
         setPkgLoading(false)
       }
@@ -155,7 +157,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
       setPaymentInfo(res)
       setPaymentOpen(true)
     } catch (e: any) {
-      alert(e.message || '创建订单失败，请稍后重试')
+      alert(e.message || t('broker.error.createOrderFailed'))
     } finally {
       setCreatingOrder(null)
     }
@@ -204,7 +206,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
               className="mr-3 text-slate-600 hover:text-slate-800"
             >
               <ChevronLeft className="w-5 h-5 mr-2" />
-              返回
+              {t('common.back')}
             </Button>
             <div className="relative mb-0.5 w-28 h-9 md:w-32 md:h-10">
               <Image
@@ -230,8 +232,8 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         >
           <div className="flex items-center h-full">
             <div>
-              <div className="text-2xl font-bold mb-1">经纪商</div>
-              <div className="opacity-90">专属合作与权益</div>
+              <div className="text-2xl font-bold mb-1">{t('broker.banner.title')}</div>
+              <div className="opacity-90">{t('broker.banner.subtitle')}</div>
             </div>
           </div>
         </div>
@@ -241,7 +243,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         <Card className="glass-card border-white/30">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-slate-800 text-xl font-bold">
-              购买经纪商套餐
+              {t('broker.section.purchasePackage')}
             </CardTitle>
             <Button
               variant="outline"
@@ -249,14 +251,14 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
               onClick={() => router.push('/orders')}
               className="text-slate-600 hover:text-slate-800"
             >
-              <ExternalLink className="w-4 h-4 mr-1" /> 订单列表
+              <ExternalLink className="w-4 h-4 mr-1" /> {t('common.orderList')}
             </Button>
           </CardHeader>
           <CardContent className="pb-6">
             {pkgLoading ? (
               <div className="flex justify-center items-center py-12">
                 <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-                <span className="ml-2 text-slate-600">加载套餐中...</span>
+                <span className="ml-2 text-slate-600">{t('common.loading.packages')}</span>
               </div>
             ) : pkgError ? (
               <div className="text-center py-6">
@@ -264,7 +266,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
               </div>
             ) : derivedGroups.length === 0 ? (
               <div className="text-center py-6">
-                <p className="text-slate-600">暂无可购买的套餐</p>
+                <p className="text-slate-600">{t('broker.noPackages')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -288,11 +290,11 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                             <div className="min-w-0 flex-1">
                               <div className="text-slate-800 font-medium">
                                 {p.duration_days > 10000
-                                  ? '永久'
-                                  : `${p.duration_days} 天`}
+                                  ? t('common.permanent')
+                                  : `${p.duration_days} ${t('common.days')}`}
                               </div>
                               <div className="text-sm text-slate-600">
-                                价格：{p.price} {p.currency}
+                                {t('common.price')}{p.price} {p.currency}
                               </div>
                               {(p.description || g.groupDescription) && (
                                 <div className="text-xs text-slate-500 mt-1 whitespace-normal wrap-break-word">
@@ -308,11 +310,11 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                               {creatingOrder === p.id ? (
                                 <>
                                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                  下单中
+                                  {t('common.ordering')}
                                 </>
                               ) : (
                                 <>
-                                  <ShoppingCart className="w-4 h-4 mr-2" /> 购买
+                                  <ShoppingCart className="w-4 h-4 mr-2" /> {t('common.purchase')}
                                 </>
                               )}
                             </Button>
@@ -332,12 +334,12 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
         <Card className="glass-card border-white/30 shadow-lg">
           <CardHeader>
             <CardTitle className="text-slate-800 text-xl font-bold">
-              经纪商资料
+              {t('broker.section.materials')}
             </CardTitle>
           </CardHeader>
           <CardContent className="pb-6">
             {loading ? (
-              <div className="text-center text-slate-600 py-10">加载中...</div>
+              <div className="text-center text-slate-600 py-10">{t('common.loading.default')}</div>
             ) : error ? (
               <div className="text-center text-red-500 py-10">{error}</div>
             ) : (
@@ -362,7 +364,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                         }
                         disabled={!featured.isUnlocked}
                       >
-                        {featured.isUnlocked ? '查看' : '待解锁'}
+                        {featured.isUnlocked ? t('common.view') : t('common.locked')}
                       </Button>
                     </div>
                   </CardContent>
@@ -376,13 +378,13 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
       <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>支付信息</DialogTitle>
-            <DialogDescription>请严格按以下信息进行链上转账</DialogDescription>
+            <DialogTitle>{t('payment.dialog.title')}</DialogTitle>
+            <DialogDescription>{t('payment.dialog.description')}</DialogDescription>
           </DialogHeader>
           {paymentInfo && (
             <div className="space-y-3">
               <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                <div className="text-xs text-blue-700 mb-1">支付地址</div>
+                <div className="text-xs text-blue-700 mb-1">{t('payment.address')}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm break-all font-mono text-blue-900">
                     {paymentInfo.paymentAddress}
@@ -393,13 +395,13 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                     onClick={() => copyToClipboard(paymentInfo.paymentAddress)}
                     className="ml-2"
                   >
-                    <Copy className="w-4 h-4 mr-1" /> 复制
+                    <Copy className="w-4 h-4 mr-1" /> {t('common.copy')}
                   </Button>
                 </div>
               </div>
 
               <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
-                <div className="text-xs text-amber-700 mb-1">支付金额</div>
+                <div className="text-xs text-amber-700 mb-1">{t('payment.amount')}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-semibold text-amber-900">
                     {paymentInfo.paymentAmount} {paymentInfo.currency}
@@ -414,19 +416,15 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                     }
                     className="ml-2"
                   >
-                    <Copy className="w-4 h-4 mr-1" /> 复制
+                    <Copy className="w-4 h-4 mr-1" /> {t('common.copy')}
                   </Button>
                 </div>
               </div>
 
               <div className="text-xs text-slate-600 space-y-1">
-                <p>
-                  • 金额为系统分配的唯一识别值，请勿修改，否则无法自动识别。
-                </p>
-                <p>• 支付完成后，后台需要时间确认，请耐心等待。</p>
-                <p>
-                  • 如有问题，请联系管理员并提供订单号：{paymentInfo.orderId}
-                </p>
+                <p>{t('payment.notice.amount')}</p>
+                <p>{t('payment.notice.confirmation')}</p>
+                <p>{t('payment.notice.contact')}{paymentInfo.orderId}</p>
               </div>
 
               <div className="flex gap-2 pt-2">
@@ -437,14 +435,14 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                     router.push('/orders')
                   }}
                 >
-                  <ExternalLink className="w-4 h-4 mr-2" /> 查看订单
+                  <ExternalLink className="w-4 h-4 mr-2" /> {t('common.viewOrder')}
                 </Button>
                 <Button
                   variant="outline"
                   className="flex-1"
                   onClick={() => setPaymentOpen(false)}
                 >
-                  我已知晓
+                  {t('common.understood')}
                 </Button>
               </div>
             </div>

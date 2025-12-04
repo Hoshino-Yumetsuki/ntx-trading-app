@@ -82,7 +82,7 @@ export function useNewsImageGenerator(
         })
         setQrCodeDataUrl(qrDataUrl)
       } catch (error) {
-        console.error('生成二维码失败:', error)
+        console.error('Failed to generate QR code:', error)
       }
     }
     generateQRCode()
@@ -91,7 +91,7 @@ export function useNewsImageGenerator(
   const generateImage = useCallback(
     async (node: HTMLDivElement | null): Promise<string | null> => {
       if (!node || !newsItem) {
-        console.error('生成图片的前置条件不足')
+        console.error('Prerequisites for image generation not met')
         return null
       }
 
@@ -158,7 +158,7 @@ export function useNewsImageGenerator(
 
         return result
       } catch (error) {
-        console.error('生成新闻分享图片失败:', error)
+        console.error('Failed to generate news share image:', error)
         throw error
       }
     },

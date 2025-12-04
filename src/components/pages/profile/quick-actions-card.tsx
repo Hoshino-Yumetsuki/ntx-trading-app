@@ -26,9 +26,8 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
     },
     {
       icon: FileText,
-      label: t('profile.menu.orders.title') || '我的订单',
-      description:
-        t('profile.menu.orders.description') || '查看购买记录与支付状态',
+      label: t('profile.menu.orders.title'),
+      description: t('profile.menu.orders.description'),
       onClick: () => onNavigate('orders')
     },
     {

@@ -290,7 +290,7 @@ export function AnnouncementModal({
                     }
                   }
                 } catch (e) {
-                  console.error('获取第一个公告详情失败:', e)
+                  console.error('Failed to fetch first announcement details:', e)
                 }
               }
 
@@ -302,7 +302,7 @@ export function AnnouncementModal({
           }
         }
       } catch (error) {
-        console.error('获取公告失败:', error)
+        console.error('Failed to fetch announcements:', error)
       }
     }
 
@@ -382,7 +382,7 @@ export function AnnouncementModal({
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-slate-800">
-              {t('announcement.title') || '平台公告'}
+              {t('announcement.title')}
             </span>
             <span className="px-2 py-0.5 text-xs font-medium text-white bg-[#1C55FF] rounded-full">
               {unreadAnnouncements.length}
@@ -461,7 +461,7 @@ export function AnnouncementModal({
                           isFirst ? 'text-xs' : 'text-[10px]'
                         }`}
                       >
-                        {isFirst ? 'New' : t('announcement.tag') || '公告'}
+                        {isFirst ? 'New' : t('announcement.tag')}
                       </span>
                       <span className="text-xs text-slate-400">
                         {new Date(
@@ -513,9 +513,7 @@ export function AnnouncementModal({
                           className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
                           onClick={() => handleLinkClick(announcement)}
                         >
-                          {announcement.linkName ||
-                            t('announcement.jump') ||
-                            '跳转'}
+                          {announcement.linkName || t('announcement.jump')}
                         </Button>
                       ) : (
                         // 没有链接时显示"我知道了"按钮
@@ -525,7 +523,7 @@ export function AnnouncementModal({
                           className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
                           onClick={() => handleDismiss(announcement)}
                         >
-                          {t('announcement.dismiss') || '我知道了'}
+                          {t('announcement.dismiss')}
                         </Button>
                       )}
                       <Button
@@ -533,7 +531,7 @@ export function AnnouncementModal({
                         className="flex-1 h-9 bg-[#1C55FF] hover:bg-[#1C55FF]/90 text-white rounded-lg text-sm"
                         onClick={() => handleViewAnnouncement(announcement)}
                       >
-                        {t('announcement.view') || '查看公告'}
+                        {t('announcement.view')}
                       </Button>
                     </div>
                   </div>

@@ -29,8 +29,8 @@ export function PlatformDailyDataCard({
         const data = await getDailyPlatformData(date)
         setDailyData(data)
       } catch (error) {
-        console.error('获取平台日数据失败:', error)
-        toast.error(t('mining.error.dailyDataFailed') || '获取平台日数据失败')
+        console.error('Failed to fetch daily platform data:', error)
+        toast.error(t('mining.error.dailyDataFailed'))
       } finally {
         setLoading(false)
       }
@@ -68,7 +68,7 @@ export function PlatformDailyDataCard({
         <CardContent className="p-0">
           <div className="flex items-center justify-between py-4 px-4 border-b">
             <span className="text-sm text-[#4D576A]">
-              {t('mining.daily.miningOutput') || '挖矿产出'}
+              {t('mining.daily.miningOutput')}
             </span>
             <span className="text-sm text-slate-800">
               {dailyData && dailyData.mining_output !== undefined
@@ -79,7 +79,7 @@ export function PlatformDailyDataCard({
 
           <div className="flex items-center justify-between py-4 px-4 border-b">
             <span className="text-sm text-[#4D576A]">
-              {t('mining.daily.burned') || '销毁量'}
+              {t('mining.daily.burned')}
             </span>
             <span className="text-sm text-slate-800">
               {dailyData && dailyData.burned !== undefined
@@ -90,7 +90,7 @@ export function PlatformDailyDataCard({
 
           <div className="flex items-center justify-between py-4 px-4">
             <span className="text-sm text-[#4D576A]">
-              {t('mining.daily.miners') || '挖矿人数'}
+              {t('mining.daily.miners')}
             </span>
             <span className="text-sm text-slate-800">
               {dailyData && dailyData.miners !== undefined

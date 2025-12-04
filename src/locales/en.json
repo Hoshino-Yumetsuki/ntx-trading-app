@@ -127,7 +127,9 @@
     },
     "error": {
       "default": "Error",
-      "refreshPage": "Please refresh the page and try again later"
+      "refreshPage": "Please refresh the page and try again later",
+      "tryLater": "Please try again later",
+      "checkNetwork": "Please check your network connection"
     },
     "success": "Success",
     "cancel": "Cancel",
@@ -148,6 +150,7 @@
     "ordering": "Ordering",
     "purchase": "Purchase",
     "buy": "Buy",
+    "share": "Share",
     "viewOrder": "View Order",
     "understood": "Understood",
     "known": "Got it",
@@ -165,11 +168,15 @@
     "follow": "Follow+",
     "time": {
       "minutes": "min",
-      "hours": "hours"
+      "hours": "hours",
+      "seconds": "seconds, you will be logged out automatically."
     },
     "duration": {
       "permanent": "Permanent",
       "days": "days"
+    },
+    "ariaLabel": {
+      "closeLanguageSelect": "Close language selection"
     }
   },
   "nav": {
@@ -262,7 +269,8 @@
   },
   "ui": {
     "terms": {
-      "title": "Terms of Service"
+      "title": "Terms of Service",
+      "understood": "I have read and understood"
     },
     "privacy": {
       "title": "Privacy Policy"
@@ -314,7 +322,12 @@
     "academy": {
       "title": "Academy System and Trading Strategies",
       "content": "NexTrade DAO provides professional trading technology and marketing training, covering crypto trading strategies, Web3 marketing, and RWA investment knowledge. Users can exchange courses through USDT, NTX, or SocialFi contributions, aiming to improve user skills and enhance platform stickiness."
-    }
+    },
+    "welcome": {
+      "title": "Welcome to NexTrade DAO",
+      "subtitle": "World's First One-Stop Web3 Rebate Entrepreneurship Service Platform"
+    },
+    "imageAlt": "Image"
   },
   "splash": {
     "title": "NTX",
@@ -342,7 +355,8 @@
       "inviteCodeLabel": "Invite Code:",
       "slogan1": "Register NTX DAO, connect users and aggregate resources,",
       "slogan2": "Discover your Web3 opportunities",
-      "benefit": "Enjoy up to 60% fee rebates and mining rewards"
+      "benefit": "Enjoy up to 60% fee rebates and mining rewards",
+      "shareText": "Web3 financial aggregation rebate tool, join trading mining now!"
     },
     "stats": {
       "ntxBalance": "NTX Balance",
@@ -440,7 +454,13 @@
       "email": "Email",
       "noInviter": "No inviter information",
       "noCommunityUsers": "No community users",
-      "joinTime": "Join Time"
+      "joinTime": "Join Time",
+      "enterPage": "Enter community page",
+      "fetchFailed": "Failed to fetch community data"
+    },
+    "error": {
+      "fetchUserInfo": "Failed to fetch user info",
+      "logoutFailed": "Logout failed"
     },
     "share": {
       "copyLink": "Copy Link",
@@ -467,7 +487,15 @@
       "uploadCustomQr": "Upload Custom QR Code",
       "restoreDefault": "Restore Default",
       "qrUploadTip": "Tip: Upload an image with QR code, the system will automatically parse and replace the QR code in the share image.",
-      "shareInvitePoster": "Share Invite Poster"
+      "shareInvitePoster": "Share Invite Poster",
+      "imageNotReady": "Image not ready",
+      "pleaseWait": "Please try again later",
+      "iosTitle": "Share Poster",
+      "iosSaveTip": "To save to album, long press the image and select \"Save Image\"",
+      "iosDownload": "Download Image",
+      "iosShare": "Share Poster",
+      "iosBrowserNotSupport": "Your browser does not support file sharing. Please long press to save the image.",
+      "iosShareFailed": "Share failed. You can try long pressing the image to save."
     },
     "withdraw": {
       "button": "Withdraw Now"
@@ -490,6 +518,13 @@
   "notifications": {
     "search": {
       "placeholder": "Search notification title or content..."
+    },
+    "web3Service": "WEB3 One-Stop Service",
+    "shareArticle": "Share Article",
+    "noSearchResults": "No related notifications found",
+    "error": {
+      "fetchFailed": "Failed to fetch notifications",
+      "articleFailed": "Failed to fetch article details"
     }
   },
   "news": {
@@ -518,6 +553,14 @@
     "title": "NTX Trading",
     "subtitle": "Smart Trading Mining Platform",
     "slogan": "Web3 One-Stop Service",
+    "viewArticle": "View article",
+    "banner": {
+      "tutorial": "Beginner Tutorial",
+      "broker": "Become a Broker",
+      "custom": "Custom Banner",
+      "carousel": "Homepage Banner Carousel",
+      "switchTo": "Switch to banner"
+    },
     "exchanges": {
       "title": "Integrated Exchanges",
       "bindButton": "Bind Exchange & Start Earning"
@@ -538,7 +581,8 @@
         "title": "Beginner Package",
         "subtitle": "Learn industry basics",
         "desc": "Systematically learn cryptocurrency trading knowledge and master basic concepts and trading skills",
-        "button": "Start Learning"
+        "button": "Start Learning",
+        "iconAlt": "Beginner Package Icon"
       },
       "dark_horse": {
         "title": "Academy",
@@ -550,7 +594,8 @@
         "title": "Mission Center",
         "subtitle": "Complete missions to earn rewards",
         "desc": "Complete daily and growth missions to earn generous NTX token rewards",
-        "button": "View Missions"
+        "button": "View Missions",
+        "iconAlt": "Mission Center Icon"
       },
       "ai": {
         "title": "AI Smart Analysis",
@@ -622,6 +667,13 @@
       "goMining": "Go Mining",
       "exchange": "Exchange",
       "bindSteps": "Bind your exchange account to start mining.",
+      "bindInstructions": "Please complete the following steps to start mining:",
+      "bindStep1": "Open {name} exchange APP/Web and go to \"Profile\"",
+      "bindStep2": "Find and copy your UID",
+      "bindStep3": "Return to NTXTrade DAO and paste UID to complete binding!",
+      "bindWarning": "You cannot participate in mining without binding your UID!",
+      "inviteCode": "Invite Code",
+      "inviteCodeCopied": "Invite code copied",
       "step1": "Step 1: Register via Link",
       "step2": "Step 2: Bind Exchange UID",
       "goRegister": "Go Register",
@@ -646,6 +698,7 @@
       "tryLater": "Please try again later"
     },
     "error": {
+      "fetchPlatformData": "Failed to fetch platform data",
       "fetchUserData": "Failed to fetch user data",
       "fetchLeaderboard": "Failed to fetch leaderboard data",
       "fetchExchanges": "Failed to fetch exchange list",

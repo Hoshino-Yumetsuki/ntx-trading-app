@@ -71,12 +71,12 @@ export function MiningPage() {
       setPlatformData(data)
       setLastUpdated(new Date())
     } catch (error) {
-      console.error('获取平台数据失败:', error)
-      toast.error('获取平台数据失败')
+      console.error('Failed to fetch platform data:', error)
+      toast.error(t('mining.error.fetchPlatformData'))
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [t])
 
   const fetchUserData = useCallback(async () => {
     if (!token) return
@@ -92,7 +92,7 @@ export function MiningPage() {
       setUserData(userDataResult)
       setDailyData(dailyDataResult)
     } catch (error) {
-      console.error('获取用户数据失败:', error)
+      console.error('Failed to fetch user data:', error)
       toast.error(t('mining.error.fetchUserData'))
     } finally {
       setUserLoading(false)
@@ -105,7 +105,7 @@ export function MiningPage() {
       const data = await getMiningLeaderboard()
       setLeaderboard(data)
     } catch (error) {
-      console.error('获取排行榜失败:', error)
+      console.error('Failed to fetch leaderboard:', error)
       toast.error(t('mining.error.fetchLeaderboard'))
     } finally {
       setLeaderboardLoading(false)
@@ -118,7 +118,7 @@ export function MiningPage() {
       const data = await getExchanges()
       setExchanges(data)
     } catch (error) {
-      console.error('获取交易所列表失败:', error)
+      console.error('Failed to fetch exchanges:', error)
       toast.error(t('mining.error.fetchExchanges'))
     } finally {
       setExchangesLoading(false)
@@ -132,14 +132,14 @@ export function MiningPage() {
       const data = await getUserExchanges(token)
       setUserExchanges(data)
     } catch (error) {
-      console.error('获取用户交易所失败:', error)
+      console.error('Failed to fetch user exchanges:', error)
       toast.error(t('mining.error.fetchUserExchanges'))
     }
   }, [token, t])
 
   const getAuthTokenOrOpen = (): string | null => {
     if (!token) {
-      toast.error(t('mining.error.notLoggedIn') || '请先登录')
+      toast.error(t('mining.error.notLoggedIn'))
       router.push('/login')
       return null
     }
@@ -160,11 +160,11 @@ export function MiningPage() {
 
     try {
       await unbindExchange(authToken, exchangeId)
-      toast.success(t('mining.success.unbindExchange') || '解绑成功')
+      toast.success(t('mining.success.unbindExchange'))
       await fetchUserExchanges()
     } catch (error) {
-      console.error('解绑交易所失败:', error)
-      toast.error(t('mining.error.unbindExchange') || '解绑失败')
+      console.error('Failed to unbind exchange:', error)
+      toast.error(t('mining.error.unbindExchange'))
     }
   }
 
@@ -172,7 +172,7 @@ export function MiningPage() {
     const authToken = getAuthTokenOrOpen()
     if (!authToken) return
     if (!bindingExchangeId || !bindingUid.trim()) {
-      toast.error(t('mining.error.enterUid') || '请输入 UID')
+      toast.error(t('mining.error.enterUid'))
       return
     }
 
@@ -182,15 +182,15 @@ export function MiningPage() {
         exchange_uid: bindingUid.trim()
       })
 
-      toast.success(t('mining.success.bindExchange') || '绑定成功')
+      toast.success(t('mining.success.bindExchange'))
       setShowBindDialog(false)
       setBindingExchangeId(null)
       setBindingUid('')
 
       await fetchUserExchanges()
     } catch (error) {
-      console.error('绑定交易所失败:', error)
-      toast.error(t('mining.error.bindExchange') || '绑定失败')
+      console.error('Failed to bind exchange:', error)
+      toast.error(t('mining.error.bindExchange'))
     }
   }
 
@@ -277,7 +277,7 @@ export function MiningPage() {
                 : 'text-slate-600 hover:text-slate-800'
             }`}
           >
-            {t('mining.tabs.exchange') || '交易所'}
+            {t('mining.tabs.exchange')}
           </button>
           <button
             type="button"
@@ -288,7 +288,7 @@ export function MiningPage() {
                 : 'text-slate-600 hover:text-slate-800'
             }`}
           >
-            {t('mining.tabs.data') || '挖矿数据'}
+            {t('mining.tabs.data')}
           </button>
         </div>
       </div>
@@ -297,7 +297,7 @@ export function MiningPage() {
         {activeTab === 'mining' && (
           <div>
             <h2 className="text-base font-medium text-slate-700 mb-3">
-              {t('mining.data.title') || '挖矿数据'}
+              {t('mining.data.title')}
             </h2>
 
             <div className="mb-4">
@@ -311,7 +311,7 @@ export function MiningPage() {
                       : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
                   }`}
                 >
-                  {t('mining.user.title') || '我的数据'}
+                  {t('mining.user.title')}
                 </button>
                 <button
                   type="button"
@@ -322,7 +322,7 @@ export function MiningPage() {
                       : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
                   }`}
                 >
-                  {t('mining.platform.title') || '平台数据'}
+                  {t('mining.platform.title')}
                 </button>
               </div>
             </div>
@@ -352,7 +352,7 @@ export function MiningPage() {
             <div className="p-6">
               <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                {t('mining.exchangeList.title') || '交易所列表'}
+                {t('mining.exchangeList.title')}
               </h2>
 
               <div className="grid grid-cols-1 gap-6">

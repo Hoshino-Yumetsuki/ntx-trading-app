@@ -204,15 +204,15 @@ export function LoginPage({
   const handleSendResetCode = async () => {
     const email = fpEmail.trim()
     if (!email) {
-      toast.error('请输入邮箱')
+      toast.error(t('login.error.emailRequired'))
       return
     }
     try {
       setFpSending(true)
       await forgotPassword({ email })
-      toast.success('重置码已发送，请检查邮箱')
+      toast.success(t('login.success.resetCodeSent'))
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : '发送重置码失败')
+      toast.error(err instanceof Error ? err.message : t('login.error.sendResetCodeFailed'))
     } finally {
       setFpSending(false)
     }
@@ -220,11 +220,11 @@ export function LoginPage({
 
   const handleSubmitReset = async () => {
     const email = rpEmail.trim()
-    if (!email) return toast.error('请输入邮箱')
-    if (!resetCode.trim()) return toast.error('请输入重置码')
-    if (!newPwd) return toast.error('请输入新密码')
-    if (newPwd.length < 8) return toast.error('新密码至少8位')
-    if (newPwd !== newPwd2) return toast.error('两次输入的密码不一致')
+    if (!email) return toast.error(t('login.error.emailRequired'))
+    if (!resetCode.trim()) return toast.error(t('login.error.resetCodeRequired'))
+    if (!newPwd) return toast.error(t('login.error.newPasswordRequired'))
+    if (newPwd.length < 8) return toast.error(t('login.error.passwordMinLength'))
+    if (newPwd !== newPwd2) return toast.error(t('login.error.passwordMismatch'))
     try {
       setRpSubmitting(true)
       await resetPassword({
@@ -232,13 +232,13 @@ export function LoginPage({
         reset_code: resetCode.trim(),
         new_password: newPwd
       })
-      toast.success('密码重置成功，请使用新密码登录')
+      toast.success(t('login.success.passwordReset'))
       setShowForgotDialog(false)
       setResetCode('')
       setNewPwd('')
       setNewPwd2('')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : '重置密码失败')
+      toast.error(err instanceof Error ? err.message : t('login.error.resetPasswordFailed'))
     } finally {
       setRpSubmitting(false)
     }

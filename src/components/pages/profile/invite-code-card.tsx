@@ -98,7 +98,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
         onShare={handleShare}
         shareData={{
           title: t('profile.inviteCode.registerTitle'),
-          text: `Web3 金融聚合返佣工具，快来参与交易挖矿！\n\n${t('profile.inviteCode.benefit')}\n\n${t('profile.inviteCode.inviteCodeLabel')}${userInfo?.myInviteCode || ''}`,
+          text: `${t('profile.inviteCode.shareText')}\n\n${t('profile.inviteCode.benefit')}\n\n${t('profile.inviteCode.inviteCodeLabel')}${userInfo?.myInviteCode || ''}`,
           url: userInfo?.myInviteCode
             ? `${typeof window !== 'undefined' ? window.location.origin : ''}/register?invite=${userInfo.myInviteCode}`
             : ''

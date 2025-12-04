@@ -49,12 +49,12 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
       const info = await UserService.getUserInfo()
       setUserInfo(info)
     } catch (error) {
-      console.error('获取用户信息失败:', error)
-      toast.error('获取用户信息失败')
+      console.error('Failed to fetch user info:', error)
+      toast.error(t('profile.error.fetchUserInfo'))
     } finally {
       setLoading(false)
     }
-  }, [user])
+  }, [user, t])
 
   useEffect(() => {
     fetchUserInfo()
@@ -69,7 +69,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
       } catch {}
       router.push('/')
     } catch (_error) {
-      toast.error('退出登录失败')
+      toast.error(t('profile.error.logoutFailed'))
     }
   }
 
@@ -92,7 +92,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">加载中...</p>
+          <p className="text-gray-600">{t('common.loading.default')}</p>
         </div>
       </div>
     )
@@ -163,7 +163,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
             </div>
             <div className="pr-4 md:pr-6 flex items-center">
               <span className="text-white text-sm font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] mr-1">
-                {t('common.clickToEnter', '点击进入')}
+                {t('common.clickToEnter')}
               </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +179,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
                 role="img"
                 aria-labelledby={communityArrowId}
               >
-                <title id={communityArrowId}>进入社区页面</title>
+                <title id={communityArrowId}>{t('profile.community.enterPage')}</title>
                 <path d="m9 18 6-6-6-6" />
               </svg>
             </div>

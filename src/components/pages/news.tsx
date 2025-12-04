@@ -25,7 +25,7 @@ const fetchRssNews = async (
 ): Promise<NewsItem[]> => {
   const response = await fetch('https://rss.ntxdao.com/rss/hybrid')
   if (!response.ok) {
-    throw new Error('网络响应错误，无法获取RSS源')
+    throw new Error('Network response error, unable to fetch RSS feed')
   }
 
   const xmlText = await response.text()
@@ -348,7 +348,7 @@ export function NewsPage() {
             }}
           >
             <h2 className="text-white text-2xl md:text-3xl font-tektur-semibold drop-shadow-md z-10">
-              {t('news.title') || '最新资讯'}
+              {t('news.title')}
             </h2>
           </div>
         </div>

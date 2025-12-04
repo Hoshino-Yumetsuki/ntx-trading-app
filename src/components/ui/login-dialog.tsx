@@ -62,7 +62,7 @@ export function LoginDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t('login.title') || '登录'}</DialogTitle>
+          <DialogTitle>{t('login.title')}</DialogTitle>
         </DialogHeader>
         <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
           <div>

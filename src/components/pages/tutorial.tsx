@@ -114,10 +114,10 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
             <div className="relative z-10 h-full flex items-center pl-4 pr-48 md:pr-56">
               <div>
                 <h2 className="text-2xl font-bold text-blue-600">
-                  {t('tutorial.title') || '新手教程'}
+                  {t('tutorial.title')}
                 </h2>
                 <p className="text-slate-500 text-sm mt-1">
-                  {t('tutorial.subtitle') || '快速了解与上手指南'}
+                  {t('tutorial.subtitle')}
                 </p>
               </div>
             </div>
@@ -147,10 +147,10 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
               />
             </div>
             <CardTitle className="text-2xl font-semibold text-blue-600">
-              欢迎来到 NexTrade DAO
+              {t('tutorial.welcome.title')}
             </CardTitle>
             <p className="text-slate-600 mt-2">
-              全球首家一站式Web3返佣创业服务平台
+              {t('tutorial.welcome.subtitle')}
             </p>
           </CardHeader>
         </Card>
@@ -206,7 +206,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
                         <div className="relative w-full h-64">
                           <Image
                             src={image}
-                            alt={`${section.title} - 图${imageIndex + 1}`}
+                            alt={`${section.title} - ${t('tutorial.imageAlt')} ${imageIndex + 1}`}
                             fill
                             className="object-contain rounded-lg"
                           />

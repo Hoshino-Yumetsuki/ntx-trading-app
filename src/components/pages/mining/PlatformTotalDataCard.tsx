@@ -34,7 +34,7 @@ export function PlatformTotalDataCard({
         >
           <Hammer className="w-8 h-8 text-blue-600 mb-3" />
           <p className="text-sm text-[#4D576A] mb-1">
-            {t('mining.platform.totalMined') || '总挖矿量'}
+            {t('mining.platform.totalMined')}
           </p>
           <p
             className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
@@ -59,7 +59,7 @@ export function PlatformTotalDataCard({
         >
           <Database className="w-8 h-8 text-blue-600 mb-3" />
           <p className="text-sm text-[#4D576A] mb-1">
-            {t('mining.platform.totalBurned') || '总销毁量'}
+            {t('mining.platform.totalBurned')}
           </p>
           <p
             className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
@@ -84,7 +84,7 @@ export function PlatformTotalDataCard({
         >
           <User className="w-8 h-8 text-blue-600 mb-3" />
           <p className="text-sm text-[#4D576A] mb-1">
-            {t('mining.platform.totalUsers') || '平台用户'}
+            {t('mining.platform.totalUsers')}
           </p>
           <p
             className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}

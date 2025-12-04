@@ -99,7 +99,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         const userExchanges = await getUserExchanges(token)
         setHasBindedExchange(userExchanges && userExchanges.length > 0)
       } catch (error) {
-        console.error('获取用户交易所绑定状态失败:', error)
+        console.error('Failed to fetch user exchange binding status:', error)
         setHasBindedExchange(false)
       }
     }
@@ -150,13 +150,13 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     {
       type: 'internal' as const,
       src: '/banner-2.png',
-      alt: '新手教程',
+      alt: t('home.banner.tutorial'),
       onClick: () => openTutorial()
     },
     {
       type: 'internal' as const,
       src: '/banner-1.png',
-      alt: '成为经济商',
+      alt: t('home.banner.broker'),
       onClick: goBroker
     }
   ]
@@ -184,7 +184,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
         const data: CustomBanner[] = await res.json()
         setCustomBanners(Array.isArray(data) ? data : [])
       } catch (e) {
-        console.error('获取自定义 banners 失败:', e)
+        console.error('Failed to fetch custom banners:', e)
       }
     }
     fetchBanners()
@@ -218,7 +218,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     ...customBanners.map((b) => ({
       type: 'external' as const,
       src: b.image_url,
-      alt: '自定义横幅',
+      alt: t('home.banner.custom'),
       href: normalizeHref(b.link_url)
     }))
   ]
@@ -304,7 +304,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <section
               className="overflow-hidden"
               ref={emblaRef}
-              aria-label="首页横幅轮播"
+              aria-label={t('home.banner.carousel')}
               onPointerEnter={() => setPaused(true)}
               onPointerLeave={() => setPaused(false)}
             >
@@ -365,7 +365,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 <button
                   key={i}
                   type="button"
-                  aria-label={`切换到横幅 ${i + 1}`}
+                  aria-label={`${t('home.banner.switchTo')} ${i + 1}`}
                   onClick={() => emblaApi?.scrollTo(i)}
                   className={`h-2.5 rounded-full transition-all ${
                     selectedIndex === i
@@ -433,7 +433,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <div className="flex items-center justify-center gap-x-2 mb-3">
               <Image
                 src="/icon-tutorial.png"
-                alt="新手礼包图标"
+                alt={t('home.card.tutorial.iconAlt')}
                 width={15}
                 height={15}
                 className="w-[15px] h-[15px]"
@@ -468,7 +468,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <div className="flex items-center justify-center gap-x-2 mb-3">
               <Image
                 src="/icon-exchange.png"
-                alt="任务中心图标"
+                alt={t('home.card.mission.iconAlt')}
                 width={15}
                 height={15}
                 className="w-[15px] h-[15px]"
@@ -586,7 +586,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 shrink-0"></span>
                   <button
                     type="button"
-                    aria-label={`查看文章 ${processText(item.title)}`}
+                    aria-label={`${t('home.viewArticle')} ${processText(item.title)}`}
                     className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     onClick={() => {
                       onNavigate?.('notifications')

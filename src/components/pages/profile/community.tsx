@@ -40,8 +40,8 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         const data = await UserService.getMyTeams()
         setCommunityData(data)
       } catch (err: any) {
-        console.error('获取社区数据失败:', err)
-        toast.error(err?.message || '获取社区数据失败')
+        console.error('Failed to fetch community data:', err)
+        toast.error(err?.message || t('profile.community.fetchFailed'))
       } finally {
         setLoading(false)
       }
@@ -59,7 +59,7 @@ export default function CommunityPage({ onBack }: CommunityPageProps) {
         const data = await UserService.getUserInfo()
         setUserInfo(data)
       } catch (err: any) {
-        console.error('获取用户信息失败:', err)
+        console.error('Failed to fetch user info:', err)
       } finally {
         setUserInfoLoading(false)
       }
