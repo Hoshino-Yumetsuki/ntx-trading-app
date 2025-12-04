@@ -44,4 +44,4 @@ next-env.d.ts
 
 android/
 
-yarn.lock
+packages-lock.json
