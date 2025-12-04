@@ -108,7 +108,7 @@ export function BlackHorseModelPage({
                         className="glass-card border-l-4 border-l-green-500 border-y-0 border-r-0 shadow hover:shadow-md transition-shadow"
                       >
                         <CardContent className="p-4 flex">
-                          <div className="flex-grow">
+                          <div className="grow">
                             <div className="flex items-center mb-2 space-x-2">
                               <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
                                 {course.category}
@@ -167,7 +167,7 @@ export function BlackHorseModelPage({
                         className="glass-card border-white/30 shadow hover:shadow-md transition-shadow"
                       >
                         <CardContent className="p-4 flex">
-                          <div className="flex-grow">
+                          <div className="grow">
                             <div className="flex items-center mb-2 space-x-2">
                               <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
                                 {course.category}

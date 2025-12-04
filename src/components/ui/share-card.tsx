@@ -165,7 +165,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           className="absolute left-0 right-0 z-20 pointer-events-none overflow-visible px-8"
           style={{ top: '96px' }}
         >
-          <h1 className="text-left whitespace-normal break-words text-[36px] font-extrabold text-slate-900 leading-snug">
+          <h1 className="text-left whitespace-normal wrap-break-word text-[36px] font-extrabold text-slate-900 leading-snug">
             {title}
           </h1>
         </div>

@@ -163,7 +163,7 @@ export function UnlockCoursesPage({
               {t('academy.unlock.subtitle')}
             </p>
             <Button
-              className="diffused-button text-white font-semibold border-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
+              className="diffused-button text-white font-semibold border-0 bg-linear-to-r from-fuchsia-500 to-indigo-500 hover:shadow-lg"
               onClick={() => {
                 const el = document.getElementById(packagesSectionId)
                 if (el) el.scrollIntoView({ behavior: 'smooth' })
@@ -300,13 +300,13 @@ export function UnlockCoursesPage({
                             </div>
                             {!hideDescription &&
                               (p.description || g.groupDescription) && (
-                                <div className="text-xs text-slate-500 mt-1 whitespace-normal break-words">
+                                <div className="text-xs text-slate-500 mt-1 whitespace-normal wrap-break-word">
                                   {p.description ?? g.groupDescription}
                                 </div>
                               )}
                           </div>
                           <Button
-                            className="min-w-[96px] shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
+                            className="min-w-24 shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
                             onClick={() => handleBuy(p.id)}
                             disabled={creatingOrder === p.id}
                           >
@@ -345,7 +345,7 @@ export function UnlockCoursesPage({
               </h4>
             </div>
             <div className="grid grid-cols-1 gap-3">
-              <div className="p-4 rounded-lg bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white shadow-sm">
+              <div className="p-4 rounded-lg bg-linear-to-r from-fuchsia-600 to-purple-700 text-white shadow-sm">
                 <h5 className="font-medium text-sm mb-1">
                   {t('academy.unlock.benefits.vipGroup.title')}
                 </h5>
@@ -353,7 +353,7 @@ export function UnlockCoursesPage({
                   {t('academy.unlock.benefits.vipGroup.desc')}
                 </p>
               </div>
-              <div className="p-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-sm">
+              <div className="p-4 rounded-lg bg-linear-to-r from-blue-600 to-indigo-700 text-white shadow-sm">
                 <h5 className="font-medium text-sm mb-1">
                   {t('academy.unlock.benefits.guidance.title')}
                 </h5>
@@ -361,7 +361,7 @@ export function UnlockCoursesPage({
                   {t('academy.unlock.benefits.guidance.desc')}
                 </p>
               </div>
-              <div className="p-4 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-sm">
+              <div className="p-4 rounded-lg bg-linear-to-r from-emerald-500 to-green-600 text-white shadow-sm">
                 <h5 className="font-medium text-sm mb-1">
                   {t('academy.unlock.benefits.updates.title')}
                 </h5>

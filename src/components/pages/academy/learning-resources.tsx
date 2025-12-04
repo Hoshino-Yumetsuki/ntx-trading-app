@@ -120,7 +120,7 @@ export function LearningResourcesPage({
 
   return (
     <div className="space-y-6">
-      <Card className="rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#239419] to-[#025C03] text-white border-0">
+      <Card className="rounded-2xl overflow-hidden shadow-xl bg-linear-to-br from-[#239419] to-[#025C03] text-white border-0">
         <CardContent className="p-6">
           <div className="flex items-center space-x-4 mb-4">
             <Avatar className="w-16 h-16 ring-2 ring-emerald-300 ring-offset-2 ring-offset-emerald-500/30">
@@ -206,7 +206,7 @@ export function LearningResourcesPage({
                 key={index}
                 className="flex items-start space-x-3 p-3 glass-card rounded-lg hover:bg-blue-50/30 transition-colors"
               >
-                <div className="premium-icon w-10 h-10 rounded-lg flex-shrink-0 bg-gradient-to-br from-blue-100 to-blue-200">
+                <div className="premium-icon w-10 h-10 rounded-lg shrink-0 bg-linear-to-br from-blue-100 to-blue-200">
                   <Icon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>

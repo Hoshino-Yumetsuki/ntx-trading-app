@@ -159,7 +159,7 @@ export function ExchangeCard({
                 className="flex items-center justify-between gap-3 py-4 border-b border-gray-100 last:border-b-0"
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0">
                     {exchange.logo_url ? (
                       <Image
                         src={exchange.logo_url}
@@ -185,7 +185,7 @@ export function ExchangeCard({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <Button
                     size="sm"
                     variant="outline"

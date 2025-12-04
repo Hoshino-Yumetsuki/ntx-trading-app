@@ -152,7 +152,7 @@ export function AnnouncementModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-100 flex items-center justify-center">
       {/* 背景遮罩 + 高斯模糊 */}
       <div
         role="button"
@@ -210,7 +210,7 @@ export function AnnouncementModal({
                         }}
                       />
                       {/* 渐变遮罩 */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
                     </div>
                   )}
 

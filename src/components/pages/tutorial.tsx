@@ -163,7 +163,7 @@ export function TutorialPage({ onBack }: TutorialPageProps) {
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0">{section.icon}</div>
+                  <div className="shrink-0">{section.icon}</div>
                   <CardTitle className="text-lg font-semibold text-blue-600">
                     {section.title}
                   </CardTitle>

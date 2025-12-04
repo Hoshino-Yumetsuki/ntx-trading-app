@@ -410,7 +410,7 @@ export function NotificationsPage() {
                         asChild
                         variant="ghost"
                         size="sm"
-                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
+                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 shrink-0"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleShare(item)

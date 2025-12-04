@@ -30,7 +30,7 @@ export function GntxCard({ userInfo }: GntxCardProps) {
       </CardHeader>
 
       <CardContent>
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
+        <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
           <div className="text-2xl md:text-3xl font-bold text-blue-700 text-center">
             {userInfo?.gntxBalance?.toLocaleString() || '0'}{' '}
             <span className="text-blue-500">GNTX</span>

@@ -295,13 +295,13 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                                 价格：{p.price} {p.currency}
                               </div>
                               {(p.description || g.groupDescription) && (
-                                <div className="text-xs text-slate-500 mt-1 whitespace-normal break-words">
+                                <div className="text-xs text-slate-500 mt-1 whitespace-normal wrap-break-word">
                                   {p.description ?? g.groupDescription}
                                 </div>
                               )}
                             </div>
                             <Button
-                              className="min-w-[96px] shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
+                              className="min-w-24 shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
                               onClick={() => handleBuy(p.id)}
                               disabled={creatingOrder === p.id}
                             >

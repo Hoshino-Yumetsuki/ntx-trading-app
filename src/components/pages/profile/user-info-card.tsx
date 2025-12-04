@@ -56,7 +56,7 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
+        <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-[16pt] p-4">
           <div className="mt-4">
             <div className="text-sm text-slate-700 mb-1">
               {t('profile.userInfo.toBroker')}
