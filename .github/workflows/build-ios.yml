@@ -55,7 +55,7 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_15.4.app
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install
 
       - name: Install Capacitor iOS
         run: yarn add @capacitor/ios
@@ -65,6 +65,13 @@ jobs:
 
       - name: Initialize Capacitor iOS
         run: npx cap add ios || true
+
+      - name: Get Build Timestamp
+        id: timestamp
+        run: echo "ts=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - name: Set App Version
+        run: npx @capgo/cli set-version set:ios --build ${{ steps.timestamp.outputs.ts }}
 
       - name: Generate App Icons
         run: npx @capacitor/assets generate --ios
