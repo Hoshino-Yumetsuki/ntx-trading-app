@@ -17,12 +17,15 @@ function extractLocaleTags(text: string): {
 } {
   const tags: Record<string, string> = {}
   const duplicates = new Set<string>()
-  let match: RegExpExecArray | null
 
   // 重置正则的 lastIndex
   LOCALE_TAG_REGEX.lastIndex = 0
 
-  while ((match = LOCALE_TAG_REGEX.exec(text)) !== null) {
+  for (
+    let match = LOCALE_TAG_REGEX.exec(text);
+    match !== null;
+    match = LOCALE_TAG_REGEX.exec(text)
+  ) {
     const [, lang, content] = match
     // 如果该语言已经存在，标记为重复
     if (lang in tags) {
@@ -153,7 +156,7 @@ export function processApiResponse<T>(data: T, language: SupportedLanguage): T {
  *   .then(res => res.json())
  *   .then(data => processApiResponse(data, language))
  */
-export function createLocaleFetch(language: SupportedLanguage) {
+export function createLocaleFetch(_language: SupportedLanguage) {
   return async (input: RequestInfo | URL, init?: RequestInit) => {
     const response = await fetch(input, init)
     return response

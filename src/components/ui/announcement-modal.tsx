@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { useLanguage } from '@/src/contexts/language-context'
 import { API_BASE_URL } from '@/src/services/config'
@@ -79,7 +79,7 @@ function cleanText(text: string): string {
  * 解析公告，提取排序、链接和始终显示信息
  */
 function parseAnnouncement(announcement: Announcement): ParsedAnnouncement {
-  const combinedText = `${announcement.title} ${announcement.summary}`
+  const _combinedText = `${announcement.title} ${announcement.summary}`
 
   // 提取排序（从标题或描述中）
   const sortOrder = Math.min(
@@ -239,7 +239,10 @@ export function AnnouncementModal({
       markAsReadAndRemove(announcement.id)
       if (announcement.linkUrl) {
         // 如果是相对路径，使用 window.location
-        if (announcement.linkUrl.startsWith('/') || announcement.linkUrl.startsWith('?')) {
+        if (
+          announcement.linkUrl.startsWith('/') ||
+          announcement.linkUrl.startsWith('?')
+        ) {
           window.location.href = announcement.linkUrl
         } else {
           window.open(announcement.linkUrl, '_blank', 'noopener,noreferrer')
@@ -358,7 +361,9 @@ export function AnnouncementModal({
                         className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
                         onClick={() => handleLinkClick(announcement)}
                       >
-                        {announcement.linkName || t('announcement.jump') || '跳转'}
+                        {announcement.linkName ||
+                          t('announcement.jump') ||
+                          '跳转'}
                       </Button>
                     ) : (
                       // 没有链接时显示"我知道了"按钮
