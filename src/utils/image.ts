@@ -1,4 +1,4 @@
-export const preloadImages = (urls: string[]): Promise<undefined[]> => {
+export const preloadImages = (urls: string[]): Promise<void[]> => {
   const validUrls = urls.filter(
     (url) => typeof url === 'string' && url.length > 0
   )
