@@ -49,30 +49,30 @@ export function filterCoursesByUnlockStatus(
 export function enrichCoursesWithUIData(courses: Course[]): Course[] {
   return courses.map((course) => {
     let category = ''
-    let level = '基础'
+    let level = 'academy.level.basic'
 
     switch (course.course_type) {
       case 'article':
-        category = '学习资源'
+        category = 'academy.tabs.learning'
         break
       case 'dark_horse':
-        category = '黑马模型'
-        level = '进阶'
+        category = 'academy.tabs.blackHorse'
+        level = 'academy.level.intermediate'
         break
       case 'signal':
-        category = '策略信号'
-        level = '高级'
+        category = 'academy.tabs.signals'
+        level = 'academy.level.advanced'
         break
       case 'loop_comm':
-        category = 'Loop社区'
+        category = 'academy.tabs.loopCommunity'
         break
       case 'broker':
-        category = '经纪商'
-        level = '进阶'
+        category = 'academy.tabs.broker'
+        level = 'academy.level.intermediate'
         break
     }
 
-    const duration = course.duration || '课时：8课时 | 总时长：2小时'
+    const duration = course.duration || 'academy.course.defaultDuration'
 
     return {
       ...course,

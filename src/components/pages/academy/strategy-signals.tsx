@@ -139,10 +139,10 @@ export function StrategySignalsPage({
                           <div className="grow">
                             <div className="flex items-center mb-2 space-x-2">
                               <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                                {course.category}
+                                {t(course.category || '')}
                               </Badge>
                               <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                                {course.level}
+                                {t(course.level || '')}
                               </Badge>
                             </div>
                             <h3 className="text-slate-800 font-semibold text-lg mb-2">
@@ -198,10 +198,10 @@ export function StrategySignalsPage({
                           <div className="grow">
                             <div className="flex items-center mb-2 space-x-2">
                               <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                                {course.category}
+                                {t(course.category || '')}
                               </Badge>
                               <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                                {course.level}
+                                {t(course.level || '')}
                               </Badge>
                             </div>
                             <h3 className="text-slate-800 font-semibold text-lg mb-2">

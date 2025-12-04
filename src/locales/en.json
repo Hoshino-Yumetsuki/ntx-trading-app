@@ -716,6 +716,13 @@
       "unlock": "Unlock Courses",
       "orders": "My Orders",
       "practice": "Practical Course",
+      "advanced": "Advanced",
+      "loopCommunity": "Loop Community",
+      "broker": "Broker"
+    },
+    "level": {
+      "basic": "Basic",
+      "intermediate": "Intermediate",
       "advanced": "Advanced"
     },
     "subtitle": {
@@ -744,7 +751,8 @@
       "lessonsUnit": "lessons",
       "totalDuration": "Total Duration:",
       "startLearning": "Start Learning",
-      "unlock": "Unlock"
+      "unlock": "Unlock",
+      "defaultDuration": "Lessons: 8 | Duration: 2 hours"
     },
     "instructor": {
       "name": "Donato",

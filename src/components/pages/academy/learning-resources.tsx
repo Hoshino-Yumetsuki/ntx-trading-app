@@ -283,10 +283,10 @@ export function LearningResourcesPage({
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <Badge className="text-xs bg-purple-100/80 text-purple-700 border-purple-200">
-                            {course.category}
+                            {t(course.category || '')}
                           </Badge>
                           <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                            {course.level}
+                            {t(course.level || '')}
                           </Badge>
                         </div>
                         <h3 className="text-slate-800 font-semibold text-lg mb-2">
@@ -371,10 +371,10 @@ export function LearningResourcesPage({
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <Badge className="text-xs bg-purple-100/80 text-purple-700 border-purple-200">
-                            {course.category}
+                            {t(course.category || '')}
                           </Badge>
                           <Badge className="text-xs bg-blue-100/80 text-blue-700 border-blue-200">
-                            {course.level}
+                            {t(course.level || '')}
                           </Badge>
                         </div>
                         <h3 className="text-slate-800 font-semibold text-lg mb-2">

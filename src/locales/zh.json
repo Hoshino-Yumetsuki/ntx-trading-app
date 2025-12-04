@@ -716,9 +716,14 @@
       "unlock": "解锁课程",
       "orders": "我的订单",
       "practice": "实战课",
-      "advanced": "进阶"
+      "advanced": "进阶",
+      "loopCommunity": "Loop社区",
+      "broker": "经纪商"
     },
     "level": {
+      "basic": "基础",
+      "intermediate": "进阶",
+      "advanced": "高级",
       "基础": "基础",
       "进阶": "进阶",
       "高级": "高级"
@@ -755,7 +760,8 @@
       "lessonsUnit": "节",
       "totalDuration": "总时长：",
       "startLearning": "立即学习",
-      "unlock": "去解锁"
+      "unlock": "去解锁",
+      "defaultDuration": "课时：8课时 | 总时长：2小时"
     },
     "instructor": {
       "name": "Donato狐总",
