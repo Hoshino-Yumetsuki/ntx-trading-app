@@ -219,7 +219,12 @@ export function NotificationsPage() {
                   onClick={handleBackToList}
                   className="mr-2"
                 >
-                  <Image src="/icon-back.png" alt="返回" width={20} height={20} />
+                  <Image
+                    src="/icon-back.png"
+                    alt="返回"
+                    width={20}
+                    height={20}
+                  />
                 </Button>
                 <div className="relative w-24 h-8 md:w-28 md:h-9">
                   <Image
@@ -240,7 +245,12 @@ export function NotificationsPage() {
                   <span className="text-xs font-medium text-[#1C55FF]">
                     分享
                   </span>
-                  <Image src="/icon-share.png" alt="分享" width={16} height={13} />
+                  <Image
+                    src="/icon-share.png"
+                    alt="分享"
+                    width={16}
+                    height={13}
+                  />
                 </div>
               </Button>
             </div>
@@ -400,7 +410,7 @@ export function NotificationsPage() {
                         asChild
                         variant="ghost"
                         size="sm"
-                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0"
+                        className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 shrink-0"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleShare(item)

@@ -173,7 +173,7 @@ export function AssetsOverview({
                 size="sm"
                 variant="outline"
                 onClick={copyAddress}
-                className="flex-shrink-0"
+                className="shrink-0"
               >
                 {addressCopied ? (
                   <Check className="w-4 h-4" />
@@ -185,7 +185,7 @@ export function AssetsOverview({
               <Button
                 size="sm"
                 onClick={() => onNavigate?.('security')}
-                className="bg-blue-600 hover:bg-blue-700 text-white border-0 flex-shrink-0"
+                className="bg-blue-600 hover:bg-blue-700 text-white border-0 shrink-0"
               >
                 去绑定
               </Button>

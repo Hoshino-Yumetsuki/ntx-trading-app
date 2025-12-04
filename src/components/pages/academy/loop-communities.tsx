@@ -110,7 +110,7 @@ export function LoopCommunitiesPage({
           onClick={() => handleCommunityClick(community)}
         >
           <CardContent className="p-4 aspect-square flex flex-col items-center justify-center text-center">
-            <div className="premium-icon w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 mb-3">
+            <div className="premium-icon w-10 h-10 rounded-lg bg-linear-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200 mb-3">
               {community.image ? (
                 <div className="relative w-full h-full rounded-lg overflow-hidden">
                   <Image

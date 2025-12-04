@@ -175,7 +175,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-1">
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0 mt-1">
               {getIcon(mission.task_type)}
             </div>
             <div className="flex-1 min-w-0">

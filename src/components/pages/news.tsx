@@ -420,7 +420,7 @@ export function NewsPage() {
                           asChild
                           variant="ghost"
                           size="sm"
-                          className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 flex-shrink-0 mt-1"
+                          className="h-6 px-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 shrink-0 mt-1"
                           onClick={(e) => {
                             e.stopPropagation()
                             handleShare(item)

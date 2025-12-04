@@ -271,9 +271,7 @@ export function LoginPage({
                 }`}
               >
                 <Image
-                  src={
-                    isRegisterMode ? '/register-bg.png' : '/login-bg.png'
-                  }
+                  src={isRegisterMode ? '/register-bg.png' : '/login-bg.png'}
                   alt={
                     isRegisterMode
                       ? 'Register Illustration'

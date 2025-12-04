@@ -366,7 +366,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                 {exchanges.map((exchange, idx) => (
                   <div
                     key={`exchange-${exchange.name}-${idx}`}
-                    className="w-full aspect-[4/3]"
+                    className="w-full aspect-4/3"
                   >
                     <div className="flex items-center justify-center p-0.5 w-full h-full">
                       <div className="relative h-[80%] aspect-square rounded-2xl overflow-hidden">
@@ -479,10 +479,10 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       <TrendingUp className="w-4 h-4 text-blue-600" />
                       {t('home.card.mining.title')}
                     </h3>
-                    <p className="text-slate-600 text-xs break-words">
+                    <p className="text-slate-600 text-xs wrap-break-word">
                       {t('home.card.mining.subtitle')}
                     </p>
-                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 wrap-break-word">
                       {t('home.card.mining.desc')}
                     </p>
                   </div>
@@ -499,10 +499,10 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       <Target className="w-4 h-4 text-blue-600" />
                       {t('home.card.yinliu.title')}
                     </h3>
-                    <p className="text-slate-600 text-xs break-words">
+                    <p className="text-slate-600 text-xs wrap-break-word">
                       {t('home.card.yinliu.subtitle')}
                     </p>
-                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 wrap-break-word">
                       {t('home.card.yinliu.desc')}
                     </p>
                   </div>
@@ -519,10 +519,10 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       <Award className="w-4 h-4 text-blue-600" />
                       {t('home.card.huibao.title')}
                     </h3>
-                    <p className="text-slate-600 text-xs break-words">
+                    <p className="text-slate-600 text-xs wrap-break-word">
                       {t('home.card.huibao.subtitle')}
                     </p>
-                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 wrap-break-word">
                       {t('home.card.huibao.desc')}
                     </p>
                   </div>
@@ -539,10 +539,10 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       <Brain className="w-4 h-4 text-blue-600" />
                       {t('home.card.ai.title')}
                     </h3>
-                    <p className="text-slate-600 text-xs break-words">
+                    <p className="text-slate-600 text-xs wrap-break-word">
                       {t('home.card.ai.subtitle')}
                     </p>
-                    <p className="text-slate-700 text-xs leading-relaxed mt-1 break-words">
+                    <p className="text-slate-700 text-xs leading-relaxed mt-1 wrap-break-word">
                       {t('home.card.ai.desc')}
                     </p>
                   </div>
@@ -559,7 +559,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
             <ul className="space-y-2">
               {recentNews.map((item) => (
                 <li key={item.id} className="flex items-center">
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 shrink-0"></span>
                   <button
                     type="button"
                     aria-label={`查看文章 ${item.title}`}
