@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/src/contexts/language-context'
 import type { SupportedLanguage } from '@/src/types/i18n'
 import { API_BASE_URL } from '@/src/services/config'
@@ -42,20 +43,65 @@ function extractSortOrder(text: string): number {
 }
 
 /**
- * 从文本中提取 [Link:name="xxx",url="xxx"] 或 [Link:url="xxx"] 标记
+ * 从文本中提取 [Link:...] 标记，支持多语言 name
+ * 格式支持:
+ * - [Link:name="xxx",url="xxx"] - 基本格式
+ * - [Link:url="xxx"] - 仅 URL
+ * - [Link:zh:name="中文名",en:name="English",name="默认",url="xxx"] - 多语言 name
+ *
+ * @param text 包含链接标记的文本
+ * @param language 当前语言，用于选择对应语言的 name
  */
-function extractLink(text: string): { url?: string; name?: string } {
-  // 匹配 [Link:name="xxx",url="xxx"] 或 [Link:url="xxx",name="xxx"] 或 [Link:url="xxx"]
+function extractLink(
+  text: string,
+  language?: string
+): { url?: string; name?: string } {
+  // 匹配 [Link:...] 标记
   const linkMatch = text.match(/\[Link:([^\]]+)\]/)
   if (!linkMatch) return {}
 
   const content = linkMatch[1]
   const urlMatch = content.match(/url="([^"]+)"/)
-  const nameMatch = content.match(/name="([^"]+)"/)
+
+  // 尝试提取多语言 name
+  // 格式: zh:name="中文名" 或 en:name="English"
+  const localizedNames: Record<string, string> = {}
+  let defaultName: string | undefined
+
+  // 匹配所有 name 相关属性
+  // 1. 先匹配带语言前缀的: zh:name="xxx", en:name="xxx"
+  const localizedNameRegex = /(\w+):name="([^"]+)"/g
+  for (
+    let match = localizedNameRegex.exec(content);
+    match !== null;
+    match = localizedNameRegex.exec(content)
+  ) {
+    const [, lang, name] = match
+    // 排除 url 这个 key（虽然不太可能，但以防万一）
+    if (lang !== 'url') {
+      localizedNames[lang] = name
+    }
+  }
+
+  // 2. 匹配默认 name（不带语言前缀的）
+  // 需要排除已经被语言前缀匹配的部分
+  // 使用负向后视来匹配不带语言前缀的 name
+  const defaultNameMatch = content.match(/(?<![a-z]:)name="([^"]+)"/)
+  if (defaultNameMatch) {
+    defaultName = defaultNameMatch[1]
+  }
+
+  // 选择最终的 name: 优先使用当前语言的，否则使用默认的
+  let finalName: string | undefined
+  if (language && localizedNames[language]) {
+    finalName = localizedNames[language]
+  } else {
+    finalName = defaultName
+  }
 
   return {
     url: urlMatch?.[1],
-    name: nameMatch?.[1]
+    name: finalName
   }
 }
 
@@ -93,9 +139,9 @@ function parseAnnouncement(
     extractSortOrder(announcement.summary)
   )
 
-  // 提取链接（从标题或描述中）
-  const linkFromTitle = extractLink(announcement.title)
-  const linkFromSummary = extractLink(announcement.summary)
+  // 提取链接（从标题或描述中），传入语言以支持多语言 name
+  const linkFromTitle = extractLink(announcement.title, language)
+  const linkFromSummary = extractLink(announcement.summary, language)
   const link = linkFromTitle.url ? linkFromTitle : linkFromSummary
 
   // 检测是否始终显示（从标题或描述中）
@@ -122,6 +168,7 @@ export function AnnouncementModal({
   onViewAnnouncement
 }: AnnouncementModalProps) {
   const { t, language } = useLanguage()
+  const router = useRouter()
   const [unreadAnnouncements, setUnreadAnnouncements] = useState<
     ParsedAnnouncement[]
   >([])
@@ -250,18 +297,18 @@ export function AnnouncementModal({
     (announcement: ParsedAnnouncement) => {
       markAsReadAndRemove(announcement.id)
       if (announcement.linkUrl) {
-        // 如果是相对路径，使用 window.location
+        // 如果是相对路径，使用 router.push 进行客户端导航（不刷新页面）
         if (
           announcement.linkUrl.startsWith('/') ||
           announcement.linkUrl.startsWith('?')
         ) {
-          window.location.href = announcement.linkUrl
+          router.push(announcement.linkUrl)
         } else {
           window.open(announcement.linkUrl, '_blank', 'noopener,noreferrer')
         }
       }
     },
-    [markAsReadAndRemove]
+    [markAsReadAndRemove, router]
   )
 
   // 点击"查看公告"，标记已读、关闭弹窗并跳转查看

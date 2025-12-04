@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Card,
   CardContent,
@@ -15,6 +15,18 @@ import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import { useLanguage } from '@/src/contexts/language-context'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
+
+/**
+ * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
+ */
+function cleanControlTags(text: string): string {
+  if (!text) return ''
+  return text
+    .replace(/\[Sort:\d+\]/g, '')
+    .replace(/\[Link:[^\]]+\]/g, '')
+    .replace(/\[Show\]/gi, '')
+}
 
 export function StrategySignalsPage({
   onReadingChange,
@@ -23,8 +35,19 @@ export function StrategySignalsPage({
   onReadingChange?: (reading: boolean) => void
   onNavigateTab?: (tabId: string) => void
 }) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
+
+  /**
+   * 处理文本：先清除控制标记，再处理多语言标记
+   */
+  const processText = useCallback(
+    (text: string) => {
+      const cleaned = cleanControlTags(text)
+      return processLocaleString(cleaned, language)
+    },
+    [language]
+  )
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
@@ -57,7 +80,7 @@ export function StrategySignalsPage({
   if (viewingCourse?.content) {
     return (
       <AcademyMarkdownReader
-        title={viewingCourse.name}
+        title={processText(viewingCourse.name)}
         content={viewingCourse.content}
         onBack={() => {
           setViewingCourse(null)
@@ -123,10 +146,10 @@ export function StrategySignalsPage({
                               </Badge>
                             </div>
                             <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                              {course.name}
+                              {processText(course.name)}
                             </h3>
                             <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                              {course.description}
+                              {processText(course.description)}
                             </p>
                           </div>
                           <div className="ml-4">
@@ -182,10 +205,10 @@ export function StrategySignalsPage({
                               </Badge>
                             </div>
                             <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                              {course.name}
+                              {processText(course.name)}
                             </h3>
                             <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                              {course.description}
+                              {processText(course.description)}
                             </p>
 
                             {course.required_groups &&

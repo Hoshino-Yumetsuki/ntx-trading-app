@@ -56,9 +56,11 @@ export function MainApp() {
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem('ntx-active-tab', activeTab)
-      // 清除 URL 中的 tab 参数，避免刷新时跳转到旧页面
+      // 只在 URL tab 参数与当前 activeTab 不一致时清除 URL
+      // 但如果有 news 参数，说明是带参数的导航，不要清除
       const currentTab = searchParams?.get('tab')
-      if (currentTab && currentTab !== activeTab) {
+      const newsId = searchParams?.get('news')
+      if (currentTab && currentTab !== activeTab && !newsId) {
         router.replace('/', { scroll: false })
       }
     }

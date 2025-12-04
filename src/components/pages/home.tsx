@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Card, CardContent } from '@/src/components/ui/card'
 import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
@@ -23,6 +23,19 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/src/components/ui/dialog'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
+
+/**
+ * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
+ */
+function cleanControlTags(text: string): string {
+  if (!text) return ''
+  return text
+    .replace(/\[Sort:\d+\]/g, '')
+    .replace(/\[Link:[^\]]+\]/g, '')
+    .replace(/\[Show\]/gi, '')
+    .trim()
+}
 
 interface NewsItem {
   id: number
@@ -37,7 +50,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [_isTutorialOpen, _setIsTutorialOpen] = useState(false)
   const [showTutorialPage, setShowTutorialPage] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const { token, isAuthenticated } = useAuth()
   const router = useRouter()
   const [recentNews, setRecentNews] = useState<NewsItem[]>([])
@@ -45,6 +58,17 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     null
   )
   const [showBindDialog, setShowBindDialog] = useState(false)
+
+  /**
+   * 处理文本：先清除控制标记，再处理多语言标记
+   */
+  const processText = useCallback(
+    (text: string) => {
+      const cleaned = cleanControlTags(text)
+      return processLocaleString(cleaned, language)
+    },
+    [language]
+  )
 
   useEffect(() => {
     const fetchApiNews = async () => {
@@ -562,7 +586,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 shrink-0"></span>
                   <button
                     type="button"
-                    aria-label={`查看文章 ${item.title}`}
+                    aria-label={`查看文章 ${processText(item.title)}`}
                     className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     onClick={() => {
                       onNavigate?.('notifications')
@@ -580,7 +604,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       }
                     }}
                   >
-                    {item.title}
+                    {processText(item.title)}
                   </button>
                 </li>
               ))}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/src/components/ui/button'
 import {
   Card,
@@ -26,6 +26,18 @@ import { processCourses } from '@/src/utils/courseUtils'
 import Image from 'next/image'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import { useLanguage } from '@/src/contexts/language-context'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
+
+/**
+ * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
+ */
+function cleanControlTags(text: string): string {
+  if (!text) return ''
+  return text
+    .replace(/\[Sort:\d+\]/g, '')
+    .replace(/\[Link:[^\]]+\]/g, '')
+    .replace(/\[Show\]/gi, '')
+}
 
 export function LearningResourcesPage({
   onReadingChange,
@@ -34,8 +46,19 @@ export function LearningResourcesPage({
   onReadingChange?: (reading: boolean) => void
   onNavigateTab?: (tabId: string) => void
 }) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
+
+  /**
+   * 处理文本：先清除控制标记，再处理多语言标记
+   */
+  const processText = useCallback(
+    (text: string) => {
+      const cleaned = cleanControlTags(text)
+      return processLocaleString(cleaned, language)
+    },
+    [language]
+  )
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
@@ -108,7 +131,7 @@ export function LearningResourcesPage({
   if (viewingCourse?.content) {
     return (
       <AcademyMarkdownReader
-        title={viewingCourse.name}
+        title={processText(viewingCourse.name)}
         content={viewingCourse.content}
         onBack={() => {
           setViewingCourse(null)
@@ -267,10 +290,10 @@ export function LearningResourcesPage({
                           </Badge>
                         </div>
                         <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                          {course.name}
+                          {processText(course.name)}
                         </h3>
                         <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                          {course.description}
+                          {processText(course.description)}
                         </p>
                         {((course as any).lessonsCount ||
                           (course as any).totalDuration) && (
@@ -290,7 +313,7 @@ export function LearningResourcesPage({
                         {course.image && (
                           <Image
                             src={course.image}
-                            alt={course.name}
+                            alt={processText(course.name)}
                             width={96}
                             height={96}
                             className="rounded-md object-cover border border-white/40 mb-2"
@@ -355,10 +378,10 @@ export function LearningResourcesPage({
                           </Badge>
                         </div>
                         <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                          {course.name}
+                          {processText(course.name)}
                         </h3>
                         <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                          {course.description}
+                          {processText(course.description)}
                         </p>
                         {((course as any).lessonsCount ||
                           (course as any).totalDuration) && (
@@ -378,7 +401,7 @@ export function LearningResourcesPage({
                         {course.image && (
                           <Image
                             src={course.image}
-                            alt={course.name}
+                            alt={processText(course.name)}
                             width={96}
                             height={96}
                             className="rounded-md object-cover border border-white/40 mb-2"
