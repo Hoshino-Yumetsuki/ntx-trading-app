@@ -76,7 +76,7 @@ jobs:
         run: echo "ts=$(date +%s)" >> $GITHUB_OUTPUT
 
       - name: Set App Version
-        run: npx @capgo/cli set-version set:android --build ${{ steps.timestamp.outputs.ts }}
+        run: npx @capgo/cli set-version:android --build ${{ steps.timestamp.outputs.ts }}
 
       - name: Generate App Icons
         run: npx @capacitor/assets generate --android
