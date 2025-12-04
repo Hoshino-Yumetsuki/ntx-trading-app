@@ -61,6 +61,8 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install dependencies
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: yarn install
 
       - name: Build Next.js

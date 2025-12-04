@@ -55,6 +55,8 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_15.4.app
 
       - name: Install dependencies
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: yarn install
 
       - name: Install Capacitor iOS
