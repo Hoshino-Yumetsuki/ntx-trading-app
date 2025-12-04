@@ -4,15 +4,15 @@ export const preloadImages = (urls: string[]): Promise<undefined[]> => {
   )
 
   const promises = validUrls.map((url) => {
-    return new Promise<void>((resolve) => {
+    return new Promise<undefined>((resolve) => {
       const img = new Image()
       img.crossOrigin = 'anonymous'
 
-      img.onload = () => resolve()
+      img.onload = () => resolve(undefined)
 
       img.onerror = () => {
         console.error(`图片预加载失败: ${url}`)
-        resolve()
+        resolve(undefined)
       }
 
       img.src = url
