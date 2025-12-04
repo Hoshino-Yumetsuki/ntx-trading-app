@@ -57,7 +57,6 @@
     "@capacitor/android": "^7.4.4",
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.4.4",
-    "@capgo/cli": "^7.41.1",
     "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/typography": "^0.5.19",
     "@types/dompurify": "^3.2.0",
