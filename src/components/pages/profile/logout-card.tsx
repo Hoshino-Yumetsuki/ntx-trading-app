@@ -13,7 +13,7 @@ export function LogoutCard({ onLogout }: LogoutCardProps) {
   const { t } = useLanguage()
 
   return (
-    <Card className="glass-card border-white/30 rounded-[16pt]">
+    <Card className="glass-card border-white/30 rounded-[16pt] transition-all duration-300 hover:shadow-lg hover:shadow-red-100/50 hover:border-red-200/50">
       <CardContent className="p-4">
         <div className="flex justify-center">
           <Button

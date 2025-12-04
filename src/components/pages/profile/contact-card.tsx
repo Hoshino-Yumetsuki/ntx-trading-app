@@ -20,8 +20,8 @@ export function ContactCard() {
         <h3 className="text-slate-800 font-medium">{t('profile.contactus')}</h3>
       </div>
 
-      <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
-        <div className="flex items-center justify-between p-4 hover:bg-white/40 transition-all border-b border-white/20">
+      <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-100/50 hover:border-blue-200/50">
+        <div className="flex items-center justify-between p-4 hover:bg-blue-50/60 transition-all duration-200 border-b border-white/20 group">
           <a
             href="https://twitter.com/NexTradeDao"
             target="_blank"
@@ -57,7 +57,7 @@ export function ContactCard() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-4 hover:bg-white/40 transition-all">
+        <div className="flex items-center justify-between p-4 hover:bg-blue-50/60 transition-all duration-200 group">
           <a
             href="https://t.me/+eUGjIMUFdio2ODg1"
             target="_blank"

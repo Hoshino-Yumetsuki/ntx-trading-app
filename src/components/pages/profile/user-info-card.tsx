@@ -22,7 +22,7 @@ export function UserInfoCard({ userInfo }: UserInfoCardProps) {
   const remainingInvites = Math.max(0, 100 - invites)
 
   return (
-    <Card className="glass-card border-white/30 relative rounded-[16pt]">
+    <Card className="glass-card border-white/30 relative rounded-[16pt] transition-all duration-300 hover:shadow-lg hover:shadow-blue-100/50 hover:border-blue-200/50 hover:scale-[1.01]">
       <Image
         src="/avatar-placeholder.png"
         alt=""

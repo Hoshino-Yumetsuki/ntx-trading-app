@@ -52,7 +52,7 @@ export function InviteCodeCard({ userInfo }: InviteCodeCardProps) {
   }
 
   return (
-    <Card className="glass-card border-white/30 rounded-[16pt]">
+    <Card className="glass-card border-white/30 rounded-[16pt] transition-all duration-300 hover:shadow-lg hover:shadow-blue-100/50 hover:border-blue-200/50 hover:scale-[1.01]">
       <CardHeader>
         <CardTitle className="text-slate-800">
           {t('profile.inviteCode.title')}

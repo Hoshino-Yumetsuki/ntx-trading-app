@@ -137,7 +137,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
         <UserInfoCard userInfo={userInfo} />
         <button
           type="button"
-          className="relative w-full rounded-[16pt] overflow-hidden cursor-pointer select-none transition active:scale-[.99]"
+          className="relative w-full rounded-[16pt] overflow-hidden cursor-pointer select-none transition-all duration-300 active:scale-[.99] hover:shadow-lg hover:shadow-blue-100/50 hover:scale-[1.01] group"
           onClick={() => handleNavigate('community')}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -155,9 +155,9 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 flex items-center justify-between">
+          <div className="absolute inset-0 flex items-center justify-between transition-all duration-300 group-hover:bg-white/10">
             <div className="pl-4 md:pl-6">
-              <span className="text-white text-lg font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+              <span className="text-white text-lg font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200 group-hover:scale-105 inline-block">
                 {t('profile.community.title')}
               </span>
             </div>
@@ -175,7 +175,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+                className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:translate-x-1"
                 role="img"
                 aria-labelledby={communityArrowId}
               >

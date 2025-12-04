@@ -46,26 +46,26 @@ export function QuickActionsCard({ onNavigate }: QuickActionsCardProps) {
         </h3>
       </div>
 
-      <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
+      <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-100/50 hover:border-blue-200/50">
         {menuItems.map((item, index) => {
           const Icon = item.icon
           return (
             <button
               type="button"
               key={index}
-              className={`flex items-center justify-between p-3 hover:bg-white/40 transition-all w-full text-left ${index < menuItems.length - 1 ? 'border-b border-white/20' : ''}`}
+              className={`flex items-center justify-between p-3 hover:bg-blue-50/60 transition-all duration-200 w-full text-left group ${index < menuItems.length - 1 ? 'border-b border-white/20' : ''}`}
               onClick={item.onClick}
             >
               <div className="flex items-center space-x-3">
-                <div className="premium-icon w-8 h-8 rounded-[12pt] bg-blue-100/50">
-                  <Icon className="w-5 h-5 text-blue-600" />
+                <div className="premium-icon w-8 h-8 rounded-[12pt] bg-blue-100/50 transition-all duration-200 group-hover:bg-blue-200/70 group-hover:scale-110">
+                  <Icon className="w-5 h-5 text-blue-600 transition-colors duration-200 group-hover:text-blue-700" />
                 </div>
                 <div>
-                  <p className="text-slate-800 font-medium">{item.label}</p>
+                  <p className="text-slate-800 font-medium transition-colors duration-200 group-hover:text-blue-700">{item.label}</p>
                   <p className="text-slate-600 text-sm">{item.description}</p>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-500" />
+              <ChevronRight className="w-5 h-5 text-slate-500 transition-all duration-200 group-hover:text-blue-600 group-hover:translate-x-1" />
             </button>
           )
         })}

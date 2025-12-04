@@ -567,7 +567,13 @@ export function UniversalShareModal({
                     onClick={shareToWhatsApp}
                     className="flex items-center justify-center"
                   >
-                    <Share2 className="w-4 h-4 mr-2" />
+                    <NextImage
+                      src="/icon-whatsapp.svg"
+                      alt="WhatsApp"
+                      width={16}
+                      height={16}
+                      className="mr-2"
+                    />
                     WhatsApp
                   </Button>
                   <Button

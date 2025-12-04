@@ -79,7 +79,7 @@ export function RewardsCard({ userInfo, onNavigate }: RewardsCardProps) {
   }
 
   return (
-    <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden">
+    <Card className="glass-card border-white/30 rounded-[16pt] overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-100/50 hover:border-blue-200/50 hover:scale-[1.01]">
       <div className="p-5 md:p-6">
         <h3 className="text-slate-900 font-semibold mb-5">
           {t('profile.menu.assets.title')}
