@@ -17,6 +17,18 @@ import '@/src/styles/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Input } from '@/src/components/ui/input'
 import { ShareCard } from '@/src/components/ui/share-card'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
+
+/**
+ * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
+ */
+function cleanControlTags(text: string): string {
+  if (!text) return ''
+  return text
+    .replace(/\[Sort:\d+\]/g, '')
+    .replace(/\[Link:[^\]]+\]/g, '')
+    .replace(/\[Show\]/gi, '')
+}
 
 interface NewsItem {
   id: number
@@ -31,7 +43,7 @@ interface NewsItem {
 }
 
 export function NotificationsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [newsItems, setNewsItems] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
   const [currentArticle, setCurrentArticle] = useState<NewsItem | null>(null)
@@ -175,6 +187,17 @@ export function NotificationsPage() {
     })
   }
 
+  /**
+   * 处理文本：先清除控制标记，再处理多语言标记
+   */
+  const processText = useCallback(
+    (text: string) => {
+      const cleaned = cleanControlTags(text)
+      return processLocaleString(cleaned, language)
+    },
+    [language]
+  )
+
   const renderMarkdownContent = (content: string) => {
     if (!content) {
       return (
@@ -183,6 +206,9 @@ export function NotificationsPage() {
         </div>
       )
     }
+
+    // 先处理控制标记和多语言标记
+    const processedContent = processText(content)
 
     const md = new MarkdownIt({
       html: true,
@@ -195,7 +221,7 @@ export function NotificationsPage() {
       headerless: true
     })
 
-    const html = md.render(content)
+    const html = md.render(processedContent)
     const safe = DOMPurify.sanitize(html)
 
     return (
@@ -256,7 +282,7 @@ export function NotificationsPage() {
             </div>
             <div className="px-2">
               <h1 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight">
-                {currentArticle.title}
+                {processText(currentArticle.title)}
               </h1>
               <div className="flex items-center text-slate-500 text-xs mt-3">
                 <span>{formatDate(currentArticle.publishDate)}</span>
@@ -304,18 +330,18 @@ export function NotificationsPage() {
           }}
           title="分享文章"
           shareData={{
-            title: shareNewsItem?.title || '',
-            text: shareNewsItem?.summary || '',
-            fullText: fullContent,
+            title: processText(shareNewsItem?.title || ''),
+            text: processText(shareNewsItem?.summary || ''),
+            fullText: processText(fullContent),
             url: getShareUrl(shareNewsItem)
           }}
           imageGenerator={(node) => generateImage(node)}
           posterComponent={
             <ShareCard
               ref={posterRef}
-              title={shareNewsItem?.title || ''}
-              content={fullContent || shareNewsItem?.content || ''}
-              summary={shareNewsItem?.summary || ''}
+              title={processText(shareNewsItem?.title || '')}
+              content={processText(fullContent || shareNewsItem?.content || '')}
+              summary={processText(shareNewsItem?.summary || '')}
               publishDate={shareNewsItem?.publishDate || ''}
               qrCodeDataUrl={qrCodeDataUrl}
               source={shareNewsItem?.source}
@@ -404,7 +430,7 @@ export function NotificationsPage() {
                   <div className="flex flex-col gap-y-2">
                     <div className="flex justify-between items-start gap-2">
                       <h3 className="text-sm font-semibold text-[#1B254D] leading-tight">
-                        {item.title}
+                        {processText(item.title)}
                       </h3>
                       <Button
                         asChild
@@ -426,7 +452,7 @@ export function NotificationsPage() {
                       <span>{formatDate(item.publishDate)}</span>
                     </div>
                     <p className="text-xs text-[#4D576A] leading-normal line-clamp-3">
-                      {item.summary}
+                      {processText(item.summary)}
                     </p>
                   </div>
                 </button>
@@ -449,18 +475,18 @@ export function NotificationsPage() {
         }}
         title="分享文章"
         shareData={{
-          title: shareNewsItem?.title || '',
-          text: shareNewsItem?.summary || '',
-          fullText: fullContent,
+          title: processText(shareNewsItem?.title || ''),
+          text: processText(shareNewsItem?.summary || ''),
+          fullText: processText(fullContent),
           url: getShareUrl(shareNewsItem)
         }}
         imageGenerator={(node) => generateImage(node)}
         posterComponent={
           <ShareCard
             ref={posterRef}
-            title={shareNewsItem?.title || ''}
-            content={fullContent || shareNewsItem?.content || ''}
-            summary={shareNewsItem?.summary || ''}
+            title={processText(shareNewsItem?.title || '')}
+            content={processText(fullContent || shareNewsItem?.content || '')}
+            summary={processText(shareNewsItem?.summary || '')}
             publishDate={shareNewsItem?.publishDate || ''}
             qrCodeDataUrl={qrCodeDataUrl}
             source={shareNewsItem?.source}

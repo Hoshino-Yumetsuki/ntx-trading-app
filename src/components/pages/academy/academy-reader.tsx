@@ -8,6 +8,17 @@ import multimdTable from 'markdown-it-multimd-table'
 import DOMPurify from 'dompurify'
 import '@/src/styles/markdown.css'
 import { useLanguage } from '@/src/contexts/language-context'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
+
+/**
+ * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
+ */
+function cleanControlTags(text: string): string {
+  return text
+    .replace(/\[Sort:\d+\]/g, '')
+    .replace(/\[Link:[^\]]+\]/g, '')
+    .replace(/\[Show\]/gi, '')
+}
 
 interface AcademyMarkdownReaderProps {
   title: string
@@ -20,7 +31,7 @@ export function AcademyMarkdownReader({
   content,
   onBack
 }: AcademyMarkdownReaderProps) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const md = new MarkdownIt({
     html: true,
     linkify: true,
@@ -32,7 +43,15 @@ export function AcademyMarkdownReader({
     headerless: true
   })
 
-  const html = md.render(content || '')
+  // 先清除控制标记，再处理多语言标记
+  const cleanedContent = cleanControlTags(content || '')
+  const processedContent = processLocaleString(cleanedContent, language)
+
+  // 同样处理标题
+  const cleanedTitle = cleanControlTags(title || '')
+  const processedTitle = processLocaleString(cleanedTitle, language)
+
+  const html = md.render(processedContent)
   const sanitized = DOMPurify.sanitize(html)
 
   return (
@@ -48,7 +67,9 @@ export function AcademyMarkdownReader({
             <ChevronLeft className="w-5 h-5 mr-2" /> {t('common.back')}
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
+            <h1 className="text-2xl font-bold text-slate-800">
+              {processedTitle}
+            </h1>
           </div>
         </div>
       </div>

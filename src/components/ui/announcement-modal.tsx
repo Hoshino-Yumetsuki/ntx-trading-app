@@ -3,9 +3,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { useLanguage } from '@/src/contexts/language-context'
+import type { SupportedLanguage } from '@/src/types/i18n'
 import { API_BASE_URL } from '@/src/services/config'
 import { Button } from '@/src/components/ui/button'
 import { X } from 'lucide-react'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
 
 interface Announcement {
   id: number
@@ -66,6 +68,7 @@ function extractAlwaysShow(text: string): boolean {
 
 /**
  * 清除文本中的 [Sort:数字]、[Link:...] 和 [Show] 标记
+ * 注意：多语言标记由 processLocaleString 处理
  */
 function cleanText(text: string): string {
   return text
@@ -77,10 +80,13 @@ function cleanText(text: string): string {
 
 /**
  * 解析公告，提取排序、链接和始终显示信息
+ * @param announcement 原始公告
+ * @param language 当前语言，用于处理多语言标记
  */
-function parseAnnouncement(announcement: Announcement): ParsedAnnouncement {
-  const _combinedText = `${announcement.title} ${announcement.summary}`
-
+function parseAnnouncement(
+  announcement: Announcement,
+  language: SupportedLanguage
+): ParsedAnnouncement {
   // 提取排序（从标题或描述中）
   const sortOrder = Math.min(
     extractSortOrder(announcement.title),
@@ -97,21 +103,25 @@ function parseAnnouncement(announcement: Announcement): ParsedAnnouncement {
     extractAlwaysShow(announcement.title) ||
     extractAlwaysShow(announcement.summary)
 
+  // 先清除控制标记，再处理多语言标记
+  const cleanedTitle = cleanText(announcement.title)
+  const cleanedSummary = cleanText(announcement.summary)
+
   return {
     ...announcement,
     sortOrder,
     linkUrl: link.url,
     linkName: link.name,
     alwaysShow,
-    cleanTitle: cleanText(announcement.title),
-    cleanSummary: cleanText(announcement.summary)
+    cleanTitle: processLocaleString(cleanedTitle, language),
+    cleanSummary: processLocaleString(cleanedSummary, language)
   }
 }
 
 export function AnnouncementModal({
   onViewAnnouncement
 }: AnnouncementModalProps) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [unreadAnnouncements, setUnreadAnnouncements] = useState<
     ParsedAnnouncement[]
   >([])
@@ -178,8 +188,10 @@ export function AnnouncementModal({
         if (response.ok) {
           const data: Announcement[] = await response.json()
           if (!cancelled && data.length > 0) {
-            // 解析公告，提取排序和链接信息
-            const parsedData = data.map(parseAnnouncement)
+            // 解析公告，提取排序和链接信息，并处理多语言标记
+            const parsedData = data.map((item) =>
+              parseAnnouncement(item, language)
+            )
 
             // 先按 Sort 标记排序，再按发布日期排序（最新的在前）
             const sortedData = parsedData.sort((a, b) => {
@@ -217,7 +229,7 @@ export function AnnouncementModal({
     return () => {
       cancelled = true
     }
-  }, [getReadAnnouncementIds])
+  }, [getReadAnnouncementIds, language])
 
   // 关闭弹窗并标记所有为已读
   const handleClose = useCallback(() => {
