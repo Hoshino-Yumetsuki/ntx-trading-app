@@ -56,8 +56,6 @@ export function MainApp() {
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem('ntx-active-tab', activeTab)
-      // 只在 URL tab 参数与当前 activeTab 不一致时清除 URL
-      // 但如果有 news 参数，说明是带参数的导航，不要清除
       const currentTab = searchParams?.get('tab')
       const newsId = searchParams?.get('news')
       if (currentTab && currentTab !== activeTab && !newsId) {
@@ -122,7 +120,6 @@ export function MainApp() {
     <div className="relative flex h-screen flex-1 flex-col overflow-hidden">
       <AppBackground />
 
-      {/* 公告弹窗 */}
       <AnnouncementModal onViewAnnouncement={handleViewAnnouncement} />
 
       <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar pb-24">
@@ -133,8 +130,8 @@ export function MainApp() {
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl md:left-1/2 md:-translate-x-1/2 md:max-w-md w-full">
-        <div className="flex items-center justify-around py-3.5">
+      <footer className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl md:left-1/2 md:-translate-x-1/2 md:max-w-md w-full backdrop-blur-xl bg-white/70">
+        <div className="flex items-center justify-around py-2.5">
           {tabs.map((tab) => {
             const Icon = tab.icon
             const isActive = activeTab === tab.id
@@ -149,20 +146,20 @@ export function MainApp() {
                   }
                   setActiveTab(tab.id)
                 }}
-                className={`flex flex-col items-center py-2.5 px-4 rounded-xl transition-all duration-200 ${
+                className={`flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-200 ${
                   isActive
                     ? 'text-blue-600 bg-white/40 backdrop-blur-sm shadow-lg'
                     : 'text-slate-600 hover:text-slate-800 hover:bg-white/20'
                 }`}
               >
                 <div
-                  className={`premium-icon w-7 h-7 rounded-full flex items-center justify-center mb-1 ${
+                  className={`premium-icon w-6 h-6 rounded-full flex items-center justify-center mb-0.5 ${
                     isActive ? 'text-blue-600' : 'text-slate-600'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
                 </div>
-                <span className="text-[13px] font-medium">{tab.label}</span>
+                <span className="text-xs font-medium">{tab.label}</span>
               </button>
             )
           })}
