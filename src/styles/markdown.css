@@ -153,3 +153,60 @@
   text-decoration: line-through;
   color: rgb(107 114 128);
 }
+
+/* 公告弹窗预览样式 - 更紧凑的布局 */
+.markdown-content.announcement-preview {
+  line-height: 1.6;
+}
+
+.markdown-content.announcement-preview h1,
+.markdown-content.announcement-preview h2,
+.markdown-content.announcement-preview h3,
+.markdown-content.announcement-preview h4 {
+  font-size: 0.95rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.markdown-content.announcement-preview h1:first-child,
+.markdown-content.announcement-preview h2:first-child,
+.markdown-content.announcement-preview h3:first-child,
+.markdown-content.announcement-preview p:first-child {
+  margin-top: 0;
+}
+
+.markdown-content.announcement-preview p {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.markdown-content.announcement-preview ul,
+.markdown-content.announcement-preview ol {
+  margin-bottom: 0.5rem;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.markdown-content.announcement-preview li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content.announcement-preview pre {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.markdown-content.announcement-preview code {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.25rem;
+}
+
+.markdown-content.announcement-preview blockquote {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}

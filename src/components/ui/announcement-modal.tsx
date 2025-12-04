@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/src/contexts/language-context'
@@ -9,6 +9,9 @@ import { API_BASE_URL } from '@/src/services/config'
 import { Button } from '@/src/components/ui/button'
 import { X } from 'lucide-react'
 import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
+import MarkdownIt from 'markdown-it'
+import DOMPurify from 'dompurify'
+import '@/src/styles/markdown.css'
 
 interface Announcement {
   id: number
@@ -26,6 +29,7 @@ interface ParsedAnnouncement extends Announcement {
   alwaysShow: boolean
   cleanTitle: string
   cleanSummary: string
+  cleanContent?: string
 }
 
 interface AnnouncementModalProps {
@@ -152,6 +156,9 @@ function parseAnnouncement(
   // 先清除控制标记，再处理多语言标记
   const cleanedTitle = cleanText(announcement.title)
   const cleanedSummary = cleanText(announcement.summary)
+  const cleanedContent = announcement.content
+    ? cleanText(announcement.content)
+    : undefined
 
   return {
     ...announcement,
@@ -160,7 +167,10 @@ function parseAnnouncement(
     linkName: link.name,
     alwaysShow,
     cleanTitle: processLocaleString(cleanedTitle, language),
-    cleanSummary: processLocaleString(cleanedSummary, language)
+    cleanSummary: processLocaleString(cleanedSummary, language),
+    cleanContent: cleanedContent
+      ? processLocaleString(cleanedContent, language)
+      : undefined
   }
 }
 
@@ -261,8 +271,33 @@ export function AnnouncementModal({
             )
 
             if (unread.length > 0) {
-              setUnreadAnnouncements(unread)
-              setIsOpen(true)
+              // 为第一个公告获取完整内容
+              const firstAnnouncement = unread[0]
+              if (!firstAnnouncement.content) {
+                try {
+                  const detailResponse = await fetch(
+                    `${API_BASE_URL}/user/academy/articles/${firstAnnouncement.id}`
+                  )
+                  if (detailResponse.ok) {
+                    const detailData = await detailResponse.json()
+                    if (detailData.content && !cancelled) {
+                      const cleanedContent = cleanText(detailData.content)
+                      firstAnnouncement.content = detailData.content
+                      firstAnnouncement.cleanContent = processLocaleString(
+                        cleanedContent,
+                        language
+                      )
+                    }
+                  }
+                } catch (e) {
+                  console.error('获取第一个公告详情失败:', e)
+                }
+              }
+
+              if (!cancelled) {
+                setUnreadAnnouncements(unread)
+                setIsOpen(true)
+              }
             }
           }
         }
@@ -365,87 +400,146 @@ export function AnnouncementModal({
         {/* 可滚动的公告列表 */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
           <div className="flex flex-col gap-4 p-4">
-            {unreadAnnouncements.map((announcement) => (
-              <div
-                key={announcement.id}
-                className="bg-slate-50 rounded-xl overflow-hidden border border-slate-100 transition-all duration-300"
-              >
-                {/* 公告配图 */}
-                {announcement.imageUrl &&
-                  announcement.imageUrl !== '/placeholder.png' && (
-                    <div className="relative w-full h-36 overflow-hidden">
-                      <Image
-                        src={announcement.imageUrl}
-                        alt={announcement.cleanTitle}
-                        fill
-                        className="object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                        }}
-                      />
-                      {/* 渐变遮罩 */}
-                      <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
-                    </div>
-                  )}
+            {unreadAnnouncements.map((announcement, index) => {
+              const isFirst = index === 0
+              // 第一个公告优先显示完整内容，没有则显示摘要
+              const firstContent =
+                announcement.cleanContent || announcement.cleanSummary
+              // 判断内容是否足够长（超过约120个字符认为需要截断）
+              const needsFade = isFirst && firstContent.length > 120
 
-                {/* 公告内容 */}
-                <div className="p-4">
-                  {/* 标签和日期 */}
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="px-2 py-0.5 text-[10px] font-medium text-white bg-[#1C55FF] rounded-full">
-                      {t('announcement.tag') || '公告'}
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      {new Date(announcement.publishDate).toLocaleDateString()}
-                    </span>
-                  </div>
+              // 为第一个公告渲染 Markdown 内容
+              const renderFirstContent = isFirst
+                ? (() => {
+                    const md = new MarkdownIt({
+                      html: true,
+                      linkify: true,
+                      typographer: true,
+                      breaks: true
+                    })
+                    const html = md.render(firstContent)
+                    const safe = DOMPurify.sanitize(html)
+                    return { __html: safe }
+                  })()
+                : undefined
 
-                  {/* 标题 */}
-                  <h3 className="text-base font-bold text-slate-800 mb-1.5 line-clamp-2">
-                    {announcement.cleanTitle}
-                  </h3>
-
-                  {/* 摘要内容 */}
-                  <p className="text-sm text-slate-600 leading-relaxed line-clamp-2 mb-4">
-                    {announcement.cleanSummary}
-                  </p>
-
-                  {/* 按钮组 */}
-                  <div className="flex gap-2">
-                    {announcement.linkUrl ? (
-                      // 有链接时显示跳转按钮
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
-                        onClick={() => handleLinkClick(announcement)}
+              return (
+                <div
+                  key={announcement.id}
+                  className={`rounded-xl overflow-hidden border transition-all duration-300 ${
+                    isFirst
+                      ? 'bg-white border-[#1C55FF]/20 shadow-md'
+                      : 'bg-slate-50 border-slate-100'
+                  }`}
+                >
+                  {/* 公告配图 - 第一个公告显示更大的图片 */}
+                  {announcement.imageUrl &&
+                    announcement.imageUrl !== '/placeholder.png' && (
+                      <div
+                        className={`relative w-full overflow-hidden ${isFirst ? 'h-48' : 'h-36'}`}
                       >
-                        {announcement.linkName ||
-                          t('announcement.jump') ||
-                          '跳转'}
-                      </Button>
-                    ) : (
-                      // 没有链接时显示"我知道了"按钮
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
-                        onClick={() => handleDismiss(announcement)}
-                      >
-                        {t('announcement.dismiss') || '我知道了'}
-                      </Button>
+                        <Image
+                          src={announcement.imageUrl}
+                          alt={announcement.cleanTitle}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                          }}
+                        />
+                        {/* 渐变遮罩 */}
+                        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
+                      </div>
                     )}
-                    <Button
-                      size="sm"
-                      className="flex-1 h-9 bg-[#1C55FF] hover:bg-[#1C55FF]/90 text-white rounded-lg text-sm"
-                      onClick={() => handleViewAnnouncement(announcement)}
+
+                  {/* 公告内容 */}
+                  <div className={isFirst ? 'p-5' : 'p-4'}>
+                    {/* 标签和日期 */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span
+                        className={`px-2 py-0.5 font-medium text-white bg-[#1C55FF] rounded-full ${
+                          isFirst ? 'text-xs' : 'text-[10px]'
+                        }`}
+                      >
+                        {isFirst ? 'New' : t('announcement.tag') || '公告'}
+                      </span>
+                      <span className="text-xs text-slate-400">
+                        {new Date(
+                          announcement.publishDate
+                        ).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    {/* 标题 */}
+                    <h3
+                      className={`font-bold text-slate-800 mb-2 ${
+                        isFirst ? 'text-xl' : 'text-base line-clamp-2'
+                      }`}
                     >
-                      {t('announcement.view') || '查看公告'}
-                    </Button>
+                      {announcement.cleanTitle}
+                    </h3>
+
+                    {/* 内容 - 第一个公告显示完整内容的部分并带渐变虚化 */}
+                    {isFirst ? (
+                      <div className="relative mb-4">
+                        <div
+                          className="text-sm text-slate-600 leading-relaxed markdown-content announcement-preview"
+                          style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: needsFade ? 8 : undefined,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: needsFade ? 'hidden' : undefined
+                          }}
+                          dangerouslySetInnerHTML={renderFirstContent}
+                        />
+                        {/* 底部渐变虚化效果 - 仅在内容足够长时显示 */}
+                        {needsFade && (
+                          <div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-white via-white/80 to-transparent pointer-events-none" />
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-600 leading-relaxed line-clamp-2 mb-4">
+                        {announcement.cleanSummary}
+                      </p>
+                    )}
+
+                    {/* 按钮组 */}
+                    <div className="flex gap-2">
+                      {announcement.linkUrl ? (
+                        // 有链接时显示跳转按钮
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
+                          onClick={() => handleLinkClick(announcement)}
+                        >
+                          {announcement.linkName ||
+                            t('announcement.jump') ||
+                            '跳转'}
+                        </Button>
+                      ) : (
+                        // 没有链接时显示"我知道了"按钮
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
+                          onClick={() => handleDismiss(announcement)}
+                        >
+                          {t('announcement.dismiss') || '我知道了'}
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        className="flex-1 h-9 bg-[#1C55FF] hover:bg-[#1C55FF]/90 text-white rounded-lg text-sm"
+                        onClick={() => handleViewAnnouncement(announcement)}
+                      >
+                        {t('announcement.view') || '查看公告'}
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
