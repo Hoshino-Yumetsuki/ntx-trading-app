@@ -10,6 +10,9 @@ const nextConfig = {
   },
   transpilePackages: ['next-image-export-optimizer'],
   serverExternalPackages: ['thread-stream', 'pino'],
+  turbopack: {
+    root: process.cwd()
+  },
   env: {
     nextImageExportOptimizer_imageFolderPath: 'public',
     nextImageExportOptimizer_exportFolderPath: 'out',
