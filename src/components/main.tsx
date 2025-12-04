@@ -130,7 +130,7 @@ export function MainApp() {
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl md:left-1/2 md:-translate-x-1/2 md:max-w-md w-full backdrop-blur-xl bg-white/70">
+      <footer className="fixed bottom-0 left-0 right-0 glass-card border-t-0 rounded-t-3xl md:left-1/2 md:-translate-x-1/2 md:max-w-md w-full backdrop-blur-md bg-white/80">
         <div className="flex items-center justify-around py-2.5">
           {tabs.map((tab) => {
             const Icon = tab.icon
