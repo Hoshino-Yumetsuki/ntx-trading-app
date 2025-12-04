@@ -276,7 +276,8 @@
     "title": "平台公告",
     "tag": "公告",
     "dismiss": "我知道了",
-    "view": "查看公告"
+    "view": "查看公告",
+    "jump": "跳转"
   },
   "tutorial": {
     "title": "新手教程",

@@ -276,7 +276,8 @@
     "title": "Announcements",
     "tag": "New",
     "dismiss": "Got it",
-    "view": "View Details"
+    "view": "View Details",
+    "jump": "Go"
   },
   "tutorial": {
     "title": "Tutorial",

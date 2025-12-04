@@ -1,22 +1,22 @@
 import type { Course, CourseType } from '@/src/types/course'
 
 /**
- * 从描述中提取排序数字标记 {数字}
+ * 从描述中提取排序数字标记 [Sort:数字]
  * @param description 课程描述
  * @returns 排序数字，如果没有找到则返回 Infinity
  */
 export function extractSortOrder(description: string): number {
-  const match = description.match(/\{(\d+)\}/)
+  const match = description.match(/\[Sort:(\d+)\]/)
   return match ? Number.parseInt(match[1], 10) : Number.POSITIVE_INFINITY
 }
 
 /**
- * 清除描述中的排序标记 {数字}
+ * 清除描述中的排序标记 [Sort:数字]
  * @param description 课程描述
  * @returns 清除标记后的描述
  */
 export function cleanDescription(description: string): string {
-  return description.replace(/\{\d+\}/g, '').trim()
+  return description.replace(/\[Sort:\d+\]/g, '').trim()
 }
 
 /**

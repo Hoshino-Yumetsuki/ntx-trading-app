@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import Image from 'next/image'
 import { useLanguage } from '@/src/contexts/language-context'
 import { API_BASE_URL } from '@/src/services/config'
@@ -16,18 +16,104 @@ interface Announcement {
   content?: string
 }
 
+interface ParsedAnnouncement extends Announcement {
+  sortOrder: number
+  linkUrl?: string
+  linkName?: string
+  alwaysShow: boolean
+  cleanTitle: string
+  cleanSummary: string
+}
+
 interface AnnouncementModalProps {
   onViewAnnouncement?: (id: number) => void
 }
 
 const ANNOUNCEMENT_READ_KEY = 'ntx-announcement-read-ids'
 
+/**
+ * 从文本中提取 [Sort:数字] 标记
+ */
+function extractSortOrder(text: string): number {
+  const match = text.match(/\[Sort:(\d+)\]/)
+  return match ? Number.parseInt(match[1], 10) : Number.POSITIVE_INFINITY
+}
+
+/**
+ * 从文本中提取 [Link:name="xxx",url="xxx"] 或 [Link:url="xxx"] 标记
+ */
+function extractLink(text: string): { url?: string; name?: string } {
+  // 匹配 [Link:name="xxx",url="xxx"] 或 [Link:url="xxx",name="xxx"] 或 [Link:url="xxx"]
+  const linkMatch = text.match(/\[Link:([^\]]+)\]/)
+  if (!linkMatch) return {}
+
+  const content = linkMatch[1]
+  const urlMatch = content.match(/url="([^"]+)"/)
+  const nameMatch = content.match(/name="([^"]+)"/)
+
+  return {
+    url: urlMatch?.[1],
+    name: nameMatch?.[1]
+  }
+}
+
+/**
+ * 从文本中检测 [Show] 标记
+ */
+function extractAlwaysShow(text: string): boolean {
+  return /\[Show\]/i.test(text)
+}
+
+/**
+ * 清除文本中的 [Sort:数字]、[Link:...] 和 [Show] 标记
+ */
+function cleanText(text: string): string {
+  return text
+    .replace(/\[Sort:\d+\]/g, '')
+    .replace(/\[Link:[^\]]+\]/g, '')
+    .replace(/\[Show\]/gi, '')
+    .trim()
+}
+
+/**
+ * 解析公告，提取排序、链接和始终显示信息
+ */
+function parseAnnouncement(announcement: Announcement): ParsedAnnouncement {
+  const combinedText = `${announcement.title} ${announcement.summary}`
+
+  // 提取排序（从标题或描述中）
+  const sortOrder = Math.min(
+    extractSortOrder(announcement.title),
+    extractSortOrder(announcement.summary)
+  )
+
+  // 提取链接（从标题或描述中）
+  const linkFromTitle = extractLink(announcement.title)
+  const linkFromSummary = extractLink(announcement.summary)
+  const link = linkFromTitle.url ? linkFromTitle : linkFromSummary
+
+  // 检测是否始终显示（从标题或描述中）
+  const alwaysShow =
+    extractAlwaysShow(announcement.title) ||
+    extractAlwaysShow(announcement.summary)
+
+  return {
+    ...announcement,
+    sortOrder,
+    linkUrl: link.url,
+    linkName: link.name,
+    alwaysShow,
+    cleanTitle: cleanText(announcement.title),
+    cleanSummary: cleanText(announcement.summary)
+  }
+}
+
 export function AnnouncementModal({
   onViewAnnouncement
 }: AnnouncementModalProps) {
   const { t } = useLanguage()
   const [unreadAnnouncements, setUnreadAnnouncements] = useState<
-    Announcement[]
+    ParsedAnnouncement[]
   >([])
   const [isOpen, setIsOpen] = useState(false)
 
@@ -92,17 +178,27 @@ export function AnnouncementModal({
         if (response.ok) {
           const data: Announcement[] = await response.json()
           if (!cancelled && data.length > 0) {
-            // 按发布日期排序（最新的在前）
-            const sortedData = data.sort(
-              (a, b) =>
+            // 解析公告，提取排序和链接信息
+            const parsedData = data.map(parseAnnouncement)
+
+            // 先按 Sort 标记排序，再按发布日期排序（最新的在前）
+            const sortedData = parsedData.sort((a, b) => {
+              // 先按 Sort 标记排序
+              if (a.sortOrder !== b.sortOrder) {
+                return a.sortOrder - b.sortOrder
+              }
+              // Sort 相同则按发布日期排序
+              return (
                 new Date(b.publishDate).getTime() -
                 new Date(a.publishDate).getTime()
-            )
+              )
+            })
 
-            // 过滤出未读公告
+            // 过滤出未读公告（带 [Show] 标记的始终显示）
             const readIds = getReadAnnouncementIds()
             const unread = sortedData.filter(
-              (announcement) => !readIds.includes(announcement.id)
+              (announcement) =>
+                announcement.alwaysShow || !readIds.includes(announcement.id)
             )
 
             if (unread.length > 0) {
@@ -131,15 +227,31 @@ export function AnnouncementModal({
 
   // 点击"我知道了"，只标记当前公告为已读
   const handleDismiss = useCallback(
-    (announcement: Announcement) => {
+    (announcement: ParsedAnnouncement) => {
       markAsReadAndRemove(announcement.id)
+    },
+    [markAsReadAndRemove]
+  )
+
+  // 处理链接跳转
+  const handleLinkClick = useCallback(
+    (announcement: ParsedAnnouncement) => {
+      markAsReadAndRemove(announcement.id)
+      if (announcement.linkUrl) {
+        // 如果是相对路径，使用 window.location
+        if (announcement.linkUrl.startsWith('/') || announcement.linkUrl.startsWith('?')) {
+          window.location.href = announcement.linkUrl
+        } else {
+          window.open(announcement.linkUrl, '_blank', 'noopener,noreferrer')
+        }
+      }
     },
     [markAsReadAndRemove]
   )
 
   // 点击"查看公告"，标记已读、关闭弹窗并跳转查看
   const handleViewAnnouncement = useCallback(
-    (announcement: Announcement) => {
+    (announcement: ParsedAnnouncement) => {
       saveReadId(announcement.id)
       setIsOpen(false)
       onViewAnnouncement?.(announcement.id)
@@ -202,7 +314,7 @@ export function AnnouncementModal({
                     <div className="relative w-full h-36 overflow-hidden">
                       <Image
                         src={announcement.imageUrl}
-                        alt={announcement.title}
+                        alt={announcement.cleanTitle}
                         fill
                         className="object-cover"
                         onError={(e) => {
@@ -228,24 +340,37 @@ export function AnnouncementModal({
 
                   {/* 标题 */}
                   <h3 className="text-base font-bold text-slate-800 mb-1.5 line-clamp-2">
-                    {announcement.title}
+                    {announcement.cleanTitle}
                   </h3>
 
                   {/* 摘要内容 */}
                   <p className="text-sm text-slate-600 leading-relaxed line-clamp-2 mb-4">
-                    {announcement.summary}
+                    {announcement.cleanSummary}
                   </p>
 
                   {/* 按钮组 */}
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
-                      onClick={() => handleDismiss(announcement)}
-                    >
-                      {t('announcement.dismiss') || '我知道了'}
-                    </Button>
+                    {announcement.linkUrl ? (
+                      // 有链接时显示跳转按钮
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
+                        onClick={() => handleLinkClick(announcement)}
+                      >
+                        {announcement.linkName || t('announcement.jump') || '跳转'}
+                      </Button>
+                    ) : (
+                      // 没有链接时显示"我知道了"按钮
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-9 text-slate-600 border-slate-200 hover:bg-white rounded-lg text-sm"
+                        onClick={() => handleDismiss(announcement)}
+                      >
+                        {t('announcement.dismiss') || '我知道了'}
+                      </Button>
+                    )}
                     <Button
                       size="sm"
                       className="flex-1 h-9 bg-[#1C55FF] hover:bg-[#1C55FF]/90 text-white rounded-lg text-sm"
