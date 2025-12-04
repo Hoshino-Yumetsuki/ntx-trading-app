@@ -1,6 +1,6 @@
 'use client'
 
-function imageLoader({ src, width, quality }) {
+function imageLoader({ src, width }) {
   // 对于外部 URL（http/https），直接返回
   if (src.startsWith('http://') || src.startsWith('https://')) {
     return src
@@ -17,12 +17,12 @@ function imageLoader({ src, width, quality }) {
   const dirname = path.split('/').slice(0, -1).join('/')
   const ext = filename.split('.').pop()
   const name = filename.replace(`.${ext}`, '')
-  
+
   // 返回优化后的图片路径
-  const optimizedPath = dirname 
+  const optimizedPath = dirname
     ? `/${dirname}/nextImageExportOptimizer/${name}-opt-${width}.WEBP`
     : `/nextImageExportOptimizer/${name}-opt-${width}.WEBP`
-  
+
   return optimizedPath
 }
 

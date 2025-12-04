@@ -6,7 +6,7 @@ const nextConfig = {
   },
   images: {
     loader: 'custom',
-    loaderFile: './image-loader.js',
+    loaderFile: './image-loader.js'
   },
   transpilePackages: ['next-image-export-optimizer'],
   serverExternalPackages: ['thread-stream', 'pino'],
@@ -15,8 +15,8 @@ const nextConfig = {
     nextImageExportOptimizer_exportFolderPath: 'out',
     nextImageExportOptimizer_quality: '75',
     nextImageExportOptimizer_storePicturesInWEBP: 'true',
-    nextImageExportOptimizer_generateAndUseBlurImages: 'true',
-  },
+    nextImageExportOptimizer_generateAndUseBlurImages: 'true'
+  }
 }
 
 export default nextConfig
