@@ -39,10 +39,11 @@ import {
   DialogTitle
 } from '@/src/components/ui/dialog'
 import { useLanguage } from '@/src/contexts/language-context'
+import { processText } from '@/src/utils/apiLocaleProcessor'
 
 export function BrokerPage({ onBack }: { onBack?: () => void }) {
   const router = useRouter()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const packagesAnchorId = useId()
   const [unlocked, setUnlocked] = useState<Course[]>([])
   const [locked, setLocked] = useState<Course[]>([])
@@ -65,6 +66,10 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
       packages: CoursePackage[]
     }>
   >([])
+
+  // 包装 processText，绑定当前语言
+  const localProcessText = (text: string) => processText(text, language)
+
   const { isAuthenticated } = useAuth()
 
   useEffect(() => {
@@ -277,7 +282,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                   >
                     <CardHeader className="pb-2">
                       <CardTitle className="text-slate-800 text-base">
-                        {g.groupName}
+                        {localProcessText(g.groupName)}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-0">
@@ -298,7 +303,7 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                               </div>
                               {(p.description || g.groupDescription) && (
                                 <div className="text-xs text-slate-500 mt-1 whitespace-normal wrap-break-word">
-                                  {p.description ?? g.groupDescription}
+                                  {localProcessText(p.description ?? g.groupDescription ?? '')}
                                 </div>
                               )}
                             </div>
@@ -349,10 +354,10 @@ export function BrokerPage({ onBack }: { onBack?: () => void }) {
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <div className="text-slate-800 font-semibold mb-1 line-clamp-1">
-                          {featured.name}
+                          {localProcessText(featured.name)}
                         </div>
                         <div className="text-slate-600 text-sm line-clamp-2">
-                          {featured.description}
+                          {localProcessText(featured.description)}
                         </div>
                       </div>
                       <Button

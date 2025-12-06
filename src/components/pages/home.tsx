@@ -23,19 +23,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/src/components/ui/dialog'
-import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
-
-/**
- * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
- */
-function cleanControlTags(text: string): string {
-  if (!text) return ''
-  return text
-    .replace(/\[Sort:\d+\]/g, '')
-    .replace(/\[Link:[^\]]+\]/g, '')
-    .replace(/\[Show\]/gi, '')
-    .trim()
-}
+import { processText, processLocaleString } from '@/src/utils/apiLocaleProcessor'
 
 interface NewsItem {
   id: number
@@ -59,14 +47,9 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   )
   const [showBindDialog, setShowBindDialog] = useState(false)
 
-  /**
-   * 处理文本：先清除控制标记，再处理多语言标记
-   */
-  const processText = useCallback(
-    (text: string) => {
-      const cleaned = cleanControlTags(text)
-      return processLocaleString(cleaned, language)
-    },
+  // 包装 processText，绑定当前语言
+  const localProcessText = useCallback(
+    (text: string) => processText(text, language),
     [language]
   )
 
@@ -146,16 +129,22 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
   const goBroker = () => onNavigate?.('broker')
 
+  // 根据语言选择对应的 banner 图片
+  const getBannerSrc = (baseName: string) => {
+    const suffix = language === 'zh' ? '-zh' : ''
+    return `/banners/${baseName}${suffix}.png`
+  }
+
   const builtInBanners = [
     {
       type: 'internal' as const,
-      src: '/banner-2.png',
+      src: getBannerSrc('banner-2'),
       alt: t('home.banner.tutorial'),
       onClick: () => openTutorial()
     },
     {
       type: 'internal' as const,
-      src: '/banner-1.png',
+      src: getBannerSrc('banner-1'),
       alt: t('home.banner.broker'),
       onClick: goBroker
     }
@@ -217,7 +206,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     ...builtInBanners,
     ...customBanners.map((b) => ({
       type: 'external' as const,
-      src: b.image_url,
+      src: processLocaleString(b.image_url, language),
       alt: t('home.banner.custom'),
       href: normalizeHref(b.link_url)
     }))
@@ -586,7 +575,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 shrink-0"></span>
                   <button
                     type="button"
-                    aria-label={`${t('home.viewArticle')} ${processText(item.title)}`}
+                    aria-label={`${t('home.viewArticle')} ${localProcessText(item.title)}`}
                     className="text-slate-700 text-sm text-left truncate hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     onClick={() => {
                       onNavigate?.('notifications')
@@ -604,7 +593,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
                       }
                     }}
                   >
-                    {processText(item.title)}
+                    {localProcessText(item.title)}
                   </button>
                 </li>
               ))}

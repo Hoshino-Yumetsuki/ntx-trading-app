@@ -8,17 +8,7 @@ import multimdTable from 'markdown-it-multimd-table'
 import DOMPurify from 'dompurify'
 import '@/src/app/markdown.css'
 import { useLanguage } from '@/src/contexts/language-context'
-import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
-
-/**
- * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
- */
-function cleanControlTags(text: string): string {
-  return text
-    .replace(/\[Sort:\d+\]/g, '')
-    .replace(/\[Link:[^\]]+\]/g, '')
-    .replace(/\[Show\]/gi, '')
-}
+import { processText } from '@/src/utils/apiLocaleProcessor'
 
 interface AcademyMarkdownReaderProps {
   title: string
@@ -43,13 +33,9 @@ export function AcademyMarkdownReader({
     headerless: true
   })
 
-  // 先清除控制标记，再处理多语言标记
-  const cleanedContent = cleanControlTags(content || '')
-  const processedContent = processLocaleString(cleanedContent, language)
-
-  // 同样处理标题
-  const cleanedTitle = cleanControlTags(title || '')
-  const processedTitle = processLocaleString(cleanedTitle, language)
+  // 处理多语言标记和清除控制标记
+  const processedContent = processText(content || '', language)
+  const processedTitle = processText(title || '', language)
 
   const html = md.render(processedContent)
   const sanitized = DOMPurify.sanitize(html)

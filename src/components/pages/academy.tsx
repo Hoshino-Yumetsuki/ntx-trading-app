@@ -27,9 +27,10 @@ import { UnlockCoursesPage } from './academy/unlock-courses'
 import { BlackHorseModelPage } from './academy/black-horse-model'
 import { useLanguage } from '@/src/contexts/language-context'
 import { MissionService } from '@/src/services/mission'
+import { processApiResponse } from '@/src/utils/apiLocaleProcessor'
 
 export function AcademyPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [activeTab, setActiveTab] = useState<string | null>(null)
   const [communities, setCommunities] = useState<Course[]>([])
   const [loadingCommunities, setLoadingCommunities] = useState(true)
@@ -83,7 +84,9 @@ export function AcademyPage() {
         setCommunityError('')
         const data = await getAllCourses()
         const { unlockedCourses } = processCourses(data, 'loop_comm')
-        setCommunities(unlockedCourses)
+        // 处理多语言标记
+        const processedCommunities = processApiResponse(unlockedCourses, language)
+        setCommunities(processedCommunities)
       } catch (error) {
         console.error('Failed to fetch communities:', error)
         setCommunityError(t('academy.error.fetchCommunityFailed'))
@@ -93,7 +96,7 @@ export function AcademyPage() {
     }
 
     fetchCommunities()
-  }, [t])
+  }, [t, language])
 
   const handleCommunityClick = (community: Course) => {
     // 上报每日直播任务

@@ -33,6 +33,7 @@ import type { CoursePackage, CreateOrderResponse } from '@/src/types/course'
 import { useAuth } from '@/src/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/src/contexts/language-context'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
 
 export function UnlockCoursesPage({
   onNavigateTab,
@@ -44,7 +45,7 @@ export function UnlockCoursesPage({
   hideInfoCards?: boolean
   hideDescription?: boolean
 }) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const packagesSectionId = useId()
   const [derivedGroups, setDerivedGroups] = useState<
     Array<{
@@ -279,7 +280,7 @@ export function UnlockCoursesPage({
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-slate-800 text-base">
-                      {g.groupName}
+                      {processLocaleString(g.groupName, language)}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
@@ -301,7 +302,7 @@ export function UnlockCoursesPage({
                             {!hideDescription &&
                               (p.description || g.groupDescription) && (
                                 <div className="text-xs text-slate-500 mt-1 whitespace-normal wrap-break-word">
-                                  {p.description ?? g.groupDescription}
+                                  {processLocaleString(p.description ?? g.groupDescription ?? '', language)}
                                 </div>
                               )}
                           </div>

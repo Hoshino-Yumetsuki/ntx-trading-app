@@ -10,13 +10,14 @@ import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-re
 import Image from 'next/image'
 import { useLanguage } from '@/src/contexts/language-context'
 import { MissionService } from '@/src/services/mission'
+import { processApiResponse } from '@/src/utils/apiLocaleProcessor'
 
 export function LoopCommunitiesPage({
   onReadingChange
 }: {
   onReadingChange?: (reading: boolean) => void
 }) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [communities, setCommunities] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -29,7 +30,9 @@ export function LoopCommunitiesPage({
         setError('')
         const data = await getAllCourses()
         const { unlockedCourses } = processCourses(data, 'loop_comm')
-        setCommunities(unlockedCourses)
+        // 处理多语言标记
+        const processedCommunities = processApiResponse(unlockedCourses, language)
+        setCommunities(processedCommunities)
       } catch (error) {
         console.error('Failed to fetch communities:', error)
         setError(t('academy.error.fetchCommunityFailed'))
@@ -39,7 +42,7 @@ export function LoopCommunitiesPage({
     }
 
     fetchCommunities()
-  }, [t])
+  }, [t, language])
 
   const handleCommunityClick = (community: Course) => {
     // 上报每日直播任务

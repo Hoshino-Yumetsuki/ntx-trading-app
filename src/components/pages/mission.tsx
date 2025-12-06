@@ -18,17 +18,24 @@ import Image from 'next/image'
 import { type Mission, MissionService } from '@/src/services/mission'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { processText } from '@/src/utils/apiLocaleProcessor'
 
 interface MissionPageProps {
   onNavigate?: (page: string) => void
 }
 
 export function MissionPage({ onNavigate }: MissionPageProps) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const router = useRouter()
   const [missions, setMissions] = useState<Mission[]>([])
   const [loading, setLoading] = useState(true)
   const [claimingId, setClaimingId] = useState<number | null>(null)
+
+  // 包装 processText，绑定当前语言
+  const localProcessText = useCallback(
+    (text: string) => processText(text, language),
+    [language]
+  )
 
   const fetchMissions = useCallback(async () => {
     try {
@@ -181,7 +188,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="font-bold text-slate-800 truncate">
-                  {mission.name}
+                  {localProcessText(mission.name)}
                 </h3>
                 {mission.is_daily && (
                   <span className="px-1.5 py-0.5 bg-orange-100 text-orange-600 text-[10px] rounded font-medium">
@@ -190,7 +197,7 @@ export function MissionPage({ onNavigate }: MissionPageProps) {
                 )}
               </div>
               <p className="text-xs text-slate-500 mt-1 line-clamp-2">
-                {mission.description}
+                {localProcessText(mission.description)}
               </p>
 
               <div className="mt-3 flex items-center gap-4">

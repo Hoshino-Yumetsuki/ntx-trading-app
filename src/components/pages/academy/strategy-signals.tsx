@@ -15,18 +15,7 @@ import { getAllCourses } from '@/src/services/courseService'
 import { processCourses } from '@/src/utils/courseUtils'
 import { AcademyMarkdownReader } from '@/src/components/pages/academy/academy-reader'
 import { useLanguage } from '@/src/contexts/language-context'
-import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
-
-/**
- * 清除文本中的控制标记 [Sort:数字]、[Link:...] 和 [Show]
- */
-function cleanControlTags(text: string): string {
-  if (!text) return ''
-  return text
-    .replace(/\[Sort:\d+\]/g, '')
-    .replace(/\[Link:[^\]]+\]/g, '')
-    .replace(/\[Show\]/gi, '')
-}
+import { processText } from '@/src/utils/apiLocaleProcessor'
 
 export function StrategySignalsPage({
   onReadingChange,
@@ -37,21 +26,16 @@ export function StrategySignalsPage({
 }) {
   const { t, language } = useLanguage()
   const [unlockedCourses, setUnlockedCourses] = useState<Course[]>([])
-
-  /**
-   * 处理文本：先清除控制标记，再处理多语言标记
-   */
-  const processText = useCallback(
-    (text: string) => {
-      const cleaned = cleanControlTags(text)
-      return processLocaleString(cleaned, language)
-    },
-    [language]
-  )
   const [lockedCourses, setLockedCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const [viewingCourse, setViewingCourse] = useState<Course | null>(null)
+
+  // 包装 processText，绑定当前语言
+  const localProcessText = useCallback(
+    (text: string) => processText(text, language),
+    [language]
+  )
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -80,7 +64,7 @@ export function StrategySignalsPage({
   if (viewingCourse?.content) {
     return (
       <AcademyMarkdownReader
-        title={processText(viewingCourse.name)}
+        title={localProcessText(viewingCourse.name)}
         content={viewingCourse.content}
         onBack={() => {
           setViewingCourse(null)
@@ -146,10 +130,10 @@ export function StrategySignalsPage({
                               </Badge>
                             </div>
                             <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                              {processText(course.name)}
+                              {localProcessText(course.name)}
                             </h3>
                             <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                              {processText(course.description)}
+                              {localProcessText(course.description)}
                             </p>
                           </div>
                           <div className="ml-4">
@@ -205,10 +189,10 @@ export function StrategySignalsPage({
                               </Badge>
                             </div>
                             <h3 className="text-slate-800 font-semibold text-lg mb-2">
-                              {processText(course.name)}
+                              {localProcessText(course.name)}
                             </h3>
                             <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                              {processText(course.description)}
+                              {localProcessText(course.description)}
                             </p>
 
                             {course.required_groups &&
@@ -222,7 +206,7 @@ export function StrategySignalsPage({
                                         className="inline-flex items-center ml-1"
                                       >
                                         <span className="text-blue-600">
-                                          {group.name}
+                                          {localProcessText(group.name)}
                                         </span>
                                         {i < course.required_groups.length - 1
                                           ? '，'
