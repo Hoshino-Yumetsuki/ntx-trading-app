@@ -1,21 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '@/src/components/ui/dialog'
 import { ExternalLink, UserX, UserPlus, Copy } from 'lucide-react'
 import type { Exchange, UserExchange } from '@/src/services/mining'
 import { useLanguage } from '@/src/contexts/language-context'
 import Image from 'next/image'
-import { toast } from '@/src/hooks/use-toast'
+import { toast } from 'sonner'
 
 interface ExchangeCardProps {
   exchanges: Exchange[]
@@ -240,221 +233,211 @@ export function ExchangeCard({
         )}
       </div>
 
-      <Dialog open={isBindDialogOpen} onOpenChange={setIsBindDialogOpen}>
-        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[480px] max-h-[80vh] overflow-y-auto">
-          {bindingExchangeId &&
-            (() => {
-              const exchange = exchanges.find((e) => e.id === bindingExchangeId)
-              if (!exchange) return null
-              const { registerUrl, inviteCode } = getUrls(exchange.cex_url)
+      {/* 绑定交易所弹窗 - 使用 Portal 渲染到 body */}
+      {isBindDialogOpen && bindingExchangeId && typeof document !== 'undefined' && (() => {
+        const exchange = exchanges.find((e) => e.id === bindingExchangeId)
+        if (!exchange) return null
+        const { registerUrl, inviteCode } = getUrls(exchange.cex_url)
 
-              return (
-                <>
-                  <DialogHeader className="text-center pb-6">
-                    <div className="flex flex-col items-center space-y-4">
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg border-2 border-gray-100 flex items-center justify-center">
-                        {exchange.logo_url ? (
-                          <Image
-                            src={exchange.logo_url}
-                            alt={exchange.name}
-                            width={64}
-                            height={64}
-                            className="w-full h-full object-contain"
-                          />
-                        ) : (
-                          <span className="text-slate-700 text-lg font-bold">
-                            {exchange.name.substring(0, 2).toUpperCase()}
-                          </span>
-                        )}
-                      </div>
-
-                      <DialogTitle className="text-xl font-bold text-slate-800">
-                        {exchange.name}{' '}
-                      </DialogTitle>
-
-                      <DialogDescription className="text-center text-slate-600">
-                        {t('mining.exchange.bindSteps')}
-                      </DialogDescription>
-                    </div>
-                  </DialogHeader>
-
-                  <div className="mb-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-slate-700">
-                    <p className="font-medium mb-2">
-                      {t('mining.exchange.bindInstructions')}
-                    </p>
-                    <ol className="list-decimal pl-5 space-y-1">
-                      <li>
-                        {t('mining.exchange.bindStep1').replace('{name}', exchange.name || 'HTX')}
-                      </li>
-                      <li>{t('mining.exchange.bindStep2')}</li>
-                      <li>{t('mining.exchange.bindStep3')}</li>
-                    </ol>
-                    <p className="mt-3 font-bold text-red-600">
-                      {t('mining.exchange.bindWarning')}
-                    </p>
-                  </div>
-
-                  <div className="flex justify-center mb-6">
-                    <div className="bg-blue-50 rounded-xl p-4 text-center min-w-[120px]">
-                      <div className="text-sm text-blue-600 font-medium mb-1">
-                        {t('mining.exchange.efficiency')}
-                      </div>
-                      <div className="text-2xl font-bold text-blue-600">
-                        {exchange.mining_efficiency.toFixed(2)}%
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                          1
-                        </div>
-                        <h3 className="font-semibold text-slate-800">
-                          {t('mining.exchange.step1')}
-                        </h3>
-                      </div>
-
-                      <div className="ml-8 space-y-3">
-                        <Button
-                          type="button"
-                          onClick={() => window.open(registerUrl, '_blank')}
-                          className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          {t('mining.exchange.goRegister')}
-                        </Button>
-
-                        {inviteCode && (
-                          <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                            <div className="text-xs text-blue-700 font-medium mb-1">
-                              {t('mining.exchange.inviteCode')}
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div className="font-mono font-medium text-blue-800">
-                                {inviteCode}
-                              </div>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  navigator.clipboard.writeText(inviteCode)
-                                  toast({ description: t('mining.exchange.inviteCodeCopied') })
-                                }}
-                                className="h-7 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-100"
-                              >
-                                <Copy className="w-3 h-3 mr-1" />
-                                {t('common.copy')}
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-
-                        <p className="text-xs text-orange-600 flex items-start space-x-1">
-                          <span>⚠️</span>
-                          <span>
-                            {t('mining.exchange.registerWarning')}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                          2
-                        </div>
-                        <h3 className="font-semibold text-slate-800">
-                          {t('mining.exchange.step2')}
-                        </h3>
-                      </div>
-
-                      <div className="ml-8 space-y-3">
-                        <Input
-                          placeholder={t('mining.exchange.uidPlaceholder')}
-                          value={uid}
-                          onChange={(e) => setUid(e.target.value)}
-                          className="w-full"
-                        />
-
-                        <p className="text-xs text-orange-600 flex items-start space-x-1">
-                          <span>⚠️</span>
-                          <span>
-                            {t('mining.exchange.uidWarning')}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <DialogFooter className="mt-6">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsBindDialogOpen(false)}
-                      className="flex-1"
-                    >
-                      {t('common.cancel')}
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleBindConfirm}
-                      disabled={!uid.trim()}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      {t('mining.exchange.bind')}
-                    </Button>
-                  </DialogFooter>
-                </>
-              )
-            })()}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={isBindRequiredDialogOpen}
-        onOpenChange={setIsBindRequiredDialogOpen}
-      >
-        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle className="text-center text-xl font-bold text-slate-800">
-              {t('mining.exchange.bindRequired')}
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="py-4 text-center">
-            <div className="flex justify-center mb-4">
-              <UserPlus className="w-16 h-16 text-blue-500" />
-            </div>
-            <p className="text-slate-700 mb-4">
-              {t('mining.exchange.bindRequiredDesc')}
-            </p>
-          </div>
-
-          <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button
-              onClick={() => setIsBindRequiredDialogOpen(false)}
-              variant="outline"
-              className="flex-1"
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              onClick={() => {
-                setIsBindRequiredDialogOpen(false)
-                if (bindingExchangeId !== null) {
-                  handleBindClick(bindingExchangeId)
+        return createPortal(
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            {/* 背景遮罩 */}
+            <div
+              role="button"
+              tabIndex={0}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setIsBindDialogOpen(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setIsBindDialogOpen(false)
                 }
               }}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+            />
+
+            {/* 弹窗容器 */}
+            <div className="relative z-10 w-full max-w-sm max-h-[80vh] flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              {/* 头部 */}
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100 flex-shrink-0">
+                <div className="w-9 h-9 rounded-full overflow-hidden bg-white shadow border border-gray-100 flex items-center justify-center flex-shrink-0">
+                  {exchange.logo_url ? (
+                    <Image
+                      src={exchange.logo_url}
+                      alt={exchange.name}
+                      width={36}
+                      height={36}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-slate-700 text-xs font-bold">
+                      {exchange.name.substring(0, 2).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-slate-800 text-sm">{exchange.name}</div>
+                  <div className="text-slate-500 text-xs truncate">{t('mining.exchange.bindSteps')}</div>
+                </div>
+                <div className="bg-blue-50 rounded-lg px-2 py-1 text-center flex-shrink-0">
+                  <div className="text-[10px] text-blue-600">{t('mining.exchange.efficiency')}</div>
+                  <div className="text-sm font-bold text-blue-600">{exchange.mining_efficiency.toFixed(2)}%</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsBindDialogOpen(false)}
+                  className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors flex-shrink-0"
+                >
+                  <span className="text-slate-400 text-lg">×</span>
+                </button>
+              </div>
+
+              {/* 可滚动内容区 */}
+              <div className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-3">
+                {/* 步骤1 */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-[#1C55FF] text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                    <span className="font-medium text-sm text-slate-800">{t('mining.exchange.step1')}</span>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => window.open(registerUrl, '_blank')}
+                    className="w-full bg-[#1C55FF] hover:bg-[#1C55FF]/90 text-white h-9 rounded-lg text-sm"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    {t('mining.exchange.goRegister')}
+                  </Button>
+                  {inviteCode && (
+                    <div className="mt-2 p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                      <div className="text-xs text-slate-500 mb-1">{t('mining.exchange.inviteCode')}</div>
+                      <div className="flex items-center justify-between">
+                        <div className="font-mono text-sm font-semibold text-slate-800">{inviteCode}</div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            navigator.clipboard.writeText(inviteCode)
+                            toast.success(t('mining.exchange.inviteCodeCopied'))
+                          }}
+                          className="h-6 px-2 text-xs text-[#1C55FF] hover:text-[#1C55FF]/80 hover:bg-blue-50"
+                        >
+                          <Copy className="w-3 h-3 mr-1" />
+                          {t('common.copy')}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  <p className="text-[11px] text-orange-500 mt-1.5">⚠️ {t('mining.exchange.registerWarning')}</p>
+                </div>
+
+                {/* 步骤2 */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-[#1C55FF] text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                    <span className="font-medium text-sm text-slate-800">{t('mining.exchange.step2')}</span>
+                  </div>
+                  <Input
+                    placeholder={t('mining.exchange.uidPlaceholder')}
+                    value={uid}
+                    onChange={(e) => setUid(e.target.value)}
+                    className="w-full h-9 text-sm rounded-lg"
+                  />
+                  <p className="text-[11px] text-orange-500 mt-1.5">⚠️ {t('mining.exchange.uidWarning')}</p>
+                </div>
+              </div>
+
+              {/* 底部按钮 */}
+              <div className="flex gap-2 p-4 pt-3 border-t border-slate-100 flex-shrink-0 bg-white">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsBindDialogOpen(false)}
+                  className="flex-1 h-9 rounded-lg text-sm text-slate-600 border-slate-200"
+                >
+                  {t('common.cancel')}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleBindConfirm}
+                  disabled={!uid.trim()}
+                  className="flex-1 h-9 rounded-lg text-sm bg-[#1C55FF] hover:bg-[#1C55FF]/90 text-white"
+                >
+                  {t('mining.exchange.bind')}
+                </Button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )
+      })()}
+
+      {/* 需要绑定交易所提示弹窗 */}
+      {isBindRequiredDialogOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          {/* 背景遮罩 */}
+          <div
+            role="button"
+            tabIndex={0}
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setIsBindRequiredDialogOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                setIsBindRequiredDialogOpen(false)
+              }
+            }}
+          />
+
+          {/* 弹窗容器 */}
+          <div className="relative z-10 w-full max-w-xs bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* 关闭按钮 */}
+            <button
+              type="button"
+              onClick={() => setIsBindRequiredDialogOpen(false)}
+              className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors z-10"
             >
-              {t('mining.exchange.bind')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              <span className="text-slate-400 text-lg">×</span>
+            </button>
+
+            {/* 内容 */}
+            <div className="px-6 pt-8 pb-6 text-center">
+              <div className="w-14 h-14 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center">
+                <UserPlus className="w-7 h-7 text-[#1C55FF]" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">
+                {t('mining.exchange.bindRequired')}
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                {t('mining.exchange.bindRequiredDesc')}
+              </p>
+            </div>
+
+            {/* 底部按钮 */}
+            <div className="flex gap-3 px-6 pb-6">
+              <Button
+                onClick={() => setIsBindRequiredDialogOpen(false)}
+                variant="outline"
+                className="flex-1 h-10 rounded-xl text-sm text-slate-600 border-slate-200"
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsBindRequiredDialogOpen(false)
+                  if (bindingExchangeId !== null) {
+                    handleBindClick(bindingExchangeId)
+                  }
+                }}
+                className="flex-1 h-10 rounded-xl text-sm bg-[#1C55FF] hover:bg-[#1C55FF]/90 text-white"
+              >
+                {t('mining.exchange.bind')}
+              </Button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   )
 }

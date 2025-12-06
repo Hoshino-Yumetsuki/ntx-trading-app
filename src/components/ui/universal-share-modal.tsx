@@ -10,14 +10,9 @@ import {
   cloneElement,
   isValidElement
 } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from '@/src/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle
-} from '@/src/components/ui/dialog'
-import { Download, Share2, Copy, Loader2 } from 'lucide-react'
+import { Download, Share2, Copy, Loader2, X } from 'lucide-react'
 import { toast } from 'sonner'
 import NextImage from 'next/image'
 import jsqr from 'jsqr'
@@ -290,7 +285,7 @@ export function UniversalShareModal({
   const updatePreviewHeight = useCallback(() => {
     if (posterRef.current) {
       const fullHeight = posterRef.current.scrollHeight
-      setPreviewContainerHeight(fullHeight * 0.5)
+      setPreviewContainerHeight(fullHeight * 0.47)
     }
   }, [])
 
@@ -310,7 +305,7 @@ export function UniversalShareModal({
         const entry = entries[0]
         if (entry) {
           const fullHeight = entry.target.scrollHeight
-          setPreviewContainerHeight(fullHeight * 0.5)
+          setPreviewContainerHeight(fullHeight * 0.47)
         }
       })
       observer.observe(posterElement)
@@ -443,186 +438,212 @@ export function UniversalShareModal({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          {posterWithRef && showImagePreview && (
-            <div className="relative p-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
-              <div
-                style={{
-                  width: '300px',
-                  height: `${previewContainerHeight}px`,
-                  position: 'relative',
-                  transition: 'height 0.2s ease-in-out'
-                }}
+    <>
+      {isOpen && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          onClick={onClose}
+        >
+          {/* 背景遮罩 */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          
+          {/* 弹窗内容 */}
+          <div 
+            className="relative bg-white rounded-2xl w-full max-w-sm max-h-[85vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 头部 */}
+            <div className="sticky top-0 bg-white rounded-t-2xl px-4 py-3 border-b border-gray-100 flex items-center justify-between z-10">
+              <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
               >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    transform: 'scale(0.5)',
-                    transformOrigin: 'top left'
-                  }}
-                >
-                  {posterWithRef}
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            <div className="px-3 pt-2 pb-3 space-y-3">
+              {posterWithRef && showImagePreview && (
+                <div className="relative bg-gray-50 rounded-xl overflow-hidden flex justify-center items-center p-2">
+                  <div
+                    style={{
+                      width: '280px',
+                      height: `${previewContainerHeight}px`,
+                      position: 'relative',
+                      transition: 'height 0.2s ease-in-out'
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        transform: 'scale(0.47)',
+                        transformOrigin: 'top left'
+                      }}
+                    >
+                      {posterWithRef}
+                    </div>
+                  </div>
+
+                  {isGenerating && (
+                    <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm rounded-xl">
+                      <Loader2 className="w-8 h-8 animate-spin text-[#1C55FF]" />
+                      <p className="mt-2 text-sm text-slate-600">
+                        {t('profile.share.generatingHD')}
+                      </p>
+                    </div>
+                  )}
                 </div>
+              )}
+
+              <div className="space-y-2">
+                {showImagePreview && (
+                  <Button
+                    onClick={handleGenerateAndSave}
+                    disabled={isGenerating}
+                    className="w-full bg-[#1C55FF] hover:bg-[#1545DD] text-white rounded-xl h-11"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    {isGenerating
+                      ? t('profile.share.generating')
+                      : t('profile.share.savePoster')}
+                  </Button>
+                )}
+
+                {showCopyLinkButton && (
+                  <Button 
+                    variant="outline" 
+                    onClick={copyLink} 
+                    className="w-full rounded-xl h-11 border-gray-200"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    {t('profile.share.copyLink')}
+                  </Button>
+                )}
+
+                {customActions.length > 0 && (
+                  <div className="space-y-2">
+                    {customActions.map((action, index) => {
+                      const IconComponent = action.icon
+                      return (
+                        <Button
+                          key={index}
+                          variant={action.variant || 'outline'}
+                          onClick={action.onClick}
+                          className={action.className || 'w-full rounded-xl h-11'}
+                        >
+                          {IconComponent && (
+                            <IconComponent className="w-4 h-4 mr-2" />
+                          )}
+                          {action.label}
+                        </Button>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {showDefaultShareButtons && (
+                  <div className="space-y-3">
+                    <p className="text-sm text-gray-500 text-center">
+                      {t('profile.share.shareTo')}
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={shareToTelegram}
+                        className="flex items-center justify-center rounded-xl h-10 border-gray-200"
+                      >
+                        <NextImage
+                          src="/icon-telegram.png"
+                          alt="Telegram"
+                          width={16}
+                          height={16}
+                          className="mr-2"
+                        />
+                        Telegram
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={shareToTwitter}
+                        className="flex items-center justify-center rounded-xl h-10 border-gray-200"
+                      >
+                        <NextImage
+                          src="/icon-twitter.png"
+                          alt="X"
+                          width={16}
+                          height={16}
+                          className="mr-2"
+                        />
+                        X
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={shareToWhatsApp}
+                        className="flex items-center justify-center rounded-xl h-10 border-gray-200"
+                      >
+                        <NextImage
+                          src="/icon-whatsapp.svg"
+                          alt="WhatsApp"
+                          width={16}
+                          height={16}
+                          className="mr-2"
+                        />
+                        WhatsApp
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={shareNative}
+                        className="flex items-center justify-center rounded-xl h-10 border-gray-200"
+                      >
+                        <Share2 className="w-4 h-4 mr-2" />
+                        {t('profile.share.more')}
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {isGenerating && (
-                <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                  <p className="mt-2 text-sm text-slate-600">
-                    {t('profile.share.generatingHD')}
-                  </p>
+              {showCustomQrUpload && onQrOverride && (
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                  <div className="bg-gray-50 rounded-xl p-3">
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={triggerUpload}
+                        className="w-full rounded-xl h-10 border-gray-200"
+                      >
+                        {t('profile.share.uploadCustomQr')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="w-full rounded-xl h-10"
+                        onClick={restoreDefaultQr}
+                      >
+                        {t('profile.share.restoreDefault')}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2 text-center">
+                      {t('profile.share.qrUploadTip')}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
-          )}
-
-          <div className="space-y-3">
-            {showImagePreview && (
-              <Button
-                onClick={handleGenerateAndSave}
-                disabled={isGenerating}
-                className="w-full"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                {isGenerating
-                  ? t('profile.share.generating')
-                  : t('profile.share.savePoster')}
-              </Button>
-            )}
-
-            {showCopyLinkButton && (
-              <Button variant="outline" onClick={copyLink} className="w-full">
-                <Copy className="w-4 h-4 mr-2" />
-                {t('profile.share.copyLink')}
-              </Button>
-            )}
-
-            {customActions.length > 0 && (
-              <div className="space-y-2">
-                {customActions.map((action, index) => {
-                  const IconComponent = action.icon
-                  return (
-                    <Button
-                      key={index}
-                      variant={action.variant || 'outline'}
-                      onClick={action.onClick}
-                      className={action.className || 'w-full'}
-                    >
-                      {IconComponent && (
-                        <IconComponent className="w-4 h-4 mr-2" />
-                      )}
-                      {action.label}
-                    </Button>
-                  )
-                })}
-              </div>
-            )}
-
-            {showDefaultShareButtons && (
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600 text-center">
-                  {t('profile.share.shareTo')}
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={shareToTelegram}
-                    className="flex items-center justify-center"
-                  >
-                    <NextImage
-                      src="/icon-telegram.png"
-                      alt="Telegram"
-                      width={16}
-                      height={16}
-                      className="mr-2"
-                    />
-                    Telegram
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={shareToTwitter}
-                    className="flex items-center justify-center"
-                  >
-                    <NextImage
-                      src="/icon-twitter.png"
-                      alt="X"
-                      width={16}
-                      height={16}
-                      className="mr-2"
-                    />
-                    X
-                  </Button>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={shareToWhatsApp}
-                    className="flex items-center justify-center"
-                  >
-                    <NextImage
-                      src="/icon-whatsapp.svg"
-                      alt="WhatsApp"
-                      width={16}
-                      height={16}
-                      className="mr-2"
-                    />
-                    WhatsApp
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={shareNative}
-                    className="flex items-center justify-center"
-                  >
-                    <Share2 className="w-4 h-4 mr-2" />
-                    {t('profile.share.more')}
-                  </Button>
-                </div>
-              </div>
-            )}
           </div>
-
-          {showCustomQrUpload && onQrOverride && (
-            <div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex flex-col gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={triggerUpload}
-                    className="w-full"
-                  >
-                    {t('profile.share.uploadCustomQr')}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full"
-                    onClick={restoreDefaultQr}
-                  >
-                    {t('profile.share.restoreDefault')}
-                  </Button>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  {t('profile.share.qrUploadTip')}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+        </div>,
+        document.body
+      )}
+    </>
   )
 }

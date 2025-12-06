@@ -6,7 +6,7 @@ import { LanguageSwitcher } from '@/src/components/ui/language-switcher'
 import Image from 'next/image'
 import { Clock, Share2, Search, X } from 'lucide-react'
 import { useLanguage } from '@/src/contexts/language-context'
-import { toast } from '@/src/hooks/use-toast'
+import { toast } from 'sonner'
 import MarkdownIt from 'markdown-it'
 import multimdTable from 'markdown-it-multimd-table'
 import DOMPurify from 'dompurify'
@@ -79,10 +79,8 @@ export function NotificationsPage() {
             setNewsItems(sortedData)
           }
         } else {
-          toast({
-            title: t('notifications.error.fetchFailed'),
-            description: t('common.error.tryLater'),
-            variant: 'destructive'
+          toast.error(t('notifications.error.fetchFailed'), {
+            description: t('common.error.tryLater')
           })
         }
       } catch (error) {
@@ -123,18 +121,14 @@ export function NotificationsPage() {
         setCurrentArticle(data)
         setViewingArticle(true)
       } else {
-        toast({
-          title: t('notifications.error.articleFailed'),
-          description: t('common.error.tryLater'),
-          variant: 'destructive'
+        toast.error(t('notifications.error.articleFailed'), {
+          description: t('common.error.tryLater')
         })
       }
     } catch (error) {
       console.error('Error fetching article:', error)
-      toast({
-        title: t('notifications.error.articleFailed'),
-        description: t('common.error.checkNetwork'),
-        variant: 'destructive'
+      toast.error(t('notifications.error.articleFailed'), {
+        description: t('common.error.checkNetwork')
       })
     }
   }, [])

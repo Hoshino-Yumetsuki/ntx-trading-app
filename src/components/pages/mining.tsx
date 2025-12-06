@@ -1,18 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback, useId } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '@/src/components/ui/dialog'
 import { RefreshCw } from 'lucide-react'
 import {
   getPlatformData,
@@ -40,7 +30,6 @@ import { useAuth } from '@/src/contexts/AuthContext'
 import { useLanguage } from '@/src/contexts/language-context'
 
 export function MiningPage() {
-  const exchangeUidId = useId()
   const { user, token } = useAuth()
   const { t } = useLanguage()
   const router = useRouter()
@@ -57,11 +46,6 @@ export function MiningPage() {
   const [userLoading, setUserLoading] = useState(false)
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
   const [exchangesLoading, setExchangesLoading] = useState(false)
-  const [bindingExchangeId, setBindingExchangeId] = useState<number | null>(
-    null
-  )
-  const [bindingUid, setBindingUid] = useState('')
-  const [showBindDialog, setShowBindDialog] = useState(false)
   const [_lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   const fetchPlatformData = useCallback(async () => {
@@ -77,6 +61,7 @@ export function MiningPage() {
       setLoading(false)
     }
   }, [t])
+
 
   const fetchUserData = useCallback(async () => {
     if (!token) return
@@ -146,12 +131,27 @@ export function MiningPage() {
     return token
   }
 
-  const handleBindExchange = (exchangeId: number, uid: string) => {
+  const handleBindExchange = async (exchangeId: number, uid: string) => {
     const authToken = getAuthTokenOrOpen()
     if (!authToken) return
-    setBindingExchangeId(exchangeId)
-    setBindingUid(uid)
-    setShowBindDialog(true)
+    
+    if (!uid.trim()) {
+      toast.error(t('mining.error.enterUid'))
+      return
+    }
+
+    try {
+      await bindExchange(authToken, {
+        exchange_id: exchangeId,
+        exchange_uid: uid.trim()
+      })
+
+      toast.success(t('mining.success.bindExchange'))
+      await fetchUserExchanges()
+    } catch (error) {
+      console.error('Failed to bind exchange:', error)
+      toast.error(t('mining.error.bindExchange'))
+    }
   }
 
   const handleUnbindExchange = async (exchangeId: number) => {
@@ -166,38 +166,6 @@ export function MiningPage() {
       console.error('Failed to unbind exchange:', error)
       toast.error(t('mining.error.unbindExchange'))
     }
-  }
-
-  const confirmBindExchange = async () => {
-    const authToken = getAuthTokenOrOpen()
-    if (!authToken) return
-    if (!bindingExchangeId || !bindingUid.trim()) {
-      toast.error(t('mining.error.enterUid'))
-      return
-    }
-
-    try {
-      await bindExchange(authToken, {
-        exchange_id: bindingExchangeId,
-        exchange_uid: bindingUid.trim()
-      })
-
-      toast.success(t('mining.success.bindExchange'))
-      setShowBindDialog(false)
-      setBindingExchangeId(null)
-      setBindingUid('')
-
-      await fetchUserExchanges()
-    } catch (error) {
-      console.error('Failed to bind exchange:', error)
-      toast.error(t('mining.error.bindExchange'))
-    }
-  }
-
-  const cancelBindDialog = () => {
-    setShowBindDialog(false)
-    setBindingExchangeId(null)
-    setBindingUid('')
   }
 
   const refreshAllData = useCallback(async () => {
@@ -370,42 +338,6 @@ export function MiningPage() {
           </div>
         )}
       </div>
-
-      <Dialog open={showBindDialog} onOpenChange={setShowBindDialog}>
-        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[420px] max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{t('mining.dialog.title')}</DialogTitle>
-            <DialogDescription>
-              {t('mining.dialog.description')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor={exchangeUidId} className="text-right">
-                {t('mining.dialog.uidLabel')}
-              </Label>
-              <Input
-                id={exchangeUidId}
-                value={bindingUid}
-                onChange={(e) => setBindingUid(e.target.value)}
-                placeholder={t('mining.dialog.uidPlaceholder')}
-                className="col-span-3"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={cancelBindDialog}>
-              {t('mining.dialog.cancel')}
-            </Button>
-            <Button
-              onClick={confirmBindExchange}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              {t('mining.dialog.confirm')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
