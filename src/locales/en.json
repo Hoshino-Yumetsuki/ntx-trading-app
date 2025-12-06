@@ -447,8 +447,11 @@
     },
     "community": {
       "title": "My Community",
+      "subtitle": "View your community members and invitation relationships",
       "communityUsers": "Community Users",
       "directInviteUsers": "Direct Invites",
+      "directInvite": "Direct",
+      "members": "members",
       "myInviter": "My Inviter",
       "inviteCode": "Invite Code",
       "email": "Email",

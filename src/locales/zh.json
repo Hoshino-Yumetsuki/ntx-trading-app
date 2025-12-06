@@ -447,8 +447,11 @@
     },
     "community": {
       "title": "我的社区",
+      "subtitle": "查看您的社区成员和邀请关系",
       "communityUsers": "社区用户",
       "directInviteUsers": "直邀用户",
+      "directInvite": "直邀",
+      "members": "人",
       "myInviter": "我的邀请人",
       "inviteCode": "邀请码",
       "email": "邮箱",

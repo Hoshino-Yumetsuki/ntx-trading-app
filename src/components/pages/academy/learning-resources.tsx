@@ -47,9 +47,6 @@ export function LearningResourcesPage({
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const [viewingCourse, setViewingCourse] = useState<Course | null>(null)
-  const [filterTab, setFilterTab] = useState<'practice' | 'advanced'>(
-    'practice'
-  )
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -74,17 +71,6 @@ export function LearningResourcesPage({
 
     fetchCourses()
   }, [t])
-
-  const matchesFilter = (course: Course) => {
-    const level = (course.level || '').toLowerCase()
-    if (filterTab === 'advanced') {
-      return level.includes('进阶') || level.includes('advanced')
-    }
-    return !(level.includes('进阶') || level.includes('advanced'))
-  }
-
-  const filteredUnlocked = unlockedCourses.filter(matchesFilter)
-  const filteredLocked = lockedCourses.filter(matchesFilter)
 
   const formatDuration = (mins?: number) => {
     if (!mins || Number.isNaN(mins)) return ''
@@ -169,33 +155,6 @@ export function LearningResourcesPage({
         </CardContent>
       </Card>
 
-      <div className="px-1">
-        <div className="inline-flex rounded-lg bg-slate-100 p-1">
-          <Button
-            size="sm"
-            className={
-              filterTab === 'practice'
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'glass-card text-slate-700'
-            }
-            onClick={() => setFilterTab('practice')}
-          >
-            {t('academy.tabs.practice')}
-          </Button>
-          <Button
-            size="sm"
-            className={
-              filterTab === 'advanced'
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'glass-card text-slate-700'
-            }
-            onClick={() => setFilterTab('advanced')}
-          >
-            {t('academy.tabs.advanced')}
-          </Button>
-        </div>
-      </div>
-
       <Card className="glass-card border-white/50 shadow-md">
         <CardHeader className="border-b border-slate-100">
           <CardTitle className="text-slate-800 flex items-center">
@@ -249,7 +208,7 @@ export function LearningResourcesPage({
         </div>
       ) : (
         <>
-          {filteredUnlocked.length > 0 && (
+          {unlockedCourses.length > 0 && (
             <div className="space-y-4">
               <h2 className="text-slate-800 text-xl font-bold flex items-center">
                 <span className="bg-green-100 text-green-600 p-1 rounded-md mr-2">
@@ -257,7 +216,7 @@ export function LearningResourcesPage({
                 </span>
                 {t('academy.myCourses')}
               </h2>
-              {filteredUnlocked.map((course, index) => (
+              {unlockedCourses.map((course, index) => (
                 <Card
                   key={index}
                   className="glass-card border-white/30 border-l-4 border-l-green-400"
@@ -337,7 +296,7 @@ export function LearningResourcesPage({
             </div>
           )}
 
-          {filteredLocked.length > 0 && (
+          {lockedCourses.length > 0 && (
             <div className="space-y-4">
               <h2 className="text-slate-800 text-xl font-bold flex items-center">
                 <span className="bg-blue-100 text-blue-600 p-1 rounded-md mr-2">
@@ -345,7 +304,7 @@ export function LearningResourcesPage({
                 </span>
                 {t('academy.lockedCourses')}
               </h2>
-              {filteredLocked.map((course, index) => (
+              {lockedCourses.map((course, index) => (
                 <Card
                   key={index}
                   className="glass-card border-white/30 border-l-4 border-l-blue-400"

@@ -21,7 +21,7 @@ export function AcademyMarkdownReader({
   content,
   onBack
 }: AcademyMarkdownReaderProps) {
-  const { t, language } = useLanguage()
+  const { language } = useLanguage()
   const md = new MarkdownIt({
     html: true,
     linkify: true,
@@ -48,9 +48,9 @@ export function AcademyMarkdownReader({
             variant="ghost"
             size="sm"
             onClick={onBack}
-            className="mr-3 text-slate-600 hover:text-slate-800"
+            className="mr-3 text-slate-600 hover:text-slate-800 p-2"
           >
-            <ChevronLeft className="w-5 h-5 mr-2" /> {t('common.back')}
+            <ChevronLeft className="w-5 h-5" />
           </Button>
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-slate-800">
