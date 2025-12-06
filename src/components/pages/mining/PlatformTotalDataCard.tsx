@@ -21,23 +21,23 @@ export function PlatformTotalDataCard({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <div
-          className="data-card p-5 rounded-xl text-left"
+          className="data-card p-4 rounded-xl text-left"
           style={{
             border: 'none',
             backgroundImage: 'url(/card-glow-bg.png)',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'right top',
-            backgroundSize: '96px'
+            backgroundSize: '80px'
           }}
         >
-          <Hammer className="w-8 h-8 text-blue-600 mb-3" />
-          <p className="text-sm text-[#4D576A] mb-1">
+          <Hammer className="w-7 h-7 text-blue-600 mb-2" />
+          <p className="text-xs text-[#4D576A] mb-1">
             {t('mining.platform.totalMined')}
           </p>
           <p
-            className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+            className={`text-sm font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
           >
             {loading
               ? ''
@@ -48,21 +48,21 @@ export function PlatformTotalDataCard({
         </div>
 
         <div
-          className="data-card p-5 rounded-xl text-left"
+          className="data-card p-4 rounded-xl text-left"
           style={{
             border: 'none',
             backgroundImage: 'url(/card-glow-bg.png)',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'right top',
-            backgroundSize: '96px'
+            backgroundSize: '80px'
           }}
         >
-          <Database className="w-8 h-8 text-blue-600 mb-3" />
-          <p className="text-sm text-[#4D576A] mb-1">
+          <Database className="w-7 h-7 text-blue-600 mb-2" />
+          <p className="text-xs text-[#4D576A] mb-1">
             {t('mining.platform.totalBurned')}
           </p>
           <p
-            className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+            className={`text-sm font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
           >
             {loading
               ? ''
@@ -73,21 +73,21 @@ export function PlatformTotalDataCard({
         </div>
 
         <div
-          className="data-card p-5 rounded-xl text-left"
+          className="data-card p-4 rounded-xl text-left"
           style={{
             border: 'none',
             backgroundImage: 'url(/card-glow-bg.png)',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'right top',
-            backgroundSize: '96px'
+            backgroundSize: '80px'
           }}
         >
-          <User className="w-8 h-8 text-blue-600 mb-3" />
-          <p className="text-sm text-[#4D576A] mb-1">
+          <User className="w-7 h-7 text-blue-600 mb-2" />
+          <p className="text-xs text-[#4D576A] mb-1">
             {t('mining.platform.totalUsers')}
           </p>
           <p
-            className={`text-[14pt] font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-7 w-28' : ''}`}
+            className={`text-sm font-din-black text-[#4D576A] ${loading ? 'animate-pulse bg-gray-200 rounded h-6 w-24' : ''}`}
           >
             {loading
               ? ''

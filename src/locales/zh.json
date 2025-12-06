@@ -163,6 +163,8 @@
     "orderList": "订单列表",
     "edit": "修改",
     "confirmChange": "确认修改",
+    "selectDate": "选择日期",
+    "today": "今天",
     "changing": "修改中...",
     "confirmUpdate": "确认更新",
     "follow": "关注+",
@@ -629,21 +631,21 @@
     }
   },
   "mining": {
-    "title": "挖矿",
-    "subtitle": "通过交易挖矿获得 NTX 奖励",
+    "title": "积分",
+    "subtitle": "通过交易获得 NTX 积分奖励",
     "tabs": {
-      "data": "挖矿数据",
+      "data": "积分数据",
       "exchange": "交易所"
     },
     "data": {
-      "title": "挖矿数据"
+      "title": "积分数据"
     },
     "platform": {
       "title": "平台数据",
       "totalDataTitle": "平台总数据",
       "dailyDataTitle": "平台日数据",
       "updateTime": "数据更新时间",
-      "totalMined": "总挖矿量",
+      "totalMined": "总积分量",
       "totalCommission": "总佣金",
       "totalBurned": "总销毁量",
       "totalVolume": "总交易量",
@@ -652,20 +654,20 @@
     },
     "user": {
       "title": "我的数据",
-      "loginPrompt": "请先登录查看您的挖矿数据",
-      "loginDescription": "登录后可以查看您的挖矿收益、交易数据等信息",
-      "totalMining": "总挖矿量",
+      "loginPrompt": "请先登录查看您的积分数据",
+      "loginDescription": "登录后可以查看您的积分收益、交易数据等信息",
+      "totalMining": "总积分量",
       "totalTradingCost": "总交易成本",
-      "dailyMining": "日挖矿量",
+      "dailyMining": "日积分量",
       "dailyTradingCost": "日交易成本"
     },
     "daily": {
       "selectDate": "选择日期",
-      "miningOutput": "挖矿产出",
+      "miningOutput": "积分产出",
       "commission": "佣金",
       "burned": "销毁量",
       "tradingVolume": "交易量",
-      "miners": "挖矿人数"
+      "miners": "参与人数"
     },
     "exchange": {
       "title": "交易所页面",

@@ -591,6 +591,7 @@ export function UniversalShareModal({
                           width={16}
                           height={16}
                           className="mr-2"
+                          unoptimized
                         />
                         WhatsApp
                       </Button>

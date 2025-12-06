@@ -5,7 +5,7 @@ import { PlatformTotalDataCard } from './PlatformTotalDataCard'
 import { PlatformDailyDataCard } from './PlatformDailyDataCard'
 import type { PlatformData } from '@/src/services/mining'
 import { useLanguage } from '@/src/contexts/language-context'
-import { Input } from '@/src/components/ui/input'
+import { DatePicker } from '@/src/components/ui/date-picker'
 
 interface PlatformDataCardProps {
   platformData: PlatformData | null
@@ -22,7 +22,7 @@ export function PlatformDataCard({
     d.setDate(d.getDate() - 1)
     return d.toISOString().split('T')[0]
   }
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date()
   const [selectedDate, setSelectedDate] = useState<string>(getYesterdayDate())
 
   return (
@@ -39,15 +39,11 @@ export function PlatformDataCard({
           <h3 className="text-base font-medium text-slate-700">
             {t('mining.platform.dailyDataTitle')}
           </h3>
-          <div className="flex items-center gap-2">
-            <Input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              max={today}
-              className="h-9 w-auto"
-            />
-          </div>
+          <DatePicker
+            value={selectedDate}
+            onChange={setSelectedDate}
+            maxDate={today}
+          />
         </div>
         <PlatformDailyDataCard selectedDate={selectedDate} />
       </div>
