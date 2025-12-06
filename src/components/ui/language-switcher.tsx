@@ -10,8 +10,8 @@ export function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false)
 
   const languages = [
-    { code: 'zh', name: '中文', flag: '🇨🇳' },
-    { code: 'en', name: 'English', flag: '🇺🇸' }
+    { code: 'zh', name: '中文', flag: 'CN' },
+    { code: 'en', name: 'English', flag: 'US' }
   ]
 
   const currentLanguage = languages.find((lang) => lang.code === language)
@@ -35,7 +35,7 @@ export function LanguageSwitcher() {
       >
         <Globe className="w-4 h-4" />
         <span className="text-sm font-medium">
-          {currentLanguage?.flag} {currentLanguage?.name}
+          {currentLanguage?.name}
         </span>
         <ChevronDown
           className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -63,7 +63,7 @@ export function LanguageSwitcher() {
                     : 'text-slate-700'
                 }`}
               >
-                <span className="text-lg">{lang.flag}</span>
+                <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{lang.flag}</span>
                 <span className="text-sm font-medium">{lang.name}</span>
                 {language === lang.code && (
                   <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full" />
