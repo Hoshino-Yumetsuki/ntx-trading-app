@@ -14,7 +14,7 @@ import type { NewsItem } from '@/src/types/news'
 import { ShareCard } from '@/src/components/ui/share-card'
 import { MissionService } from '@/src/services/mission'
 
-import '@/src/styles/markdown.css'
+import '@/src/app/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { Input } from '@/src/components/ui/input'

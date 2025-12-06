@@ -1,8 +1,32 @@
 import type { Metadata } from 'next'
+import localFont from 'next/font/local'
 import './globals.css'
 import 'katex/dist/katex.min.css'
 import { Toaster } from 'sonner'
 import { Providers } from './providers'
+
+const alibabaPuHuiTi = localFont({
+  src: [
+    {
+      path: '../../public/fonts/AlibabaPuHuiTi-3-45-Light.woff2',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/AlibabaPuHuiTi-3-65-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/AlibabaPuHuiTi-3-85-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-alibaba',
+  display: 'swap',
+  preload: true,
+})
 
 export const metadata: Metadata = {
   title: 'NTX Trading | 掌握机构操盘体系，提升你的交易能力',
@@ -20,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN" className={alibabaPuHuiTi.variable}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>

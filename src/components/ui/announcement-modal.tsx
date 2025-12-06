@@ -11,7 +11,7 @@ import { X } from 'lucide-react'
 import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
-import '@/src/styles/markdown.css'
+import '@/src/app/markdown.css'
 
 interface Announcement {
   id: number

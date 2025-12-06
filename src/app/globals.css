@@ -42,7 +42,7 @@
   --radius-sm: calc(var(--radius) - 4px);
 
   --font-sans:
-    "AlibabaPuHuiTi", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    var(--font-alibaba), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -65,46 +65,6 @@
       height: 0;
     }
   }
-}
-
-@font-face {
-  font-family: "AlibabaPuHuiTi";
-  src:
-    url("/fonts/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.woff2")
-    format("woff2"),
-    url("/fonts/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.woff")
-    format("woff"),
-    url("/fonts/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.ttf")
-    format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "AlibabaPuHuiTi";
-  src:
-    url("/fonts/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2")
-    format("woff2"),
-    url("/fonts/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff")
-    format("woff"),
-    url("/fonts/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.ttf")
-    format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "AlibabaPuHuiTi";
-  src:
-    url("/fonts/AlibabaPuHuiTi-3-45-Light/AlibabaPuHuiTi-3-45-Light.woff2")
-    format("woff2"),
-    url("/fonts/AlibabaPuHuiTi-3-45-Light/AlibabaPuHuiTi-3-45-Light.woff")
-    format("woff"),
-    url("/fonts/AlibabaPuHuiTi-3-45-Light/AlibabaPuHuiTi-3-45-Light.ttf")
-    format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
 }
 
 @layer utilities {

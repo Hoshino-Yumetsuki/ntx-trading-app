@@ -6,7 +6,7 @@ import { ChevronLeft } from 'lucide-react'
 import MarkdownIt from 'markdown-it'
 import multimdTable from 'markdown-it-multimd-table'
 import DOMPurify from 'dompurify'
-import '@/src/styles/markdown.css'
+import '@/src/app/markdown.css'
 import { useLanguage } from '@/src/contexts/language-context'
 import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
 
