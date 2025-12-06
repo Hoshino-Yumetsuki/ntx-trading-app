@@ -13,6 +13,7 @@ import AssetsPage from '@/src/components/pages/profile/assets'
 import CommunityPage from '@/src/components/pages/profile/community'
 import { BrokerPage } from '@/src/components/pages/broker'
 import { OrdersPage } from '@/src/components/pages/orders'
+import { TermsModal } from '@/src/components/ui/terms-modal'
 import {
   ProfileHeader,
   InviteCodeCard,
@@ -38,6 +39,8 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
   const [currentPage, setCurrentPage] = useState<
     'profile' | 'security' | 'assets' | 'community' | 'broker' | 'orders'
   >('profile')
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [termsModalType, setTermsModalType] = useState<'terms' | 'privacy'>('terms')
 
   const fetchUserInfo = useCallback(async () => {
     if (!user) {
@@ -192,7 +195,48 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
         <QuickActionsCard onNavigate={handleNavigate} />
         <ContactCard />
         <LogoutCard onLogout={handleLogout} />
+
+        {/* Footer */}
+        <footer className="mt-8 pb-4 text-center space-y-2">
+          <div className="flex items-center justify-center space-x-2 text-xs">
+            <button
+              type="button"
+              onClick={() => {
+                setTermsModalType('terms')
+                setShowTermsModal(true)
+              }}
+              className="text-slate-400 hover:text-blue-500 transition-colors underline"
+            >
+              {t('profile.footer.termsOfService')}
+            </button>
+            <span className="text-slate-300">|</span>
+            <button
+              type="button"
+              onClick={() => {
+                setTermsModalType('privacy')
+                setShowTermsModal(true)
+              }}
+              className="text-slate-400 hover:text-blue-500 transition-colors underline"
+            >
+              {t('profile.footer.privacyPolicy')}
+            </button>
+          </div>
+          <a
+            href="https://www.ntxdao.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-400 text-xs hover:text-blue-500 transition-colors block"
+          >
+            {t('profile.footer.copyright')}
+          </a>
+        </footer>
       </div>
+
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        type={termsModalType}
+      />
     </div>
   )
 }

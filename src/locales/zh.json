@@ -461,6 +461,11 @@
       "enterPage": "进入社区页面",
       "fetchFailed": "获取社区数据失败"
     },
+    "footer": {
+      "copyright": "© 2025 NexTradeDAO. All Rights Reserved.",
+      "termsOfService": "服务条款",
+      "privacyPolicy": "隐私政策"
+    },
     "error": {
       "fetchUserInfo": "获取用户信息失败",
       "logoutFailed": "退出登录失败"

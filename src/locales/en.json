@@ -461,6 +461,11 @@
       "enterPage": "Enter community page",
       "fetchFailed": "Failed to fetch community data"
     },
+    "footer": {
+      "copyright": "© 2025 NexTradeDAO. All Rights Reserved.",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy"
+    },
     "error": {
       "fetchUserInfo": "Failed to fetch user info",
       "logoutFailed": "Logout failed"
