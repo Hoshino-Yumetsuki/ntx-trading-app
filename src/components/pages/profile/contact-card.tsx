@@ -59,7 +59,7 @@ export function ContactCard() {
 
         <div className="flex items-center justify-between p-4 hover:bg-blue-50/60 transition-all duration-200 group">
           <a
-            href="https://t.me/+eUGjIMUFdio2ODg1"
+            href="https://t.me/ntx_dao"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-4"

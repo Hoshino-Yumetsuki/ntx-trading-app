@@ -156,7 +156,7 @@
     "known": "Got it",
     "permanent": "Permanent",
     "days": "days",
-    "clickToEnter": "Click to Enter",
+    "clickToEnter": "Enter",
     "loggedOut": "Logged out successfully",
     "pleaseLogin": "Please login first",
     "pleaseLoginToView": "Please login to view community information",
@@ -423,8 +423,8 @@
         "packageName": "Package Name"
       },
       "mission": {
-        "title": "Mission Center",
-        "description": "Complete missions to earn rewards"
+        "title": "Task Center",
+        "description": "Complete tasks to earn rewards"
       }
     },
     "wallet": {
@@ -506,18 +506,18 @@
       "iosShareFailed": "Share failed. You can try long pressing the image to save."
     },
     "withdraw": {
-      "button": "Withdraw Now"
+      "button": "Withdraw"
     },
     "stake": {
-      "title": "Stake / Release",
-      "myStake": "My Stake",
-      "notAvailable": "Stake/Release function is not yet available"
+      "title": "Pledge / Release",
+      "myStake": "My Pledge",
+      "notAvailable": "Pledge/Release function is not yet available"
     },
     "userInfo": {
       "memberRole": "Member Role",
       "gntxHolding": "Current GNTX Holding",
-      "invitedCount": "Invited Count",
-      "toBroker": "To become a broker:",
+      "invitedCount": "Invite",
+      "toBroker": "Broker Process:",
       "completed": "Completed",
       "needMore": "Need to invite",
       "people": "more"
@@ -599,11 +599,11 @@
         "button": "Start Learning"
       },
       "mission": {
-        "title": "Mission Center",
-        "subtitle": "Complete missions to earn rewards",
-        "desc": "Complete daily and growth missions to earn generous NTX token rewards",
-        "button": "View Missions",
-        "iconAlt": "Mission Center Icon"
+        "title": "Task Center",
+        "subtitle": "Complete tasks to earn rewards",
+        "desc": "Complete daily and growth tasks to earn generous NTX token rewards",
+        "button": "View Tasks",
+        "iconAlt": "Task Center Icon"
       },
       "ai": {
         "title": "AI Smart Analysis",
@@ -669,17 +669,17 @@
     },
     "exchange": {
       "title": "Exchange Page",
-      "efficiency": "Mining Efficiency",
+      "efficiency": "Points Efficiency",
       "bind": "Bind",
       "unbind": "Unbind",
-      "goMining": "Go Mining",
+      "goMining": "Claim Points",
       "exchange": "Exchange",
-      "bindSteps": "Bind your exchange account to start mining.",
-      "bindInstructions": "Please complete the following steps to start mining:",
+      "bindSteps": "Bind your exchange account to start claiming rewards.",
+      "bindInstructions": "Please complete the following steps to start claiming rewards:",
       "bindStep1": "Open {name} exchange APP/Web and go to \"Profile\"",
       "bindStep2": "Find and copy your UID",
       "bindStep3": "Return to NTXTrade DAO and paste UID to complete binding!",
-      "bindWarning": "You cannot participate in mining without binding your UID!",
+      "bindWarning": "You cannot participate in claiming rewards without binding your UID!",
       "inviteCode": "Invite Code",
       "inviteCodeCopied": "Invite code copied",
       "step1": "Step 1: Register via Link",
@@ -687,11 +687,11 @@
       "goRegister": "Go Register",
       "registerWarning": "Only new users registered via this link can bind",
       "uidPlaceholder": "Enter exchange UID",
-      "uidWarning": "Only bind exchange UIDs registered via this link, other UIDs cannot participate in mining",
+      "uidWarning": "Only bind exchange UIDs registered via this link, other UIDs cannot participate in claiming rewards",
       "noExchanges": "No exchanges available",
       "tryLater": "Please try again later",
       "bindRequired": "Exchange Binding Required",
-      "bindRequiredDesc": "You need to bind your exchange account first to start mining"
+      "bindRequiredDesc": "You need to bind your exchange account first to start claiming rewards"
     },
     "exchangeList": {
       "title": "Exchange List"
@@ -1043,9 +1043,9 @@
     }
   },
   "mission": {
-    "title": "Mission Center",
-    "loading": "Loading missions...",
-    "empty": "No missions available",
+    "title": "Task Center",
+    "loading": "Loading tasks...",
+    "empty": "No tasks available",
     "daily": "Daily",
     "reward": "Reward",
     "progress": "Progress",
@@ -1059,7 +1059,7 @@
       "completed": "Completed"
     },
     "error": {
-      "fetchFailed": "Failed to fetch missions",
+      "fetchFailed": "Failed to fetch tasks",
       "claimFailed": "Failed to claim reward"
     },
     "success": {

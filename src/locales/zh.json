@@ -156,7 +156,7 @@
     "known": "我知道了",
     "permanent": "永久",
     "days": "天",
-    "clickToEnter": "点击进入",
+    "clickToEnter": "进入",
     "loggedOut": "已退出登录",
     "pleaseLogin": "请先登录",
     "pleaseLoginToView": "请先登录以查看社区信息",
@@ -182,7 +182,7 @@
   "nav": {
     "home": "首页",
     "news": "资讯",
-    "mining": "挖矿",
+    "mining": "积分",
     "profile": "我的",
     "academy": "学院"
   },
@@ -293,7 +293,7 @@
     "back": "返回",
     "overview": {
       "title": "NexTrade DAO 概述",
-      "content": "欢迎加入 NextTrade DAO，这是一个通过交易返利、质押分红和社区治理让你赚取 NTX 代币的连接传统金融与 Web3 的去中心化交易平台！我们旨在通过区块链技术、人工智能优化、SocialFi 激励以及现实世界资产（RWA）投资，与全球各大交易所（如 Bitget、Binance、Bybit 等）合作进行导流用户，构建透明、高效、多方共赢的交易生态。"
+      "content": "欢迎加入 NextTrade DAO，这是一个通过交易返利、质押分红和社区治理让你赚取 NTX 积分的连接传统金融与 Web3 的去中心化交易平台！我们旨在通过区块链技术、人工智能优化、SocialFi 激励以及现实世界资产（RWA）投资，与全球各大交易所（如 Bitget、Binance、Bybit 等）合作进行导流用户，构建透明、高效、多方共赢的交易生态。"
     },
     "audience": {
       "title": "受众群体",
@@ -305,7 +305,7 @@
     },
     "mining": {
       "title": "交易挖矿与返利机制",
-      "content": "代币产出规则:\n- 代币总供应量: 30亿\n- 挖矿最大产量: 21亿\n- 初始每日铸币量: 383,561.64 NTX\n- 每日递减量: 第1-20年通缩率 5.48%;\n- 第21-50年通缩率 9.81%\n- 铸币持续时间: 约50年\n\n交易挖矿计算公式:\n\n$$\nM_a = \\left(\\frac{V_{0}}{V_{all}}\\right) \\times M \\times 0.9\n$$\n\n其中 M_a 为用户每日代币奖励，V_0 为用户当日交易量，V_{all} 为平台当日总交易量，M 为平台当日代币总产量。\n\n普通用户通过 NexTrade DAO 注册交易所账户并交易后，次日将以 NTX 代币形式获得返佣，一部分代币会分配给邀请人。"
+      "content": "积分产出规则:\n- 积分总供应量: 30亿\n- 挖矿最大产量: 21亿\n- 初始每日铸币量: 383,561.64 NTX\n- 每日递减量: 第1-20年通缩率 5.48%;\n- 第21-50年通缩率 9.81%\n- 铸币持续时间: 约50年\n\n交易挖矿计算公式:\n\n$$\nM_a = \\left(\\frac{V_{0}}{V_{all}}\\right) \\times M \\times 0.9\n$$\n\n其中 M_a 为用户每日积分奖励，V_0 为用户当日交易量，V_{all} 为平台当日总交易量，M 为平台当日积分总产量。\n\n普通用户通过 NexTrade DAO 注册交易所账户并交易后，次日将以 NTX 积分形式获得返佣，一部分积分会分配给邀请人。"
     },
     "rebate": {
       "title": "返佣系统",
@@ -317,7 +317,7 @@
     },
     "governance": {
       "title": "社区参与与治理",
-      "content": "我们鼓励用户参与 SocialFi 活动和社区治理。通过在 Telegram、Discord 的活跃度可累积积分兑换奖励。消耗 NTX 可锻造 GNTX 治理代币，用于参与社区决策投票。持有 GNTX 并满足邀请条件可申请成为经纪商，享受更高返佣。"
+      "content": "我们鼓励用户参与 SocialFi 活动和社区治理。通过在 Telegram、Discord 的活跃度可累积积分兑换奖励。消耗 NTX 可锻造 GNTX 治理积分，用于参与社区决策投票。持有 GNTX 并满足邀请条件可申请成为经纪商，享受更高返佣。"
     },
     "academy": {
       "title": "学院系统与交易策略",
@@ -601,7 +601,7 @@
       "mission": {
         "title": "任务中心",
         "subtitle": "完成任务领取奖励",
-        "desc": "完成每日任务和成长任务，领取丰厚的NTX代币奖励",
+        "desc": "完成每日任务和成长任务，领取丰厚的NTX积分奖励",
         "button": "查看任务",
         "iconAlt": "任务中心图标"
       },
@@ -614,7 +614,7 @@
       "mining": {
         "title": "交易挖矿",
         "subtitle": "边交易边赚取奖励",
-        "desc": "通过交易活动获得NTX代币奖励，享受创新的挖矿体验"
+        "desc": "通过交易活动获得NTX积分奖励，享受创新的挖矿体验"
       },
       "yinliu": {
         "title": "引流托管",
@@ -669,17 +669,17 @@
     },
     "exchange": {
       "title": "交易所页面",
-      "efficiency": "挖矿效率",
+      "efficiency": "积分效率",
       "bind": "绑定",
       "unbind": "解绑",
-      "goMining": "去挖矿",
+      "goMining": "领取积分",
       "exchange": "交易所",
-      "bindSteps": "绑定您的交易所账户以开始挖矿。",
-      "bindInstructions": "请务必完成以下操作以开始挖矿收益：",
+      "bindSteps": "绑定您的交易所账户以开始领取奖励。",
+      "bindInstructions": "请务必完成以下操作以开始领取奖励：",
       "bindStep1": "打开 {name} 交易所 APP/Web 的「个人中心」",
       "bindStep2": "找到并复制您的 UID",
       "bindStep3": "回到 NTXTrade DAO，粘贴 UID 完成绑定！",
-      "bindWarning": "未绑定 UID 将无法参与挖矿！",
+      "bindWarning": "未绑定 UID 将无法参与领取奖励！",
       "inviteCode": "邀请码",
       "inviteCodeCopied": "邀请码已复制",
       "step1": "第一步：通过链接注册",
@@ -687,11 +687,11 @@
       "goRegister": "去注册",
       "registerWarning": "仅通过本链接注册的新用户可以进行绑定",
       "uidPlaceholder": "请输入交易所UID",
-      "uidWarning": "仅绑定通过本链接注册的交易所UID，其他UID无法参与挖矿",
+      "uidWarning": "仅绑定通过本链接注册的交易所UID，其他UID无法参与领取奖励",
       "noExchanges": "暂无可用交易所",
       "tryLater": "请稍后再试",
       "bindRequired": "需要绑定交易所",
-      "bindRequiredDesc": "您需要先绑定交易所账户才能开始挖矿"
+      "bindRequiredDesc": "您需要先绑定交易所账户才能开始领取奖励"
     },
     "exchangeList": {
       "title": "交易所列表"

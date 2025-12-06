@@ -98,7 +98,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}) {
     { name: '5', image: '/exchange/bitget.png' },
     { name: '6', image: '/exchange/xt.png' },
     { name: '7', image: '/exchange/okx.png' },
-    { name: '8', image: '/exchange/hotcoin.png' }
+    { name: '8', image: '/exchange/ave-ai.png' }
   ]
   const half = Math.ceil(exchanges.length / 2)
   const _topRow = exchanges.slice(0, half)
