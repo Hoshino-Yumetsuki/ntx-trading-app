@@ -16,12 +16,23 @@ function AppContent() {
   const { t } = useLanguage()
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false)
-    }, 3000)
+    const minDisplayTime = 1200 // 最少显示 1.2 秒
+    const start = Date.now()
 
-    return () => clearTimeout(timer)
-  }, [])
+    const checkReady = () => {
+      const elapsed = Date.now() - start
+      if (!isLoading && elapsed >= minDisplayTime) {
+        setShowSplash(false)
+      } else if (!isLoading) {
+        setTimeout(() => setShowSplash(false), minDisplayTime - elapsed)
+      } else {
+        // 如果还在加载，继续检查
+        setTimeout(checkReady, 100)
+      }
+    }
+
+    checkReady()
+  }, [isLoading])
 
   if (showSplash) {
     return <SplashScreen />

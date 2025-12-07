@@ -15,7 +15,7 @@ export function SplashScreen() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+      className="min-h-dvh flex flex-col items-center justify-center relative overflow-hidden"
       style={{
         backgroundImage: "url('/splash-bg.png')",
         backgroundSize: 'cover',
