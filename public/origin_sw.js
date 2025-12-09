@@ -19,6 +19,9 @@ var RSS_CACHE_MAX_AGE = 15 * 60 * 1000;
 var EXTERNAL_CACHE_MAX_AGE = 30 * 60 * 1000;
 var EXTERNAL_CACHE_NAME = 'ntx-external-v' + VERSION;
 
+// 网络请求超时时间（毫秒）
+var NETWORK_TIMEOUT = 6000;
+
 // 需要预加载的 RSS 端点
 var RSS_PREFETCH_PATHS = ['/hybrid'];
 
@@ -196,9 +199,28 @@ function externalCacheRequest(request) {
         'expired:', cacheExpired,
         'age:', Math.round(cacheAge / 1000) + 's');
       
-      var fetchPromise = fetch(request).then(function(networkResponse) {
+      // 有缓存就立即返回，只在过期时才后台更新
+      if (cachedResponse) {
+        if (cacheExpired) {
+          // 后台静默更新（不阻塞返回）
+          fetch(request).then(function(networkResponse) {
+            if (networkResponse.ok) {
+              var responseHeaders = new Headers(networkResponse.headers);
+              responseHeaders.set('sw-cached-at', Date.now().toString());
+              cache.put(cacheKey, new Response(networkResponse.body, {
+                status: networkResponse.status,
+                statusText: networkResponse.statusText,
+                headers: responseHeaders
+              }));
+            }
+          }).catch(function() {});
+        }
+        return cachedResponse;
+      }
+      
+      // 无缓存，等待网络（带超时）
+      return fetchWithTimeout(request, NETWORK_TIMEOUT).then(function(networkResponse) {
         if (networkResponse.ok) {
-          // 缓存时添加时间戳
           var responseHeaders = new Headers(networkResponse.headers);
           responseHeaders.set('sw-cached-at', Date.now().toString());
           var cachedResponseToStore = new Response(networkResponse.clone().body, {
@@ -211,21 +233,25 @@ function externalCacheRequest(request) {
         return networkResponse;
       }).catch(function(err) {
         console.error('[SW] External fetch error:', err);
-        // 离线时返回缓存（无限容忍）
-        if (cachedResponse) {
-          return cachedResponse;
-        }
         return new Response('Offline', { status: 503 });
       });
-      
-      // 有缓存就立即返回（不管过期没），后台更新
-      if (cachedResponse) {
-        fetchPromise; // 后台静默更新
-        return cachedResponse;
-      }
-      
-      // 无缓存，等待网络
-      return fetchPromise;
+    });
+  });
+}
+
+// 带超时的 fetch
+function fetchWithTimeout(request, timeout) {
+  return new Promise(function(resolve, reject) {
+    var timer = setTimeout(function() {
+      reject(new Error('Timeout'));
+    }, timeout);
+    
+    fetch(request).then(function(response) {
+      clearTimeout(timer);
+      resolve(response);
+    }).catch(function(err) {
+      clearTimeout(timer);
+      reject(err);
     });
   });
 }
