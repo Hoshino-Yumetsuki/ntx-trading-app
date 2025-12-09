@@ -68,6 +68,28 @@ jobs:
       - name: Initialize Capacitor iOS
         run: npx cap add ios || true
 
+      - name: Set iOS deployment target to 14
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          podfile = Path('ios/App/Podfile')
+          if podfile.exists():
+            text = podfile.read_text()
+            updated = re.sub(r"platform :ios, '\d+(?:\.\d+)?'", "platform :ios, '14.0'", text)
+            if updated == text:
+              if "platform :ios" not in text:
+                updated = "platform :ios, '14.0'\n" + text
+            podfile.write_text(updated)
+
+          pbxproj = Path('ios/App/App.xcodeproj/project.pbxproj')
+          if pbxproj.exists():
+            content = pbxproj.read_text()
+            content = re.sub(r"IPHONEOS_DEPLOYMENT_TARGET = \d+(?:\.\d+)?;", "IPHONEOS_DEPLOYMENT_TARGET = 14.0;", content)
+            pbxproj.write_text(content)
+          PY
+
       - name: Get Build Timestamp
         id: timestamp
         run: echo "ts=$(date +%s)" >> $GITHUB_OUTPUT
