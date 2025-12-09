@@ -1,3 +1,7 @@
+import { readFileSync } from 'fs'
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
@@ -15,7 +19,8 @@ const nextConfig = {
     nextImageExportOptimizer_exportFolderPath: 'out',
     nextImageExportOptimizer_quality: '75',
     nextImageExportOptimizer_storePicturesInWEBP: 'true',
-    nextImageExportOptimizer_generateAndUseBlurImages: 'true'
+    nextImageExportOptimizer_generateAndUseBlurImages: 'true',
+    NEXT_PUBLIC_APP_VERSION: pkg.version
   }
 }
 

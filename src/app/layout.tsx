@@ -31,10 +31,26 @@ const alibabaPuHuiTi = localFont({
 export const metadata: Metadata = {
   title: 'NTX Trading | 掌握机构操盘体系，提升你的交易能力',
   description: '掌握机构操盘体系，提升你的交易能力',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'NTX Trading'
+  },
+  formatDetection: {
+    telephone: false
+  },
   icons: {
     icon: '/ntx-logo.png',
     shortcut: '/ntx-logo.png',
     apple: '/ntx-logo.png'
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'msapplication-TileColor': '#2563eb',
+    'msapplication-tap-highlight': 'no'
   }
 }
 
@@ -46,7 +62,10 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className={alibabaPuHuiTi.variable}>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+        <meta name="theme-color" content="#2563eb" />
+        <link rel="apple-touch-icon" href="/ntx-logo.png" />
+        <link rel="apple-touch-startup-image" href="/splash-logo.png" />
       </head>
       <body suppressHydrationWarning>
         <Providers>

@@ -1,0 +1,53 @@
+{
+  "name": "NTX Trading",
+  "short_name": "NTX",
+  "description": "掌握机构操盘体系，提升你的交易能力",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#F0F8FF",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["finance", "business"],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "icons": [
+    {
+      "src": "/ntx-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/ntx-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "首页",
+      "short_name": "首页",
+      "url": "/?tab=home",
+      "icons": [{ "src": "/ntx-logo.png", "sizes": "any" }]
+    },
+    {
+      "name": "学院",
+      "short_name": "学院",
+      "url": "/?tab=academy",
+      "icons": [{ "src": "/ntx-logo.png", "sizes": "any" }]
+    },
+    {
+      "name": "挖矿",
+      "short_name": "挖矿",
+      "url": "/?tab=mining",
+      "icons": [{ "src": "/ntx-logo.png", "sizes": "any" }]
+    }
+  ]
+}
