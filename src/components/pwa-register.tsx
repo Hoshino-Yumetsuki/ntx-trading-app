@@ -38,19 +38,15 @@ async function registerServiceWorker(swUrl: string, version: string) {
 
 export function ServiceWorkerRegister() {
   useEffect(() => {
-    if (isNativeApp()) {
-      console.log('[PWA] Running in native app, skipping Service Worker')
-      return
-    }
-
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         setTimeout(() => {
           const version = process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0'
           const apiTarget = process.env.NEXT_PUBLIC_API_PROXY_TARGET || 'https://api.ntxdao.com/api'
           const rssTarget = process.env.NEXT_PUBLIC_RSS_PROXY_TARGET || 'https://rss.ntxdao.com/rss'
+          const isNative = isNativeApp() ? '1' : '0'
 
-          const swUrl = `/sw.js?apiTarget=${encodeURIComponent(apiTarget)}&rssTarget=${encodeURIComponent(rssTarget)}`
+          const swUrl = `/sw.js?apiTarget=${encodeURIComponent(apiTarget)}&rssTarget=${encodeURIComponent(rssTarget)}&native=${isNative}`
           
           registerServiceWorker(swUrl, version)
             .then((registration) => {

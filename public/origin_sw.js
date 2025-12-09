@@ -2,6 +2,7 @@ var params = new URL(self.location).searchParams;
 var VERSION = '__SW_VERSION__';
 var API_TARGET = decodeURIComponent(params.get('apiTarget') || 'https://api.ntxdao.com/api');
 var RSS_TARGET = decodeURIComponent(params.get('rssTarget') || 'https://rss.ntxdao.com/rss');
+var IS_NATIVE = params.get('native') === '1'; // Capacitor 原生环境
 var CACHE_NAME = 'ntx-trading-v' + VERSION;
 var API_CACHE_NAME = 'ntx-api-v' + VERSION;
 
@@ -111,6 +112,18 @@ self.addEventListener('fetch', function(event) {
 
   if (request.method !== 'GET') return;
 
+  // 原生环境下，只处理外部资源，跳过站内静态资源缓存
+  // （因为 Capacitor 本地就有这些文件，断网也能访问）
+  if (IS_NATIVE) {
+    // 外部资源仍然需要缓存
+    if (url.origin !== self.location.origin && /\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot)(\?.*)?$/i.test(url.pathname)) {
+      event.respondWith(externalCacheRequest(request));
+    }
+    // 站内资源不处理，让 Capacitor 直接从本地加载
+    return;
+  }
+
+  // Web 环境：完整的缓存策略
   // 外部资源缓存（任意外部域名的静态资源）
   if (url.origin !== self.location.origin && /\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot)(\?.*)?$/i.test(url.pathname)) {
     event.respondWith(externalCacheRequest(request));
