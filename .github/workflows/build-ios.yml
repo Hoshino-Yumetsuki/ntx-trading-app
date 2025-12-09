@@ -93,20 +93,49 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync ios
 
-
+      - name: List iOS project structure
+        working-directory: ios/App
+        run: |
+          echo "=== Project files ==="
+          ls -la
+          echo "=== Checking for workspace ==="
+          ls -la *.xcworkspace 2>/dev/null || echo "No workspace found"
+          ls -la *.xcodeproj 2>/dev/null || echo "No xcodeproj found"
 
       - name: Build unsigned App
         working-directory: ios/App
         run: |
-          xcodebuild -project App.xcodeproj \
-            -scheme App \
-            -configuration Release \
-            -archivePath build/App.xcarchive \
-            -destination 'generic/platform=iOS' \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            archive
+          # 先尝试用 workspace，如果没有再用 project
+          if [ -d "App.xcworkspace" ]; then
+            echo "Building with workspace..."
+            xcodebuild -workspace App.xcworkspace \
+              -scheme App \
+              -configuration Release \
+              -archivePath build/App.xcarchive \
+              -destination 'generic/platform=iOS' \
+              -allowProvisioningUpdates \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGN_IDENTITY="-" \
+              DEVELOPMENT_TEAM="" \
+              archive 2>&1 | tail -100
+          else
+            echo "Building with project..."
+            xcodebuild -project App.xcodeproj \
+              -scheme App \
+              -configuration Release \
+              -archivePath build/App.xcarchive \
+              -destination 'generic/platform=iOS' \
+              -allowProvisioningUpdates \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGN_IDENTITY="-" \
+              DEVELOPMENT_TEAM="" \
+              archive 2>&1 | tail -100
+          fi
+          
+          echo "=== Archive contents ==="
+          ls -la build/App.xcarchive/Products/Applications/ || echo "No Applications folder"
 
       - name: Create unsigned IPA
         working-directory: ios/App
