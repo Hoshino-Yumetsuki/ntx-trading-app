@@ -2,6 +2,8 @@
 /node_modules
 /.pnp
 .pnp.*
+.DS_Store
+sw.js
 .yarn/*
 !.yarn/patches
 !.yarn/plugins

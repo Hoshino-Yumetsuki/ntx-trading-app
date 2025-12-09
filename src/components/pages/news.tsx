@@ -13,6 +13,7 @@ import { useNewsImageGenerator } from './news/news-image-generator'
 import type { NewsItem } from '@/src/types/news'
 import { ShareCard } from '@/src/components/ui/share-card'
 import { MissionService } from '@/src/services/mission'
+import { RSS_BASE_URL } from '@/src/services/config'
 
 import '@/src/app/markdown.css'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -23,7 +24,7 @@ import type { SupportedLanguage } from '@/src/contexts/language-context'
 const fetchRssNews = async (
   language: SupportedLanguage
 ): Promise<NewsItem[]> => {
-  const response = await fetch('https://rss.ntxdao.com/rss/hybrid')
+  const response = await fetch(`${RSS_BASE_URL}/hybrid`)
   if (!response.ok) {
     throw new Error('Network response error, unable to fetch RSS feed')
   }

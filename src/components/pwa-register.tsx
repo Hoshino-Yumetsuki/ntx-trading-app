@@ -2,15 +2,42 @@
 
 import { useEffect } from 'react'
 
-// 检测运行环境
 function isNativeApp(): boolean {
   if (typeof window === 'undefined') return false
   return !!(window as any).Capacitor?.isNativePlatform?.()
 }
 
+async function registerServiceWorker(swUrl: string, version: string) {
+  const registrations = await navigator.serviceWorker.getRegistrations()
+
+  await Promise.all(
+    registrations.map((registration) => {
+      const scope = registration.scope
+      const scriptUrl = registration.active?.scriptURL ?? ''
+
+      const isSameOriginScope = scope.startsWith(window.location.origin)
+      const isOldSw = scriptUrl.includes('/sw.js') && !scriptUrl.includes(`v=${version}`)
+
+      if (isSameOriginScope && isOldSw) {
+        return registration.unregister()
+      }
+
+      return Promise.resolve()
+    })
+  )
+
+  const registration = await navigator.serviceWorker.register(swUrl, {
+    scope: '/',
+    updateViaCache: 'none'
+  })
+
+  console.log(`[PWA] Service Worker v${version} registered:`, registration.scope)
+
+  return registration
+}
+
 export function ServiceWorkerRegister() {
   useEffect(() => {
-    // 原生 App 不需要 Service Worker
     if (isNativeApp()) {
       console.log('[PWA] Running in native app, skipping Service Worker')
       return
@@ -19,14 +46,14 @@ export function ServiceWorkerRegister() {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         setTimeout(() => {
-          // 将版本号作为查询参数传递给 Service Worker
           const version = process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0'
-          navigator.serviceWorker
-            .register(`/sw.js?v=${version}`, { scope: '/' })
-            .then((registration) => {
-              console.log(`[PWA] Service Worker v${version} registered:`, registration.scope)
+          const apiTarget = process.env.NEXT_PUBLIC_API_PROXY_TARGET || 'https://api.ntxdao.com/api'
+          const rssTarget = process.env.NEXT_PUBLIC_RSS_PROXY_TARGET || 'https://rss.ntxdao.com/rss'
 
-              // 定期检查更新（每小时）
+          const swUrl = `/sw.js?apiTarget=${encodeURIComponent(apiTarget)}&rssTarget=${encodeURIComponent(rssTarget)}`
+          
+          registerServiceWorker(swUrl, version)
+            .then((registration) => {
               setInterval(() => {
                 registration.update()
               }, 60 * 60 * 1000)
