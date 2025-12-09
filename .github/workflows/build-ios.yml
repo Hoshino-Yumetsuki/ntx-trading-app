@@ -66,18 +66,11 @@ jobs:
         run: yarn build
 
       - name: Initialize Capacitor iOS
-        run: |
-          npx cap add ios || true
-          
-          # Force update Podfile platform version immediately after add
-          if [ -f "ios/App/Podfile" ]; then
-            sed -i '' "s/platform :ios, .*/platform :ios, '14.0'/" ios/App/Podfile || sed -i "s/platform :ios, .*/platform :ios, '14.0'/" ios/App/Podfile
-            if ! grep -q "platform :ios, '14.0'" ios/App/Podfile; then
-              echo "platform :ios, '14.0'" | cat - ios/App/Podfile > temp && mv temp ios/App/Podfile
-            fi
-          fi
+        env:
+          CAPACITOR_IOS_POD_INSTALL: "0"
+        run: npx cap add ios || true
 
-      - name: Set iOS deployment target to 14 (Python)
+      - name: Set iOS deployment target to 14
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -132,6 +125,8 @@ jobs:
         run: npx @capacitor/assets generate --ios
 
       - name: Sync Capacitor
+        env:
+          CAPACITOR_IOS_POD_INSTALL: "0"
         run: npx cap sync ios
 
       - name: Install CocoaPods dependencies
