@@ -60,7 +60,7 @@ jobs:
         run: yarn install
 
       - name: Install Capacitor iOS
-        run: yarn add @capacitor/ios
+        run: yarn add @capacitor/ios@^8.0.0
 
       - name: Build Next.js
         run: yarn build

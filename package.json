@@ -10,7 +10,7 @@
     "lint-fix": "biome format --write && biome lint --write"
   },
   "dependencies": {
-    "@capacitor/core": "^7.4.4",
+    "@capacitor/core": "^8.0.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -54,9 +54,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.8",
-    "@capacitor/android": "^7.4.4",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
     "@capacitor/assets": "^3.0.5",
-    "@capacitor/cli": "^7.4.4",
+    "@capacitor/cli": "^8.0.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/typography": "^0.5.19",
     "@types/dompurify": "^3.2.0",
