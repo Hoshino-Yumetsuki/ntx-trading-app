@@ -187,7 +187,7 @@ export function AssetsOverview({
                 onClick={() => onNavigate?.('security')}
                 className="bg-blue-600 hover:bg-blue-700 text-white border-0 shrink-0"
               >
-                去绑定
+                {t('assets.goToBind')}
               </Button>
             )}
           </div>

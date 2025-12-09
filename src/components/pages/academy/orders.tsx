@@ -8,9 +8,10 @@ import type { Order } from '@/src/types/course'
 import { getMyOrders } from '@/src/services/payment'
 import { getPermissionGroups } from '@/src/services/courseService'
 import { useLanguage } from '@/src/contexts/language-context'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
 
 export function OrdersPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
@@ -145,7 +146,9 @@ export function OrdersPage() {
                     {formatOrderNo(o)}
                   </div>
                   <div className="text-slate-400 text-sm">
-                    {packageNameMap[o.package_id] ?? '-'}
+                    {packageNameMap[o.package_id]
+                      ? processLocaleString(packageNameMap[o.package_id], language)
+                      : '-'}
                   </div>
                 </div>
                 <div className="text-slate-700 text-sm">

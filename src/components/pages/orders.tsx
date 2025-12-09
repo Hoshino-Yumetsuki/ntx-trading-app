@@ -24,6 +24,7 @@ import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { getPermissionGroups } from '@/src/services/courseService'
 import { useLanguage } from '@/src/contexts/language-context'
+import { processLocaleString } from '@/src/utils/apiLocaleProcessor'
 import Image from 'next/image'
 
 interface OrdersPageProps {
@@ -31,7 +32,7 @@ interface OrdersPageProps {
 }
 
 export function OrdersPage({ onBack }: OrdersPageProps = {}) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -212,7 +213,9 @@ export function OrdersPage({ onBack }: OrdersPageProps = {}) {
                         {o.id}
                         <span className="ml-2 text-xs text-slate-500">
                           {t('profile.menu.orders.packageName')}{' '}
-                          {packageNameMap[o.package_id] ?? '-'}
+                          {packageNameMap[o.package_id]
+                            ? processLocaleString(packageNameMap[o.package_id], language)
+                            : '-'}
                         </span>
                         <span className="ml-2 text-xs px-1.5 py-0.5 rounded border border-white/40 bg-white/60 text-slate-600">
                           {o.status === 'pending'

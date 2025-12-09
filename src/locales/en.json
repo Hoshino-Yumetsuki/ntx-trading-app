@@ -768,7 +768,8 @@
       "addressRequired": "Please enter withdraw address",
       "invalidBscAddress": "Please enter a valid BSC address",
       "insufficientBalance": "Insufficient balance"
-    }
+    },
+    "goToBind": "Go to Bind"
   },
   "academy": {
     "tabs": {

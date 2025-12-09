@@ -768,7 +768,8 @@
       "addressRequired": "请输入提现地址",
       "invalidBscAddress": "请输入有效的BSC地址",
       "insufficientBalance": "余额不足"
-    }
+    },
+    "goToBind": "去绑定"
   },
   "academy": {
     "tabs": {
