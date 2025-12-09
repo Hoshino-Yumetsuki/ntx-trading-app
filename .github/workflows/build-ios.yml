@@ -69,51 +69,10 @@ jobs:
         run: yarn build
 
       - name: Initialize Capacitor iOS
-        env:
-          CAPACITOR_IOS_POD_INSTALL: "0"
         run: |
-          # 不用 || true，让错误暴露
           npx cap add ios
           echo "iOS platform added successfully"
           ls -la ios/App/
-
-      - name: Set iOS deployment target to 15
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          print("Updating Podfile...")
-          podfile = Path('ios/App/Podfile')
-          if podfile.exists():
-            text = podfile.read_text()
-            # Match platform :ios, 'x.x' with optional comment # at start
-            pattern = r"(?:#\s*)?platform :ios,\s*['\"][\d\.]+['\"]"
-            replacement = "platform :ios, '15.0'"
-            
-            if re.search(pattern, text):
-                updated = re.sub(pattern, replacement, text)
-                print("Replaced existing platform line.")
-            else:
-                updated = "platform :ios, '15.0'\n" + text
-                print("Prepended platform line.")
-            
-            podfile.write_text(updated)
-            print("Podfile updated.")
-          else:
-            print("Podfile not found!")
-
-          print("Updating project.pbxproj...")
-          pbxproj = Path('ios/App/App.xcodeproj/project.pbxproj')
-          if pbxproj.exists():
-            content = pbxproj.read_text()
-            # Update IPHONEOS_DEPLOYMENT_TARGET
-            content = re.sub(r"IPHONEOS_DEPLOYMENT_TARGET = [\d\.]+;", "IPHONEOS_DEPLOYMENT_TARGET = 15.0;", content)
-            pbxproj.write_text(content)
-            print("project.pbxproj updated.")
-          else:
-            print("project.pbxproj not found!")
-          PY
 
       - name: Get Build Timestamp
         id: timestamp
@@ -132,18 +91,14 @@ jobs:
         run: npx @capacitor/assets generate --ios
 
       - name: Sync Capacitor
-        env:
-          CAPACITOR_IOS_POD_INSTALL: "0"
         run: npx cap sync ios
 
-      - name: Install CocoaPods dependencies
-        working-directory: ios/App
-        run: pod install
+
 
       - name: Build unsigned App
         working-directory: ios/App
         run: |
-          xcodebuild -workspace App.xcworkspace \
+          xcodebuild -project App.xcodeproj \
             -scheme App \
             -configuration Release \
             -archivePath build/App.xcarchive \
