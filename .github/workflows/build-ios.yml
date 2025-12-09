@@ -70,7 +70,7 @@ jobs:
           CAPACITOR_IOS_POD_INSTALL: "0"
         run: npx cap add ios || true
 
-      - name: Set iOS deployment target to 14
+      - name: Set iOS deployment target to 15
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -82,13 +82,13 @@ jobs:
             text = podfile.read_text()
             # Match platform :ios, 'x.x' with optional comment # at start
             pattern = r"(?:#\s*)?platform :ios,\s*['\"][\d\.]+['\"]"
-            replacement = "platform :ios, '14.0'"
+            replacement = "platform :ios, '15.0'"
             
             if re.search(pattern, text):
                 updated = re.sub(pattern, replacement, text)
                 print("Replaced existing platform line.")
             else:
-                updated = "platform :ios, '14.0'\n" + text
+                updated = "platform :ios, '15.0'\n" + text
                 print("Prepended platform line.")
             
             podfile.write_text(updated)
@@ -101,7 +101,7 @@ jobs:
           if pbxproj.exists():
             content = pbxproj.read_text()
             # Update IPHONEOS_DEPLOYMENT_TARGET
-            content = re.sub(r"IPHONEOS_DEPLOYMENT_TARGET = [\d\.]+;", "IPHONEOS_DEPLOYMENT_TARGET = 14.0;", content)
+            content = re.sub(r"IPHONEOS_DEPLOYMENT_TARGET = [\d\.]+;", "IPHONEOS_DEPLOYMENT_TARGET = 15.0;", content)
             pbxproj.write_text(content)
             print("project.pbxproj updated.")
           else:
