@@ -74,20 +74,36 @@ jobs:
           from pathlib import Path
           import re
 
+          print("Updating Podfile...")
           podfile = Path('ios/App/Podfile')
           if podfile.exists():
             text = podfile.read_text()
-            updated = re.sub(r"platform :ios, '\d+(?:\.\d+)?'", "platform :ios, '14.0'", text)
-            if updated == text:
-              if "platform :ios" not in text:
+            # Match platform :ios, 'x.x' with optional comment # at start
+            pattern = r"(?:#\s*)?platform :ios,\s*['\"][\d\.]+['\"]"
+            replacement = "platform :ios, '14.0'"
+            
+            if re.search(pattern, text):
+                updated = re.sub(pattern, replacement, text)
+                print("Replaced existing platform line.")
+            else:
                 updated = "platform :ios, '14.0'\n" + text
+                print("Prepended platform line.")
+            
             podfile.write_text(updated)
+            print("Podfile updated.")
+          else:
+            print("Podfile not found!")
 
+          print("Updating project.pbxproj...")
           pbxproj = Path('ios/App/App.xcodeproj/project.pbxproj')
           if pbxproj.exists():
             content = pbxproj.read_text()
-            content = re.sub(r"IPHONEOS_DEPLOYMENT_TARGET = \d+(?:\.\d+)?;", "IPHONEOS_DEPLOYMENT_TARGET = 14.0;", content)
+            # Update IPHONEOS_DEPLOYMENT_TARGET
+            content = re.sub(r"IPHONEOS_DEPLOYMENT_TARGET = [\d\.]+;", "IPHONEOS_DEPLOYMENT_TARGET = 14.0;", content)
             pbxproj.write_text(content)
+            print("project.pbxproj updated.")
+          else:
+            print("project.pbxproj not found!")
           PY
 
       - name: Get Build Timestamp
