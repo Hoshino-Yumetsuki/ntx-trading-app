@@ -112,12 +112,12 @@ self.addEventListener('fetch', function(event) {
   if (request.method !== 'GET') return;
 
   // 外部资源缓存（任意外部域名的静态资源）
-  if (url.origin !== self.location.origin && /\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot)(\?.*)?$/.test(url.pathname)) {
+  if (url.origin !== self.location.origin && /\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot)(\?.*)?$/i.test(url.pathname)) {
     event.respondWith(externalCacheRequest(request));
     return;
   }
 
-  if (/\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot|css|js)(\?.*)?$/.test(url.pathname)) {
+  if (/\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot|css|js)(\?.*)?$/i.test(url.pathname)) {
     event.respondWith(cacheFirst(request));
   } else if (url.origin === self.location.origin) {
     event.respondWith(networkFirst(request));
