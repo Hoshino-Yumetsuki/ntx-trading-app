@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-26
+    runs-on: macos-15
 
     steps:
       - name: Checkout repository
@@ -63,6 +63,11 @@ jobs:
             sudo xcode-select -s "$XCODE_PATH"
           fi
           xcodebuild -version
+
+      - name: Install iOS SDK if needed
+        run: |
+          # 检查 iOS 平台是否已安装，如果没有则下载
+          xcodebuild -downloadPlatform iOS || echo "iOS platform already installed or download not needed"
 
       - name: Install dependencies
         env:
