@@ -60,7 +60,10 @@ jobs:
         run: yarn install
 
       - name: Install Capacitor iOS
-        run: yarn add @capacitor/ios@^8.0.0
+        run: |
+          yarn add @capacitor/ios@^8.0.0
+          # 确保 capacitor cli 也安装了
+          yarn add @capacitor/cli@^8.0.0
 
       - name: Build Next.js
         run: yarn build
@@ -68,7 +71,11 @@ jobs:
       - name: Initialize Capacitor iOS
         env:
           CAPACITOR_IOS_POD_INSTALL: "0"
-        run: npx cap add ios || true
+        run: |
+          # 不用 || true，让错误暴露
+          npx cap add ios
+          echo "iOS platform added successfully"
+          ls -la ios/App/
 
       - name: Set iOS deployment target to 15
         run: |
