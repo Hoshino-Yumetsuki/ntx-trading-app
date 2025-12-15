@@ -13,8 +13,8 @@ var FAKE_RSS_PATH = '/rss';
 // API 缓存过期时间（毫秒）- 10分钟
 var API_CACHE_MAX_AGE = 10 * 60 * 1000;
 
-// RSS 缓存过期时间（毫秒）- 15分钟（但离线时无限容忍）
-var RSS_CACHE_MAX_AGE = 15 * 60 * 1000;
+// RSS 缓存过期时间（毫秒）- 10分钟（过期后等网络，超时回退缓存）
+var RSS_CACHE_MAX_AGE = 10 * 60 * 1000;
 
 // 外部资源缓存过期时间（毫秒）- 30分钟（离线无限容忍）
 var EXTERNAL_CACHE_MAX_AGE = 30 * 60 * 1000;
@@ -357,17 +357,38 @@ function swrProxyRequest(originalRequest, proxyInfo) {
       //   - 有新鲜缓存 → 立即返回，后台静默更新
       // RSS:
       //   - 无缓存 → 等待网络
-      //   - 有缓存（不管是否过期）→ 立即返回，后台更新（离线无限容忍）
+      //   - 有新鲜缓存（5分钟内）→ 立即返回
+      //   - 缓存过期 → 等待网络（带超时），超时/离线回退缓存
       
       if (isRss) {
-        // RSS: 只要有缓存就立即返回，后台更新
-        if (cachedResponse) {
-          // 后台静默更新（不阻塞）
-          fetchPromise;
+        // RSS: 无缓存，等待网络
+        if (!cachedResponse) {
+          return fetchPromise;
+        }
+        
+        // RSS: 有新鲜缓存（未过期），立即返回
+        if (!cacheExpired) {
+          console.log('[SW] RSS: returning fresh cache');
           return cachedResponse;
         }
-        // 无缓存，等待网络
-        return fetchPromise;
+        
+        // RSS: 缓存已过期，等待网络（带超时），失败时回退缓存
+        console.log('[SW] RSS: cache expired, waiting for network with timeout');
+        return Promise.race([
+          fetchPromise,
+          new Promise(function(resolve) {
+            setTimeout(function() {
+              resolve(null); // 超时返回 null
+            }, NETWORK_TIMEOUT);
+          })
+        ]).then(function(response) {
+          if (response && response.ok) {
+            return response;
+          }
+          // 网络超时或失败，回退到过期缓存
+          console.log('[SW] RSS: network timeout/failed, falling back to stale cache');
+          return cachedResponse;
+        });
       }
       
       // API: 严格的过期策略
@@ -375,8 +396,9 @@ function swrProxyRequest(originalRequest, proxyInfo) {
         return fetchPromise;
       }
       
-      // 有新鲜缓存（10分钟内）：立即返回缓存，后台更新
-      // 注意：这里不 await fetchPromise，让它在后台执行
+      // 有新鲜缓存（10分钟内）：立即返回缓存，后台静默更新
+      console.log('[SW] API: returning fresh cache, updating in background');
+      fetchPromise.catch(function() {}); // 后台静默更新，忽略错误
       return cachedResponse;
     });
   });

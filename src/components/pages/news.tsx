@@ -107,8 +107,10 @@ export function NewsPage() {
   } = useQuery<NewsItem[]>({
     queryKey: ['rssNews', language],
     queryFn: () => fetchRssNews(language),
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false
+    staleTime: 1000 * 60 * 2, // 2分钟内认为数据新鲜
+    gcTime: 1000 * 60 * 10,   // 10分钟后清除缓存
+    refetchOnWindowFocus: true, // 窗口聚焦时重新获取
+    refetchOnMount: 'always'    // 组件挂载时始终重新获取
   })
 
   const viewArticleDetail = useCallback((article: NewsItem) => {
